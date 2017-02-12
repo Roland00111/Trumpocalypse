@@ -17,5 +17,6 @@ March Goals:  Entire main story line implemented and functional. Add additional 
 
 End of Semester Goals: To add images to illustrate the story line and locations/menus.
 
+Requirements to play Trumpocalypse: You have to have downloaded python 2.7 and pygame 1.9.1
 
 
