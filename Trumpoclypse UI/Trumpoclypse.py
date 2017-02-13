@@ -11,6 +11,8 @@ README on the bottom of document.
 '''
 
 import pygame
+import unitest
+
 from pygame.locals import *
 
 if not pygame.display.get_init():
