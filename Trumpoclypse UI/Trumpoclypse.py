@@ -36,7 +36,7 @@ class Menu:
     PositionSelection = 0 #initalizer
     Position = (0,0) #set as initalizer
     menu_width = 0 
-    menu_height = 0 
+    menu_height = 0
 
     class Field:
         test = ''
@@ -116,9 +116,10 @@ class Menu:
 
 if __name__ == "__main__":
     import sys
+    #os.system("python yourfile.py")
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
     surface.fill((255,120,71)) #Color of the background of window
-    pygame.display.toggle_fullscreen() # Toggle full screen
+    pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
     '''First you have to make an object of a *Menu class.
     *init take 2 arguments. list of fields and destination surface.
     Then you have a 4 configuration options:
@@ -154,12 +155,15 @@ if __name__ == "__main__":
                 if event.key == K_RETURN:
                     if menu.get_position() == 2:#here is the Menu class function
                         pygame.display.quit()
-                        sys.exit()                        
+                        sys.exit()
+                    elif menu.get_position() == 0: #HERE is where you need to add the look to the next screen!!!!!!
+                        print('Hello')
                 if event.key == K_ESCAPE:
-                    pygame.display.toggle_fullscreen() # Toggle full screen
+                    pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
+                    #pygame.display.set_mode((800,600),pygame.FULLSCREEN) #Mess up the screen (at least with my laptop)
                 pygame.display.update()
             elif event.type == QUIT:
                 pygame.display.quit()
                 sys.exit()
-        pygame.time.wait(8)
+        #pygame.time.wait(8)
         
