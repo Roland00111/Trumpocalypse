@@ -29,7 +29,7 @@ class Menu:
     dest_surface = pygame.Surface #how surface game is on is generated
     QuanityOfLista = 0 #initalizer
     #BackgroundColor = (51,51,51)
-    BackgroundColor = (255,99,71)#color of background of menu itself (currently Trumps skin color :))
+    BackgroundColor = (255,120,71)#color of background of menu itself (currently Trumps skin color :))
     TextColor =  (255, 255, 153)
     SelectionColor = (153,102,255)
     PositionSelection = 0 #initalizer
@@ -116,7 +116,7 @@ class Menu:
 if __name__ == "__main__":
     import sys
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
-    surface.fill((255,99,71)) #Color of the background of window
+    surface.fill((255,120,71)) #Color of the background of window
     '''First you have to make an object of a *Menu class.
     *init take 2 arguments. list of fields and destination surface.
     Then you have a 4 configuration options:
