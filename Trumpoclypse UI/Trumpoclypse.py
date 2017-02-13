@@ -9,9 +9,8 @@ README on the bottom of document.
 @font: from http://www.dafont.com/coders-crux.font
       more abuot license you can find in data/coders-crux/license.txt
 '''
-
 import pygame
-import unitest
+import unittest
 
 from pygame.locals import *
 
