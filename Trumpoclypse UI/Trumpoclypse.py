@@ -115,8 +115,10 @@ class Menu:
 
 if __name__ == "__main__":
     import sys
+#    pygame.display.toggle_fullscreen()
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
     surface.fill((255,120,71)) #Color of the background of window
+    pygame.display.toggle_fullscreen() # Toggle full screen
     '''First you have to make an object of a *Menu class.
     *init take 2 arguments. list of fields and destination surface.
     Then you have a 4 configuration options:
@@ -154,8 +156,9 @@ if __name__ == "__main__":
                         pygame.display.quit()
                         sys.exit()                        
                 if event.key == K_ESCAPE:
-                    pygame.display.quit()
-                    sys.exit()
+                    pygame.display.toggle_fullscreen() # Toggle full screen
+                    #pygame.display.quit()
+                    #sys.exit()
                 pygame.display.update()
             elif event.type == QUIT:
                 pygame.display.quit()
