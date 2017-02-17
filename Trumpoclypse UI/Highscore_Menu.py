@@ -159,7 +159,7 @@ if __name__ == "__main__":
                     if menu.get_position() == 0:#here is the Menu class function
                         execfile('Trumpoclypse.py') #Easiest way to run next window
                     elif menu.get_position() == 1:
-                        #highscore stuff here
+                        print('Hello')
                     elif menu.get_position() == 2: #HERE is where you need to add the look to the next screen!!!!!!
                         del("Highscores.txt")
                     elif menu.get_position() == 3:
