@@ -118,7 +118,6 @@ class Menu:
 if __name__ == "__main__":
     import sys
     from Create_Character import *
-    from Highscore_Menu import *
     
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
     surface.fill((255,120,71)) #Color of the background of window
@@ -142,7 +141,7 @@ if __name__ == "__main__":
     #menu.set_fontsize(64)#optional
     #menu.set_font('data/couree.fon')#optional
     #menu.move_menu(100, 99)#optional
-    menu.init(['Start','Options','Highscores','Quit'], surface)#necessary
+    menu.init(['Start','Options','Highscore','Quit'], surface)#necessary
     #menu.move_menu(0, 25)#optional (the actual lettering ie. Start,Options...)
     menu.draw()#necessary
     
@@ -158,9 +157,9 @@ if __name__ == "__main__":
                 if event.key == K_RETURN:
                     if menu.get_position() == 0:#here is the Menu class function
                         execfile('Create_Character.py') #Easiest way to run next window
-                    elif menu.get_position() == 2: #HERE is where you need to add the look to the next screen!!!!!!
-                        execfile('Highscore_Menu.py') 
-                    elif menu.get_position() == 3:
+                    elif menu.get_position() == 2:
+                        execfile('Highscore_Menu.py')
+                    elif menu.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
                         pygame.display.quit()
                         sys.exit()
                 if event.key == K_ESCAPE:
