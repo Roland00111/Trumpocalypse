@@ -14,7 +14,6 @@ import unittest
 
 from pygame.locals import *
 
-
 if not pygame.display.get_init():
     pygame.display.init()
 
@@ -32,6 +31,7 @@ class Menu:
     QuanityOfLista = 0 #initalizer
     #BackgroundColor = (51,51,51)
     BackgroundColor = (255,120,71)#color of background of menu itself (currently Trumps skin color :))
+    BackgroundColorButton = (51,51,51)
     TextColor =  (255, 255, 153)
     SelectionColor = (153,102,255)
     PositionSelection = 0 #initalizer
@@ -66,8 +66,8 @@ class Menu:
         self.lista = lista
         self.dest_surface = dest_surface
         self.Quanity = len(self.lista)
-        self.CreateStructure()        
-        
+        self.CreateStructure()
+                
     def draw(self,move=0):
         if move:
             self.PositionSelection += move 
@@ -109,7 +109,7 @@ class Menu:
             if width > self.menu_width:
                     self.menu_width = width
             self.menu_height += height
-        x = self.dest_surface.get_rect().centerx - self.menu_width / 2
+        x = self.dest_surface.get_rect().centerx - self.menu_width / 2 #Centering the menu to the middle of the screen 
         y = self.dest_surface.get_rect().centery - self.menu_height / 2
         mx, my = self.Position
         self.Position = (x+mx, y+my) 
@@ -117,8 +117,7 @@ class Menu:
 
 if __name__ == "__main__":
     import sys
-    from Create_Character import *
-    
+    #os.system("python yourfile.py")
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
     surface.fill((255,120,71)) #Color of the background of window
     pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
@@ -138,10 +137,10 @@ if __name__ == "__main__":
     *get_postion will return actual position of seletion. '''
     menu = Menu()#necessary
     #menu.set_colors((255,255,255), (0,0,255), (0,0,0))#optional
-    #menu.set_fontsize(64)#optional
+    #menu.set_fontsize(48)#optional
     #menu.set_font('data/couree.fon')#optional
     #menu.move_menu(100, 99)#optional
-    menu.init(['Start','Options','Quit','Highscore'], surface)#necessary
+    menu.init(['Manually Create Character.', 'Randomly Create Character.'], surface)#necessary
     #menu.move_menu(0, 25)#optional (the actual lettering ie. Start,Options...)
     menu.draw()#necessary
     
@@ -156,10 +155,11 @@ if __name__ == "__main__":
                     menu.draw(1) #here is the Menu class function
                 if event.key == K_RETURN:
                     if menu.get_position() == 0:#here is the Menu class function
-                        execfile('Create_Character.py') #Easiest way to run next window
-                    elif menu.get_position() == 2: #HERE is where you need to add the look to the next screen!!!!!!
-                        pygame.display.quit()
-                        sys.exit()
+                        print('Hello')
+                        #Go to Menu where user can enter manual info about character
+                    elif menu.get_position() == 1: #HERE is where you need to add the look to the next screen!!!!!!
+                        print('Hello')
+                        #Randomly Generate Character
                 if event.key == K_ESCAPE:
                     pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
                     #pygame.display.set_mode((800,600),pygame.FULLSCREEN) #Mess up the screen (at least with my laptop)
