@@ -1,5 +1,6 @@
 # Trumpocalypse
 Text based game for Software Development project
+<<<<<<< HEAD
 
 Project name: Trumpocalypse
 
@@ -20,3 +21,7 @@ End of Semester Goals: To add images to illustrate the story line and locations/
 Requirements to play Trumpocalypse: You have to have downloaded python 2.7 and pygame 1.9.1
 
 
+=======
+This is the UI section of Trumpoclypse
+The main basis of the UI was taken from pygame.org and credit is atop the code
+>>>>>>> d75ebbab036c2e97f51fa5841bef727cb0ac8cc5
