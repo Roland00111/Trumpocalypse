@@ -119,10 +119,13 @@ class Menu:
 if __name__ == "__main__":
     import sys
     
-
+    high_score_file = open("high_score.txt", "r")
+    high_score = high_score_file.read().replace('\n', '')
+    high_score_file.close()
+    
+                        
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
     surface.fill((255,120,71)) #Color of the background of window
-    pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
     '''First you have to make an object of a *Menu class.
     *init take 2 arguments. list of fields and destination surface.
     Then you have a 4 configuration options:
@@ -142,7 +145,7 @@ if __name__ == "__main__":
     #menu.set_fontsize(64)#optional
     #menu.set_font('data/couree.fon')#optional
     #menu.move_menu(100, 99)#optional
-    menu.init(['Main Menu','Highscores','Reset Highscores','Quit'], surface)#necessary
+    menu.init(['Main Menu','Highscores:',high_score,'Reset Highscores','Quit'], surface)#necessary
     #menu.move_menu(0, 25)#optional (the actual lettering ie. Start,Options...)
     menu.draw()#necessary
 
@@ -159,9 +162,11 @@ if __name__ == "__main__":
                     if menu.get_position() == 0:#here is the Menu class function
                         execfile('Trumpoclypse.py') #Easiest way to run next window
                     elif menu.get_position() == 1:
-                        print('Hello')
+                        print("hello")
+                        
                     elif menu.get_position() == 2: #HERE is where you need to add the look to the next screen!!!!!!
-                        del("Highscores.txt")
+                        print("Hi")
+                        #del("Highscores.txt")
                     elif menu.get_position() == 3:
                         pygame.display.quit()
                         sys.exit()
