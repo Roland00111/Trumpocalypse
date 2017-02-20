@@ -12,6 +12,7 @@ README on the bottom of document.
 
 import pygame
 import unittest
+import os
 
 from pygame.locals import *
 
@@ -164,10 +165,11 @@ if __name__ == "__main__":
                     elif menu.get_position() == 1:
                         print("hello")
                         
-                    elif menu.get_position() == 2: #HERE is where you need to add the look to the next screen!!!!!!
+                    elif menu.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
                         print("Hi")
-                        #del("Highscores.txt")
-                    elif menu.get_position() == 3:
+                        os.remove("high_score.txt")
+                        pygame.display.update()
+                    elif menu.get_position() == 4:
                         pygame.display.quit()
                         sys.exit()
                 if event.key == K_ESCAPE:
