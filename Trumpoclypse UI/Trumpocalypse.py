@@ -116,7 +116,7 @@ class Menu:
 def high_scores():
     surface.fill((255,120,71)) #Color of the background of window
     menu.init(['High Scores'], surface)
-    menu.move_menu(0, 0) #optional (the actual lettering ie. Start,Options...)
+    menu.move_menu(420, 240) #optional (the actual lettering ie. Start,Options...)
     menu.draw()
     pygame.display.update()
     pass
@@ -124,7 +124,7 @@ def high_scores():
 def create_character():
     surface.fill((255,120,71)) #Color of the background of window
     menu.init(['Manual','Random'], surface)
-    menu.move_menu(0, 0) #optional (the actual lettering ie. Start,Options...)
+    menu.move_menu(420, 240) #optional (the actual lettering ie. Start,Options...)
     menu.draw()
     pygame.display.update()
     
