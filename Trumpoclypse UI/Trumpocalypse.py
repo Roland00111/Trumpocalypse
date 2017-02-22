@@ -118,6 +118,7 @@ class Menu:
         self.Position = (x+mx, y+my) 
     
     def keypressFunction(self):
+        surface.fill((255,120,71))
         self.init(self.titlesArray, surface)
         self.draw()
         pygame.display.update()
@@ -125,24 +126,24 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     if event.key == K_UP:
-                        menu.draw(-1) #here is the Menu class function
+                        self.draw(-1) #here is the Menu class function
                     if event.key == K_DOWN:
-                        menu.draw(1) #here is the Menu class function
+                        self.draw(1) #here is the Menu class function
                     if event.key == K_RETURN:
-                        if menu.get_position() == 0: #here is the Menu class function
+                        if self.get_position() == 0: #here is the Menu class function
                             self.keypressArray[0]() #CreateCharacter()
                             return
                             #~ create_character()
                             #execfile('Create_Character.py') #Easiest way to run next window
-                        elif menu.get_position() == 1:
+                        elif self.get_position() == 1:
                             self.keypressArray[1]()
                             return
-                        elif menu.get_position() == 2:
+                        elif self.get_position() == 2:
                             self.keypressArray[2]() #HighScores()
                             return
                             #~ high_scores()
                             #execfile('Highscore_Menu.py')
-                        elif menu.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
+                        elif self.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
                             pygame.display.quit()
                             sys.exit()
                     if event.key == K_ESCAPE:
@@ -167,20 +168,6 @@ class Menu:
     #~ menu.move_menu(0, 0) #optional (the actual lettering ie. Start,Options...)
     #~ menu.draw()
     #~ pygame.display.update()
-    
-#~ class Menu:
-    #~ def __init__(self):
-        #~ self.menu_name = 'Test'
-        #~ # keypressDictionary may be overwritten
-        #~ # by the inheriting class.
-        #~ self.keypressArray = []
-        #~ pass
-
-    #~ def keypressFunction(self):
-        #~ '''This uses the keypressArray'''
-        #~ while 1:
-            #~ # Here is where the events are run.
-            #~ pass
 
 class CreateCharacterManual(Menu):
     def __init__(self):
@@ -216,7 +203,6 @@ class CreateCharacter(Menu):
             'Manual',
             'Auto',
         ]
-        
         # Call the parent's keypress handler
         self.keypressFunction()
 
@@ -242,7 +228,7 @@ class OpeningMenu(Menu):
         # Call the parent's keypress handler
         self.keypressFunction()
 
-    def show_box(self):
+    def box(self):
         print 'Box'
 
 
