@@ -1,3 +1,6 @@
+# Starting from e.g.
+# http://www.dummies.com/programming/python/how-to-extend-classes-to-make-new-classes-in-python/
+
 '''
 @author: avalanchy (at) google mail dot com
 @version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14; MS Windows XP SP3
@@ -36,7 +39,9 @@ class Menu:
     Position = (0,0) #set as initalizer
     menu_width = 0 
     menu_height = 0
-
+    keypressArray = []
+    titlesArray = []
+    
     class Field:
         test = ''
         Field = pygame.Surface
@@ -111,23 +116,136 @@ class Menu:
         y = self.dest_surface.get_rect().centery - self.menu_height / 2
         mx, my = self.Position
         self.Position = (x+mx, y+my) 
-
-
-def high_scores():
-    surface.fill((255,120,71)) #Color of the background of window
-    menu.init(['High Scores'], surface)
-    menu.move_menu(420, 240) #optional (the actual lettering ie. Start,Options...)
-    menu.draw()
-    pygame.display.update()
-    pass
-
-def create_character():
-    surface.fill((255,120,71)) #Color of the background of window
-    menu.init(['Manual','Random'], surface)
-    menu.move_menu(420, 240) #optional (the actual lettering ie. Start,Options...)
-    menu.draw()
-    pygame.display.update()
     
+    def keypressFunction(self):
+        self.init(self.titlesArray, surface)
+        self.draw()
+        pygame.display.update()
+        while 1:
+            for event in pygame.event.get():
+                if event.type == KEYDOWN:
+                    if event.key == K_UP:
+                        menu.draw(-1) #here is the Menu class function
+                    if event.key == K_DOWN:
+                        menu.draw(1) #here is the Menu class function
+                    if event.key == K_RETURN:
+                        if menu.get_position() == 0: #here is the Menu class function
+                            self.keypressArray[0]() #CreateCharacter()
+                            return
+                            #~ create_character()
+                            #execfile('Create_Character.py') #Easiest way to run next window
+                        elif menu.get_position() == 1:
+                            self.keypressArray[1]()
+                            return
+                        elif menu.get_position() == 2:
+                            self.keypressArray[2]() #HighScores()
+                            return
+                            #~ high_scores()
+                            #execfile('Highscore_Menu.py')
+                        elif menu.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
+                            pygame.display.quit()
+                            sys.exit()
+                    if event.key == K_ESCAPE:
+                        pass
+                        #pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
+                        #pygame.display.set_mode((800,600),pygame.FULLSCREEN) #Mess up the screen (at least with my laptop)
+                    pygame.display.update()
+                elif event.type == QUIT:
+                    pygame.display.quit()
+                    sys.exit()
+
+#~ def high_scores():
+    #~ surface.fill((255,120,71)) #Color of the background of window
+    #~ menu.init(['High Scores'], surface)
+    #~ menu.move_menu(0, 0) #optional (the actual lettering ie. Start,Options...)
+    #~ menu.draw()
+    #~ pygame.display.update()
+    #~ pass
+#~ def create_character():
+    #~ surface.fill((255,120,71)) #Color of the background of window
+    #~ menu.init(['Manual','Random'], surface)
+    #~ menu.move_menu(0, 0) #optional (the actual lettering ie. Start,Options...)
+    #~ menu.draw()
+    #~ pygame.display.update()
+    
+#~ class Menu:
+    #~ def __init__(self):
+        #~ self.menu_name = 'Test'
+        #~ # keypressDictionary may be overwritten
+        #~ # by the inheriting class.
+        #~ self.keypressArray = []
+        #~ pass
+
+    #~ def keypressFunction(self):
+        #~ '''This uses the keypressArray'''
+        #~ while 1:
+            #~ # Here is where the events are run.
+            #~ pass
+
+class CreateCharacterManual(Menu):
+    def __init__(self):
+        pass
+    
+class CreateCharacterAutomatic(Menu):
+    def __init__(self):
+        pass
+        
+class HighScores(Menu):
+    def __init__(self):
+        pass
+    
+    def get_high_score():
+        pass
+    
+    def save_high_score():
+        pass
+    
+        
+class CreateCharacter(Menu):
+    """
+    Using class inheritance here ought to simplify things... Mostly because there are going to be many, many (:+D) different screens. Basically if all of these screens have a function then the function names will start to get very hard to remember or to make unique. Instead by using a class here it will make it possible to have functions with names like show_box().
+    """
+    def __init__(self):
+        # some things in self are in the parent class.
+        self.menu_name = '...'
+        self.keypressArray = [
+            CreateCharacterManual,
+            CreateCharacterAutomatic,
+        ]
+        self.titlesArray = [
+            'Manual',
+            'Auto',
+        ]
+        
+        # Call the parent's keypress handler
+        self.keypressFunction()
+
+class OpeningMenu(Menu):
+    """
+    Using class inheritance here ought to simplify things... Mostly because there are going to be many, many (:+D) different screens. Basically if all of these screens have a function then the function names will start to get very hard to remember or to make unique. Instead by using a class here it will make it possible to have functions with names like show_box().
+    """
+    def __init__(self):
+        # some things in self are in the parent class.
+        self.menu_name = '...'
+        self.keypressArray = [
+            CreateCharacter,
+            CreateCharacter, # OptionsFunction
+            HighScores,
+            CreateCharacter, # QuitFunction
+        ]
+        self.titlesArray = [
+            'Start',
+            'Options',
+            'Highscore',
+            'Quit'
+        ]
+        # Call the parent's keypress handler
+        self.keypressFunction()
+
+    def show_box(self):
+        print 'Box'
+
+
 
 if __name__ == "__main__":
     import sys
@@ -150,40 +268,19 @@ if __name__ == "__main__":
     arguments to move selection or nothing. This function will return actual 
     position of selection.
     *get_postion will return actual position of seletion. '''
-    menu = Menu()#necessary
-    #menu.set_colors((255,255,255), (0,0,255), (0,0,0))#optional
-    #menu.set_fontsize(64)#optional
-    #menu.set_font('data/couree.fon')#optional
-    #menu.move_menu(100, 99)#optional
-    menu.init(['Start','Options','Highscore','Quit'], surface)#necessary
-    #menu.move_menu(0, 25)#optional (the actual lettering ie. Start,Options...)
-    menu.draw()#necessary
+    OpeningMenu()
     
-    pygame.key.set_repeat(199,69)#(delay,interval)
-    pygame.display.update()
-    while 1:
-        for event in pygame.event.get():
-            if event.type == KEYDOWN:
-                if event.key == K_UP:
-                    menu.draw(-1) #here is the Menu class function
-                if event.key == K_DOWN:
-                    menu.draw(1) #here is the Menu class function
-                if event.key == K_RETURN:
-                    if menu.get_position() == 0: #here is the Menu class function
-			create_character()
-                        #execfile('Create_Character.py') #Easiest way to run next window
-                    elif menu.get_position() == 2:
-			high_scores()
-                        #execfile('Highscore_Menu.py')
-                    elif menu.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
-                        pygame.display.quit()
-                        sys.exit()
-                if event.key == K_ESCAPE:
-                    pass
-                    #pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
-                    #pygame.display.set_mode((800,600),pygame.FULLSCREEN) #Mess up the screen (at least with my laptop)
-                pygame.display.update()
-            elif event.type == QUIT:
-                pygame.display.quit()
-                sys.exit()
-        #pygame.time.wait(8)
+    
+    #~ menu = Menu()#necessary
+                #~ #menu.set_colors((255,255,255), (0,0,255), (0,0,0))#optional
+                #~ #menu.set_fontsize(64)#optional
+                #~ #menu.set_font('data/couree.fon')#optional
+                #~ #menu.move_menu(100, 99)#optional
+    #~ menu.init(['Start','Options','Highscore','Quit'], surface)#necessary
+                #~ #menu.move_menu(0, 25)#optional (the actual lettering ie. Start,Options...)
+    #~ menu.draw()#necessary
+    
+    #~ pygame.key.set_repeat(199,69)#(delay,interval)
+    #~ pygame.display.update()
+    
+                #pygame.time.wait(8)
