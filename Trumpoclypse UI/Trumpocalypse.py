@@ -172,7 +172,7 @@ class Menu:
 
 class Character:
     def __init__ (self, create_type):
-        self.attributes  = {
+        self.attributes = {
 			'name': 'Default',
 			'health': 3, #0-3
 			'strength': 3, #0-3
