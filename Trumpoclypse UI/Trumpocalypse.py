@@ -153,20 +153,6 @@ class Menu:
                     pygame.display.quit()
                     sys.exit()
 
-#~ def high_scores():
-    #~ surface.fill((255,120,71)) #Color of the background of window
-    #~ menu.init(['High Scores'], surface)
-    #~ menu.move_menu(0, 0) #optional (the actual lettering ie. Start,Options...)
-    #~ menu.draw()
-    #~ pygame.display.update()
-    #~ pass
-#~ def create_character():
-    #~ surface.fill((255,120,71)) #Color of the background of window
-    #~ menu.init(['Manual','Random'], surface)
-    #~ menu.move_menu(0, 0) #optional (the actual lettering ie. Start,Options...)
-    #~ menu.draw()
-    #~ pygame.display.update()
-
 class Character:
     def __init__ (self, create_type):
         self.attributes = {
