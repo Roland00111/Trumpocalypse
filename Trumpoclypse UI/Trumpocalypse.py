@@ -132,18 +132,14 @@ class Menu:
                         self.draw(1) #here is the Menu class function
                     if event.key == K_RETURN:
                         if self.get_position() == 0: #here is the Menu class function
-                            self.keypressArray[0]() #CreateCharacter()
+                            game_state.current_screen = self.keypressArray[0]()
                             return
-                            #~ create_character()
-                            #execfile('Create_Character.py') #Easiest way to run next window
                         elif self.get_position() == 1:
-                            self.keypressArray[1]()
+                            game_state.current_screen = self.keypressArray[1]()
                             return
                         elif self.get_position() == 2:
-                            self.keypressArray[2]() #HighScores()
+                            game_state.current_screen = self.keypressArray[2]()
                             return
-                            #~ high_scores()
-                            #execfile('Highscore_Menu.py')
                         elif self.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
                             pygame.display.quit()
                             sys.exit()
