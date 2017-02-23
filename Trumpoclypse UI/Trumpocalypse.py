@@ -12,6 +12,7 @@ README on the bottom of document.
 '''
 import pygame
 import unittest
+import random
 
 from pygame.locals import *
 
@@ -169,6 +170,43 @@ class Menu:
     #~ menu.draw()
     #~ pygame.display.update()
 
+class Character:
+    def __init__ (self, create_type):
+        self.attributes  = {
+			'name': 'Default',
+			'health': 3, #0-3
+			'strength': 3, #0-3
+			'gender': 'male',
+			'age': 999
+        }
+        if create_type == 'random': 
+			self.randomCharacter()
+			pass
+
+    def randomCharacter(self):
+        num = random.randint(0,1)
+        if num == 0:
+			self['attributes'].name = 'Bill'
+			self['attributes'].health = 3
+			self['attributes'].strength = 2
+			self['attributes'].age = 86
+        elif num == 1:
+			pass
+
+class GameState:
+    def __init__(self):
+        self.current_screen = OpeningMenu()
+        self.character = Character('random')
+        self.game = Game()
+        #def randomCharacter():
+        # self.ch
+        #  passB
+
+class Game:
+    def __init__(self):
+        terms_to_play = '' # 1, 2, 999
+        #self.score = ...
+        
 class CreateCharacterManual(Menu):
     def __init__(self):
         pass
@@ -254,7 +292,8 @@ if __name__ == "__main__":
     arguments to move selection or nothing. This function will return actual 
     position of selection.
     *get_postion will return actual position of seletion. '''
-    OpeningMenu()
+    game_state = GameState()
+    #OpeningMenu()
     
     
     #~ menu = Menu()#necessary
