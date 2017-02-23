@@ -123,6 +123,7 @@ class Menu:
         self.init(self.titlesArray, surface)
         self.draw()
         pygame.display.update()
+        print self # Prints "<__main__.OpeningMenu instance at 0x7f5bb2a99d40>" or "<__main__.CreateCharacter instance at 0x7f5bb2a99ef0>"
         while 1:
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
@@ -132,13 +133,13 @@ class Menu:
                         self.draw(1) #here is the Menu class function
                     if event.key == K_RETURN:
                         if self.get_position() == 0: #here is the Menu class function
-                            game_state.current_screen = self.keypressArray[0]()
+                            self.keypressArray[0]()
                             return
                         elif self.get_position() == 1:
-                            game_state.current_screen = self.keypressArray[1]()
+                            self.keypressArray[1]()
                             return
                         elif self.get_position() == 2:
-                            game_state.current_screen = self.keypressArray[2]()
+                            self.keypressArray[2]()
                             return
                         elif self.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
                             pygame.display.quit()
@@ -170,7 +171,7 @@ class Character:
     def __init__ (self, create_type):
         self.attributes = {
 			'name': 'Default',
-			'health': 3, #0-3
+			'health': 3,   #0-3
 			'strength': 3, #0-3
 			'gender': 'male',
 			'age': 999
@@ -182,26 +183,31 @@ class Character:
     def randomCharacter(self):
         num = random.randint(0,1)
         if num == 0:
-			self['attributes'].name = 'Bill'
-			self['attributes'].health = 3
-			self['attributes'].strength = 2
-			self['attributes'].age = 86
+			self.attributes['name'] = 'Bill'
+			self.attributes['strength'] = 2
+			self.attributes['age'] = 86
         elif num == 1:
 			pass
 
 class GameState:
     def __init__(self):
-        self.current_screen = OpeningMenu()
         self.character = Character('random')
         self.game = Game()
+        # self.current_screen references the 
+        # current screen function that is trapped in its events while
+        # loop. E.g. when OpeningMenu() moves onto CreateCharacter()
+        # then self.current_screen references 
+        # the currently running CreateCharacter() class.
+        # ...maybe.
+        self.current_screen = OpeningMenu() # Start the events while loop.
         #def randomCharacter():
         # self.ch
         #  passB
 
 class Game:
     def __init__(self):
-        terms_to_play = '' # 1, 2, 999
-        #self.score = ...
+        terms_to_play = 1 # 1, 2, 999
+        #self.score = ...  # will be calculated on game over
         
 class CreateCharacterManual(Menu):
     def __init__(self):
@@ -288,7 +294,9 @@ if __name__ == "__main__":
     arguments to move selection or nothing. This function will return actual 
     position of selection.
     *get_postion will return actual position of seletion. '''
+    #~ game_state = None
     game_state = GameState()
+    
     #OpeningMenu()
     
     
