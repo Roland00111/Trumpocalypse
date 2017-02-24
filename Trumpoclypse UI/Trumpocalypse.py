@@ -4,6 +4,7 @@ import pygame
 import unittest
 import random
 from TextWrap import *
+import labels
 
 from pygame.locals import *
 
@@ -123,11 +124,17 @@ class Menu:
         y = self.dest_surface.get_rect().centery - self.menu_height / 2
         mx, my = self.Position
         self.Position = (x+mx, y+my) 
-    
+        
     def keypressFunction(self):
         surface.fill((255,120,71))
         self.init(self.titlesArray, surface)
         self.draw()
+        
+        text = 'This is some text that will be wrapped this way we can have a day beginning screen'
+        rect = pygame.Rect((40,40,300,300))
+        font = pygame.font.Font('data/coders_crux/coders_crux.ttf',22)
+        drawText(surface, text, (130,130,130), rect, font, aa=False, bkg=None)
+        
         pygame.display.update()
         print self # Prints "<__main__.OpeningMenu instance at 0x7f5bb2a99d40>" or "<__main__.CreateCharacter instance at 0x7f5bb2a99ef0>"
         while 1:
@@ -226,11 +233,23 @@ class HighScores(Menu):
     
 class DayScreen(Menu):
     def __init__(self):
-        surface = pygame.Surface
-        text = 'This is some text that will be wrapped this way we can have a day beginning screen'
-        rect = pygame.Rect((40,40,300,300))
-        font = pygame.font.Font(None,22)
-        drawText(surface, text, (130,130,130), rect, font, aa=False, bkg=None)
+        
+        pass
+        #~ surface = pygame.Surface((854,480))
+        #~ text = 'This is some text that will be wrapped this way we can have a day beginning screen'
+        #~ rect = pygame.Rect((40,40,300,300))
+        #~ font = pygame.font.Font('data/coders_crux/coders_crux.ttf',22)
+        #~ drawText(surface, text, (130,130,130), rect, font, aa=False, bkg=None)
+        #~ self.menu_name = '...'
+        #~ self.keypressArray = [
+            #~ CreateCharacterManual,
+            #~ CreateCharacterAutomatic,
+        #~ ]
+        #~ self.titlesArray = [
+            #~ 'a',
+            #~ 'b',
+        #~ ]        
+        
         
 class CreateCharacter(Menu):
     """
