@@ -160,25 +160,30 @@ class Menu:
 
 class Character:
     def __init__ (self, create_type):
-        self.attributes = {
-            'name': 'Default',
-            'health': 3,   #0-3
-            'strength': 3, #0-3
-            'gender': 'male',
-            'age': 999
-        }
+        self.name = 'Default'
+        self.health = 3
+        self.strength = 3
+        self.gender = 'male'
+        self.age = 999
+        self.charisma = 3
+        self.intelligence = 3
         if create_type == 'random':
-            self.randomCharacter()
+            self.randomGenerate()
             pass
 
-    def randomCharacter(self):
+    def randomGenerate(self):
         num = random.randint(0,1)
         if num == 0:
-            self.attributes['name'] = 'Bill'
-            self.attributes['strength'] = 2
-            self.attributes['age'] = 86
+            self.name = 'Bill'
+            self.strength = 2
+            self.age = 86
         elif num == 1:
             pass
+    
+    def born(self):
+        print self.name, ' is alive!'
+    def died(self):
+        print self.name, ' is dead!'
 
 class GameState:
     def __init__(self):
