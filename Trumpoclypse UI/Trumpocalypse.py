@@ -3,6 +3,7 @@
 import pygame
 import unittest
 import random
+from TextWrap import *
 
 from pygame.locals import *
 
@@ -223,6 +224,13 @@ class HighScores(Menu):
     def save_high_score():
         pass
     
+class DayScreen(Menu):
+    def __init__(self):
+        surface = pygame.Surface
+        text = 'This is some text that will be wrapped this way we can have a day beginning screen'
+        rect = pygame.Rect((40,40,300,300))
+        font = pygame.font.Font(None,22)
+        drawText(surface, text, (130,130,130), rect, font, aa=False, bkg=None)
         
 class CreateCharacter(Menu):
     """
@@ -251,7 +259,7 @@ class OpeningMenu(Menu):
         self.menu_name = '...'
         self.keypressArray = [
             CreateCharacter,
-            CreateCharacter, # OptionsFunction
+            DayScreen, # OptionsFunction #Using this for testing rn 
             HighScores,
             CreateCharacter, # QuitFunction
         ]
