@@ -1,12 +1,3 @@
-'''
-@author: avalanchy (at) google mail dot com
-@version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14; MS Windows XP SP3
-@date: 2012-04-08
-@license: This document is under GNU GPL v3
-README on the bottom of document.
-@font: from http://www.dafont.com/coders-crux.font
-      more abuot license you can find in data/coders-crux/license.txt
-'''
 import pygame
 import unittest
 import random
@@ -22,6 +13,16 @@ if not pygame.font.get_init():
 
 
 class Menu:
+	'''
+	Original code for the menu class is from:
+		@author: avalanchy (at) google mail dot com
+		@version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14; MS Windows XP SP3
+		@date: 2012-04-08
+		@license: This document is under GNU GPL v3
+		README on the bottom of document.
+		@font: from http://www.dafont.com/coders-crux.font
+			  more abuot license you can find in data/coders-crux/license.txt
+	'''
     lista = []
     by = []
     FontSize = 32
