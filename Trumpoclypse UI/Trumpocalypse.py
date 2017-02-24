@@ -192,7 +192,7 @@ class GameState:
 
 class Game:
     def __init__(self):
-        terms_to_play = 1 # 1, 2, 999
+        self.terms_to_play = 1 # 1, 2, 999
         #self.score = ...  # will be calculated on game over
         
 class CreateCharacterManual(Menu):
