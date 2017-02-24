@@ -226,7 +226,7 @@ class HighScores(Menu):
         
 class CreateCharacter(Menu):
     """
-    Using class inheritance here ought to simplify things... Mostly because there are going to be many, many (:+D) different screens. Basically if all of these screens have a function then the function names will start to get very hard to remember or to make unique. Instead by using a class here it will make it possible to have functions with names like show_box().
+    ...
     """
     def __init__(self):
         # some things in self are in the parent class.
@@ -244,7 +244,7 @@ class CreateCharacter(Menu):
 
 class OpeningMenu(Menu):
     """
-    Using class inheritance here ought to simplify things... Mostly because there are going to be many, many (:+D) different screens. Basically if all of these screens have a function then the function names will start to get very hard to remember or to make unique. Instead by using a class here it will make it possible to have functions with names like show_box().
+    ...
     """
     def __init__(self):
         # some things in self are in the parent class.
