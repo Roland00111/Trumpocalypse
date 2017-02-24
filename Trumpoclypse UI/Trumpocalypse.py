@@ -4,7 +4,6 @@ import pygame
 import unittest
 import random
 from TextWrap import *
-import labels
 
 from pygame.locals import *
 

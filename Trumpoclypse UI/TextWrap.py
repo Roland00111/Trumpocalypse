@@ -2,7 +2,6 @@ import pygame
 from pygame.locals import *
 
 def drawText(surface, text, color, rect, font, aa=False, bkg=None):
-    print surface
     rect = Rect(rect)
     y = rect.top
     lineSpacing = -2
