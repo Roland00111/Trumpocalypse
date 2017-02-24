@@ -188,7 +188,6 @@ class Character:
 
 class GameState:
     def __init__(self):
-        self.character = Character('random')
         self.game = Game()
         # self.current_screen references the 
         # current screen function that is trapped in its events while
@@ -204,6 +203,7 @@ class GameState:
 class Game:
     def __init__(self):
         self.terms_to_play = 1 # 1, 2, 999
+        self.character = Character('random')
         #self.score = ...  # will be calculated on game over
         
 class CreateCharacterManual(Menu):
