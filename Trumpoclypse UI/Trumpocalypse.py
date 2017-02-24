@@ -1,6 +1,3 @@
-# Starting from e.g.
-# http://www.dummies.com/programming/python/how-to-extend-classes-to-make-new-classes-in-python/
-
 '''
 @author: avalanchy (at) google mail dot com
 @version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14; MS Windows XP SP3
