@@ -13,16 +13,16 @@ if not pygame.font.get_init():
 
 
 class Menu:
-	'''
-	Original code for the menu class is from:
-		@author: avalanchy (at) google mail dot com
-		@version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14; MS Windows XP SP3
-		@date: 2012-04-08
-		@license: This document is under GNU GPL v3
-		README on the bottom of document.
-		@font: from http://www.dafont.com/coders-crux.font
-			  more abuot license you can find in data/coders-crux/license.txt
-	'''
+    '''
+    Original code for the menu class is from:
+        @author: avalanchy (at) google mail dot com
+        @version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14; MS Windows XP SP3
+        @date: 2012-04-08
+        @license: This document is under GNU GPL v3
+        README on the bottom of document.
+        @font: from http://www.dafont.com/coders-crux.font
+              more abuot license you can find in data/coders-crux/license.txt
+    '''
     lista = []
     by = []
     FontSize = 32
@@ -153,25 +153,40 @@ class Menu:
 
 class Character:
     def __init__ (self, create_type):
-        self.attributes = {
-			'name': 'Default',
-			'health': 3,   #0-3
-			'strength': 3, #0-3
-			'gender': 'male',
-			'age': 999
-        }
+        self.name = 'Default'
+        self.health = 3
+        self.strength = 3
+        self.gender = 'male'
+        self.age = 999
+        self.charisma = 3
+        self.intelligence = 3
+        #~ self.attributes = {
+            #~ 'name': 'Default',
+            #~ 'health': 3,   #0-3
+            #~ 'strength': 3, #0-3
+            #~ 'gender': 'male',
+            #~ 'age': 999
+        #~ }
         if create_type == 'random': 
-			self.randomCharacter()
-			pass
+            self.randomGenerate()
+            pass
 
-    def randomCharacter(self):
+    def born(self):
+        print self.name, ' is alive!'
+    def died(self):
+        print self.name, ' is dead!'
+        
+    def randomGenerate(self):
         num = random.randint(0,1)
         if num == 0:
-			self.attributes['name'] = 'Bill'
-			self.attributes['strength'] = 2
-			self.attributes['age'] = 86
+            self.name = 'Bill'
+            self.strength = 2
+            self.age = 86
+            #~ self.attributes['name'] = 'Bill'
+            #~ self.attributes['strength'] = 2
+            #~ self.attributes['age'] = 86
         elif num == 1:
-			pass
+            pass
 
 class GameState:
     def __init__(self):
