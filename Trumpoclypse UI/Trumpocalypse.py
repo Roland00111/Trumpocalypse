@@ -126,7 +126,7 @@ class Menu:
         mx, my = self.Position
         self.Position = (x+mx, y+my) 
     
-    def keypressFunction(self, text = False):
+    def keypressFunction(self, text = False, size=22,top=40,boxHeight=300):
         surface.fill((255,120,71))
         if text is False:
             self.init(self.titlesArray, surface)
@@ -134,13 +134,13 @@ class Menu:
         else:
             self.init(self.titlesArray, surface, 200)
             self.draw()
-            x = 300 - self.menu_width / 2 # Calculate the x offset
-            pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, 40, 300, 300), 10) # Draw a box background.
+            x = self.dest_surface.get_rect().centerx - 150#300 - self.menu_width / 2  Calculate the x offset
+            pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, top, 300, boxHeight), 10) # Draw a box background.
             # There is a slight offset from the text and the box.
             # The box needs to contain the text. So the text is
             # going to be slightly smaller. How about 8 pixels?
-            rect = pygame.Rect((x+8,40+8,300-8,300-8)) # left,top,width,height
-            font = pygame.font.Font('data/coders_crux/coders_crux.ttf',22)
+            rect = pygame.Rect((x+8,top+8,300-8,300-8)) # left,top,width,height
+            font = pygame.font.Font('data/coders_crux/coders_crux.ttf',size)
             drawText(surface, text, (130,130,130), rect, font, aa=False, bkg=None)
         
         pygame.display.update()
@@ -163,8 +163,15 @@ class Menu:
                             self.keypressArray[2]()
                             return
                         elif self.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
-                            pygame.display.quit()
-                            sys.exit()
+                            self.keypressArray[3]()
+                            return
+                        elif self.get_position() == 4: #HERE is where you need to add the look to the next screen!!!!!!
+                            self.keypressArray[4]()
+                            return
+                        elif self.get_position() == 5: #HERE is where you need to add the look to the next screen!!!!!!
+                            self.keypressArray[5]()
+                            return
+                        
                     elif event.key == K_ESCAPE:
                         pass
                         #pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
@@ -267,11 +274,9 @@ class HighScores(Menu):
     def __init__(self):
         self.menu_name = '...'
         self.keypressArray = [
-            None,
-            None,
-            CreateCharacter,
-            None,
-            CreateCharecter,
+            OpeningMenu,
+            ResetHighScore,
+            Close,
         ]
 
         high_score_file = open("high_score.txt", "r+")
@@ -280,14 +285,16 @@ class HighScores(Menu):
 
         
         self.titlesArray = [
-            'Highscore:',
-            high_score,
             'Main Menu',
             'Reset Highscore',
             'Quit',
+           
         ]
+        a=str(high_score)
+ 
+        Text="Highscore:"+a
         # Call the parent's keypress handler
-        self.keypressFunction()
+        self.keypressFunction(Text,44,240,44)
     
     def get_high_score():
         high_score_file = open("high_score.txt", "r+")
@@ -297,7 +304,9 @@ class HighScores(Menu):
     def save_high_score():
         pass
 
-    def reset_high_score():
+class ResetHighScore(Menu):
+    def __init__(self):
+        
         high_score_file = open("high_score.txt", "w")
         high_score_file.write(str(0))
         high_score_file.close()
@@ -349,7 +358,7 @@ class OpeningMenu(Menu):
             CreateCharacter,
             DayScreen, # OptionsFunction #Using this for testing rn 
             HighScores,
-            CreateCharacter, # QuitFunction
+            Close, # QuitFunction
         ]
         self.titlesArray = [
             'Start',
@@ -363,6 +372,10 @@ class OpeningMenu(Menu):
     def box(self):
         print 'Box'
 
+class Close(Menu):
+    def __init__(self):
+        pygame.display.quit()
+        sys.exit()
 
 
 if __name__ == "__main__":
