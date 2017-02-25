@@ -148,6 +148,7 @@ class Menu:
         while 1:
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
+                    print(str(event.unicode))
                     if event.key == K_UP:
                         self.draw(-1) #here is the Menu class function
                     elif event.key == K_DOWN:
@@ -197,7 +198,7 @@ class Character:
         self.health = 3
         self.strength = 3
         self.gender = 'male'
-        self.age = 999
+        self.age = 40
         self.charisma = 3
         self.intelligence = 3
         if create_type == 'random':
