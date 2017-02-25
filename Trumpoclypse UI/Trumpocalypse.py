@@ -251,22 +251,6 @@ class DayScreen(Menu):
         ]
         text = 'This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen'
         self.keypressFunction(text) # Pass text
-        pass
-        #~ surface = pygame.Surface((854,480))
-        #~ text = 'This is some text that will be wrapped this way we can have a day beginning screen'
-        #~ rect = pygame.Rect((40,40,300,300))
-        #~ font = pygame.font.Font('data/coders_crux/coders_crux.ttf',22)
-        #~ drawText(surface, text, (130,130,130), rect, font, aa=False, bkg=None)
-        #~ self.menu_name = '...'
-        #~ self.keypressArray = [
-            #~ CreateCharacterManual,
-            #~ CreateCharacterAutomatic,
-        #~ ]
-        #~ self.titlesArray = [
-            #~ 'a',
-            #~ 'b',
-        #~ ]        
-        
         
 class CreateCharacter(Menu):
     """
