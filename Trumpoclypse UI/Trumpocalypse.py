@@ -72,11 +72,11 @@ class Menu:
     def get_position(self):
         return self.PositionSelection
     
-    def init(self, lista, dest_surface):
+    def init(self, lista, dest_surface, height_top=0):
         self.lista = lista
         self.dest_surface = dest_surface
         self.Quanity = len(self.lista)
-        self.CreateStructure()        
+        self.CreateStructure(height_top)        
         
     def draw(self,move=0):
         if move:
@@ -94,7 +94,7 @@ class Menu:
         self.dest_surface.blit(menu,self.Position)
         return self.PositionSelection
 
-    def CreateStructure(self):
+    def CreateStructure(self, height_top):
         shift = 0
         self.menu_height = 0
         self.font = pygame.font.Font(self.font_path, self.FontSize)
@@ -121,18 +121,26 @@ class Menu:
             self.menu_height += height
         x = self.dest_surface.get_rect().centerx - self.menu_width / 2
         y = self.dest_surface.get_rect().centery - self.menu_height / 2
+        y = y + height_top # Add top offset
         mx, my = self.Position
         self.Position = (x+mx, y+my) 
-        
-    def keypressFunction(self):
+    
+    def keypressFunction(self, text = False):
         surface.fill((255,120,71))
-        self.init(self.titlesArray, surface)
-        self.draw()
-        
-        text = 'This is some text that will be wrapped this way we can have a day beginning screen'
-        rect = pygame.Rect((40,40,300,300))
-        font = pygame.font.Font('data/coders_crux/coders_crux.ttf',22)
-        drawText(surface, text, (130,130,130), rect, font, aa=False, bkg=None)
+        if text is False:
+            self.init(self.titlesArray, surface)
+            self.draw()
+        else:
+            self.init(self.titlesArray, surface, 200)
+            self.draw()
+            x = 300 - self.menu_width / 2 # Calculate the x offset
+            pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, 40, 300, 300), 10) # Draw a box background.
+            # There is a slight offset from the text and the box.
+            # The box needs to contain the text. So the text is
+            # going to be slightly smaller. How about 8 pixels?
+            rect = pygame.Rect((x+8,40+8,300-8,300-8)) # left,top,width,height
+            font = pygame.font.Font('data/coders_crux/coders_crux.ttf',22)
+            drawText(surface, text, (130,130,130), rect, font, aa=False, bkg=None)
         
         pygame.display.update()
         print self # Prints "<__main__.OpeningMenu instance at 0x7f5bb2a99d40>" or "<__main__.CreateCharacter instance at 0x7f5bb2a99ef0>"
@@ -232,7 +240,17 @@ class HighScores(Menu):
     
 class DayScreen(Menu):
     def __init__(self):
-        
+        self.menu_name = '...'
+        self.keypressArray = [
+            CreateCharacterManual,
+            CreateCharacterAutomatic,
+        ]
+        self.titlesArray = [
+            'a',
+            'b',
+        ]
+        text = 'This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen'
+        self.keypressFunction(text) # Pass text
         pass
         #~ surface = pygame.Surface((854,480))
         #~ text = 'This is some text that will be wrapped this way we can have a day beginning screen'

@@ -30,10 +30,7 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
             image.set_colorkey(bkg)
         else:
             image = font.render(text[:i], aa, color)
-        
-        print image
-        print surface
- 
+
         surface.blit(image, (rect.left, y))
         y += fontHeight + lineSpacing
  
