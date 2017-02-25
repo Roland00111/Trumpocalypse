@@ -150,9 +150,9 @@ class Menu:
                 if event.type == KEYDOWN:
                     if event.key == K_UP:
                         self.draw(-1) #here is the Menu class function
-                    if event.key == K_DOWN:
+                    elif event.key == K_DOWN:
                         self.draw(1) #here is the Menu class function
-                    if event.key == K_RETURN:
+                    elif event.key == K_RETURN:
                         if self.get_position() == 0: #here is the Menu class function
                             self.keypressArray[0]()
                             return
@@ -165,14 +165,24 @@ class Menu:
                         elif self.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
                             pygame.display.quit()
                             sys.exit()
-                    if event.key == K_ESCAPE:
+                    elif event.key == K_ESCAPE:
                         pass
                         #pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
                         #pygame.display.set_mode((800,600),pygame.FULLSCREEN) #Mess up the screen (at least with my laptop)
-                    pygame.display.update()
                 elif event.type == QUIT:
                     pygame.display.quit()
                     sys.exit()
+                elif event.type == MOUSEBUTTONUP: #pygame.MOUSEBUTTONUP
+                        '''
+                        http://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection
+                        '''
+                        pos = pygame.mouse.get_pos()
+                        (pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()
+                        print 'Mouse click: ', pos, pygame.mouse.get_pressed()
+                        # This will check if a Rect was clicked:
+                        #~ if Rectplace.collidepoint(pos)& pressed1==1:
+                            #~ print("You have opened a chest!")
+                pygame.display.update()
 
 class Character:
     def __init__ (self, create_type):
@@ -186,7 +196,13 @@ class Character:
         if create_type == 'random':
             self.randomGenerate()
             pass
-
+        #~ self.location = self.Location() # This works...
+    #~ # Subclasses of Character? Eg Location...
+    #~ # This works...
+    #~ class Location:
+        #~ def __init__(self):
+            #~ print 'test'
+    
     def randomGenerate(self):
         num = random.randint(0,1)
         if num == 0:
@@ -225,7 +241,23 @@ class Game:
         
 class CreateCharacterManual(Menu):
     def __init__(self):
-        pass
+        '''Eg spend 20 points
+        intelligence, charisma, sanity, cash
+        '''
+        self.menu_name = '...'
+        self.keypressArray = [
+            None,
+            None,
+            None,
+            None,
+            None, # Continue
+        ]
+        self.titlesArray = [
+            'Continue To Location',
+            'Back To Previous Page'
+        ]
+        # Call the parent's keypress handler
+        self.keypressFunction()
     
 class CreateCharacterAutomatic(Menu):
     def __init__(self):
