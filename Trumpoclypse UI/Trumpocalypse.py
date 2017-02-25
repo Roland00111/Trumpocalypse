@@ -265,14 +265,46 @@ class CreateCharacterAutomatic(Menu):
         
 class HighScores(Menu):
     def __init__(self):
-        pass
+        self.menu_name = '...'
+        self.keypressArray = [
+            None,
+            None,
+            CreateCharacter,
+            None,
+            CreateCharecter,
+        ]
+
+        high_score_file = open("high_score.txt", "r+")
+        high_score = high_score_file.read().replace('\n', '')
+        high_score_file.close()
+
+        
+        self.titlesArray = [
+            'Highscore:',
+            high_score,
+            'Main Menu',
+            'Reset Highscore',
+            'Quit',
+        ]
+        # Call the parent's keypress handler
+        self.keypressFunction()
     
     def get_high_score():
-        pass
+        high_score_file = open("high_score.txt", "r+")
+        high_score = high_score_file.read().replace('\n', '')
+        high_score_file.close()
     
     def save_high_score():
         pass
+
+    def reset_high_score():
+        high_score_file = open("high_score.txt", "w")
+        high_score_file.write(str(0))
+        high_score_file.close()
+        HighScores()
     
+
+
 class DayScreen(Menu):
     def __init__(self):
         print game_state
