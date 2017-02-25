@@ -14,6 +14,7 @@ if not pygame.display.get_init():
 if not pygame.font.get_init():
     pygame.font.init()
 
+game_state = None # A global variable to be accessible by all classes throughout the game.
 
 class Menu:
     '''
@@ -202,6 +203,8 @@ class Character:
 
 class GameState:
     def __init__(self):
+        global game_state # Reference the global game state variable to this object.
+        game_state = self
         self.game = Game()
         # self.current_screen references the 
         # current screen function that is trapped in its events while
@@ -240,6 +243,7 @@ class HighScores(Menu):
     
 class DayScreen(Menu):
     def __init__(self):
+        print game_state
         self.menu_name = '...'
         self.keypressArray = [
             CreateCharacterManual,
@@ -318,22 +322,6 @@ if __name__ == "__main__":
     arguments to move selection or nothing. This function will return actual 
     position of selection.
     *get_postion will return actual position of seletion. '''
-    #~ game_state = None
-    game_state = GameState()
+    GameState()
     
     #OpeningMenu()
-    
-    
-    #~ menu = Menu()#necessary
-                #~ #menu.set_colors((255,255,255), (0,0,255), (0,0,0))#optional
-                #~ #menu.set_fontsize(64)#optional
-                #~ #menu.set_font('data/couree.fon')#optional
-                #~ #menu.move_menu(100, 99)#optional
-    #~ menu.init(['Start','Options','Highscore','Quit'], surface)#necessary
-                #~ #menu.move_menu(0, 25)#optional (the actual lettering ie. Start,Options...)
-    #~ menu.draw()#necessary
-    
-    #~ pygame.key.set_repeat(199,69)#(delay,interval)
-    #~ pygame.display.update()
-    
-                #pygame.time.wait(8)
