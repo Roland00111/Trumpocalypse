@@ -323,5 +323,3 @@ if __name__ == "__main__":
     position of selection.
     *get_postion will return actual position of seletion. '''
     GameState()
-    
-    #OpeningMenu()
