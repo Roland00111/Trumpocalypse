@@ -532,8 +532,9 @@ class Menu:
                     scene.key_down(event.key, event.unicode)
                 elif event.type == pygame.KEYUP:
                     scene.key_up(event.key)
-                
+                # Draw the pygameui input boxes
                 surface.blit(scene.draw(), (0, 0))
+                # Draw other menu content
                 if text is False:
                     self.init(self.titlesArray, surface)
                     self.draw()
