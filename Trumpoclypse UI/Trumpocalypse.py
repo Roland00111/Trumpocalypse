@@ -96,7 +96,6 @@ class Control(object):
     def draw(self):
         surf = pygame.surface.Surface(self._frame.size)
         surf.fill(self.bgcolor)
-        print 'children:',self.children
         for child in self.children:
             if child.hidden:
                 continue
@@ -332,8 +331,8 @@ class Menu:
     menu_height = 0
     keypressArray = []
     titlesArray = []
-    custom_fields = [] # To be filled in by menu classes that need buttons, selects, inputs, and number inputs
-    
+    custom_fields = []  # To be filled in by menu classes that need buttons, selects, inputs, and number inputs
+    scene = Scene()     # For utilizing pygameui
     
     
      
@@ -418,8 +417,8 @@ class Menu:
     class CustomField:
         def __init__(self, field_type, field_content, field_label, field_event_hooks):
             '''
-            field_type = string: 'select', 'button', 'input', 'number' (also input but limited to #s)
-            field_content = array of strings: for select; string: button text, input default value, number default value
+            field_type = string: 'list', 'button', 'input', 'number' (also input but limited to #s)
+            field_content = array of strings: for list; string: button text, input default value, number default value
             field_label = string, a label to put beside the field
             field_event_hooks = array, an array of dict events, each dict event has a `type` and `callback_function`
             '''
@@ -427,49 +426,27 @@ class Menu:
             self.field_content      = field_content
             self.field_label        = field_label
             self.field_event_hooks  = field_event_hooks
-            # Append this CustomField class instance to the parent class custom_fields array.
-            Menu.custom_fields.append(self)
-        def draw(self, offset):
-            '''
-            Draw this item onto the page.
-            This happens when the keypressFunction is called.
-            Return value: Return the height of this field. This way the next field may know where to draw itself.
-            '''
-            ###
-            return 0
-            pass
+            # Add a list to the scene with the variable name "lst".
+            # There is probably a callback function here for events.
+            x = List(['Item %s' % str(i) for i in range(20)])
+            x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
+            x.frame.w = x.container.frame.w
+            x.selected_index = 1
+            Menu.scene.add_child(x)
             
     def keypressFunction(self, text = False, size=22,top=40,boxHeight=300):
-        scene = Scene()
-        scene.lst = List(['Item %s' % str(i) for i in range(20)])
-        scene.lst.frame = pygame.Rect(scene.frame.w // 2, 10, 150, 170)
-        scene.lst.frame.w = scene.lst.container.frame.w
-        scene.lst.selected_index = 1
-        scene.add_child(scene.lst)
-        #~ surface.fill((255,120,71))
-        #~ field_offset = 0
-        #~ for field in self.custom_fields:
-            #~ # Draw the custom fields here.
-            #~ # Pass the current height offset into the function.
-            #~ field_offset = field_offset + field.draw(field_offset)
-            #~ pass
-        #~ pygame.display.update()
         #~ print self # Prints "<__main__.OpeningMenu instance at 0x7f5bb2a99d40>" or "<__main__.CreateCharacter instance at 0x7f5bb2a99ef0>"
         while 1:
             for event in pygame.event.get():
                 ########
                 # This would be where the iteration for CustomField events takes place
                 # pseudo-code:
-                # For field in self.custom_fields:
-                #     For event_hook in field.field_event_hooks
-                #         If event.type == event_hook['type']:
-                #             event_hook['callback_function'](event)
+                # for field in self.custom_fields:
+                #    for event_hook, callback_function in field.field_event_hooks.iteritems():
+                #        if event.type == event_hook:
+                #            # Parentheses here execute the function. The event is passed as an argument to the function.
+                #            callback_function(event)
                 ########
-                for field in self.custom_fields:
-                    for event_hook, callback_function in field.field_event_hooks.iteritems():
-                        if event.type == event_hook:
-                            # Parentheses here execute the function. The event is passed as an argument to the function.
-                            callback_function(event)
                 if event.type == KEYDOWN:
                     print(str(event.unicode))
                     if event.key == K_UP:
@@ -515,11 +492,11 @@ class Menu:
                             #~ print("You have opened a chest!")
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     global down_in
-                    down_in = scene.hit(event.pos)
+                    down_in = self.scene.hit(event.pos)
                     if down_in is not None and not isinstance(down_in, Scene):
                         down_in.mouse_down(event.button, down_in.from_window_point(event.pos))
                 elif event.type == pygame.MOUSEBUTTONUP:
-                    up_in = scene.hit(event.pos)
+                    up_in = self.scene.hit(event.pos)
                     if down_in == up_in:
                         down_in.mouse_up(event.button, down_in.from_window_point(event.pos))
                     down_in = None
@@ -529,11 +506,11 @@ class Menu:
                             down_in.parent.child_dragged(down_in, event.rel)
                         down_in.dragged(event.rel)
                 elif event.type == pygame.KEYDOWN:
-                    scene.key_down(event.key, event.unicode)
+                    self.scene.key_down(event.key, event.unicode)
                 elif event.type == pygame.KEYUP:
-                    scene.key_up(event.key)
+                    self.scene.key_up(event.key)
                 # Draw the pygameui input boxes
-                surface.blit(scene.draw(), (0, 0))
+                surface.blit(self.scene.draw(), (0, 0))
                 # Draw other menu content
                 if text is False:
                     self.init(self.titlesArray, surface)
@@ -617,19 +594,18 @@ class CreateCharacterManual(Menu):
             'Continue To Location',
             'Back To Previous Page'
         ]
-        #~ self.CustomField( # Something along the lines of.........
-            #~ 'select',
-            #~ ['Choice 1', 'Choice 2', 'Choice 3'],
-            #~ 'Make a "good" choice:',
-            #~ { MOUSEBUTTONUP: self.select_on_mouseup }
-        #~ )
+        self.CustomField( # Something along the lines of.........
+            'list',
+            ['Choice 1', 'Choice 2', 'Choice 3'],
+            'Make a "good" choice:',
+            { MOUSEBUTTONUP: self.select_on_mouseup }
+        )
         #~ self.CustomField( # Something along the lines of.........
             #~ 'button',
             #~ 'Some Button',
             #~ False,
             #~ { MOUSEBUTTONUP: self.button_on_mouseup }
         #~ )
-        
         # Call the parent's keypress handler
         self.keypressFunction()
     
