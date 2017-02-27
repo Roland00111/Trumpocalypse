@@ -426,14 +426,34 @@ class Menu:
             self.field_content      = field_content
             self.field_label        = field_label
             self.field_event_hooks  = field_event_hooks
-            # Add a list to the scene with the variable name "lst".
+            # Sample: Add a list to the scene.
+            self.list()
+            
+        def list():
             # There is probably a callback function here for events.
+            # There should always be a label passed into CustomField
+            # that is added to the left of each list.
+            # Is it possible to add this with the Label class?
             x = List(['Item %s' % str(i) for i in range(20)])
             x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
             x.frame.w = x.container.frame.w
             x.selected_index = 1
             Menu.scene.add_child(x)
-            
+            ###
+            # Here is where a label for the list() element would go.
+            ###
+        
+        def button():
+            pass
+         
+        def input():
+            pass
+        
+        def number():
+            # What if the number field was instead just a list() field
+            # but with a really small height?
+            pass
+        
     def keypressFunction(self, text = False, size=22,top=40,boxHeight=300):
         #~ print self # Prints "<__main__.OpeningMenu instance at 0x7f5bb2a99d40>" or "<__main__.CreateCharacter instance at 0x7f5bb2a99ef0>"
         while 1:
