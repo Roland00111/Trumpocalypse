@@ -426,10 +426,11 @@ class Menu:
             self.field_content      = field_content
             self.field_label        = field_label
             self.field_event_hooks  = field_event_hooks
-            # Sample: Add a list to the scene.
-            self.list()
+            # Sample: Add a select to the scene.
+            self.select()
             
-        def list(self):
+        def select(self):
+            # This is named select because Python already has a list() function.
             # There is probably a callback function here for events.
             # There could be a label passed into CustomField
             # that is added to the left of each list.
@@ -440,7 +441,7 @@ class Menu:
             x.selected_index = 1
             Menu.scene.add_child(x)
             ###
-            # Here is where a label for the list() element would go.
+            # Here is where a label for the select() element would go.
             ###
         
         def button(self):
