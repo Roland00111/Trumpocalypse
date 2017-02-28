@@ -429,7 +429,7 @@ class Menu:
             # Sample: Add a list to the scene.
             self.list()
             
-        def list():
+        def list(self):
             # There is probably a callback function here for events.
             # There should always be a label passed into CustomField
             # that is added to the left of each list.
@@ -443,13 +443,13 @@ class Menu:
             # Here is where a label for the list() element would go.
             ###
         
-        def button():
+        def button(self):
             pass
          
-        def input():
+        def input(self):
             pass
         
-        def number():
+        def number(self):
             # What if the number field was instead just a list() field
             # but with a really small height?
             pass
