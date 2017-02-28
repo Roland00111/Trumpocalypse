@@ -1,12 +1,10 @@
 
-
 import time
 import pygame
 import unittest
 import random
 from TextWrap import *
 import PygameUI
-#from datetime import timedelta
 
 from pygame.locals import *
 
@@ -290,10 +288,40 @@ class Character:
         num = random.randint(0,1)
         if num == 0:
             self.name = 'Bill'
-            self.strength = 2
-            self.age = 86
+            self.health = 3
+            self.strength = 5
+            self.gender = 'male'
+            self.age = 69
+            self.charisma = 3
+            self.intelligence = 1
+            CharacterDictionary = {'Name':self.name,
+                                   'Health':self.health,
+                                   'Strength':self.strength,
+                                   'Gender':self.gender,
+                                   'Age':self.age,
+                                   'Charisma':self.charisma,
+                                   'Intelligence':self.intelligence
+                                   }
+            global CharacterDictionary
+            
         elif num == 1:
-            pass
+            self.name = 'Linda'
+            self.health = 3
+            self.strength = 1
+            self.gender = 'female'
+            self.age = 40
+            self.charisma = 4
+            self.intelligence = 5
+            CharacterDictionary = {'Name':self.name,
+                                   'Health':self.health,
+                                   'Strength':self.strength,
+                                   'Gender':self.gender,
+                                   'Age':self.age,
+                                   'Charisma':self.charisma,
+                                   'Intelligence':self.intelligence
+                                   }
+            global CharacterDictionary
+            
     
     def born(self):
         print self.name, ' is alive!'
@@ -315,18 +343,18 @@ class GameState:
 
 class Game:
     day_counter = 1
-    current_year = 2017 
+    current_year = 2017
     def __init__(self):
         self.current_day = self.Day()
         self.terms_to_play = 1 # 1, 2, 999
-        self.character = Character('random')
+        #self.character = Character('random') creates charecter on start menu becasue its an error.
         
         #self.score = ...  # will be calculated on game over
 
     class Day:
         def __init__(self):
-            if self.day_counter == 1:
-                self.story_text = "Today is\nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
+            if Game.day_counter == 1:
+                self.story_text = "Today is \nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
                 #Don't put space after \n
             print self.randomDate(str(Game.day_counter) + "/1/" + str(Game.current_year) + " 1:00 AM",
                                   str((Game.day_counter+1)) + "/1/" + str(Game.current_year) + " 1:00 AM",
@@ -355,8 +383,6 @@ class Game:
 
         def randomDate(self,start, end, prop):
             return self.strTimeProp(start, end, '%m/%d/%Y %I:%M %p', prop)
-
-        
         
 class CreateCharacterManual(Menu):
     def __init__(self):
@@ -366,7 +392,7 @@ class CreateCharacterManual(Menu):
         self.menu_name = '...'
         self.keypressArray = [
             Close,
-            Close,
+            CreateCharacter,
         ]
         self.titlesArray = [
             'Continue To Location',
@@ -396,7 +422,30 @@ class CreateCharacterManual(Menu):
     
 class CreateCharacterAutomatic(Menu):
     def __init__(self):
-        pass
+        self.menu_name = '...'
+        self.keypressArray = [
+            StoryScreen,
+            CreateCharacter,
+        ]
+
+        self.titlesArray = [
+            'Begin Your Adventure',
+            'Back To Previous Page',
+           
+        ]
+        self.character = Character('random')
+        
+        name=CharacterDictionary['Name']
+        health=str(CharacterDictionary['Health'])
+        strength=str(CharacterDictionary['Strength'])
+        gender=CharacterDictionary['Gender']
+        age=str(CharacterDictionary['Age'])
+        charisma=str(CharacterDictionary['Charisma'])
+        intelligence=str(CharacterDictionary['Intelligence'])
+ 
+        Text="Name: "+name+" \n"+"Health: "+health+" \n"+"Strength: "+strength+" \n"+"Gender: "+gender+" \n"+"Age: "+age+" \n"+"Charisma: "+charisma+" \n"+"Intelligence: "+intelligence
+        #Text="Today is\nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
+        self.keypressFunction(Text,30)
         
 class HighScores(Menu):
     def __init__(self):
