@@ -312,10 +312,20 @@ class GameState:
         self.current_screen = OpeningMenu() # Start the events while loop.
 
 class Game:
+    day_counter = 1
     def __init__(self):
+        self.current_day = self.Day()
         self.terms_to_play = 1 # 1, 2, 999
         self.character = Character('random')
+        
         #self.score = ...  # will be calculated on game over
+
+    class Day:
+        def __init__(self):
+            self.day_counter = Game.day_counter
+            if self.day_counter == 1:
+                self.story_text = "Today is\nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
+                #Don't put space after \n
         
 class CreateCharacterManual(Menu):
     def __init__(self):
@@ -398,20 +408,22 @@ class ResetHighScore(Menu):
         high_score_file.write(str(0))
         high_score_file.close()
         HighScores()
+class DayScreen(Menu):
+    def __init__(self):
+        print('Hello')
     
-
-
 class StoryScreen(Menu):
     def __init__(self):
-        print game_state
+        print game_state.game.current_day
         self.menu_name = '...'
+        
         self.keypressArray = [
             DayScreen #not implemented yet,
         ]
         self.titlesArray = [
-            'Continue to next day',
+            'Start Day',
         ]
-        text = 'This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen This is some text that will be wrapped this way we can have a day beginning screen'
+        text = game_state.game.current_day.story_text
         self.keypressFunction(text) # Pass text
         
 class CreateCharacter(Menu):
