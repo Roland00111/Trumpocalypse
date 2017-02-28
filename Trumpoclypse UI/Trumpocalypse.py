@@ -450,7 +450,7 @@ class Menu:
             pass
         
         def number(self):
-            # What if the number field was instead just a list() field?
+            # What if the number field is instead just a list() field?
             pass
         
     def keypressFunction(self, text = False, size=22,top=40,boxHeight=300):
