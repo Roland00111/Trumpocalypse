@@ -1,10 +1,12 @@
 
 
+import time
 import pygame
 import unittest
 import random
 from TextWrap import *
 import PygameUI
+#from datetime import timedelta
 
 from pygame.locals import *
 
@@ -313,6 +315,7 @@ class GameState:
 
 class Game:
     day_counter = 1
+    current_year = 2017 
     def __init__(self):
         self.current_day = self.Day()
         self.terms_to_play = 1 # 1, 2, 999
@@ -322,10 +325,38 @@ class Game:
 
     class Day:
         def __init__(self):
-            self.day_counter = Game.day_counter
             if self.day_counter == 1:
                 self.story_text = "Today is\nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
                 #Don't put space after \n
+            print self.randomDate(str(Game.day_counter) + "/1/" + str(Game.current_year) + " 1:00 AM",
+                                  str((Game.day_counter+1)) + "/1/" + str(Game.current_year) + " 1:00 AM",
+                                  random.random())
+                                    #counter % 12, if == 1 incroment Game.current_year....
+            
+        def strTimeProp(self,start, end, format, prop):
+            # Taken From : http://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
+            # By: Tom Alsberg
+            """Get a time at a proportion of a range of two formatted times.
+
+            start and end should be strings specifying times formated in the
+            given format (strftime-style), giving an interval [start, end].
+            prop specifies how a proportion of the interval to be taken after
+            start.  The returned time will be in the specified format.
+            """
+
+            stime = time.mktime(time.strptime(start, format))
+            etime = time.mktime(time.strptime(end, format)) - 1
+            print stime
+            print etime
+            ptime = stime + prop * (etime - stime)
+
+            return time.strftime(format, time.localtime(ptime))
+
+
+        def randomDate(self,start, end, prop):
+            return self.strTimeProp(start, end, '%m/%d/%Y %I:%M %p', prop)
+
+        
         
 class CreateCharacterManual(Menu):
     def __init__(self):
