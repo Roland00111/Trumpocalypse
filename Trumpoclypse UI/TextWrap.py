@@ -8,8 +8,10 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
  
     # get the height of the font
     fontHeight = font.size("Tg")[1]
- 
+
+    print(text)
     while text:
+        #print(text)
         i = 1
  
         # determine if the row of text will be outside our area
@@ -17,19 +19,18 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
             break
  
         # determine maximum width of line
-        while font.size(text[:i])[0] < rect.width and i < len(text):
+        while font.size(text[:i])[0] < rect.width and i < len(text) and text[i] != '\n':
             i += 1
+        temp = text[:i].replace("\n","")
+            #text = text[:i+1].replace("\n","")
+        
+        
  
         # if we've wrapped the text, then adjust the wrap to the last word      
         if i < len(text):
-            j = text.rfind(" ", 0, i) + 1
-            temp = text[:j]
-            if "\n" in temp:
-                i = temp.rfind("\n",0,j) + 1
-            else:
-                i = j
+            i = text.rfind(" ", 0, i) + 1
         # render the line and blit it to the surface
-        temp = text[:i].replace("\n","")
+        
         if bkg:
             image = font.render(temp, 1, color, bkg)
             image.set_colorkey(bkg)
@@ -40,7 +41,11 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
         y += fontHeight + lineSpacing
  
         # remove the text we just blitted
-        
+
         text = text[i:]
- 
-    return text
+        
+##        if text[i+1] == '\n':
+##            text = text[i+1:]
+##        else:
+##            text = text[i:]
+        print(text.replace("\n","|"))
