@@ -431,7 +431,7 @@ class Menu:
             
         def list(self):
             # There is probably a callback function here for events.
-            # There should always be a label passed into CustomField
+            # There could be a label passed into CustomField
             # that is added to the left of each list.
             # Is it possible to add this with the Label class?
             x = List(['Item %s' % str(i) for i in range(20)])
@@ -450,8 +450,7 @@ class Menu:
             pass
         
         def number(self):
-            # What if the number field was instead just a list() field
-            # but with a really small height?
+            # What if the number field was instead just a list() field?
             pass
         
     def keypressFunction(self, text = False, size=22,top=40,boxHeight=300):
