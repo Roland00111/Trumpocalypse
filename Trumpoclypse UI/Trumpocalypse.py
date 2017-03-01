@@ -294,6 +294,7 @@ class Character:
             self.age = 69
             self.charisma = 3
             self.intelligence = 1
+            global CharacterDictionary
             CharacterDictionary = {'Name':self.name,
                                    'Health':self.health,
                                    'Strength':self.strength,
@@ -302,7 +303,7 @@ class Character:
                                    'Charisma':self.charisma,
                                    'Intelligence':self.intelligence
                                    }
-            global CharacterDictionary
+            
             
         elif num == 1:
             self.name = 'Linda'
@@ -312,6 +313,7 @@ class Character:
             self.age = 40
             self.charisma = 4
             self.intelligence = 5
+            global CharacterDictionary
             CharacterDictionary = {'Name':self.name,
                                    'Health':self.health,
                                    'Strength':self.strength,
@@ -320,7 +322,7 @@ class Character:
                                    'Charisma':self.charisma,
                                    'Intelligence':self.intelligence
                                    }
-            global CharacterDictionary
+        
             
     
     def born(self):
