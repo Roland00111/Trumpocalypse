@@ -257,7 +257,7 @@ class Menu:
                 if text is False:
                     self.init(self.titlesArray, surface)
                     self.draw()
-                else:
+                else: 
                     self.init(self.titlesArray, surface, 200)
                     self.draw()
                     x = self.dest_surface.get_rect().centerx - 150#300 - self.menu_width / 2  Calculate the x offset
@@ -350,6 +350,7 @@ class GameState:
 class Game:
     day_counter = 1
     current_year = 2017
+    
     def __init__(self):
         self.current_day = self.Day()
         self.terms_to_play = 1 # 1, 2, 999
@@ -358,10 +359,19 @@ class Game:
         #self.score = ...  # will be calculated on game over
 
     class Day:
+        day_hours = 16
         def __init__(self):
             if Game.day_counter == 1:
                 self.story_text = "Today is \nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
-                #Don't put space after \n
+                #Don't put space after \n, make sure space before \n
+                
+            if Game.day_counter % 12 == 1:
+                Game.current_year = 2018
+            elif Game.day_counter % 12 == 2:
+                Game.current_year = 2019
+                #Above is good for two terms in length.
+                #Keep going like this?? How would we do infinite?
+                
             print self.randomDate(str(Game.day_counter) + "/1/" + str(Game.current_year) + " 1:00 AM",
                                   str((Game.day_counter+1)) + "/1/" + str(Game.current_year) + " 1:00 AM",
                                   random.random())
@@ -496,7 +506,19 @@ class ResetHighScore(Menu):
         HighScores()
 class DayScreen(Menu):
     def __init__(self):
-        print('Hello')
+        self.keypressArray = [
+            StoryScreen #Reset Game.Day.day_hours back to 16
+            #Store -> -2 on the Game.Day.day_hours (maybe)
+            #Work -> -8 on the Game.Day.day_hours
+            
+        ]
+        self.titlesArray = [
+            'Next Day', 
+            'Store', 
+            'Work', 
+        ]
+        text = "Hours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
+        self.keypressFunction(text,44,240,44) #Looks the same as highscore
     
 class StoryScreen(Menu):
     def __init__(self):
