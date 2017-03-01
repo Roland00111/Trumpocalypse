@@ -286,3 +286,54 @@ class List(Control):
             prev.selected = False
         self._selected_index = index
         self.on_selection(self, index)
+
+
+class TextField(Control):
+    prompt = '_'
+    padding = (5, 2)
+
+    def __init__(self):
+        Control.__init__(self)
+        self.label = Label('')
+        self.label.padding = TextField.padding
+        self.add_child(self.label)
+        self.text = ''
+        self.label.text = TextField.prompt
+        self.max_len = None
+        self.secure = False
+        self.border_width = 1
+        self.on_return = Signal()
+        self.on_text_change = Signal()
+
+    def layout(self):
+        Control.layout(self)
+        self.label.frame.size = self.frame.size
+
+    def key_down(self, key, code):
+        if key == pygame.K_BACKSPACE:
+            self.text = self.text[0:-1]
+        elif key == pygame.K_RETURN:
+            self.on_return(self, self.text)
+        else:
+            try:
+                self.text = '%s%s' % (self.text, str(code))
+            except:
+                pass
+            self.on_text_change(self, self.text)
+
+        if self.max_len is not None:
+            self.text = self.text[0:self.max_len]
+
+        if self.secure:
+            self.label.text = '*' * len(self.text)
+
+        self.label.text = self.text + TextField.prompt
+        self.label.size_to_fit()
+
+        if self.label.frame.right > self.frame.w - self.padding[0] * 2:
+            self.label.frame.right = self.frame.w - self.padding[0] * 2
+        else:
+            self.label.frame.left = self.padding[0]
+
+    def mouse_up(self, button, pt):
+	self.scene.focus = self

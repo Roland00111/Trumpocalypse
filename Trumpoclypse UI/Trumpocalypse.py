@@ -157,6 +157,11 @@ class Menu:
             x.frame.w = x.container.frame.w
             x.selected_index = 1
             Menu.scene.add_child(x)
+
+            x = PygameUI.TextField()
+            x.frame = pygame.Rect(10, 50, 150, 30)
+            Menu.scene.add_child(x)
+ 
             ###
             # Here is where a label for the select() element would go.
             ###
