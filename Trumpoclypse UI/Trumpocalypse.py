@@ -17,7 +17,7 @@ if not pygame.font.get_init():
 
 game_state = None # A global variable to be accessible by all classes throughout the game.
 down_in = None # A global variable for pygameui (menu custom fields)
-
+CharacterDictionary = None
 
 
 class Menu:
@@ -286,6 +286,7 @@ class Character:
     
     def randomGenerate(self):
         num = random.randint(0,1)
+        global CharacterDictionary
         if num == 0:
             self.name = 'Bill'
             self.health = 3
@@ -294,7 +295,6 @@ class Character:
             self.age = 69
             self.charisma = 3
             self.intelligence = 1
-            global CharacterDictionary
             CharacterDictionary = {'Name':self.name,
                                    'Health':self.health,
                                    'Strength':self.strength,
@@ -313,7 +313,6 @@ class Character:
             self.age = 40
             self.charisma = 4
             self.intelligence = 5
-            global CharacterDictionary
             CharacterDictionary = {'Name':self.name,
                                    'Health':self.health,
                                    'Strength':self.strength,
