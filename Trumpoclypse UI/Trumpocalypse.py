@@ -262,6 +262,7 @@ class Menu:
                     self.draw()
                     x = self.dest_surface.get_rect().centerx - 150#300 - self.menu_width / 2  Calculate the x offset
                     pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, top, 300, boxHeight), 10) # Draw a box background.
+                                               #Box color
                     # There is a slight offset from the text and the box.
                     # The box needs to contain the text. So the text is
                     # going to be slightly smaller. How about 8 pixels?
@@ -533,8 +534,8 @@ class StoryScreen(Menu):
             'Start Day',
         ]
         text = game_state.game.current_day.story_text
-        self.keypressFunction(text) # Pass text
-        
+        self.keypressFunction(text,32,60,250) # Pass text (text,font size,top allignment,height of box)
+                                    
 class CreateCharacter(Menu):
     """
     ...
