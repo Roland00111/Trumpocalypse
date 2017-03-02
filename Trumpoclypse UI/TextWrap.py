@@ -23,6 +23,10 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
             i += 1
 
         temp = text[:i].replace("\n","")
+        #Becuase we are relpacing it with "" we are essentially repacling a
+        #space with no space moving just that line off by one
+        #but if I replace "" with " " it makes the beginning of a line
+        #start with a space....
 
             
             #text = text[:i+1].replace("\n","")
