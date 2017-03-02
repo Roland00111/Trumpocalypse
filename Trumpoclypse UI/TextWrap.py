@@ -19,9 +19,12 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
             break
  
         # determine maximum width of line
-        while font.size(text[:i])[0] < rect.width and i < len(text) and text[i] != '\n':
+        while font.size(text[:i])[0] < rect.width and i < len(text) and text[i] != "\n":
             i += 1
+
         temp = text[:i].replace("\n","")
+
+            
             #text = text[:i+1].replace("\n","")
         
         
@@ -32,10 +35,11 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
         # render the line and blit it to the surface
         
         if bkg:
-            image = font.render(temp, 1, color, bkg)
+            
+            image = font.render(temp[:i], 1, color, bkg)
             image.set_colorkey(bkg)
         else:
-            image = font.render(temp, aa, color)
+            image = font.render(temp[:i], aa, color)
 
         surface.blit(image, (rect.left, y))
         y += fontHeight + lineSpacing

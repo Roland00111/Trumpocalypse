@@ -360,11 +360,11 @@ class Game:
 
     class Day:
         day_hours = 16
+        inauguration_day = "January 20th" #Only needed to be used once, every other time you can use generated_date find it at the bottom of this class
         def __init__(self):
             if Game.day_counter == 1:
-                self.story_text = "Today is \nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
-                #Don't put space after \n, make sure space before \n
-                
+                self.story_text = "Today is " + Game.Day.inauguration_day + " \ninauguration day, Trump is being sworn into office by Chief Justice John Roberts"
+                #Don't put space after \n               
             if Game.day_counter % 12 == 1:
                 Game.current_year = 2018
             elif Game.day_counter % 12 == 2:
@@ -372,10 +372,11 @@ class Game:
                 #Above is good for two terms in length.
                 #Keep going like this?? How would we do infinite?
                 
-            print self.randomDate(str(Game.day_counter) + "/1/" + str(Game.current_year) + " 1:00 AM",
+            generated_date = self.randomDate(str(Game.day_counter) + "/1/" + str(Game.current_year) + " 1:00 AM",
                                   str((Game.day_counter+1)) + "/1/" + str(Game.current_year) + " 1:00 AM",
                                   random.random())
                                     #counter % 12, if == 1 incroment Game.current_year....
+            print generated_date
             
         def strTimeProp(self,start, end, format, prop):
             # Taken From : http://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
