@@ -257,7 +257,8 @@ class Menu:
                 if text is False:
                     self.init(self.titlesArray, surface)
                     self.draw()
-                else: 
+                else:
+                    #Build in width param
                     self.init(self.titlesArray, surface, 200)
                     self.draw()
                     x = self.dest_surface.get_rect().centerx - 150#300 - self.menu_width / 2  Calculate the x offset
@@ -301,15 +302,8 @@ class Character:
             self.age = 69
             self.charisma = 3
             self.intelligence = 1
-            CharacterDictionary = {'Name':self.name,
-                                   'Health':self.health,
-                                   'Strength':self.strength,
-                                   'Gender':self.gender,
-                                   'Age':self.age,
-                                   'Charisma':self.charisma,
-                                   'Intelligence':self.intelligence
-                                   }
-            
+            self.job = 'Plummer'
+            self.income = 5000
             
         elif num == 1:
             self.name = 'Linda'
@@ -319,15 +313,8 @@ class Character:
             self.age = 40
             self.charisma = 4
             self.intelligence = 5
-            CharacterDictionary = {'Name':self.name,
-                                   'Health':self.health,
-                                   'Strength':self.strength,
-                                   'Gender':self.gender,
-                                   'Age':self.age,
-                                   'Charisma':self.charisma,
-                                   'Intelligence':self.intelligence
-                                   }
-        
+            self.job = 'CEO'
+            self.income = 20000
             
     
     def born(self):
@@ -351,33 +338,41 @@ class GameState:
 class Game:
     day_counter = 1
     current_year = 2017
-    
+    month_counter = 1
     def __init__(self):
-        self.current_day = self.Day()
+        self.current_day = None
         self.terms_to_play = 1 # 1, 2, 999
-        #self.character = Character('random') creates charecter on start menu becasue its an error.
+        self.character = None #Character('random') creates charecter on start menu becasue its an error.
         
         #self.score = ...  # will be calculated on game over
 
     class Day:
         day_hours = 16
+        generated_date = 0
         inauguration_day = "January 20th" #Only needed to be used once, every other time you can use generated_date find it at the bottom of this class
         def __init__(self):
+            print 'New day'
             if Game.day_counter == 1:
-                self.story_text = "Today is " + Game.Day.inauguration_day + " \ninauguration day, Trump is being sworn into office by Chief Justice John Roberts"
-                #Don't put space after \n               
-            if Game.day_counter % 12 == 1:
-                Game.current_year = 2018
-            elif Game.day_counter % 12 == 2:
-                Game.current_year = 2019
-                #Above is good for two terms in length.
-                #Keep going like this?? How would we do infinite?
+                self.story_text = "Today is " + Game.Day.inauguration_day + " \ninauguration day, Trump is being sworn into office by Chief Justice John Roberts"         
+
+            else:
+                self.story_text = 'This is  new Day bros'
+            if Game.day_counter % 12 == 1 and Game.day_counter != 1:
+                Game.current_year += 1
+            if Game.month_counter + 1 == 13:
+                x=1
+            else:
+                x=Game.month_counter + 1
                 
-            generated_date = self.randomDate(str(Game.day_counter) + "/1/" + str(Game.current_year) + " 1:00 AM",
-                                  str((Game.day_counter+1)) + "/1/" + str(Game.current_year) + " 1:00 AM",
+            self.generated_date = self.randomDate(str(Game.month_counter) + "/1/" + str(Game.current_year),
+                                  str((x)) + "/1/" + str(Game.current_year),
                                   random.random())
-                                    #counter % 12, if == 1 incroment Game.current_year....
-            print generated_date
+            #Fix game day counter incromentation 
+            print Game.day_counter
+            if Game.month_counter == 12:
+                Game.month_counter = 0
+            Game.day_counter += 1
+            Game.month_counter += 1
             
         def strTimeProp(self,start, end, format, prop):
             # Taken From : http://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
@@ -400,7 +395,7 @@ class Game:
 
 
         def randomDate(self,start, end, prop):
-            return self.strTimeProp(start, end, '%m/%d/%Y %I:%M %p', prop)
+            return self.strTimeProp(start, end, '%m/%d/%Y', prop)
         
 class CreateCharacterManual(Menu):
     def __init__(self):
@@ -451,17 +446,21 @@ class CreateCharacterAutomatic(Menu):
             'Back To Previous Page',
            
         ]
-        self.character = Character('random')
+        game_state.game.character = Character('random')
         
-        name=CharacterDictionary['Name']
-        health=str(CharacterDictionary['Health'])
-        strength=str(CharacterDictionary['Strength'])
-        gender=CharacterDictionary['Gender']
-        age=str(CharacterDictionary['Age'])
-        charisma=str(CharacterDictionary['Charisma'])
-        intelligence=str(CharacterDictionary['Intelligence'])
+        name= game_state.game.character.name
+        health=str(game_state.game.character.health)
+        strength=str(game_state.game.character.strength)
+        gender=game_state.game.character.gender
+        age=str(game_state.game.character.age)
+        charisma=str(game_state.game.character.charisma)
+        intelligence=str(game_state.game.character.intelligence)
+        job = game_state.game.character.job
+        income = str(game_state.game.character.income)
  
-        Text="Name: "+name+" \n"+"Health: "+health+" \n"+"Strength: "+strength+" \n"+"Gender: "+gender+" \n"+"Age: "+age+" \n"+"Charisma: "+charisma+" \n"+"Intelligence: "+intelligence
+        Text=("Name: "+name+" \n"+"Health: "+health+" \n"+"Strength: "+strength+" \n"
+              +"Gender: "+gender+" \n"+"Age: "+age+" \n"+"Charisma: "+charisma+" \n"+"Intelligence: "
+              +intelligence + " \n" + "Job: " +job+ " \n" + "Income: $"+income)
         #Text="Today is\nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
         self.keypressFunction(Text,30)
         
@@ -508,6 +507,27 @@ class ResetHighScore(Menu):
         HighScores()
 class DayScreen(Menu):
     def __init__(self):
+        x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
+                           'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
+                           'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income)])
+        x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 0
+        x.container.draggable = False #Change to True is needs to be draggable 
+        Menu.scene.add_child(x)
+
+        x = PygameUI.List(['Food: ','Cash: ','Gardens: ', 'Lottery Tickets: ','Seeds: ','Gasonline: '])
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 0
+        x.container.draggable = False #Change to True is needs to be draggable 
+        Menu.scene.add_child(x)
+        for child in x.container.children:
+            #print child
+            child.selected_bgcolor = (255,120,71)
+            
         self.keypressArray = [
             StoryScreen #Reset Game.Day.day_hours back to 16
             #Store -> -2 on the Game.Day.day_hours (maybe)
@@ -519,12 +539,13 @@ class DayScreen(Menu):
             'Store', 
             'Work', 
         ]
-        text = "Hours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
-        self.keypressFunction(text,44,240,44) #Looks the same as highscore
+        text = "Day is: " + str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
+        self.keypressFunction(text,34,20,300) #Looks the same as highscore
     
 class StoryScreen(Menu):
     def __init__(self):
         print game_state.game.current_day
+        game_state.game.current_day = Game.Day()
         self.menu_name = '...'
         
         self.keypressArray = [

@@ -196,8 +196,9 @@ class Label(Control):
     selected_bgcolor = (200, 224, 200)
     bgcolor = Control.bgcolor
 
-    def __init__(self, text=None):
+    def __init__(self, text=None,label_bgcolor = (0,0,0)):
         Control.__init__(self)
+        Label.selected_bgcolor = label_bgcolor
         self.interactive = False
         self.font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 16)
         self.text = text
@@ -241,7 +242,7 @@ class List(Control):
         self.container.on_mouse_up.add(self.container_up)
         y, w = 0, 0
         for text in labels:
-            lbl = Label(text)
+            lbl = Label(text,(255,120,71))
             lbl.frame.topleft = (0, y)
             size = lbl.size_of(text)
             y += size[1]
@@ -294,7 +295,7 @@ class TextField(Control):
 
     def __init__(self):
         Control.__init__(self)
-        self.label = Label('')
+        self.label = Label('',(255,120,71))
         self.label.padding = TextField.padding
         self.add_child(self.label)
         self.text = ''
