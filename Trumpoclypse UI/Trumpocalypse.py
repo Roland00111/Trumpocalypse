@@ -398,6 +398,32 @@ class Inventory:
         return False
         
 class Item:
+    '''
+    self.num_items = 1 # ???
+    There is 1 car in the inventory with e.g. 100 uses.
+    There is 1 food in the inventory with e.g. 10 uses.
+    
+    Purchase and resale amounts:
+    1) Remaining Uses * Resale Cost
+        E.g. Sell Food with 4 uses left and resale cost=8.
+        So 4 * 8 = $32.
+    2) Remaining Uses * Purchase Cost
+        E.g. Buy Food with 4 uses left and purchase cost=10.
+        So 4 * 10 = $40.
+        
+    Each purchase of an item just adds to this amount.
+        
+    What is the inventory quick display (right side bar)?
+        How about...
+        E.g. Any number of new cars will shows up as "NewCar: 100" (for one car)
+            ...or "NewCar: 200" (for two cars)
+            ...or "NewCar: 300" (for three cars)
+            ... and so on
+        E.g. One food with 100 uses shows as "Food: 100"
+            ...or "Food: 200" (two purchases of food)
+            ...or "Food: 300" (three purchases of food)
+            ... and so on
+    ''' 
     def __init__(self, item_type = None):
         self.item_type = None
         self.purchase_cost = 1
