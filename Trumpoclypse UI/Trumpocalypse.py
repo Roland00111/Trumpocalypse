@@ -381,10 +381,8 @@ class Inventory:
     def update_or_add_item(self, new_item, item_type):
         existing_item = self.contains_item(item_type)
         if existing_item != False:
-            # Add stats...
-            existing_item.purchase_cost     += new_item.purchase_cost
-            existing_item.resale_cost       += new_item.resale_cost
-            existing_item.remaining_uses    += new_item.remaining_uses
+            # Add to the remaining uses.
+            existing_item.remaining_uses += new_item.remaining_uses
         else:
             self.items.append( new_item )
     def contains_item(self, item_type):
@@ -399,27 +397,27 @@ class Inventory:
         
 class Item:
     '''
-    self.num_items = 1 # ???
-    There is 1 car in the inventory with e.g. 100 uses.
-    There is 1 food in the inventory with e.g. 10 uses.
+    Example items:
+        There is a NewCar item in the inventory with e.g. 100 uses.
+        There is a Food in the inventory with e.g. 10 uses.
     
     Purchase and resale amounts:
-    1) Remaining Uses * Resale Cost
-        E.g. Sell Food with 4 uses left and resale cost=8.
-        So 4 * 8 = $32.
-    2) Remaining Uses * Purchase Cost
+    1) Buy: Remaining Uses * Purchase Cost
         E.g. Buy Food with 4 uses left and purchase cost=10.
         So 4 * 10 = $40.
+    2) Sell: Remaining Uses * Resale Cost
+        E.g. Sell Food with 4 uses left and resale cost=8.
+        So 4 * 8 = $32.
+    
+    Each purchase of an item just adds to the total remaining_uses.
         
-    Each purchase of an item just adds to this amount.
-        
-    What is the inventory quick display (right side bar)?
+    Inventory quick display (right side bar).
         How about...
-        E.g. Any number of new cars will shows up as "NewCar: 100" (for one car)
+        Any number of new cars will shows as "NewCar: 100" (for one car)
             ...or "NewCar: 200" (for two cars)
             ...or "NewCar: 300" (for three cars)
             ... and so on
-        E.g. One food with 100 uses shows as "Food: 100"
+        One food with 100 uses shows as "Food: 100"
             ...or "Food: 200" (two purchases of food)
             ...or "Food: 300" (three purchases of food)
             ... and so on
@@ -465,7 +463,7 @@ class Item:
             self.item_type = 'OldCar'
             self.purchase_cost = 10000
             self.resale_cost = 4000
-            self.remaining_uses = 20
+            self.remaining_uses = 60
         elif item_type == 'UrbanHouse': # Houses decline in their number of uses?
             self.item_type = 'UrbanHouse'
             self.purchase_cost = 40000
