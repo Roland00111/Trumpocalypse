@@ -339,6 +339,7 @@ class Game:
     day_counter = 1
     current_year = 2017
     month_counter = 1
+    month_day = 1
     def __init__(self):
         self.current_day = None
         self.terms_to_play = 1 # 1, 2, 999
@@ -354,18 +355,21 @@ class Game:
             print 'New day'
             if Game.day_counter == 1:
                 self.story_text = "Today is " + Game.Day.inauguration_day + " \ninauguration day, Trump is being sworn into office by Chief Justice John Roberts"         
-
             else:
                 self.story_text = 'This is  new Day bros'
-            if Game.day_counter % 12 == 1 and Game.day_counter != 1:
+                
+            if Game.month_counter % 12 == 1 and Game.day_counter != 1:
                 Game.current_year += 1
             if Game.month_counter + 1 == 13:
-                x=1
+                x=12
+                month_day = 31
             else:
                 x=Game.month_counter + 1
+                month_day = 1 #Needed because when Game.month_counter == 12 it would go back a year, because it would be 12/?/2017 to 1/?/2017 and get confused
+                              # This implementation of month_day works as I tested it   
                 
             self.generated_date = self.randomDate(str(Game.month_counter) + "/1/" + str(Game.current_year),
-                                  str((x)) + "/1/" + str(Game.current_year),
+                                  str((x)) + "/" + str(month_day) +"/" + str(Game.current_year),
                                   random.random())
             #Fix game day counter incromentation 
             print Game.day_counter
@@ -373,6 +377,8 @@ class Game:
                 Game.month_counter = 0
             Game.day_counter += 1
             Game.month_counter += 1
+            
+            
             
         def strTimeProp(self,start, end, format, prop):
             # Taken From : http://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
@@ -397,14 +403,14 @@ class Game:
         def randomDate(self,start, end, prop):
             return self.strTimeProp(start, end, '%m/%d/%Y', prop)
         
-class CreateCharacterManual(Menu):
+class CreateCharacterManual(Menu): #Not in effect yet
     def __init__(self):
         '''Eg spend 20 points
         intelligence, charisma, sanity, cash
         '''
         self.menu_name = '...'
         self.keypressArray = [
-            Close,
+            StoryScreen,
             CreateCharacter,
         ]
         self.titlesArray = [
@@ -462,7 +468,8 @@ class CreateCharacterAutomatic(Menu):
               +"Gender: "+gender+" \n"+"Age: "+age+" \n"+"Charisma: "+charisma+" \n"+"Intelligence: "
               +intelligence + " \n" + "Job: " +job+ " \n" + "Income: $"+income)
         #Text="Today is\nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
-        self.keypressFunction(Text,30)
+        self.keypressFunction(Text,32)
+        #For some reason font size 32 looks a lot better than 30 or 34
         
 class HighScores(Menu):
     def __init__(self):
@@ -540,7 +547,8 @@ class DayScreen(Menu):
             'Work', 
         ]
         text = "Day is: " + str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
-        self.keypressFunction(text,34,20,300) #Looks the same as highscore
+        self.keypressFunction(text,32,20,300) #Looks the same as highscore
+        #For some reason font size 32 looks a lot better than 30 or 34
     
 class StoryScreen(Menu):
     def __init__(self):
@@ -556,7 +564,7 @@ class StoryScreen(Menu):
         ]
         text = game_state.game.current_day.story_text
         self.keypressFunction(text,32,60,250) # Pass text (text,font size,top allignment,height of box)
-                                    
+        #For some reason font size 32 looks a lot better than 30 or 34                            
 class CreateCharacter(Menu):
     """
     ...
