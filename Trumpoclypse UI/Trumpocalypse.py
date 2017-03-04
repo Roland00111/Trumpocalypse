@@ -281,6 +281,7 @@ class Character:
         self.age = 40
         self.charisma = 3
         self.intelligence = 3
+        self.inventory = Inventory() # Give character an inventory.
         if create_type == 'random':
             self.randomGenerate()
             pass
@@ -304,6 +305,13 @@ class Character:
             self.intelligence = 1
             self.job = 'Plummer'
             self.income = 5000
+            # Add some random items.
+            self.inventory.add_item()
+            self.inventory.add_item()
+            self.inventory.add_item()
+            self.inventory.add_item()
+            # Location
+            self.location = Location()
             
         elif num == 1:
             self.name = 'Linda'
@@ -315,12 +323,138 @@ class Character:
             self.intelligence = 5
             self.job = 'CEO'
             self.income = 20000
-            
+            # Add some random items.
+            self.inventory.add_item()
+            self.inventory.add_item()
+            self.inventory.add_item()
+            self.inventory.add_item()
+            # Location
+            self.location = Location()
     
     def born(self):
         print self.name, ' is alive!'
     def died(self):
         print self.name, ' is dead!'
+
+class Location:
+    '''https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States'''
+    def __init__(self):
+        self.environment_bonus = 1
+        self.all_locations = [
+            'Middle Atlantic',
+            'New England',
+            'South Atlantic',
+            'East South Central',
+            'East North Central',
+            'West North Central',
+            'West South Central',
+            'Mountain',
+            'Pacific'
+        ]
+        # Default location is random.
+        self.name = self.all_locations[ random.randint(0,8) ] # Any of 0,1,2,3,4,5,6,7,8
+        
+class Inventory:
+    def __init__(self):
+        self.max_items = 999
+        self.items = [] # Array of items.
+        self.all_choices = [
+            'Food','Pie','Garden','LotteryTicket','NewCar','OldCar',
+            'UrbanHouse','SuburbanHouse','RuralHouse'
+        ]
+    def num_items(self): # Returns the number of items in the inventory
+        return len(self.items)
+    def add_item(self, item_type = None):
+        # Add an item to this inventory.
+        # If item_type is None then add a random item.
+        # If item_type is not None then add item of this type.
+        # Does the item already exist in the inventory?
+        # If so, then add the item's stats.
+        if item_type != None:
+            new_item = Item(item_type)
+            self.update_or_add_item(new_item, item_type)
+        else: # A random item.
+            n = random.randint(0, len(self.all_choices)-1)
+            rand_item = Item( self.all_choices[n] )
+            self.update_or_add_item(rand_item, item_type)
+            #~ self.items.append( Item(item_type) )
+    def update_or_add_item(self, new_item, item_type):
+        existing_item = self.contains_item(item_type)
+        if existing_item != False:
+            # Add stats...
+            existing_item.purchase_cost     += new_item.purchase_cost
+            existing_item.resale_cost       += new_item.resale_cost
+            existing_item.remaining_uses    += new_item.remaining_uses
+        else:
+            self.items.append( new_item )
+    def contains_item(self, item_type):
+        # Returns the item in the inventory if it exists.
+        # Otherwise returns False.
+        # This takes O(n) time as it searches entire list.
+        for existing_item in self.items:
+            if existing_item.item_type == item_type:
+                return existing_item
+        # Still here? Then the item is not in the inventory.
+        return False
+        
+class Item:
+    def __init__(self, item_type = None):
+        self.item_type = None
+        self.purchase_cost = 1
+        self.resale_cost = 0
+        self.remaining_uses = 1
+        self.set_item(item_type)
+        
+    def use_item(self, item_type):
+        '''This will somehow use the item...'''
+        pass
+        
+    def set_item(self, item_type):
+        if item_type == 'Food':
+            self.item_type = 'Food'
+            self.purchase_cost = 10
+            self.resale_cost = 8
+            self.remaining_uses = 10
+        elif item_type == 'Pie':
+            self.item_type = 'Pie'
+            self.purchase_cost = 1
+            self.resale_cost = 0
+            self.remaining_uses = 1
+        elif item_type == 'Garden':
+            self.item_type = 'Garden'
+            self.purchase_cost = 200
+            self.resale_cost = 100
+            self.remaining_uses = 10
+        elif item_type == 'LotteryTicket':
+            self.item_type = 'LotteryTicket'
+            self.purchase_cost = 10
+            self.resale_cost = 4
+            self.remaining_uses = 1
+        elif item_type == 'NewCar':
+            self.item_type = 'NewCar'
+            self.purchase_cost = 20000
+            self.resale_cost = 10000
+            self.remaining_uses = 100
+        elif item_type == 'OldCar':
+            self.item_type = 'OldCar'
+            self.purchase_cost = 10000
+            self.resale_cost = 4000
+            self.remaining_uses = 20
+        elif item_type == 'UrbanHouse': # Houses decline in their number of uses?
+            self.item_type = 'UrbanHouse'
+            self.purchase_cost = 40000
+            self.resale_cost = 40000
+            self.remaining_uses = 100
+        elif item_type == 'SuburbanHouse':
+            self.item_type = 'SuburbanHouse'
+            self.purchase_cost = 20000
+            self.resale_cost = 20000
+            self.remaining_uses = 50
+        elif item_type == 'RuralHouse':
+            self.item_type = 'RuralHouse'
+            self.purchase_cost = 10000
+            self.resale_cost = 10000
+            self.remaining_uses = 25
 
 class GameState:
     def __init__(self):
@@ -344,7 +478,6 @@ class Game:
         self.current_day = None
         self.terms_to_play = 1 # 1, 2, 999
         self.character = None #Character('random') creates charecter on start menu becasue its an error.
-        
         #self.score = ...  # will be calculated on game over
 
     class Day:
