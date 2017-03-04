@@ -455,6 +455,11 @@ class Item:
             self.purchase_cost = 10000
             self.resale_cost = 10000
             self.remaining_uses = 25
+        else:
+            # The item does not exist which must be a bug.
+            # Raise an error.
+            raise TypeError
+            
 
 class GameState:
     def __init__(self):
