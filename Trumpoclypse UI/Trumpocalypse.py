@@ -435,48 +435,40 @@ class Item:
         pass
         
     def set_item(self, item_type):
+        self.item_type = item_type
         if item_type == 'Food':
-            self.item_type = 'Food'
             self.purchase_cost = 10
             self.resale_cost = 8
             self.remaining_uses = 10
         elif item_type == 'Pie':
-            self.item_type = 'Pie'
             self.purchase_cost = 1
             self.resale_cost = 0
             self.remaining_uses = 1
         elif item_type == 'Garden':
-            self.item_type = 'Garden'
             self.purchase_cost = 200
             self.resale_cost = 100
             self.remaining_uses = 10
         elif item_type == 'LotteryTicket':
-            self.item_type = 'LotteryTicket'
             self.purchase_cost = 10
             self.resale_cost = 4
             self.remaining_uses = 1
         elif item_type == 'NewCar':
-            self.item_type = 'NewCar'
             self.purchase_cost = 20000
             self.resale_cost = 10000
             self.remaining_uses = 100
         elif item_type == 'OldCar':
-            self.item_type = 'OldCar'
             self.purchase_cost = 10000
             self.resale_cost = 4000
             self.remaining_uses = 60
-        elif item_type == 'UrbanHouse': # Houses decline in their number of uses?
-            self.item_type = 'UrbanHouse'
+        elif item_type == 'UrbanHouse':
             self.purchase_cost = 40000
             self.resale_cost = 40000
             self.remaining_uses = 100
         elif item_type == 'SuburbanHouse':
-            self.item_type = 'SuburbanHouse'
             self.purchase_cost = 20000
             self.resale_cost = 20000
             self.remaining_uses = 50
         elif item_type == 'RuralHouse':
-            self.item_type = 'RuralHouse'
             self.purchase_cost = 10000
             self.resale_cost = 10000
             self.remaining_uses = 20
