@@ -362,7 +362,8 @@ class Inventory:
             'Food','Pie','Garden','LotteryTicket','NewCar','OldCar',
             'UrbanHouse','SuburbanHouse','RuralHouse'
         ]
-    def num_items(self): # Returns the number of items in the inventory
+    def num_items(self):
+        # Returns the number of items in the inventory
         return len(self.items)
     def add_item(self, item_type = None):
         # Add an item to this inventory.
@@ -373,11 +374,11 @@ class Inventory:
         if item_type != None:
             new_item = Item(item_type)
             self.update_or_add_item(new_item, item_type)
-        else: # A random item.
+        else:
+            # A random item.
             n = random.randint(0, len(self.all_choices)-1)
             rand_item = Item( self.all_choices[n] )
             self.update_or_add_item(rand_item, item_type)
-            #~ self.items.append( Item(item_type) )
     def update_or_add_item(self, new_item, item_type):
         existing_item = self.contains_item(item_type)
         if existing_item != False:
