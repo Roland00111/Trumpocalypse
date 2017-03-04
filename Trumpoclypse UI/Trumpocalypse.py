@@ -478,7 +478,7 @@ class Item:
             self.item_type = 'RuralHouse'
             self.purchase_cost = 10000
             self.resale_cost = 10000
-            self.remaining_uses = 25
+            self.remaining_uses = 20
         else:
             # The item does not exist which must be a bug.
             # Raise an error.
