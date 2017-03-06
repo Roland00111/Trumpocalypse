@@ -5,6 +5,7 @@ import unittest
 import random
 from TextWrap import *
 import PygameUI
+import gc
 
 from pygame.locals import *
 
@@ -534,7 +535,6 @@ class Game:
             Game.month_counter += 1
             
             
-            
         def strTimeProp(self,start, end, format, prop):
             # Taken From : http://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
             # By: Tom Alsberg
@@ -709,6 +709,7 @@ class StoryScreen(Menu):
     def __init__(self):
         print game_state.game.current_day
         game_state.game.current_day = Game.Day()
+        gc.collect()
         self.menu_name = '...'
         
         self.keypressArray = [
