@@ -566,6 +566,7 @@ class Game:
         
 class CreateCharacterManual(Menu): #Not in effect yet
     def __init__(self):
+        Menu.__init__(self)
         #~ previous_menu.__del__() # Close previous menu
         '''Eg spend 20 points
         intelligence, charisma, sanity, cash
