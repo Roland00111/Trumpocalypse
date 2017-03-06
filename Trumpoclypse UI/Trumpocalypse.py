@@ -54,7 +54,13 @@ class Menu:
     
     
      
-    
+    def __init__(self):#, previous_menu = None):
+        print 'init...'
+        #~ print 'pm:',previous_menu
+        #~ if previous_menu != None:
+            #~ previous_menu.__del__() # End it.
+        #~ pass
+        
     class Field:
         test = ''
         Field = pygame.Surface
@@ -176,10 +182,15 @@ class Menu:
         def number(self):
             # What if the number field is instead just a list() field?
             pass
+    
+    def __del__(self):
+        print "__del__", self
         
     def keypressFunction(self, text = False, size=22,top=40,boxHeight=300):
         #~ print self # Prints "<__main__.OpeningMenu instance at 0x7f5bb2a99d40>" or "<__main__.CreateCharacter instance at 0x7f5bb2a99ef0>"
-        while 1:
+        event_loop = True
+        chosen_position = None
+        while event_loop:
             for event in pygame.event.get():
                 ########
                 # This would be where the iteration for CustomField events takes place
@@ -197,25 +208,9 @@ class Menu:
                     elif event.key == K_DOWN:
                         self.draw(1) #here is the Menu class function
                     elif event.key == K_RETURN:
-                        if self.get_position() == 0: #here is the Menu class function
-                            self.keypressArray[0]()
-                            return
-                        elif self.get_position() == 1:
-                            self.keypressArray[1]()
-                            return
-                        elif self.get_position() == 2:
-                            self.keypressArray[2]()
-                            return
-                        elif self.get_position() == 3: #HERE is where you need to add the look to the next screen!!!!!!
-                            self.keypressArray[3]()
-                            return
-                        elif self.get_position() == 4: #HERE is where you need to add the look to the next screen!!!!!!
-                            self.keypressArray[4]()
-                            return
-                        elif self.get_position() == 5: #HERE is where you need to add the look to the next screen!!!!!!
-                            self.keypressArray[5]()
-                            return
-                        
+                        event_loop = False
+                        chosen_position = self.get_position()
+                        break
                     elif event.key == K_ESCAPE:
                         pass
                         #pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
@@ -272,6 +267,12 @@ class Menu:
                     font = pygame.font.Font('data/coders_crux/coders_crux.ttf',size)
                     drawText(surface, text, (130,130,130), rect, font, aa=False, bkg=None)
                 pygame.display.update()
+        if chosen_position is None:
+            # There is no chosen position.
+            # So code is done for now.
+            return
+        # There is a chosen position.
+        self.keypressArray[chosen_position]()
 
 class Character:
     def __init__ (self, create_type):
@@ -490,6 +491,7 @@ class GameState:
         # then self.current_screen references 
         # the currently running CreateCharacter() class.
         # ...maybe.
+        #~ self.current_screen = None
         self.current_screen = OpeningMenu() # Start the events while loop.
 
 class Game:
@@ -498,10 +500,13 @@ class Game:
     month_counter = 1
     month_day = 1
     def __init__(self):
-        self.current_day = None
+        self.current_day = None #self.Day()
         self.terms_to_play = 1 # 1, 2, 999
         self.character = None #Character('random') creates charecter on start menu becasue its an error.
+        self.character = Character('random')
         #self.score = ...  # will be calculated on game over
+        #~ for i in range(0, 100):
+            #~ DayScreen()
 
     class Day:
         day_hours = 16
@@ -513,7 +518,8 @@ class Game:
                 self.story_text = "Today is " + Game.Day.inauguration_day + " \ninauguration day, Trump is being sworn into office by Chief Justice John Roberts"         
             else:
                 self.story_text = 'This is  new Day bros'
-                
+            
+            #return # does not fix...
             if Game.month_counter % 12 == 1 and Game.day_counter != 1:
                 Game.current_year += 1
             if Game.month_counter + 1 == 13:
@@ -560,6 +566,7 @@ class Game:
         
 class CreateCharacterManual(Menu): #Not in effect yet
     def __init__(self):
+        #~ previous_menu.__del__() # Close previous menu
         '''Eg spend 20 points
         intelligence, charisma, sanity, cash
         '''
@@ -596,6 +603,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
     
 class CreateCharacterAutomatic(Menu):
     def __init__(self):
+        #~ previous_menu.__del__() # Close previous menu
         self.menu_name = '...'
         self.keypressArray = [
             StoryScreen,
@@ -628,6 +636,7 @@ class CreateCharacterAutomatic(Menu):
         
 class HighScores(Menu):
     def __init__(self):
+        #~ previous_menu.__del__() # Close previous menu
         self.menu_name = '...'
         self.keypressArray = [
             OpeningMenu,
@@ -667,8 +676,12 @@ class ResetHighScore(Menu):
         high_score_file.write(str(0))
         high_score_file.close()
         HighScores()
+
 class DayScreen(Menu):
     def __init__(self):
+        #~ previous_menu.__del__() # Close previous menu
+        #~ super(self.__class__, self).__init__()
+        
         x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
                            'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
                            'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income)])
@@ -679,7 +692,7 @@ class DayScreen(Menu):
         x.container.draggable = False #Change to True is needs to be draggable 
         Menu.scene.add_child(x)
 
-        x = PygameUI.List(['Food: ','Cash: ','Gardens: ', 'Lottery Tickets: ','Seeds: ','Gasonline: '])
+        x = PygameUI.List(['Food: ','Cash: ','Gardens: ', 'Lottery Tickets: ','Seeds: ','Gasoline: '])
         x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
@@ -691,9 +704,9 @@ class DayScreen(Menu):
             child.selected_bgcolor = (255,120,71)
             
         self.keypressArray = [
-            StoryScreen #Reset Game.Day.day_hours back to 16
-            #Store -> -2 on the Game.Day.day_hours (maybe)
-            #Work -> -8 on the Game.Day.day_hours
+            StoryScreen, #Reset Game.Day.day_hours back to 16
+            StoryScreen,#Store -> -2 on the Game.Day.day_hours (maybe)
+            StoryScreen #Work -> -8 on the Game.Day.day_hours
             
         ]
         self.titlesArray = [
@@ -701,15 +714,17 @@ class DayScreen(Menu):
             'Store', 
             'Work', 
         ]
-        text = "Day is: " + str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
+        text = "Day is: " #+ str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
         self.keypressFunction(text,32,20,300) #Looks the same as highscore
         #For some reason font size 32 looks a lot better than 30 or 34
-    
+
 class StoryScreen(Menu):
     def __init__(self):
+        #~ previous_menu.__del__() # Close previous menu
+        
         print game_state.game.current_day
-        game_state.game.current_day = Game.Day()
-        gc.collect()
+        #~ game_state.game.current_day.__init__() # = game_state.game.Day() #Game.Day()
+        #~ gc.collect()
         self.menu_name = '...'
         
         self.keypressArray = [
@@ -718,14 +733,16 @@ class StoryScreen(Menu):
         self.titlesArray = [
             'Start Day',
         ]
-        text = game_state.game.current_day.story_text
+        text = 'x'#game_state.game.current_day.story_text
         self.keypressFunction(text,32,60,250) # Pass text (text,font size,top allignment,height of box)
-        #For some reason font size 32 looks a lot better than 30 or 34                            
+        #For some reason font size 32 looks a lot better than 30 or 34 
+
 class CreateCharacter(Menu):
     """
     ...
     """
     def __init__(self):
+        #~ previous_menu.__del__() # Close previous menu
         # some things in self are in the parent class.
         self.menu_name = '...'
         self.keypressArray = [
@@ -769,6 +786,9 @@ class Close(Menu):
         pygame.display.quit()
         sys.exit()
 
+class TestGame(unittest.TestCase):
+    def test1(self):
+        print 'xxx'
 
 if __name__ == "__main__":
     import sys
@@ -792,3 +812,4 @@ if __name__ == "__main__":
     position of selection.
     *get_postion will return actual position of seletion. '''
     GameState()
+    unittest.main()
