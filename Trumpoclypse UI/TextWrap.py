@@ -9,7 +9,6 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
     # get the height of the font
     fontHeight = font.size("Tg")[1]
 
-    print(text)
     while text:
         #print(text)
         i = 1
@@ -56,4 +55,3 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
 ##            text = text[i+1:]
 ##        else:
 ##            text = text[i:]
-        print(text.replace("\n","|"))
