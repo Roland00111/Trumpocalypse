@@ -604,6 +604,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
     
 class CreateCharacterAutomatic(Menu):
     def __init__(self):
+        Menu.__init__(self)
         #~ previous_menu.__del__() # Close previous menu
         self.menu_name = '...'
         self.keypressArray = [
@@ -637,6 +638,7 @@ class CreateCharacterAutomatic(Menu):
         
 class HighScores(Menu):
     def __init__(self):
+        Menu.__init__(self)
         #~ previous_menu.__del__() # Close previous menu
         self.menu_name = '...'
         self.keypressArray = [
@@ -672,6 +674,7 @@ class HighScores(Menu):
 
 class ResetHighScore(Menu):
     def __init__(self):
+        Menu.__init__(self)
         
         high_score_file = open("high_score.txt", "w")
         high_score_file.write(str(0))
@@ -680,29 +683,30 @@ class ResetHighScore(Menu):
 
 class DayScreen(Menu):
     def __init__(self):
+        Menu.__init__(self)
         #~ previous_menu.__del__() # Close previous menu
         #~ super(self.__class__, self).__init__()
         
-        x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
-                           'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
-                           'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income)])
-        x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
-        x.frame.w = x.container.frame.w
-        x.selected_index = 1
-        x.border_width = 0
-        x.container.draggable = False #Change to True is needs to be draggable 
-        Menu.scene.add_child(x)
+        #~ x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
+                           #~ 'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
+                           #~ 'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income)])
+        #~ x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
+        #~ x.frame.w = x.container.frame.w
+        #~ x.selected_index = 1
+        #~ x.border_width = 0
+        #~ x.container.draggable = False #Change to True is needs to be draggable 
+        #~ Menu.scene.add_child(x)
 
-        x = PygameUI.List(['Food: ','Cash: ','Gardens: ', 'Lottery Tickets: ','Seeds: ','Gasoline: '])
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
-        x.frame.w = x.container.frame.w
-        x.selected_index = 1
-        x.border_width = 0
-        x.container.draggable = False #Change to True is needs to be draggable 
-        Menu.scene.add_child(x)
-        for child in x.container.children:
-            #print child
-            child.selected_bgcolor = (255,120,71)
+        #~ x = PygameUI.List(['Food: ','Cash: ','Gardens: ', 'Lottery Tickets: ','Seeds: ','Gasoline: '])
+        #~ x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        #~ x.frame.w = x.container.frame.w
+        #~ x.selected_index = 1
+        #~ x.border_width = 0
+        #~ x.container.draggable = False #Change to True is needs to be draggable 
+        #~ Menu.scene.add_child(x)
+        #~ for child in x.container.children:
+            #~ #print child
+            #~ child.selected_bgcolor = (255,120,71)
             
         self.keypressArray = [
             StoryScreen, #Reset Game.Day.day_hours back to 16
@@ -721,6 +725,7 @@ class DayScreen(Menu):
 
 class StoryScreen(Menu):
     def __init__(self):
+        Menu.__init__(self)
         #~ previous_menu.__del__() # Close previous menu
         
         print game_state.game.current_day
@@ -743,6 +748,7 @@ class CreateCharacter(Menu):
     ...
     """
     def __init__(self):
+        Menu.__init__(self)
         #~ previous_menu.__del__() # Close previous menu
         # some things in self are in the parent class.
         self.menu_name = '...'
@@ -762,6 +768,7 @@ class OpeningMenu(Menu):
     ...
     """
     def __init__(self):
+        Menu.__init__(self)
         # some things in self are in the parent class.
         self.menu_name = '...'
         self.keypressArray = [
@@ -784,6 +791,7 @@ class OpeningMenu(Menu):
 
 class Close(Menu):
     def __init__(self):
+        Menu.__init__(self)
         pygame.display.quit()
         sys.exit()
 
