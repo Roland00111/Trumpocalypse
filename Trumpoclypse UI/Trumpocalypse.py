@@ -49,17 +49,17 @@ class Menu:
     menu_height = 0
     keypressArray = []
     titlesArray = []
-    custom_fields = []  # To be filled in by menu classes that need buttons, selects, inputs, and number inputs
-    scene = PygameUI.Scene()     # For utilizing pygameui
-    
+    custom_fields = []              # To be filled in by menu classes that need buttons, selects, inputs, and number inputs
+    scene = PygameUI.Scene()        # For utilizing pygameui
+    body = False                    # This is for main text area.
     
      
     def __init__(self):#, previous_menu = None):
-        print 'init...'
+        #~ print 'init...'
         #~ print 'pm:',previous_menu
         #~ if previous_menu != None:
             #~ previous_menu.__del__() # End it.
-        #~ pass
+        pass
         
     class Field:
         test = ''
@@ -185,12 +185,25 @@ class Menu:
     
     def __del__(self):
         print "__del__", self
-        
-    def keypressFunction(self, text = False, size=22,top=40,boxHeight=300):
-        #~ print self # Prints "<__main__.OpeningMenu instance at 0x7f5bb2a99d40>" or "<__main__.CreateCharacter instance at 0x7f5bb2a99ef0>"
+
+class EventsLoop:
+    '''
+    Sample: menu.body = {
+        text: 'Some Main Text',
+        font_size: 32,
+        top: 40,
+        height: 300
+    }
+    '''
+    current_menu = None
+    
+    def __init__(self): # , text = False, size=22,top=40,boxHeight=300
+        self.current_menu = OpeningMenu() # Starts on opening menu. Then changes.
         event_loop = True
-        chosen_position = None
+        recurse_test = 0
         while event_loop:
+            chosen_position = None # Reset on each loop
+            cm = self.current_menu # A quick shortcut
             for event in pygame.event.get():
                 ########
                 # This would be where the iteration for CustomField events takes place
@@ -204,12 +217,11 @@ class Menu:
                 if event.type == KEYDOWN:
                     print(str(event.unicode))
                     if event.key == K_UP:
-                        self.draw(-1) #here is the Menu class function
+                        cm.draw(-1) #here is the Menu class function
                     elif event.key == K_DOWN:
-                        self.draw(1) #here is the Menu class function
+                        cm.draw(1) #here is the Menu class function
                     elif event.key == K_RETURN:
-                        event_loop = False
-                        chosen_position = self.get_position()
+                        chosen_position = cm.get_position()
                         break
                     elif event.key == K_ESCAPE:
                         pass
@@ -230,11 +242,11 @@ class Menu:
                             #~ print("You have opened a chest!")
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     global down_in
-                    down_in = self.scene.hit(event.pos)
+                    down_in = cm.scene.hit(event.pos)
                     if down_in is not None and not isinstance(down_in, PygameUI.Scene):
                         down_in.mouse_down(event.button, down_in.from_window_point(event.pos))
                 elif event.type == pygame.MOUSEBUTTONUP:
-                    up_in = self.scene.hit(event.pos)
+                    up_in = cm.scene.hit(event.pos)
                     if down_in == up_in:
                         down_in.mouse_up(event.button, down_in.from_window_point(event.pos))
                     down_in = None
@@ -244,35 +256,37 @@ class Menu:
                             down_in.parent.child_dragged(down_in, event.rel)
                         down_in.dragged(event.rel)
                 elif event.type == pygame.KEYDOWN:
-                    self.scene.key_down(event.key, event.unicode)
+                    cm.scene.key_down(event.key, event.unicode)
                 elif event.type == pygame.KEYUP:
-                    self.scene.key_up(event.key)
+                    cm.scene.key_up(event.key)
                 # Draw the pygameui input boxes
-                surface.blit(self.scene.draw(), (0, 0))
+                surface.blit(cm.scene.draw(), (0, 0))
                 # Draw other menu content
-                if text is False:
-                    self.init(self.titlesArray, surface)
-                    self.draw()
+                if cm.body is False:
+                    # Draw non-body menu
+                    cm.init(cm.titlesArray, surface)
+                    cm.draw()
                 else:
-                    #Build in width param
-                    self.init(self.titlesArray, surface, 200)
-                    self.draw()
-                    x = self.dest_surface.get_rect().centerx - 150#300 - self.menu_width / 2  Calculate the x offset
-                    pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, top, 300, boxHeight), 10) # Draw a box background.
+                    # Draw menu plus body
+                    cm.init(cm.titlesArray, surface, 200)
+                    cm.draw()
+                    x = cm.dest_surface.get_rect().centerx - 150 #300 - self.menu_width / 2  Calculate the x offset
+                    pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, cm.body['top'], 300, cm.body['height']), 10) # Draw a box background.
                                                #Box color
                     # There is a slight offset from the text and the box.
                     # The box needs to contain the text. So the text is
                     # going to be slightly smaller. How about 8 pixels?
-                    rect = pygame.Rect((x+8,top+8,300-8,300-8)) # left,top,width,height
-                    font = pygame.font.Font('data/coders_crux/coders_crux.ttf',size)
-                    drawText(surface, text, (130,130,130), rect, font, aa=False, bkg=None)
+                    rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
+                    font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
+                    drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
                 pygame.display.update()
-        if chosen_position is None:
-            # There is no chosen position.
-            # So code is done for now.
-            return
-        # There is a chosen position.
-        self.keypressArray[chosen_position](self)
+            if chosen_position is not None:
+                # There is a chosen position.
+                # Change to a new menu class.
+                self.current_menu = cm.keypressArray[chosen_position]()
+                #~ print cm.__class__
+                #~ if cm.__class__ == '__main__.DayScreen':
+                
 
 class Character:
     def __init__ (self, create_type):
@@ -492,7 +506,8 @@ class GameState:
         # the currently running CreateCharacter() class.
         # ...maybe.
         #~ self.current_screen = None
-        self.current_screen = OpeningMenu() # Start the events while loop.
+        #self.current_screen = OpeningMenu() # Start the events while loop.
+        self.events_loop = EventsLoop() # Starts with opening menu.
 
 class Game:
     day_counter = 1
@@ -565,10 +580,7 @@ class Game:
             return self.strTimeProp(start, end, '%m/%d/%Y', prop)
         
 class CreateCharacterManual(Menu): #Not in effect yet
-    def __init__(self, previous_menu):
-        Menu.__init__(self)
-        previous_menu.__del__() # Close previous menu
-        #~ previous_menu.__del__() # Close previous menu
+    def __init__(self):
         '''Eg spend 20 points
         intelligence, charisma, sanity, cash
         '''
@@ -594,7 +606,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
             #~ { MOUSEBUTTONUP: self.button_on_mouseup }
         #~ )
         # Call the parent's keypress handler
-        self.keypressFunction()
+        #~ self.keypressFunction()
     
     def select_on_mouseup(self, event):
         print 'This is called when selecting a choice from the select field!'
@@ -604,10 +616,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
         #~ print 'Mouse click: ', pos, pygame.mouse.get_pressed()
     
 class CreateCharacterAutomatic(Menu):
-    def __init__(self, previous_menu):
-        Menu.__init__(self)
-        previous_menu.__del__() # Close previous menu
-        #~ previous_menu.__del__() # Close previous menu
+    def __init__(self):
         self.menu_name = '...'
         self.keypressArray = [
             StoryScreen,
@@ -630,18 +639,23 @@ class CreateCharacterAutomatic(Menu):
         intelligence=str(game_state.game.character.intelligence)
         job = game_state.game.character.job
         income = str(game_state.game.character.income)
- 
-        Text=("Name: "+name+" \n"+"Health: "+health+" \n"+"Strength: "+strength+" \n"
+        
+        # text = False, size=22,top=40,boxHeight=300
+        self.body = {
+            'text': ("Name: "+name+" \n"+"Health: "+health+" \n"+"Strength: "+strength+" \n"
               +"Gender: "+gender+" \n"+"Age: "+age+" \n"+"Charisma: "+charisma+" \n"+"Intelligence: "
-              +intelligence + " \n" + "Job: " +job+ " \n" + "Income: $"+income)
+              +intelligence + " \n" + "Job: " +job+ " \n" + "Income: $"+income),
+            'font_size': 32,
+            'top': 40,
+            'height': 300
+        }
+        
         #Text="Today is\nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
-        self.keypressFunction(Text,32)
+        #~ self.keypressFunction(Text,32)
         #For some reason font size 32 looks a lot better than 30 or 34
         
 class HighScores(Menu):
-    def __init__(self, previous_menu):
-        Menu.__init__(self)
-        previous_menu.__del__() # Close previous menu
+    def __init__(self):
         self.menu_name = '...'
         self.keypressArray = [
             OpeningMenu,
@@ -664,7 +678,13 @@ class HighScores(Menu):
  
         Text="Highscore:"+a
         # Call the parent's keypress handler
-        self.keypressFunction(Text,44,240,44)
+        #~ self.keypressFunction(Text,44,240,44)
+        self.body = {
+            'text': Text,
+            'font_size': 44,
+            'top': 240,
+            'height': 44
+        }
     
     def get_high_score():
         high_score_file = open("high_score.txt", "r+")
@@ -675,20 +695,14 @@ class HighScores(Menu):
         pass
 
 class ResetHighScore(Menu):
-    def __init__(self, previous_menu):
-        Menu.__init__(self)
-        previous_menu.__del__() # Close previous menu
-        
+    def __init__(self):
         high_score_file = open("high_score.txt", "w")
         high_score_file.write(str(0))
         high_score_file.close()
         HighScores()
 
 class DayScreen(Menu):
-    def __init__(self, previous_menu):
-        Menu.__init__(self)
-        previous_menu.__del__() # Close previous menu
-        
+    def __init__(self):
         #~ x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
                            #~ 'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
                            #~ 'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income)])
@@ -722,16 +736,18 @@ class DayScreen(Menu):
             'Work', 
         ]
         text = "Day is: " #+ str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
-        self.keypressFunction(text,32,20,300) #Looks the same as highscore
+        #~ self.keypressFunction(text,32,20,300) #Looks the same as highscore
         #For some reason font size 32 looks a lot better than 30 or 34
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 20,
+            'height': 300
+        }
 
 class StoryScreen(Menu):
-    def __init__(self, previous_menu):
-        Menu.__init__(self)
-        previous_menu.__del__() # Close previous menu
-        
-        print game_state.game.current_day
-        #~ game_state.game.current_day.__init__() # = game_state.game.Day() #Game.Day()
+    def __init__(self):
+        game_state.game.current_day = game_state.game.Day() #Game.Day()
         #~ gc.collect()
         self.menu_name = '...'
         
@@ -741,17 +757,21 @@ class StoryScreen(Menu):
         self.titlesArray = [
             'Start Day',
         ]
-        text = 'x'#game_state.game.current_day.story_text
-        self.keypressFunction(text,32,60,250) # Pass text (text,font size,top allignment,height of box)
+        text = game_state.game.current_day.story_text
+        #~ self.keypressFunction(text,32,60,250) # Pass text (text,font size,top allignment,height of box)
         #For some reason font size 32 looks a lot better than 30 or 34 
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 60,
+            'height': 250
+        }
 
 class CreateCharacter(Menu):
     """
     ...
     """
-    def __init__(self, previous_menu):
-        Menu.__init__(self)
-        previous_menu.__del__() # Close previous menu
+    def __init__(self):
         # some things in self are in the parent class.
         self.menu_name = '...'
         self.keypressArray = [
@@ -763,14 +783,14 @@ class CreateCharacter(Menu):
             'Auto',
         ]
         # Call the parent's keypress handler
-        self.keypressFunction()
+        #~ self.keypressFunction()
 
 class OpeningMenu(Menu):
     """
     ...
     """
     def __init__(self):
-        Menu.__init__(self)
+        #~ Menu.__init__(self)
         # some things in self are in the parent class.
         self.menu_name = '...'
         self.keypressArray = [
@@ -786,15 +806,13 @@ class OpeningMenu(Menu):
             'Quit'
         ]
         # Call the parent's keypress handler
-        self.keypressFunction()
+        #~ self.keypressFunction()
 
     def box(self):
         print 'Box'
 
 class Close(Menu):
-    def __init__(self, previous_menu):
-        Menu.__init__(self)
-        previous_menu.__del__() # Close previous menu
+    def __init__(self):
         pygame.display.quit()
         sys.exit()
 
@@ -804,7 +822,6 @@ class TestGame(unittest.TestCase):
 
 if __name__ == "__main__":
     import sys
-#    from Create_Character import *
     
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
     surface.fill((255,120,71)) #Color of the background of window
@@ -824,4 +841,4 @@ if __name__ == "__main__":
     position of selection.
     *get_postion will return actual position of seletion. '''
     GameState()
-    unittest.main()
+    #~ unittest.main()
