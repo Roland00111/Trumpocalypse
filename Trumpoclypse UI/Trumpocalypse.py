@@ -205,15 +205,6 @@ class EventsLoop:
             chosen_position = None # Reset on each loop
             cm = self.current_menu # A quick shortcut
             for event in pygame.event.get():
-                ########
-                # This would be where the iteration for CustomField events takes place
-                # pseudo-code:
-                # for field in self.custom_fields:
-                #    for event_hook, callback_function in field.field_event_hooks.iteritems():
-                #        if event.type == event_hook:
-                #            # Parentheses here execute the function. The event is passed as an argument to the function.
-                #            callback_function(event)
-                ########
                 if event.type == KEYDOWN:
                     print(str(event.unicode))
                     if event.key == K_UP:
