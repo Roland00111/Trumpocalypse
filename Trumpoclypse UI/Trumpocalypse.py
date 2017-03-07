@@ -272,7 +272,7 @@ class Menu:
             # So code is done for now.
             return
         # There is a chosen position.
-        self.keypressArray[chosen_position]()
+        self.keypressArray[chosen_position](self)
 
 class Character:
     def __init__ (self, create_type):
@@ -565,8 +565,9 @@ class Game:
             return self.strTimeProp(start, end, '%m/%d/%Y', prop)
         
 class CreateCharacterManual(Menu): #Not in effect yet
-    def __init__(self):
+    def __init__(self, previous_menu):
         Menu.__init__(self)
+        previous_menu.__del__() # Close previous menu
         #~ previous_menu.__del__() # Close previous menu
         '''Eg spend 20 points
         intelligence, charisma, sanity, cash
@@ -603,8 +604,9 @@ class CreateCharacterManual(Menu): #Not in effect yet
         #~ print 'Mouse click: ', pos, pygame.mouse.get_pressed()
     
 class CreateCharacterAutomatic(Menu):
-    def __init__(self):
+    def __init__(self, previous_menu):
         Menu.__init__(self)
+        previous_menu.__del__() # Close previous menu
         #~ previous_menu.__del__() # Close previous menu
         self.menu_name = '...'
         self.keypressArray = [
@@ -637,9 +639,9 @@ class CreateCharacterAutomatic(Menu):
         #For some reason font size 32 looks a lot better than 30 or 34
         
 class HighScores(Menu):
-    def __init__(self):
+    def __init__(self, previous_menu):
         Menu.__init__(self)
-        #~ previous_menu.__del__() # Close previous menu
+        previous_menu.__del__() # Close previous menu
         self.menu_name = '...'
         self.keypressArray = [
             OpeningMenu,
@@ -673,8 +675,9 @@ class HighScores(Menu):
         pass
 
 class ResetHighScore(Menu):
-    def __init__(self):
+    def __init__(self, previous_menu):
         Menu.__init__(self)
+        previous_menu.__del__() # Close previous menu
         
         high_score_file = open("high_score.txt", "w")
         high_score_file.write(str(0))
@@ -682,10 +685,9 @@ class ResetHighScore(Menu):
         HighScores()
 
 class DayScreen(Menu):
-    def __init__(self):
+    def __init__(self, previous_menu):
         Menu.__init__(self)
-        #~ previous_menu.__del__() # Close previous menu
-        #~ super(self.__class__, self).__init__()
+        previous_menu.__del__() # Close previous menu
         
         #~ x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
                            #~ 'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
@@ -724,9 +726,9 @@ class DayScreen(Menu):
         #For some reason font size 32 looks a lot better than 30 or 34
 
 class StoryScreen(Menu):
-    def __init__(self):
+    def __init__(self, previous_menu):
         Menu.__init__(self)
-        #~ previous_menu.__del__() # Close previous menu
+        previous_menu.__del__() # Close previous menu
         
         print game_state.game.current_day
         #~ game_state.game.current_day.__init__() # = game_state.game.Day() #Game.Day()
@@ -747,9 +749,9 @@ class CreateCharacter(Menu):
     """
     ...
     """
-    def __init__(self):
+    def __init__(self, previous_menu):
         Menu.__init__(self)
-        #~ previous_menu.__del__() # Close previous menu
+        previous_menu.__del__() # Close previous menu
         # some things in self are in the parent class.
         self.menu_name = '...'
         self.keypressArray = [
@@ -790,8 +792,9 @@ class OpeningMenu(Menu):
         print 'Box'
 
 class Close(Menu):
-    def __init__(self):
+    def __init__(self, previous_menu):
         Menu.__init__(self)
+        previous_menu.__del__() # Close previous menu
         pygame.display.quit()
         sys.exit()
 
