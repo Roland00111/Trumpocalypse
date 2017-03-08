@@ -274,6 +274,10 @@ class EventsLoop:
             if chosen_position is not None:
                 # There is a chosen position.
                 # Change to a new menu class.
+                if self.current_menu.scene:
+                for child in self.current_menu.scene.children:
+                    print child
+                #    child.selected_bgcolor = (255,120,71)
                 self.current_menu = cm.keypressArray[chosen_position]()
                 #~ print cm.__class__
                 #~ if cm.__class__ == '__main__.DayScreen':
@@ -694,27 +698,30 @@ class ResetHighScore(Menu):
 
 class DayScreen(Menu):
     def __init__(self):
-        #~ x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
-                           #~ 'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
-                           #~ 'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income)])
-        #~ x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
-        #~ x.frame.w = x.container.frame.w
-        #~ x.selected_index = 1
-        #~ x.border_width = 0
-        #~ x.container.draggable = False #Change to True is needs to be draggable 
-        #~ Menu.scene.add_child(x)
+        x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
+                           'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
+                           'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income)])
+        x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 0
+        x.container.draggable = False #Change to True is needs to be draggable 
+        Menu.scene.add_child(x)
+        Menu.scene.remove_child(x)
 
-        #~ x = PygameUI.List(['Food: ','Cash: ','Gardens: ', 'Lottery Tickets: ','Seeds: ','Gasoline: '])
-        #~ x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
-        #~ x.frame.w = x.container.frame.w
-        #~ x.selected_index = 1
-        #~ x.border_width = 0
-        #~ x.container.draggable = False #Change to True is needs to be draggable 
-        #~ Menu.scene.add_child(x)
-        #~ for child in x.container.children:
-            #~ #print child
+        x = PygameUI.List(['Food: ','Cash: ','Gardens: ', 'Lottery Tickets: ','Seeds: ','Gasoline: '])
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 0
+        x.container.draggable = False #Change to True is needs to be draggable 
+        Menu.scene.add_child(x)
+        Menu.scene.remove_child(x)
+        #for child in x.container.children:
+        #print child
             #~ child.selected_bgcolor = (255,120,71)
-            
+        print Menu.scene
+
         self.keypressArray = [
             StoryScreen, #Reset Game.Day.day_hours back to 16
             StoryScreen,#Store -> -2 on the Game.Day.day_hours (maybe)
@@ -726,7 +733,7 @@ class DayScreen(Menu):
             'Store', 
             'Work', 
         ]
-        text = "Day is: " #+ str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
+        text = "Day is: " + str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
         #~ self.keypressFunction(text,32,20,300) #Looks the same as highscore
         #For some reason font size 32 looks a lot better than 30 or 34
         self.body = {
