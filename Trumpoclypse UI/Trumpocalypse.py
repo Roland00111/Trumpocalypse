@@ -54,11 +54,7 @@ class Menu:
     body = False                    # This is for main text area.
     
      
-    def __init__(self):#, previous_menu = None):
-        #~ print 'init...'
-        #~ print 'pm:',previous_menu
-        #~ if previous_menu != None:
-            #~ previous_menu.__del__() # End it.
+    def __init__(self):
         pass
         
     class Field:
@@ -176,15 +172,15 @@ class Menu:
         def button(self):
             pass
          
-        def input(self):
+        def input_box(self):
             pass
         
         def number(self):
             # What if the number field is instead just a list() field?
             pass
     
-    def __del__(self):
-        print "__del__", self
+    #def __del__(self):
+    #    print "__del__", self
 
 class EventsLoop:
     '''
@@ -274,14 +270,17 @@ class EventsLoop:
             if chosen_position is not None:
                 # There is a chosen position.
                 # Change to a new menu class.
-                if self.current_menu.scene:
-                for child in self.current_menu.scene.children:
-                    print child
-                #    child.selected_bgcolor = (255,120,71)
+		# The following does not work to remove Scene() children:
+		#	del self.current_menu
+		#	self.scene.__del__()
+		while cm.scene.children:
+			# This does work to remove Scene() children.
+			for child in cm.scene.children:
+				# Grab one child and remove it.
+				cm.scene.remove_child(child)
+				break
+		# Go to the next menu.
                 self.current_menu = cm.keypressArray[chosen_position]()
-                #~ print cm.__class__
-                #~ if cm.__class__ == '__main__.DayScreen':
-                
 
 class Character:
     def __init__ (self, create_type):
@@ -494,14 +493,8 @@ class GameState:
         global game_state # Reference the global game state variable to this object.
         game_state = self
         self.game = Game()
-        # self.current_screen references the 
-        # current screen function that is trapped in its events while
-        # loop. E.g. when OpeningMenu() moves onto CreateCharacter()
-        # then self.current_screen references 
-        # the currently running CreateCharacter() class.
-        # ...maybe.
-        #~ self.current_screen = None
-        #self.current_screen = OpeningMenu() # Start the events while loop.
+        # Old starting method was:
+	#	self.current_screen = OpeningMenu()
         self.events_loop = EventsLoop() # Starts with opening menu.
 
 class Game:
@@ -515,8 +508,6 @@ class Game:
         self.character = None #Character('random') creates charecter on start menu becasue its an error.
         self.character = Character('random')
         #self.score = ...  # will be calculated on game over
-        #~ for i in range(0, 100):
-            #~ DayScreen()
 
     class Day:
         day_hours = 16
@@ -529,7 +520,6 @@ class Game:
             else:
                 self.story_text = 'This is  new Day bros'
             
-            #return # does not fix...
             if Game.month_counter % 12 == 1 and Game.day_counter != 1:
                 Game.current_year += 1
             if Game.month_counter + 1 == 13:
@@ -600,8 +590,6 @@ class CreateCharacterManual(Menu): #Not in effect yet
             #~ False,
             #~ { MOUSEBUTTONUP: self.button_on_mouseup }
         #~ )
-        # Call the parent's keypress handler
-        #~ self.keypressFunction()
     
     def select_on_mouseup(self, event):
         print 'This is called when selecting a choice from the select field!'
@@ -635,7 +623,6 @@ class CreateCharacterAutomatic(Menu):
         job = game_state.game.character.job
         income = str(game_state.game.character.income)
         
-        # text = False, size=22,top=40,boxHeight=300
         self.body = {
             'text': ("Name: "+name+" \n"+"Health: "+health+" \n"+"Strength: "+strength+" \n"
               +"Gender: "+gender+" \n"+"Age: "+age+" \n"+"Charisma: "+charisma+" \n"+"Intelligence: "
@@ -644,10 +631,6 @@ class CreateCharacterAutomatic(Menu):
             'top': 40,
             'height': 300
         }
-        
-        #Text="Today is\nthe inauguration day and Trump is being sworn into office by Chief Justice John Roberts"
-        #~ self.keypressFunction(Text,32)
-        #For some reason font size 32 looks a lot better than 30 or 34
         
 class HighScores(Menu):
     def __init__(self):
@@ -672,8 +655,6 @@ class HighScores(Menu):
         a=str(high_score)
  
         Text="Highscore:"+a
-        # Call the parent's keypress handler
-        #~ self.keypressFunction(Text,44,240,44)
         self.body = {
             'text': Text,
             'font_size': 44,
@@ -706,8 +687,7 @@ class DayScreen(Menu):
         x.selected_index = 1
         x.border_width = 0
         x.container.draggable = False #Change to True is needs to be draggable 
-        Menu.scene.add_child(x)
-        Menu.scene.remove_child(x)
+	self.scene.add_child(x)
 
         x = PygameUI.List(['Food: ','Cash: ','Gardens: ', 'Lottery Tickets: ','Seeds: ','Gasoline: '])
         x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
@@ -715,12 +695,7 @@ class DayScreen(Menu):
         x.selected_index = 1
         x.border_width = 0
         x.container.draggable = False #Change to True is needs to be draggable 
-        Menu.scene.add_child(x)
-        Menu.scene.remove_child(x)
-        #for child in x.container.children:
-        #print child
-            #~ child.selected_bgcolor = (255,120,71)
-        print Menu.scene
+	self.scene.add_child(x)
 
         self.keypressArray = [
             StoryScreen, #Reset Game.Day.day_hours back to 16
@@ -734,7 +709,6 @@ class DayScreen(Menu):
             'Work', 
         ]
         text = "Day is: " + str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
-        #~ self.keypressFunction(text,32,20,300) #Looks the same as highscore
         #For some reason font size 32 looks a lot better than 30 or 34
         self.body = {
             'text': text,
@@ -746,7 +720,6 @@ class DayScreen(Menu):
 class StoryScreen(Menu):
     def __init__(self):
         game_state.game.current_day = game_state.game.Day() #Game.Day()
-        #~ gc.collect()
         self.menu_name = '...'
         
         self.keypressArray = [
@@ -756,7 +729,6 @@ class StoryScreen(Menu):
             'Start Day',
         ]
         text = game_state.game.current_day.story_text
-        #~ self.keypressFunction(text,32,60,250) # Pass text (text,font size,top allignment,height of box)
         #For some reason font size 32 looks a lot better than 30 or 34 
         self.body = {
             'text': text,
@@ -780,16 +752,13 @@ class CreateCharacter(Menu):
             'Manual',
             'Auto',
         ]
-        # Call the parent's keypress handler
-        #~ self.keypressFunction()
 
 class OpeningMenu(Menu):
     """
     ...
     """
     def __init__(self):
-        #~ Menu.__init__(self)
-        # some things in self are in the parent class.
+	# What does this do?: Menu.__init__(self)
         self.menu_name = '...'
         self.keypressArray = [
             CreateCharacter,
@@ -803,8 +772,6 @@ class OpeningMenu(Menu):
             'Highscore',
             'Quit'
         ]
-        # Call the parent's keypress handler
-        #~ self.keypressFunction()
 
     def box(self):
         print 'Box'
