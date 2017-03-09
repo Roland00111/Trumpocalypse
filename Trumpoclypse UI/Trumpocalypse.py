@@ -193,13 +193,50 @@ class EventsLoop:
     '''
     current_menu = None
     
-    def __init__(self): # , text = False, size=22,top=40,boxHeight=300
+    def __init__(self,testevents = None): # , text = False, size=22,top=40,boxHeight=300
         self.current_menu = OpeningMenu() # Starts on opening menu. Then changes.
         event_loop = True
         recurse_test = 0
         while event_loop:
             chosen_position = None # Reset on each loop
             cm = self.current_menu # A quick shortcut
+            ########################Used for Testing###############################
+            if testevents != None:
+                while testevents:
+                    cm = self.current_menu # A quick shortcut
+                    chosen_position = testevents.pop(0)
+                    #print chosen_position
+                    while cm.scene.children:
+                    # This does work to remove Scene() children.
+                        for child in cm.scene.children:
+                    # Grab one child and remove it.
+                            cm.scene.remove_child(child)
+                            break
+                    surface.blit(cm.scene.draw(), (0, 0))
+                    # Draw other menu content
+                    if cm.body is False:
+                        # Draw non-body menu
+                        cm.init(cm.titlesArray, surface)
+                        cm.draw()
+                    else:
+                        # Draw menu plus body
+                        cm.init(cm.titlesArray, surface, 200)
+                        cm.draw()
+                        x = cm.dest_surface.get_rect().centerx - 150 #300 - self.menu_width / 2  Calculate the x offset
+                        pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, cm.body['top'], 300, cm.body['height']), 10) # Draw a box background.
+                                                   #Box color
+                        # There is a slight offset from the text and the box.
+                        # The box needs to contain the text. So the text is
+                        # going to be slightly smaller. How about 8 pixels?
+                        rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
+                        font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
+                        drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
+                    pygame.display.update()
+                    #print cm.keypressArray[chosen_position]
+                    #print cm.keypressArray
+                    self.current_menu = cm.keypressArray[chosen_position]()
+                return
+            #####################################################################
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     print(str(event.unicode))
@@ -270,16 +307,16 @@ class EventsLoop:
             if chosen_position is not None:
                 # There is a chosen position.
                 # Change to a new menu class.
-		# The following does not work to remove Scene() children:
-		#	del self.current_menu
-		#	self.scene.__del__()
-		while cm.scene.children:
-			# This does work to remove Scene() children.
-			for child in cm.scene.children:
-				# Grab one child and remove it.
-				cm.scene.remove_child(child)
-				break
-		# Go to the next menu.
+        # The following does not work to remove Scene() children:
+        #   del self.current_menu
+        #   self.scene.__del__()
+                while cm.scene.children:
+            # This does work to remove Scene() children.
+                    for child in cm.scene.children:
+                # Grab one child and remove it.
+                        cm.scene.remove_child(child)
+                        break
+        # Go to the next menu.
                 self.current_menu = cm.keypressArray[chosen_position]()
 
 class Character:
@@ -313,10 +350,10 @@ class Character:
             self.age = 69
             self.charisma = 3
             self.intelligence = 1
-            self.job = 'Plummer'
+            self.job = 'Plumber'
             self.income = 5000
             # Add some random items.
-            self.inventory.add_item()
+            self.inventory.add_item() #To add item insert string of item (item_type) see Item class, else it's random
             self.inventory.add_item()
             self.inventory.add_item()
             self.inventory.add_item()
@@ -372,6 +409,13 @@ class Inventory:
             'Food','Pie','Garden','LotteryTicket','NewCar','OldCar',
             'UrbanHouse','SuburbanHouse','RuralHouse'
         ]
+    def item_count(self):
+        #Iterates throught self.items and returns a list of all items in array with number of uses left
+        storage = []
+        for item in self.items:
+            storage.append(item.item_type + ': ' + str(item.remaining_uses))
+        return storage
+    
     def num_items(self):
         # Returns the number of items in the inventory
         return len(self.items)
@@ -383,14 +427,14 @@ class Inventory:
         # If so, then add the item's stats.
         if item_type != None:
             new_item = Item(item_type)
-            self.update_or_add_item(new_item, item_type)
+            self.update_or_add_item(new_item)
         else:
             # A random item.
             n = random.randint(0, len(self.all_choices)-1)
             rand_item = Item( self.all_choices[n] )
-            self.update_or_add_item(rand_item, item_type)
-    def update_or_add_item(self, new_item, item_type):
-        existing_item = self.contains_item(item_type)
+            self.update_or_add_item(rand_item)
+    def update_or_add_item(self, new_item):
+        existing_item = self.contains_item(new_item.item_type)
         if existing_item != False:
             # Add to the remaining uses.
             existing_item.remaining_uses += new_item.remaining_uses
@@ -434,22 +478,23 @@ class Item:
             ... and so on
     ''' 
     def __init__(self, item_type = None):
-        self.item_type = None
+        self.item_type = item_type
         self.purchase_cost = 1
         self.resale_cost = 0
         self.remaining_uses = 1
         self.set_item(item_type)
-        
+            
     def use_item(self, item_type):
         '''This will somehow use the item...'''
+        ''' Deincroment remaining_uses, along with in game effect'''
+        
         pass
         
     def set_item(self, item_type):
-        self.item_type = item_type
         if item_type == 'Food':
-            self.purchase_cost = 10
+            self.purchase_cost = 10 
             self.resale_cost = 8
-            self.remaining_uses = 10
+            self.remaining_uses = 10 
         elif item_type == 'Pie':
             self.purchase_cost = 1
             self.resale_cost = 0
@@ -489,24 +534,24 @@ class Item:
             
 
 class GameState:
-    def __init__(self):
+    def __init__(self,testevents = None):
         global game_state # Reference the global game state variable to this object.
         game_state = self
         self.game = Game()
         # Old starting method was:
-	#	self.current_screen = OpeningMenu()
-        self.events_loop = EventsLoop() # Starts with opening menu.
+    #   self.current_screen = OpeningMenu()
+        self.events_loop = EventsLoop(testevents) # Starts with opening menu.
 
 class Game:
     day_counter = 1
     current_year = 2017
     month_counter = 1
     month_day = 1
+    term_count = 1
     def __init__(self):
         self.current_day = None #self.Day()
-        self.terms_to_play = 1 # 1, 2, 999
         self.character = None #Character('random') creates charecter on start menu becasue its an error.
-        self.character = Character('random')
+        #self.character = Character('random')
         #self.score = ...  # will be calculated on game over
 
     class Day:
@@ -517,6 +562,9 @@ class Game:
             print 'New day'
             if Game.day_counter == 1:
                 self.story_text = "Today is " + Game.Day.inauguration_day + " \ninauguration day, Trump is being sworn into office by Chief Justice John Roberts"         
+            elif Game.day_counter % 48 == 0:
+                Game.term_count += 1
+                self.story_text = "Today is the Election day, Trump is up for Relection"
             else:
                 self.story_text = 'This is  new Day bros'
             
@@ -534,11 +582,11 @@ class Game:
                                   str((x)) + "/" + str(month_day) +"/" + str(Game.current_year),
                                   random.random())
             #Fix game day counter incromentation 
-            print Game.day_counter
             if Game.month_counter == 12:
                 Game.month_counter = 0
             Game.day_counter += 1
             Game.month_counter += 1
+            print Game.day_counter
             
             
         def strTimeProp(self,start, end, format, prop):
@@ -622,6 +670,14 @@ class CreateCharacterAutomatic(Menu):
         intelligence=str(game_state.game.character.intelligence)
         job = game_state.game.character.job
         income = str(game_state.game.character.income)
+
+        x = PygameUI.List(game_state.game.character.inventory.item_count())
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 0
+        x.container.draggable = False #Change to True is needs to be draggable 
+        self.scene.add_child(x)
         
         self.body = {
             'text': ("Name: "+name+" \n"+"Health: "+health+" \n"+"Strength: "+strength+" \n"
@@ -679,6 +735,7 @@ class ResetHighScore(Menu):
 
 class DayScreen(Menu):
     def __init__(self):
+        #print 'Bottom of Day Screen'
         x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
                            'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
                            'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income)])
@@ -687,34 +744,71 @@ class DayScreen(Menu):
         x.selected_index = 1
         x.border_width = 0
         x.container.draggable = False #Change to True is needs to be draggable 
-	self.scene.add_child(x)
+        self.scene.add_child(x)
 
-        x = PygameUI.List(['Food: ','Cash: ','Gardens: ', 'Lottery Tickets: ','Seeds: ','Gasoline: '])
+        x = PygameUI.List(game_state.game.character.inventory.item_count())
         x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
         x.border_width = 0
         x.container.draggable = False #Change to True is needs to be draggable 
-	self.scene.add_child(x)
+        self.scene.add_child(x)
 
-        self.keypressArray = [
-            StoryScreen, #Reset Game.Day.day_hours back to 16
-            StoryScreen,#Store -> -2 on the Game.Day.day_hours (maybe)
-            StoryScreen #Work -> -8 on the Game.Day.day_hours
+        if game_state.game.day_counter % 48 != 0:
             
-        ]
-        self.titlesArray = [
-            'Next Day', 
-            'Store', 
-            'Work', 
-        ]
-        text = "Day is: " + str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
+            self.keypressArray = [
+                StoryScreen, #Reset Game.Day.day_hours back to 16
+                StoryScreen,#Store -> -2 on the Game.Day.day_hours (maybe)
+                StoryScreen #Work -> -8 on the Game.Day.day_hours
+                
+            ]
+            self.titlesArray = [
+                'Next Day', 
+                'Store', 
+                'Work', 
+            ]
+        else:
+            self.keypressArray = [
+                ElectionDay, #Reset Game.Day.day_hours back to 16
+                StoryScreen,#Store -> -2 on the Game.Day.day_hours (maybe)
+                StoryScreen #Work -> -8 on the Game.Day.day_hours
+                
+            ]
+            self.titlesArray = [
+                'Vote', 
+                'Store', 
+                'Work', 
+            ]
+        text = "Term Number: " + str(game_state.game.term_count) + " \nDay is: " + str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
         #For some reason font size 32 looks a lot better than 30 or 34
         self.body = {
             'text': text,
             'font_size': 32,
             'top': 20,
             'height': 300
+        }
+        
+
+class ElectionDay(Menu): #Use on 48,96 .... +=48
+    def __init__(self):
+        game_state.game.current_day = game_state.game.Day() #Game.Day()
+        self.menu_name = '...'
+        
+        self.keypressArray = [
+            DayScreen,
+            EndGame, # Need to add class, build when highscore point system is in place
+        ]
+        self.titlesArray = [
+            'Vote For Trump (Continue Playing)',
+            'Vote For Anyone Else (End)',
+        ]
+        text = game_state.game.current_day.story_text
+        #For some reason font size 32 looks a lot better than 30 or 34 
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 60,
+            'height': 250
         }
 
 class StoryScreen(Menu):
@@ -723,7 +817,7 @@ class StoryScreen(Menu):
         self.menu_name = '...'
         
         self.keypressArray = [
-            DayScreen #not implemented yet,
+            DayScreen 
         ]
         self.titlesArray = [
             'Start Day',
@@ -758,7 +852,7 @@ class OpeningMenu(Menu):
     ...
     """
     def __init__(self):
-	# What does this do?: Menu.__init__(self)
+    # What does this do?: Menu.__init__(self)
         self.menu_name = '...'
         self.keypressArray = [
             CreateCharacter,
@@ -780,7 +874,11 @@ class Close(Menu):
     def __init__(self):
         pygame.display.quit()
         sys.exit()
-
+class EndGame(Menu):
+    def __init__(self):
+        self.titlesArray = [
+            'Test',
+        ]
 class TestGame(unittest.TestCase):
     def test1(self):
         print 'xxx'
@@ -806,4 +904,13 @@ if __name__ == "__main__":
     position of selection.
     *get_postion will return actual position of seletion. '''
     GameState()
-    #~ unittest.main()
+    #unittest.main()
+else: #used for testing #To run this code do import Trumpocalypse in python shell
+    #Needed for testing
+    import sys
+    surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
+    surface.fill((255,120,71)) #Color of the background of window
+    #test = [ x for x in range(1000)]
+    #print test
+    GameState([ x*0 for x in range(1000)])
+
