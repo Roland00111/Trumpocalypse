@@ -32,6 +32,7 @@ class Menu:
         @font: from http://www.dafont.com/coders-crux.font
               more abuot license you can find in data/coders-crux/license.txt
     '''
+    process_event = False
     lista = []
     by = []
     FontSize = 32
@@ -317,6 +318,8 @@ class EventsLoop:
                         cm.scene.remove_child(child)
                         break
         # Go to the next menu.
+                if cm.process_event == True:
+                    cm.process_events(chosen_position)
                 self.current_menu = cm.keypressArray[chosen_position]()
 
 class Character:
@@ -328,6 +331,7 @@ class Character:
         self.age = 40
         self.charisma = 3
         self.intelligence = 3
+        self.sanity = 30
         self.inventory = Inventory() # Give character an inventory.
         if create_type == 'random':
             self.randomGenerate()
@@ -344,14 +348,15 @@ class Character:
         global CharacterDictionary
         if num == 0:
             self.name = 'Bill'
-            self.health = 4
-            self.strength = 7
+            self.health = 3
+            self.strength = 5
             self.gender = 'male'
-            self.age = 35
+            self.age = 69
             self.charisma = 3
             self.intelligence = 1
             self.job = 'Plumber'
             self.income = 10000
+            self.sanity = 30
             # Add some random items.
             self.inventory.add_item() #To add item insert string of item (item_type) see Item class, else it's random
             self.inventory.add_item()
@@ -362,14 +367,15 @@ class Character:
             
         elif num == 1:
             self.name = 'Linda'
-            self.health = 2
+            self.health = 3
             self.strength = 1
             self.gender = 'female'
             self.age = 40
             self.charisma = 4
-            self.intelligence = 6
+            self.intelligence = 5
             self.job = 'CEO'
             self.income = 20000
+            self.sanity = 30
             # Add some random items.
             self.inventory.add_item()
             self.inventory.add_item()
@@ -419,14 +425,16 @@ class Inventory:
     def num_items(self):
         # Returns the number of items in the inventory
         return len(self.items)
-    def add_item(self, item_type = None):
+    def add_item(self, item_type = None,remaining_uses = None):
         # Add an item to this inventory.
         # If item_type is None then add a random item.
         # If item_type is not None then add item of this type.
         # Does the item already exist in the inventory?
-        # If so, then add the item's stats.
+        # If so, then add the item's stats.    
         if item_type != None:
             new_item = Item(item_type)
+            if remaining_uses != None:
+                new_item.remainng_uses = remaining_uses
             self.update_or_add_item(new_item)
         else:
             # A random item.
@@ -492,20 +500,20 @@ class Item:
         
     def set_item(self, item_type):
         if item_type == 'Food':
-            self.purchase_cost = 500
-            self.resale_cost = 100
-            self.remaining_uses = 1
+            self.purchase_cost = 10 
+            self.resale_cost = 8
+            self.remaining_uses = 10 
         elif item_type == 'Pie':
             self.purchase_cost = 1
-            self.resale_cost = 6
+            self.resale_cost = 0
             self.remaining_uses = 1
-        elif item_type == 'Garden': #need to figure out how to random produce food
-            self.purchase_cost = 2000
-            self.resale_cost = 1000
-            self.remaining_uses = 5
+        elif item_type == 'Garden':
+            self.purchase_cost = 200
+            self.resale_cost = 100
+            self.remaining_uses = 10
         elif item_type == 'LotteryTicket':
-            self.purchase_cost = 10000
-            self.resale_cost = 400
+            self.purchase_cost = 10
+            self.resale_cost = 4
             self.remaining_uses = 1
         elif item_type == 'NewCar':
             self.purchase_cost = 20000
@@ -517,16 +525,20 @@ class Item:
             self.remaining_uses = 60
         elif item_type == 'UrbanHouse':
             self.purchase_cost = 40000
-            self.resale_cost = 25000
+            self.resale_cost = 40000
             self.remaining_uses = 100
         elif item_type == 'SuburbanHouse':
             self.purchase_cost = 20000
-            self.resale_cost = 15000
+            self.resale_cost = 20000
             self.remaining_uses = 50
         elif item_type == 'RuralHouse':
             self.purchase_cost = 10000
-            self.resale_cost = 7000
+            self.resale_cost = 10000
             self.remaining_uses = 20
+        elif item_type == 'Cash':
+            self.purchase_cost = 0
+            self.resale_cost = 0
+            self.remaining_uses = 0
         else:
             # The item does not exist which must be a bug.
             # Raise an error.
@@ -541,52 +553,128 @@ class GameState:
         # Old starting method was:
     #   self.current_screen = OpeningMenu()
         self.events_loop = EventsLoop(testevents) # Starts with opening menu.
+        
+class EventScreen(Menu): 
+    def __init__(self):
+        #game_state.game.current_day = game_state.game.Day() #Game.Day()
+        self.menu_name = '...'
+        self.events_values = game_state.game.events_values()
+        self.keypressArray = [
+             DayScreen for x in range(len(self.events_values)+1)
+        ]
+        self.titlesArray = self.events_values + ['Back to Day']
+        text = ""
+        #For some reason font size 32 looks a lot better than 30 or 34 
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 60,
+            'height': 250
+        }
+        self.process_event = True
+    def process_events(self,chosen_position):
+        if len(self.events_values) -1  < chosen_position:
+            return 
+        event = game_state.game.event_dict[self.events_values[chosen_position]]
+        c = game_state.game.character
+        for key, value in event.iteritems():
+            print key
+            print value
+            print getattr(c,"health")
+            print c.sanity
+            if key == "hours":
+                game_state.game.current_day.day_hours += value
+            try:
+                print 'Going to try changing char attribute'
+                n = getattr(c,str(key))
+                setattr(c,str(key),n+value)
+            except:
+                pass
+            else:
+                #c.inventory.add_item(str(key),value)
+                #Needs fixing
+                pass
 
+            #Need to add remove func
+                
+            
 class Game:
-    day_counter = 1
+    day_counter = 0
     current_year = 2017
     month_counter = 1
     month_day = 1
     term_count = 1
+    events = []
+    event_dict = {"Tsunami": {"health":-1,"sanity":-1},
+                          "Win Lottery": {"cash":10000,"sanity":1},
+                          "Extreme Pollution": {"health":-1,"sanity":-1},
+                          "Nuclear War": {"health":-2,"sanity":-5},
+                          "Curfew": {"hours":-4,"sanity":-1},
+                          "Marshall Law": {"hours":-4,"sanity":-2,"income":-5000},
+                          "Power Sleep": {"hours":2,"sanity":2},
+                          "Find Good Stuff": {"food":5,"cash":1000,"sanity":1},
+                          }
     def __init__(self):
         self.current_day = None #self.Day()
         self.character = None #Character('random') creates charecter on start menu becasue its an error.
         #self.character = Character('random')
         #self.score = ...  # will be calculated on game over
-
+    def events_values(self):
+        events_temp = []
+        for event in self.events:
+            events_temp.append(event.event_text)
+        return events_temp
+            
+        
+    
+    class Event:
+        def __init__(self):
+            #self.event_type = None
+            self.event_text = ""
+            self.story_text = ""
+            self.random_event()
+        def random_event(self):
+            num = random.randint(0,len(Game.event_dict)-1) 
+            self.event_text = Game.event_dict.keys()[num]
+            
+            
     class Day:
         day_hours = 16
         generated_date = 0
         inauguration_day = "January 20th" #Only needed to be used once, every other time you can use generated_date find it at the bottom of this class
+
         def __init__(self):
+            self.day_hours = 16
+        
+        def gen_date(self):
+            g = game_state.game
             print 'New day'
-            if Game.day_counter == 1:
+            if g.day_counter == 1:
                 self.story_text = "Today is " + Game.Day.inauguration_day + " \ninauguration day, Trump is being sworn into office by Chief Justice John Roberts"         
-            elif Game.day_counter % 48 == 0:
-                Game.term_count += 1
+            elif g.day_counter % 48 == 0:
+                g.term_count += 1
                 self.story_text = "Today is the Election day, Trump is up for Relection"
             else:
                 self.story_text = 'This is  new Day bros'
             
-            if Game.month_counter % 12 == 1 and Game.day_counter != 1:
-                Game.current_year += 1
-            if Game.month_counter + 1 == 13:
+            if g.month_counter % 12 == 1 and g.day_counter != 1:
+                g.current_year += 1
+            if g.month_counter + 1 == 13:
                 x=12
                 month_day = 31
             else:
-                x=Game.month_counter + 1
+                x=g.month_counter + 1
                 month_day = 1 #Needed because when Game.month_counter == 12 it would go back a year, because it would be 12/?/2017 to 1/?/2017 and get confused
                               # This implementation of month_day works as I tested it   
-                
-            self.generated_date = self.randomDate(str(Game.month_counter) + "/1/" + str(Game.current_year),
-                                  str((x)) + "/" + str(month_day) +"/" + str(Game.current_year),
-                                  random.random())
+            self.generated_date = self.randomDate(str(g.month_counter) + "/1/" + str(g.current_year),
+                                                   str((x)) + "/" + str(month_day) +"/" + str(g.current_year),
+                                                   random.random())
+            
             #Fix game day counter incromentation 
-            if Game.month_counter == 12:
-                Game.month_counter = 0
-            Game.day_counter += 1
-            Game.month_counter += 1
-            print Game.day_counter
+            if g.month_counter == 12:
+                g.month_counter = 0
+            print g.day_counter
+           
             
             
         def strTimeProp(self,start, end, format, prop):
@@ -670,6 +758,7 @@ class CreateCharacterAutomatic(Menu):
         intelligence=str(game_state.game.character.intelligence)
         job = game_state.game.character.job
         income = str(game_state.game.character.income)
+        sanity = str(game_state.game.character.sanity)
 
         x = PygameUI.List(game_state.game.character.inventory.item_count())
         x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
@@ -682,7 +771,7 @@ class CreateCharacterAutomatic(Menu):
         self.body = {
             'text': ("Name: "+name+" \n"+"Health: "+health+" \n"+"Strength: "+strength+" \n"
               +"Gender: "+gender+" \n"+"Age: "+age+" \n"+"Charisma: "+charisma+" \n"+"Intelligence: "
-              +intelligence + " \n" + "Job: " +job+ " \n" + "Income: $"+income),
+              +intelligence + " \n" + "Job: " +job+ " \n" + "Income: $"+income+" \n"+"Sanity: " +sanity),
             'font_size': 32,
             'top': 40,
             'height': 300
@@ -735,10 +824,12 @@ class ResetHighScore(Menu):
 
 class DayScreen(Menu):
     def __init__(self):
-        #print 'Bottom of Day Screen'
+        print game_state.game.current_day
+        print game_state.game.current_day.generated_date
         x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
                            'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
-                           'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income)])
+                           'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income),
+                           'Sanity: ' + str(game_state.game.character.sanity)])
         x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
@@ -757,12 +848,14 @@ class DayScreen(Menu):
         if game_state.game.day_counter % 48 != 0:
             
             self.keypressArray = [
+                EventScreen,
                 StoryScreen, #Reset Game.Day.day_hours back to 16
                 StoryScreen,#Store -> -2 on the Game.Day.day_hours (maybe)
                 StoryScreen #Work -> -8 on the Game.Day.day_hours
                 
             ]
             self.titlesArray = [
+                'Events: ' + str(len(game_state.game.events)),
                 'Next Day', 
                 'Store', 
                 'Work', 
@@ -779,7 +872,8 @@ class DayScreen(Menu):
                 'Store', 
                 'Work', 
             ]
-        text = "Term Number: " + str(game_state.game.term_count) + " \nDay is: " + str(game_state.game.current_day.generated_date) + " \n" +" \nHours Left: " + str(Game.Day.day_hours) #This displays a text box showing how many hours left in your day to spend
+        text = ("Term Number: " + str(game_state.game.term_count) + " \nDay is: " + str(game_state.game.current_day.generated_date)
+        + " \n" +" \nHours Left: " + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
         #For some reason font size 32 looks a lot better than 30 or 34
         self.body = {
             'text': text,
@@ -813,7 +907,11 @@ class ElectionDay(Menu): #Use on 48,96 .... +=48
 
 class StoryScreen(Menu):
     def __init__(self):
+        
+        game_state.game.day_counter += 1
+        game_state.game.month_counter += 1
         game_state.game.current_day = game_state.game.Day() #Game.Day()
+        game_state.game.current_day.gen_date()
         self.menu_name = '...'
         
         self.keypressArray = [
@@ -830,6 +928,7 @@ class StoryScreen(Menu):
             'top': 60,
             'height': 250
         }
+        game_state.game.events.append(game_state.game.Event())
 
 class CreateCharacter(Menu):
     """
@@ -912,5 +1011,5 @@ else: #used for testing #To run this code do import Trumpocalypse in python shel
     surface.fill((255,120,71)) #Color of the background of window
     #test = [ x for x in range(1000)]
     #print test
-    GameState([0,1]+[ x*0 for x in range(1000)])
+    GameState([ x*0 for x in range(1000)])
 
