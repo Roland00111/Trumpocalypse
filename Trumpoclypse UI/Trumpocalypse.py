@@ -345,9 +345,9 @@ class Character:
         if num == 0:
             self.name = 'Bill'
             self.health = 3
-            self.strength = 5
+            self.strength = 7
             self.gender = 'male'
-            self.age = 69
+            self.age = 35
             self.charisma = 3
             self.intelligence = 1
             self.job = 'Plumber'
@@ -367,7 +367,7 @@ class Character:
             self.gender = 'female'
             self.age = 40
             self.charisma = 4
-            self.intelligence = 5
+            self.intelligence = 6
             self.job = 'CEO'
             self.income = 20000
             # Add some random items.
@@ -912,5 +912,5 @@ else: #used for testing #To run this code do import Trumpocalypse in python shel
     surface.fill((255,120,71)) #Color of the background of window
     #test = [ x for x in range(1000)]
     #print test
-    GameState([ x*0 for x in range(1000)])
+    GameState([0,1]+[ x*0 for x in range(1000)])
 
