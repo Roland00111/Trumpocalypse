@@ -344,14 +344,14 @@ class Character:
         global CharacterDictionary
         if num == 0:
             self.name = 'Bill'
-            self.health = 3
+            self.health = 4
             self.strength = 7
             self.gender = 'male'
             self.age = 35
             self.charisma = 3
             self.intelligence = 1
             self.job = 'Plumber'
-            self.income = 5000
+            self.income = 10000
             # Add some random items.
             self.inventory.add_item() #To add item insert string of item (item_type) see Item class, else it's random
             self.inventory.add_item()
@@ -362,7 +362,7 @@ class Character:
             
         elif num == 1:
             self.name = 'Linda'
-            self.health = 3
+            self.health = 2
             self.strength = 1
             self.gender = 'female'
             self.age = 40
@@ -492,20 +492,20 @@ class Item:
         
     def set_item(self, item_type):
         if item_type == 'Food':
-            self.purchase_cost = 10 
-            self.resale_cost = 8
-            self.remaining_uses = 10 
+            self.purchase_cost = 500
+            self.resale_cost = 100
+            self.remaining_uses = 1
         elif item_type == 'Pie':
             self.purchase_cost = 1
-            self.resale_cost = 0
+            self.resale_cost = 6
             self.remaining_uses = 1
-        elif item_type == 'Garden':
-            self.purchase_cost = 200
-            self.resale_cost = 100
-            self.remaining_uses = 10
+        elif item_type == 'Garden': #need to figure out how to random produce food
+            self.purchase_cost = 2000
+            self.resale_cost = 1000
+            self.remaining_uses = 5
         elif item_type == 'LotteryTicket':
-            self.purchase_cost = 10
-            self.resale_cost = 4
+            self.purchase_cost = 10000
+            self.resale_cost = 400
             self.remaining_uses = 1
         elif item_type == 'NewCar':
             self.purchase_cost = 20000
@@ -517,15 +517,15 @@ class Item:
             self.remaining_uses = 60
         elif item_type == 'UrbanHouse':
             self.purchase_cost = 40000
-            self.resale_cost = 40000
+            self.resale_cost = 25000
             self.remaining_uses = 100
         elif item_type == 'SuburbanHouse':
             self.purchase_cost = 20000
-            self.resale_cost = 20000
+            self.resale_cost = 15000
             self.remaining_uses = 50
         elif item_type == 'RuralHouse':
             self.purchase_cost = 10000
-            self.resale_cost = 10000
+            self.resale_cost = 7000
             self.remaining_uses = 20
         else:
             # The item does not exist which must be a bug.
