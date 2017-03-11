@@ -185,7 +185,16 @@ class Menu:
 
 class EventsLoop:
     '''
-    Sample: menu.body = {
+    Note the pygame.time.wait(0) call. This reduces CPU
+    usage from 100% to negligible!
+    This is noted at this URL:
+    https://www.gamedev.net/topic/518494-pygame-eating-up-my-cpu/#entry4368408
+    The author states:
+    "Giving up any remainder of the timeslice is the key to
+    lowering CPU usage, which is done by sleeping - or,
+    in the case of PyGame, calling time.wait()."
+            
+    Sample body text: menu.body = {
         text: 'Some Main Text',
         font_size: 32,
         top: 40,
@@ -321,6 +330,7 @@ class EventsLoop:
                 if cm.process_event == True:
                     cm.process_events(chosen_position)
                 self.current_menu = cm.keypressArray[chosen_position]()
+            pygame.time.wait(0)
 
 class Character:
     def __init__ (self, create_type):
