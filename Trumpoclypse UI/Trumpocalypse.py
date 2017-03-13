@@ -1,4 +1,3 @@
-
 import time
 import pygame
 import unittest
@@ -423,7 +422,7 @@ class Inventory:
         self.items = [] # Array of items.
         self.all_choices = [
             'Food','Pie','Garden','LotteryTicket','NewCar','OldCar',
-            'UrbanHouse','SuburbanHouse','RuralHouse'
+            'UrbanHouse','SuburbanHouse','RuralHouse','Cash','Food',
         ]
     def item_count(self):
         #Iterates throught self.items and returns a list of all items in array with number of uses left
@@ -444,7 +443,7 @@ class Inventory:
         if item_type != None:
             new_item = Item(item_type)
             if remaining_uses != None:
-                new_item.remainng_uses = remaining_uses
+                new_item.remaining_uses = remaining_uses
             self.update_or_add_item(new_item)
         else:
             # A random item.
@@ -594,16 +593,15 @@ class EventScreen(Menu):
             print c.sanity
             if key == "hours":
                 game_state.game.current_day.day_hours += value
-            try:
+            elif key in c.inventory.all_choices:
+                c.inventory.add_item(str(key),int(value))
+            else:
                 print 'Going to try changing char attribute'
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
-            except:
-                pass
-            else:
-                #c.inventory.add_item(str(key),value)
+            #else:
                 #Needs fixing
-                pass
+                #pass
 
             #Need to add remove func
                 
@@ -616,13 +614,13 @@ class Game:
     term_count = 1
     events = []
     event_dict = {"Tsunami": {"health":-1,"sanity":-1},
-                          "Win Lottery": {"cash":10000,"sanity":1},
+                          "Win Lottery": {"Cash":10000,"sanity":1,},
                           "Extreme Pollution": {"health":-1,"sanity":-1},
                           "Nuclear War": {"health":-2,"sanity":-5},
                           "Curfew": {"hours":-4,"sanity":-1},
-                          "Marshall Law": {"hours":-4,"sanity":-2,"income":-5000},
+                          "Marshall Law": {"income":-5000,"hours":-4,"sanity":-2,},
                           "Power Sleep": {"hours":2,"sanity":2},
-                          "Find Good Stuff": {"food":5,"cash":1000,"sanity":1},
+                          "Find Good Stuff": {"Food":5,'Cash':1000,"sanity":1},
                           }
     def __init__(self):
         self.current_day = None #self.Day()
@@ -646,6 +644,9 @@ class Game:
         def random_event(self):
             num = random.randint(0,len(Game.event_dict)-1) 
             self.event_text = Game.event_dict.keys()[num]
+        def remove_event():
+            
+        
             
             
     class Day:
