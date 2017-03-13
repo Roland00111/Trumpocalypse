@@ -5,6 +5,7 @@ import random
 from TextWrap import *
 import PygameUI
 import gc
+import math
 
 from pygame.locals import *
 
@@ -371,6 +372,8 @@ class Character:
             self.inventory.add_item()
             self.inventory.add_item()
             self.inventory.add_item()
+            self.inventory.add_item('Food','random')
+            self.inventory.add_item('Cash','random')
             # Location
             self.location = Location()
             
@@ -390,6 +393,8 @@ class Character:
             self.inventory.add_item()
             self.inventory.add_item()
             self.inventory.add_item()
+            self.inventory.add_item('Food','random')
+            self.inventory.add_item('Cash','random')
             # Location
             self.location = Location()
     
@@ -442,7 +447,14 @@ class Inventory:
         # If so, then add the item's stats.    
         if item_type != None:
             new_item = Item(item_type)
-            if remaining_uses != None:
+            if remaining_uses == 'random':
+                if item_type == 'Cash':
+                    remaining_uses = random.randint(0,10000)
+                    new_item.remaining_uses = remaining_uses
+                elif item_type == 'Food':
+                    remaining_uses = random.randint(0,100)
+                    new_item.remaining_uses = remaining_uses
+            else: #remaining_uses != None:
                 new_item.remaining_uses = remaining_uses
             self.update_or_add_item(new_item)
         else:
@@ -587,24 +599,14 @@ class EventScreen(Menu):
         event = game_state.game.event_dict[self.events_values[chosen_position]]
         c = game_state.game.character
         for key, value in event.iteritems():
-            print key
-            print value
-            print getattr(c,"health")
-            print c.sanity
             if key == "hours":
                 game_state.game.current_day.day_hours += value
             elif key in c.inventory.all_choices:
                 c.inventory.add_item(str(key),int(value))
             else:
-                print 'Going to try changing char attribute'
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
-            #else:
-                #Needs fixing
-                #pass
-
-            #Need to add remove func
-                
+           
             
 class Game:
     day_counter = 0
@@ -644,7 +646,7 @@ class Game:
         def random_event(self):
             num = random.randint(0,len(Game.event_dict)-1) 
             self.event_text = Game.event_dict.keys()[num]
-        def remove_event():
+        #def remove_event():
             
         
             
