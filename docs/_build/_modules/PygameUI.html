@@ -1,0 +1,427 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PygameUI &#8212; Trumpocalypse 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for PygameUI</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">from</span> <span class="nn">pygame.locals</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="c1">###</span>
+<span class="c1"># Class Signal, Control, Scene, Label, List from:</span>
+<span class="c1"># https://github.com/fictorial/pygameui (sampler branch)</span>
+<span class="c1">###</span>
+<div class="viewcode-block" id="Signal"><a class="viewcode-back" href="../code.html#Trumpocalypse.Signal">[docs]</a><span class="k">class</span> <span class="nc">Signal</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slots</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Signal.add"><a class="viewcode-back" href="../code.html#Trumpocalypse.Signal.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slot</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slot</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">:</span>
+            <span class="n">slot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Control"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control">[docs]</a><span class="k">class</span> <span class="nc">Control</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">bgcolor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="mi">71</span><span class="p">)</span> <span class="c1">#(255, 255, 255)</span>
+    <span class="n">border_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span> <span class="o">=</span> <span class="n">Control</span><span class="o">.</span><span class="n">bgcolor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">border_color</span> <span class="o">=</span> <span class="n">Control</span><span class="o">.</span><span class="n">border_color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interactive</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draggable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selected</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_mouse_down</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_mouse_up</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_drag</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_selected</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_focused</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_blurred</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span>
+
+    <span class="nd">@frame</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_frame</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">new_frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Control.layout"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.layout">[docs]</a>    <span class="k">def</span> <span class="nf">layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Control.add_child"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.add_child">[docs]</a>    <span class="k">def</span> <span class="nf">add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Control.remove_child"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.remove_child">[docs]</a>    <span class="k">def</span> <span class="nf">remove_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_remove</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">child</span> <span class="o">==</span> <span class="n">to_remove</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">break</span></div>
+
+<div class="viewcode-block" id="Control.hit"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.hit">[docs]</a>    <span class="k">def</span> <span class="nf">hit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">collidepoint</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">top</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">interactive</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
+                <span class="n">control</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">hit</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">control</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Control.update"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Control.draw"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">surf</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">surf</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">hidden</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">child_surf</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+            <span class="n">surf</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">child_surf</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">_frame</span><span class="o">.</span><span class="n">topleft</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">border_width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">border_width</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">surf</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">border_color</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="n">_frame</span><span class="p">,</span>
+                                 <span class="n">child</span><span class="o">.</span><span class="n">border_width</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">surf</span></div>
+
+<div class="viewcode-block" id="Control.became_focused"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.became_focused">[docs]</a>    <span class="k">def</span> <span class="nf">became_focused</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_border_width_before_focus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_focused</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Control.became_blurred"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.became_blurred">[docs]</a>    <span class="k">def</span> <span class="nf">became_blurred</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_border_width_before_focus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_blurred</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Control.became_selected"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.became_selected">[docs]</a>    <span class="k">def</span> <span class="nf">became_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yesno</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yesno</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected</span>
+
+    <span class="nd">@selected</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yesno</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selected</span> <span class="o">=</span> <span class="n">yesno</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">became_selected</span><span class="p">(</span><span class="n">yesno</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Control.mouse_down"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.mouse_down">[docs]</a>    <span class="k">def</span> <span class="nf">mouse_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">btn</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_mouse_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">btn</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Control.mouse_up"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.mouse_up">[docs]</a>    <span class="k">def</span> <span class="nf">mouse_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">btn</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_mouse_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">btn</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Control.dragged"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.dragged">[docs]</a>    <span class="k">def</span> <span class="nf">dragged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_drag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Control.child_dragged"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.child_dragged">[docs]</a>    <span class="k">def</span> <span class="nf">child_dragged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">rel</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Control.to_parent_point"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.to_parent_point">[docs]</a>    <span class="k">def</span> <span class="nf">to_parent_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">topleft</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">topleft</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Control.from_parent_point"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.from_parent_point">[docs]</a>    <span class="k">def</span> <span class="nf">from_parent_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">topleft</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">topleft</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Control.from_window_point"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.from_window_point">[docs]</a>    <span class="k">def</span> <span class="nf">from_window_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="n">curr</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">ancestors</span> <span class="o">=</span> <span class="p">[</span><span class="n">curr</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">curr</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span>
+            <span class="n">ancestors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curr</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="n">curr</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">ancestors</span><span class="p">):</span>
+            <span class="n">point</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">from_parent_point</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">point</span></div>
+
+<div class="viewcode-block" id="Control.to_window_point"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.to_window_point">[docs]</a>    <span class="k">def</span> <span class="nf">to_window_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="n">curr</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">while</span> <span class="n">curr</span><span class="p">:</span>
+            <span class="n">point</span> <span class="o">=</span> <span class="n">curr</span><span class="o">.</span><span class="n">to_parent_point</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="n">curr</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">return</span> <span class="n">point</span></div>
+
+<div class="viewcode-block" id="Control.key_down"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.key_down">[docs]</a>    <span class="k">def</span> <span class="nf">key_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Control.key_up"><a class="viewcode-back" href="../code.html#Trumpocalypse.Control.key_up">[docs]</a>    <span class="k">def</span> <span class="nf">key_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">scene</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">curr</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">while</span> <span class="n">curr</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">curr</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">Scene</span><span class="p">):</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="n">curr</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">return</span> <span class="n">curr</span><span class="o">.</span><span class="n">parent</span></div>
+<div class="viewcode-block" id="Scene"><a class="viewcode-back" href="../code.html#Trumpocalypse.Scene">[docs]</a><span class="k">class</span> <span class="nc">Scene</span><span class="p">(</span><span class="n">Control</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Control</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">854</span><span class="p">,</span><span class="mi">480</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Scene.key_down"><a class="viewcode-back" href="../code.html#Trumpocalypse.Scene.key_down">[docs]</a>    <span class="k">def</span> <span class="nf">key_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Scene.key_up"><a class="viewcode-back" href="../code.html#Trumpocalypse.Scene.key_up">[docs]</a>    <span class="k">def</span> <span class="nf">key_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">focus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span>
+
+    <span class="nd">@focus</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_focus</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">!=</span> <span class="n">new_focus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="o">.</span><span class="n">became_blurred</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">=</span> <span class="n">new_focus</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="o">.</span><span class="n">became_focused</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Scene.show_alert"><a class="viewcode-back" href="../code.html#Trumpocalypse.Scene.show_alert">[docs]</a>    <span class="k">def</span> <span class="nf">show_alert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="n">alert</span> <span class="o">=</span> <span class="n">Alert</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">alert</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">h</span> <span class="o">//</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">alert</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="Label"><a class="viewcode-back" href="../code.html#Trumpocalypse.Label">[docs]</a><span class="k">class</span> <span class="nc">Label</span><span class="p">(</span><span class="n">Control</span><span class="p">):</span>
+    <span class="n">text_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+    <span class="n">padding</span> <span class="o">=</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">selected_bgcolor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+    <span class="n">bgcolor</span> <span class="o">=</span> <span class="n">Control</span><span class="o">.</span><span class="n">bgcolor</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">label_bgcolor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)):</span>
+        <span class="n">Control</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">Label</span><span class="o">.</span><span class="n">selected_bgcolor</span> <span class="o">=</span> <span class="n">label_bgcolor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interactive</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">SysFont</span><span class="p">(</span><span class="s1">&#39;data/coders_crux/coders_crux.ttf&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_color</span> <span class="o">=</span> <span class="n">Label</span><span class="o">.</span><span class="n">text_color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="n">Label</span><span class="o">.</span><span class="n">padding</span>
+
+<div class="viewcode-block" id="Label.size_of"><a class="viewcode-back" href="../code.html#Trumpocalypse.Label.size_of">[docs]</a>    <span class="k">def</span> <span class="nf">size_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Label.size_to_fit"><a class="viewcode-back" href="../code.html#Trumpocalypse.Label.size_to_fit">[docs]</a>    <span class="k">def</span> <span class="nf">size_to_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Label.draw"><a class="viewcode-back" href="../code.html#Trumpocalypse.Label.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">text_surf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">text_color</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">text_surf</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+        <span class="n">padded_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                       <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">surf</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="n">padded_size</span><span class="p">)</span>
+        <span class="n">surf</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">)</span>
+        <span class="n">surf</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">text_surf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">surf</span></div>
+
+<div class="viewcode-block" id="Label.became_selected"><a class="viewcode-back" href="../code.html#Trumpocalypse.Label.became_selected">[docs]</a>    <span class="k">def</span> <span class="nf">became_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yesno</span><span class="p">):</span>
+        <span class="n">Control</span><span class="o">.</span><span class="n">became_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yesno</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">yesno</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span> <span class="o">=</span> <span class="n">Label</span><span class="o">.</span><span class="n">selected_bgcolor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span> <span class="o">=</span> <span class="n">Label</span><span class="o">.</span><span class="n">bgcolor</span></div></div>
+<div class="viewcode-block" id="List"><a class="viewcode-back" href="../code.html#Trumpocalypse.List">[docs]</a><span class="k">class</span> <span class="nc">List</span><span class="p">(</span><span class="n">Control</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+        <span class="n">Control</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selected_index</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_selection</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">Control</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">draggable</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">on_mouse_down</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container_down</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">on_mouse_up</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container_up</span><span class="p">)</span>
+        <span class="n">y</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="n">lbl</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span><span class="n">text</span><span class="p">,(</span><span class="mi">255</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="mi">71</span><span class="p">))</span>
+            <span class="n">lbl</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">topleft</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">lbl</span><span class="o">.</span><span class="n">size_of</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">lbl</span><span class="o">.</span><span class="n">size_to_fit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">lbl</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="List.child_dragged"><a class="viewcode-back" href="../code.html#Trumpocalypse.List.child_dragged">[docs]</a>    <span class="k">def</span> <span class="nf">child_dragged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">rel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">top</span> <span class="o">+=</span> <span class="n">rel</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">top</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">bottom</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">bottom</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">down_at</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># any drag kills a click for selecting</span></div>
+    
+<div class="viewcode-block" id="List.container_down"><a class="viewcode-back" href="../code.html#Trumpocalypse.List.container_down">[docs]</a>    <span class="k">def</span> <span class="nf">container_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">mouse_button</span><span class="p">,</span> <span class="n">mouse_pos</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">down_at</span> <span class="o">=</span> <span class="n">mouse_pos</span></div>
+    
+<div class="viewcode-block" id="List.container_up"><a class="viewcode-back" href="../code.html#Trumpocalypse.List.container_up">[docs]</a>    <span class="k">def</span> <span class="nf">container_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">mouse_button</span><span class="p">,</span> <span class="n">mouse_pos</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">down_at</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">collidepoint</span><span class="p">(</span><span class="n">mouse_pos</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">=</span> <span class="kc">None</span></div>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selected_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_index</span>
+    
+    <span class="nd">@selected_index</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">selected_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">child</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">prev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_index</span><span class="p">]</span>
+            <span class="n">prev</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selected_index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TextField"><a class="viewcode-back" href="../code.html#Trumpocalypse.TextField">[docs]</a><span class="k">class</span> <span class="nc">TextField</span><span class="p">(</span><span class="n">Control</span><span class="p">):</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span>
+    <span class="n">padding</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Control</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,(</span><span class="mi">255</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="mi">71</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="n">TextField</span><span class="o">.</span><span class="n">padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">TextField</span><span class="o">.</span><span class="n">prompt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">secure</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">border_width</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_return</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_text_change</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TextField.layout"><a class="viewcode-back" href="../code.html#Trumpocalypse.TextField.layout">[docs]</a>    <span class="k">def</span> <span class="nf">layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Control</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">size</span></div>
+
+<div class="viewcode-block" id="TextField.key_down"><a class="viewcode-back" href="../code.html#Trumpocalypse.TextField.key_down">[docs]</a>    <span class="k">def</span> <span class="nf">key_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_BACKSPACE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_RETURN</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_text_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">secure</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">+</span> <span class="n">TextField</span><span class="o">.</span><span class="n">prompt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">size_to_fit</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">right</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TextField.mouse_up"><a class="viewcode-back" href="../code.html#Trumpocalypse.TextField.mouse_up">[docs]</a>    <span class="k">def</span> <span class="nf">mouse_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
+	<span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">focus</span> <span class="o">=</span> <span class="bp">self</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Roland, Nick, Jesse, David, Mahir.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

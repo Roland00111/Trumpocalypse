@@ -94,13 +94,14 @@ To make this documentation...
 +----------------------------------------------------------------------------------------+--------------+ 
 
 | # To conf.py add parent folder containing the code to document.
-| # Also add mock.
+| # Also add stuff to make pygame and sphinx work together (e.g. mock).
 
 ::
 
  import os
  import sys
  import pygame
+ from pygame.locals import *
  from mock import Mock
  sys.modules['pygame'] = Mock()
  sys.modules['pygame.constants'] = Mock()
@@ -130,6 +131,8 @@ To make this documentation...
      :undoc-members:
 
 | # Then add the rst file code.rst to index.rst.
+| # (Also add `To make this documentation...` to index.rst)
+
 
 ::
 

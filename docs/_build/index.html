@@ -161,11 +161,12 @@ $ ../../venv/bin/sphinx-quickstart
 </table>
 <div class="line-block">
 <div class="line"># To conf.py add parent folder containing the code to document.</div>
-<div class="line"># Also add mock.</div>
+<div class="line"># Also add stuff to make pygame and sphinx work together (e.g. mock).</div>
 </div>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">from</span> <span class="nn">pygame.locals</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">mock</span> <span class="k">import</span> <span class="n">Mock</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s1">&#39;pygame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Mock</span><span class="p">()</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s1">&#39;pygame.constants&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Mock</span><span class="p">()</span>
@@ -197,6 +198,7 @@ $ ../../venv/bin/sphinx-quickstart
 </div>
 <div class="line-block">
 <div class="line"># Then add the rst file code.rst to index.rst.</div>
+<div class="line"># (Also add <cite>To make this documentation...</cite> to index.rst)</div>
 </div>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Documentation</span>
 <span class="o">=============</span>

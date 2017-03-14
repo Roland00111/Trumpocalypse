@@ -1,0 +1,1127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Trumpocalypse &#8212; Trumpocalypse 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Trumpocalypse</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pygame</span>
+<span class="c1">#import unittest</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">TextWrap</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">PygameUI</span>
+<span class="c1">#import gc</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">pygame.locals</span> <span class="k">import</span> <span class="o">*</span>
+
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">get_init</span><span class="p">():</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">get_init</span><span class="p">():</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+<span class="n">game_state</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># A global variable to be accessible by all classes throughout the game.</span>
+<span class="n">down_in</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># A global variable for pygameui (menu custom fields)</span>
+<span class="n">CharacterDictionary</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="Menu"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu">[docs]</a><span class="k">class</span> <span class="nc">Menu</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Original code for the menu class is from:</span>
+<span class="sd">        @author: avalanchy (at) google mail dot com</span>
+<span class="sd">        @version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14; MS Windows XP SP3</span>
+<span class="sd">        @date: 2012-04-08</span>
+<span class="sd">        @license: This document is under GNU GPL v3</span>
+<span class="sd">        README on the bottom of document.</span>
+<span class="sd">        @font: from http://www.dafont.com/coders-crux.font</span>
+<span class="sd">              more abuot license you can find in data/coders-crux/license.txt</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">process_event</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">lista</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">by</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">FontSize</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">font_path</span> <span class="o">=</span> <span class="s1">&#39;data/coders_crux/coders_crux.ttf&#39;</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">Font</span>
+    <span class="n">dest_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span> <span class="c1">#how surface game is on is generated</span>
+    <span class="n">QuanityOfLista</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1">#initalizer</span>
+    <span class="c1">#BackgroundColor = (51,51,51)</span>
+    <span class="n">BackgroundColor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="mi">71</span><span class="p">)</span><span class="c1">#color of background of menu itself (currently Trumps skin color :))</span>
+    <span class="n">TextColor</span> <span class="o">=</span>  <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">)</span>
+    <span class="n">SelectionColor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span><span class="mi">102</span><span class="p">,</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">PositionSelection</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1">#initalizer</span>
+    <span class="n">Position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#set as initalizer</span>
+    <span class="n">menu_width</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="n">menu_height</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">custom_fields</span> <span class="o">=</span> <span class="p">[]</span>              <span class="c1"># To be filled in by menu classes that need buttons, selects, inputs, and number inputs</span>
+    <span class="n">scene</span> <span class="o">=</span> <span class="n">PygameUI</span><span class="o">.</span><span class="n">Scene</span><span class="p">()</span>        <span class="c1"># For utilizing pygameui</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="kc">False</span>                    <span class="c1"># This is for main text area.</span>
+    
+     
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+        
+<div class="viewcode-block" id="Menu.Field"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.Field">[docs]</a>    <span class="k">class</span> <span class="nc">Field</span><span class="p">:</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">Field</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span>
+        <span class="n">Field_rect</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span>
+        <span class="n">Selection_rect</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span></div>
+
+<div class="viewcode-block" id="Menu.move_menu"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.move_menu">[docs]</a>    <span class="k">def</span> <span class="nf">move_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Position</span> <span class="o">=</span> <span class="p">(</span><span class="n">top</span><span class="p">,</span><span class="n">left</span><span class="p">)</span> </div>
+
+<div class="viewcode-block" id="Menu.set_colors"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.set_colors">[docs]</a>    <span class="k">def</span> <span class="nf">set_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">background</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">BackgroundColor</span> <span class="o">=</span> <span class="n">background</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TextColor</span> <span class="o">=</span>  <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SelectionColor</span> <span class="o">=</span> <span class="n">selection</span></div>
+        
+<div class="viewcode-block" id="Menu.set_fontsize"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.set_fontsize">[docs]</a>    <span class="k">def</span> <span class="nf">set_fontsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">font_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FontSize</span> <span class="o">=</span> <span class="n">font_size</span></div>
+        
+<div class="viewcode-block" id="Menu.set_font"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.set_font">[docs]</a>    <span class="k">def</span> <span class="nf">set_font</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_path</span> <span class="o">=</span> <span class="n">path</span></div>
+        
+<div class="viewcode-block" id="Menu.get_position"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.get_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PositionSelection</span></div>
+    
+<div class="viewcode-block" id="Menu.init"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lista</span><span class="p">,</span> <span class="n">dest_surface</span><span class="p">,</span> <span class="n">height_top</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># Must be 0,0 each time Menu is redrawn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lista</span> <span class="o">=</span> <span class="n">lista</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dest_surface</span> <span class="o">=</span> <span class="n">dest_surface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Quanity</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lista</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CreateStructure</span><span class="p">(</span><span class="n">height_top</span><span class="p">)</span>        </div>
+        
+<div class="viewcode-block" id="Menu.draw"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">move</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">move</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">PositionSelection</span> <span class="o">+=</span> <span class="n">move</span> 
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PositionSelection</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">PositionSelection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Quanity</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">PositionSelection</span> <span class="o">%=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Quanity</span>
+        <span class="n">menu</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">menu_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_height</span><span class="p">))</span>
+        <span class="n">menu</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">BackgroundColor</span><span class="p">)</span>
+        <span class="n">Selection_rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">PositionSelection</span><span class="p">]</span><span class="o">.</span><span class="n">Selection_rect</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">SelectionColor</span><span class="p">,</span><span class="n">Selection_rect</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Quanity</span><span class="p">):</span>
+            <span class="n">menu</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field_rect</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dest_surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Position</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PositionSelection</span></div>
+
+<div class="viewcode-block" id="Menu.CreateStructure"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.CreateStructure">[docs]</a>    <span class="k">def</span> <span class="nf">CreateStructure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height_top</span><span class="p">):</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_height</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">FontSize</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Quanity</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Field</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lista</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TextColor</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field_rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span>
+            <span class="n">shift</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FontSize</span> <span class="o">*</span> <span class="mf">0.2</span><span class="p">)</span>
+
+            <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field_rect</span><span class="o">.</span><span class="n">height</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field_rect</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">shift</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field_rect</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="n">shift</span><span class="o">+</span><span class="p">(</span><span class="n">shift</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="n">height</span><span class="p">)</span><span class="o">*</span><span class="n">i</span>
+
+            <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field_rect</span><span class="o">.</span><span class="n">width</span><span class="o">+</span><span class="n">shift</span><span class="o">*</span><span class="mi">3</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field_rect</span><span class="o">.</span><span class="n">height</span><span class="o">+</span><span class="n">shift</span><span class="o">*</span><span class="mi">3</span>            
+            <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field_rect</span><span class="o">.</span><span class="n">left</span><span class="o">-</span><span class="n">shift</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Field_rect</span><span class="o">.</span><span class="n">top</span><span class="o">-</span><span class="n">shift</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">by</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">Selection_rect</span> <span class="o">=</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span><span class="n">top</span> <span class="p">,</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">width</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_width</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">menu_width</span> <span class="o">=</span> <span class="n">width</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu_height</span> <span class="o">+=</span> <span class="n">height</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_surface</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span><span class="o">.</span><span class="n">centerx</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_width</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_surface</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span><span class="o">.</span><span class="n">centery</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu_height</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height_top</span> <span class="c1"># Add top offset</span>
+        <span class="n">mx</span><span class="p">,</span> <span class="n">my</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">mx</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">my</span><span class="p">)</span> </div>
+    
+<div class="viewcode-block" id="Menu.CustomField"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.CustomField">[docs]</a>    <span class="k">class</span> <span class="nc">CustomField</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_type</span><span class="p">,</span> <span class="n">field_content</span><span class="p">,</span> <span class="n">field_label</span><span class="p">,</span> <span class="n">field_event_hooks</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            field_type = string: &#39;list&#39;, &#39;button&#39;, &#39;input&#39;, &#39;number&#39; (also input but limited to #s)</span>
+<span class="sd">            field_content = array of strings: for list; string: button text, input default value, number default value</span>
+<span class="sd">            field_label = string, a label to put beside the field</span>
+<span class="sd">            field_event_hooks = array, an array of dict events, each dict event has a `type` and `callback_function`</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">field_type</span>         <span class="o">=</span> <span class="n">field_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">field_content</span>      <span class="o">=</span> <span class="n">field_content</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">field_label</span>        <span class="o">=</span> <span class="n">field_label</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">field_event_hooks</span>  <span class="o">=</span> <span class="n">field_event_hooks</span>
+            <span class="c1"># Sample: Add a select to the scene.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+            
+<div class="viewcode-block" id="Menu.CustomField.select"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.CustomField.select">[docs]</a>        <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># This is named select because Python already has a list() function.</span>
+            <span class="c1"># There is probably a callback function here for events.</span>
+            <span class="c1"># There could be a label passed into CustomField</span>
+            <span class="c1"># that is added to the left of each list.</span>
+            <span class="c1"># Is it possible to add this with the Label class?</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">PygameUI</span><span class="o">.</span><span class="n">List</span><span class="p">([</span><span class="s1">&#39;Item </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)])</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">Menu</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">170</span><span class="p">)</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">Menu</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="n">x</span> <span class="o">=</span> <span class="n">PygameUI</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+            <span class="n">Menu</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+ 
+            <span class="c1">###</span>
+            <span class="c1"># Here is where a label for the select() element would go.</span>
+            <span class="c1">###</span>
+        
+<div class="viewcode-block" id="Menu.CustomField.button"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.CustomField.button">[docs]</a>        <span class="k">def</span> <span class="nf">button</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">pass</span></div>
+         
+<div class="viewcode-block" id="Menu.CustomField.input_box"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.CustomField.input_box">[docs]</a>        <span class="k">def</span> <span class="nf">input_box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">pass</span></div>
+        
+<div class="viewcode-block" id="Menu.CustomField.number"><a class="viewcode-back" href="../code.html#Trumpocalypse.Menu.CustomField.number">[docs]</a>        <span class="k">def</span> <span class="nf">number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># What if the number field is instead just a list() field?</span>
+            <span class="k">pass</span></div></div></div>
+    
+    <span class="c1">#def __del__(self):</span>
+    <span class="c1">#    print &quot;__del__&quot;, self</span>
+
+<div class="viewcode-block" id="EventsLoop"><a class="viewcode-back" href="../code.html#Trumpocalypse.EventsLoop">[docs]</a><span class="k">class</span> <span class="nc">EventsLoop</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Note the pygame.time.wait(0) call. This reduces CPU</span>
+<span class="sd">    usage from 100% to negligible!</span>
+<span class="sd">    This is noted at this URL:</span>
+<span class="sd">    https://www.gamedev.net/topic/518494-pygame-eating-up-my-cpu/#entry4368408</span>
+<span class="sd">    The author states:</span>
+<span class="sd">    &quot;Giving up any remainder of the timeslice is the key to</span>
+<span class="sd">    lowering CPU usage, which is done by sleeping - or,</span>
+<span class="sd">    in the case of PyGame, calling time.wait().&quot;</span>
+<span class="sd">            </span>
+<span class="sd">    Sample body text: menu.body = {</span>
+<span class="sd">        text: &#39;Some Main Text&#39;,</span>
+<span class="sd">        font_size: 32,</span>
+<span class="sd">        top: 40,</span>
+<span class="sd">        height: 300</span>
+<span class="sd">    }</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">current_menu</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">testevents</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span> <span class="c1"># , text = False, size=22,top=40,boxHeight=300</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_menu</span> <span class="o">=</span> <span class="n">OpeningMenu</span><span class="p">()</span> <span class="c1"># Starts on opening menu. Then changes.</span>
+        <span class="n">event_loop</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">recurse_test</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">event_loop</span><span class="p">:</span>
+            <span class="n">chosen_position</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Reset on each loop</span>
+            <span class="n">cm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_menu</span> <span class="c1"># A quick shortcut</span>
+            <span class="c1">########################Used for Testing###############################</span>
+            <span class="k">if</span> <span class="n">testevents</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">while</span> <span class="n">testevents</span><span class="p">:</span>
+                    <span class="n">cm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_menu</span> <span class="c1"># A quick shortcut</span>
+                    <span class="n">chosen_position</span> <span class="o">=</span> <span class="n">testevents</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="c1">#print chosen_position</span>
+                    <span class="k">while</span> <span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                    <span class="c1"># This does work to remove Scene() children.</span>
+                        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                    <span class="c1"># Grab one child and remove it.</span>
+                            <span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">remove_child</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                            <span class="k">break</span>
+                    <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">draw</span><span class="p">(),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                    <span class="c1"># Draw other menu content</span>
+                    <span class="k">if</span> <span class="n">cm</span><span class="o">.</span><span class="n">body</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                        <span class="c1"># Draw non-body menu</span>
+                        <span class="n">cm</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">titlesArray</span><span class="p">,</span> <span class="n">surface</span><span class="p">)</span>
+                        <span class="n">cm</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Draw menu plus body</span>
+                        <span class="n">cm</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">titlesArray</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+                        <span class="n">cm</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">dest_surface</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span><span class="o">.</span><span class="n">centerx</span> <span class="o">-</span> <span class="mi">150</span> <span class="c1">#300 - self.menu_width / 2  Calculate the x offset</span>
+                        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">71</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cm</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">],</span> <span class="mi">300</span><span class="p">,</span> <span class="n">cm</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]),</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># Draw a box background.</span>
+                                                   <span class="c1">#Box color</span>
+                        <span class="c1"># There is a slight offset from the text and the box.</span>
+                        <span class="c1"># The box needs to contain the text. So the text is</span>
+                        <span class="c1"># going to be slightly smaller. How about 8 pixels?</span>
+                        <span class="n">rect</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="mi">8</span><span class="p">,</span><span class="n">cm</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">8</span><span class="p">,</span><span class="mi">300</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="mi">300</span><span class="o">-</span><span class="mi">8</span><span class="p">))</span> <span class="c1"># left,top,width,height</span>
+                        <span class="n">font</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="s1">&#39;data/coders_crux/coders_crux.ttf&#39;</span><span class="p">,</span><span class="n">cm</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;font_size&#39;</span><span class="p">])</span>
+                        <span class="n">drawText</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="n">cm</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="p">(</span><span class="mi">130</span><span class="p">,</span><span class="mi">130</span><span class="p">,</span><span class="mi">130</span><span class="p">),</span> <span class="n">rect</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">aa</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bkg</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                    <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                    <span class="c1">#print cm.keypressArray[chosen_position]</span>
+                    <span class="c1">#print cm.keypressArray</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_menu</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">keypressArray</span><span class="p">[</span><span class="n">chosen_position</span><span class="p">]()</span>
+                <span class="k">return</span>
+            <span class="c1">#####################################################################</span>
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">KEYDOWN</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">unicode</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">K_UP</span><span class="p">:</span>
+                        <span class="n">cm</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#here is the Menu class function</span>
+                    <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">K_DOWN</span><span class="p">:</span>
+                        <span class="n">cm</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#here is the Menu class function</span>
+                    <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">K_RETURN</span><span class="p">:</span>
+                        <span class="n">chosen_position</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+                        <span class="k">break</span>
+                    <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">K_ESCAPE</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                        <span class="c1">#pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11</span>
+                        <span class="c1">#pygame.display.set_mode((800,600),pygame.FULLSCREEN) #Mess up the screen (at least with my laptop)</span>
+                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QUIT</span><span class="p">:</span>
+                    <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">MOUSEBUTTONUP</span><span class="p">:</span> <span class="c1">#pygame.MOUSEBUTTONUP</span>
+                        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                        http://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection</span>
+<span class="sd">                        &#39;&#39;&#39;</span>
+                        <span class="n">pos</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()</span>
+                        <span class="p">(</span><span class="n">pressed1</span><span class="p">,</span><span class="n">pressed2</span><span class="p">,</span><span class="n">pressed3</span><span class="p">)</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pressed</span><span class="p">()</span>
+                        <span class="nb">print</span> <span class="s1">&#39;Mouse click: &#39;</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pressed</span><span class="p">()</span>
+                        <span class="c1"># This will check if a Rect was clicked:</span>
+                        <span class="c1">#~ if Rectplace.collidepoint(pos)&amp; pressed1==1:</span>
+                            <span class="c1">#~ print(&quot;You have opened a chest!&quot;)</span>
+                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONDOWN</span><span class="p">:</span>
+                    <span class="k">global</span> <span class="n">down_in</span>
+                    <span class="n">down_in</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">hit</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">down_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">down_in</span><span class="p">,</span> <span class="n">PygameUI</span><span class="o">.</span><span class="n">Scene</span><span class="p">):</span>
+                        <span class="n">down_in</span><span class="o">.</span><span class="n">mouse_down</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">button</span><span class="p">,</span> <span class="n">down_in</span><span class="o">.</span><span class="n">from_window_point</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">pos</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONUP</span><span class="p">:</span>
+                    <span class="n">up_in</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">hit</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">down_in</span> <span class="o">==</span> <span class="n">up_in</span><span class="p">:</span>
+                        <span class="n">down_in</span><span class="o">.</span><span class="n">mouse_up</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">button</span><span class="p">,</span> <span class="n">down_in</span><span class="o">.</span><span class="n">from_window_point</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">pos</span><span class="p">))</span>
+                    <span class="n">down_in</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEMOTION</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">down_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">down_in</span><span class="o">.</span><span class="n">draggable</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">down_in</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">down_in</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">child_dragged</span><span class="p">(</span><span class="n">down_in</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">rel</span><span class="p">)</span>
+                        <span class="n">down_in</span><span class="o">.</span><span class="n">dragged</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">rel</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">KEYDOWN</span><span class="p">:</span>
+                    <span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">key_down</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">unicode</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">KEYUP</span><span class="p">:</span>
+                    <span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+                <span class="c1"># Draw the pygameui input boxes</span>
+                <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">draw</span><span class="p">(),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="c1"># Draw other menu content</span>
+                <span class="k">if</span> <span class="n">cm</span><span class="o">.</span><span class="n">body</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="c1"># Draw non-body menu</span>
+                    <span class="n">cm</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">titlesArray</span><span class="p">,</span> <span class="n">surface</span><span class="p">)</span>
+                    <span class="n">cm</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Draw menu plus body</span>
+                    <span class="n">cm</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">titlesArray</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+                    <span class="n">cm</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">dest_surface</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span><span class="o">.</span><span class="n">centerx</span> <span class="o">-</span> <span class="mi">150</span> <span class="c1">#300 - self.menu_width / 2  Calculate the x offset</span>
+                    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">71</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cm</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">],</span> <span class="mi">300</span><span class="p">,</span> <span class="n">cm</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]),</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># Draw a box background.</span>
+                                               <span class="c1">#Box color</span>
+                    <span class="c1"># There is a slight offset from the text and the box.</span>
+                    <span class="c1"># The box needs to contain the text. So the text is</span>
+                    <span class="c1"># going to be slightly smaller. How about 8 pixels?</span>
+                    <span class="n">rect</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="mi">8</span><span class="p">,</span><span class="n">cm</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">8</span><span class="p">,</span><span class="mi">300</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="mi">300</span><span class="o">-</span><span class="mi">8</span><span class="p">))</span> <span class="c1"># left,top,width,height</span>
+                    <span class="n">font</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="s1">&#39;data/coders_crux/coders_crux.ttf&#39;</span><span class="p">,</span><span class="n">cm</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;font_size&#39;</span><span class="p">])</span>
+                    <span class="n">drawText</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="n">cm</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span> <span class="p">(</span><span class="mi">130</span><span class="p">,</span><span class="mi">130</span><span class="p">,</span><span class="mi">130</span><span class="p">),</span> <span class="n">rect</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">aa</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bkg</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">chosen_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># There is a chosen position.</span>
+                <span class="c1"># Change to a new menu class.</span>
+        <span class="c1"># The following does not work to remove Scene() children:</span>
+        <span class="c1">#   del self.current_menu</span>
+        <span class="c1">#   self.scene.__del__()</span>
+                <span class="k">while</span> <span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="c1"># This does work to remove Scene() children.</span>
+                    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="c1"># Grab one child and remove it.</span>
+                        <span class="n">cm</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">remove_child</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                        <span class="k">break</span>
+        <span class="c1"># Go to the next menu.</span>
+                <span class="k">if</span> <span class="n">cm</span><span class="o">.</span><span class="n">process_event</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">cm</span><span class="o">.</span><span class="n">process_events</span><span class="p">(</span><span class="n">chosen_position</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_menu</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">keypressArray</span><span class="p">[</span><span class="n">chosen_position</span><span class="p">]()</span>
+            <span class="n">pygame</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Character"><a class="viewcode-back" href="../code.html#Trumpocalypse.Character">[docs]</a><span class="k">class</span> <span class="nc">Character</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">create_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Default&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">health</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strength</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gender</span> <span class="o">=</span> <span class="s1">&#39;male&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">40</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">charisma</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intelligence</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sanity</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span> <span class="o">=</span> <span class="n">Inventory</span><span class="p">()</span> <span class="c1"># Give character an inventory.</span>
+        <span class="k">if</span> <span class="n">create_type</span> <span class="o">==</span> <span class="s1">&#39;random&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">randomGenerate</span><span class="p">()</span>
+            <span class="k">pass</span>
+        <span class="c1">#~ self.location = self.Location() # This works...</span>
+    <span class="c1">#~ # Subclasses of Character? Eg Location...</span>
+    <span class="c1">#~ # This works...</span>
+    <span class="c1">#~ class Location:</span>
+        <span class="c1">#~ def __init__(self):</span>
+            <span class="c1">#~ print &#39;test&#39;</span>
+    
+<div class="viewcode-block" id="Character.randomGenerate"><a class="viewcode-back" href="../code.html#Trumpocalypse.Character.randomGenerate">[docs]</a>    <span class="k">def</span> <span class="nf">randomGenerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">global</span> <span class="n">CharacterDictionary</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Bill&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">health</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">strength</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gender</span> <span class="o">=</span> <span class="s1">&#39;male&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">69</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">charisma</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">intelligence</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">job</span> <span class="o">=</span> <span class="s1">&#39;Plumber&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">income</span> <span class="o">=</span> <span class="mi">10000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sanity</span> <span class="o">=</span> <span class="mi">30</span>
+            <span class="c1"># Add some random items.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">()</span> <span class="c1">#To add item insert string of item (item_type) see Item class, else it&#39;s random</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="s1">&#39;Food&#39;</span><span class="p">,</span><span class="s1">&#39;random&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="s1">&#39;Cash&#39;</span><span class="p">,</span><span class="s1">&#39;random&#39;</span><span class="p">)</span>
+            <span class="c1"># Location</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">Location</span><span class="p">()</span>
+            
+        <span class="k">elif</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Linda&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">health</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">strength</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gender</span> <span class="o">=</span> <span class="s1">&#39;female&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">40</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">charisma</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">intelligence</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">job</span> <span class="o">=</span> <span class="s1">&#39;CEO&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">income</span> <span class="o">=</span> <span class="mi">20000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sanity</span> <span class="o">=</span> <span class="mi">30</span>
+            <span class="c1"># Add some random items.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="s1">&#39;Food&#39;</span><span class="p">,</span><span class="s1">&#39;random&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="s1">&#39;Cash&#39;</span><span class="p">,</span><span class="s1">&#39;random&#39;</span><span class="p">)</span>
+            <span class="c1"># Location</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">Location</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="Character.born"><a class="viewcode-back" href="../code.html#Trumpocalypse.Character.born">[docs]</a>    <span class="k">def</span> <span class="nf">born</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39; is alive!&#39;</span></div>
+<div class="viewcode-block" id="Character.died"><a class="viewcode-back" href="../code.html#Trumpocalypse.Character.died">[docs]</a>    <span class="k">def</span> <span class="nf">died</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39; is dead!&#39;</span></div></div>
+
+<div class="viewcode-block" id="Location"><a class="viewcode-back" href="../code.html#Trumpocalypse.Location">[docs]</a><span class="k">class</span> <span class="nc">Location</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States&#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">environment_bonus</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_locations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Middle Atlantic&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;New England&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;South Atlantic&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;East South Central&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;East North Central&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;West North Central&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;West South Central&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Mountain&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Pacific&#39;</span>
+        <span class="p">]</span>
+        <span class="c1"># Default location is random.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_locations</span><span class="p">[</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span> <span class="p">]</span> <span class="c1"># Any of 0,1,2,3,4,5,6,7,8</span></div>
+        
+<div class="viewcode-block" id="Inventory"><a class="viewcode-back" href="../code.html#Trumpocalypse.Inventory">[docs]</a><span class="k">class</span> <span class="nc">Inventory</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_items</span> <span class="o">=</span> <span class="mi">999</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># Array of items.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_choices</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Food&#39;</span><span class="p">,</span><span class="s1">&#39;Pie&#39;</span><span class="p">,</span><span class="s1">&#39;Garden&#39;</span><span class="p">,</span><span class="s1">&#39;LotteryTicket&#39;</span><span class="p">,</span><span class="s1">&#39;NewCar&#39;</span><span class="p">,</span><span class="s1">&#39;OldCar&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;UrbanHouse&#39;</span><span class="p">,</span><span class="s1">&#39;SuburbanHouse&#39;</span><span class="p">,</span><span class="s1">&#39;RuralHouse&#39;</span><span class="p">,</span><span class="s1">&#39;Cash&#39;</span><span class="p">,</span><span class="s1">&#39;Food&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+<div class="viewcode-block" id="Inventory.item_count"><a class="viewcode-back" href="../code.html#Trumpocalypse.Inventory.item_count">[docs]</a>    <span class="k">def</span> <span class="nf">item_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#Iterates throught self.items and returns a list of all items in array with number of uses left</span>
+        <span class="n">storage</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
+            <span class="n">storage</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">item_type</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">remaining_uses</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">storage</span></div>
+    
+<div class="viewcode-block" id="Inventory.num_items"><a class="viewcode-back" href="../code.html#Trumpocalypse.Inventory.num_items">[docs]</a>    <span class="k">def</span> <span class="nf">num_items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Returns the number of items in the inventory</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Inventory.add_item"><a class="viewcode-back" href="../code.html#Trumpocalypse.Inventory.add_item">[docs]</a>    <span class="k">def</span> <span class="nf">add_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_type</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># Add an item to this inventory.</span>
+        <span class="c1"># If item_type is None then add a random item.</span>
+        <span class="c1"># If item_type is not None then add item of this type.</span>
+        <span class="c1"># Does the item already exist in the inventory?</span>
+        <span class="c1"># If so, then add the item&#39;s stats.    </span>
+        <span class="k">if</span> <span class="n">item_type</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_item</span> <span class="o">=</span> <span class="n">Item</span><span class="p">(</span><span class="n">item_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">remaining_uses</span> <span class="o">==</span> <span class="s1">&#39;random&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Cash&#39;</span><span class="p">:</span>
+                    <span class="n">remaining_uses</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10000</span><span class="p">)</span>
+                    <span class="n">new_item</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="n">remaining_uses</span>
+                <span class="k">elif</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Food&#39;</span><span class="p">:</span>
+                    <span class="n">remaining_uses</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+                    <span class="n">new_item</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="n">remaining_uses</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1">#remaining_uses != None:</span>
+                <span class="n">new_item</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="n">remaining_uses</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_or_add_item</span><span class="p">(</span><span class="n">new_item</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># A random item.</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_choices</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">rand_item</span> <span class="o">=</span> <span class="n">Item</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_choices</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_or_add_item</span><span class="p">(</span><span class="n">rand_item</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Inventory.update_or_add_item"><a class="viewcode-back" href="../code.html#Trumpocalypse.Inventory.update_or_add_item">[docs]</a>    <span class="k">def</span> <span class="nf">update_or_add_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_item</span><span class="p">):</span>
+        <span class="n">existing_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_item</span><span class="p">(</span><span class="n">new_item</span><span class="o">.</span><span class="n">item_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">existing_item</span> <span class="o">!=</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># Add to the remaining uses.</span>
+            <span class="n">existing_item</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">+=</span> <span class="n">new_item</span><span class="o">.</span><span class="n">remaining_uses</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">new_item</span> <span class="p">)</span></div>
+<div class="viewcode-block" id="Inventory.contains_item"><a class="viewcode-back" href="../code.html#Trumpocalypse.Inventory.contains_item">[docs]</a>    <span class="k">def</span> <span class="nf">contains_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_type</span><span class="p">):</span>
+        <span class="c1"># Returns the item in the inventory if it exists.</span>
+        <span class="c1"># Otherwise returns False.</span>
+        <span class="c1"># This takes O(n) time as it searches entire list.</span>
+        <span class="k">for</span> <span class="n">existing_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">existing_item</span><span class="o">.</span><span class="n">item_type</span> <span class="o">==</span> <span class="n">item_type</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">existing_item</span>
+        <span class="c1"># Still here? Then the item is not in the inventory.</span>
+        <span class="k">return</span> <span class="kc">False</span></div></div>
+        
+<div class="viewcode-block" id="Item"><a class="viewcode-back" href="../code.html#Trumpocalypse.Item">[docs]</a><span class="k">class</span> <span class="nc">Item</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Example items:</span>
+<span class="sd">        There is a NewCar item in the inventory with e.g. 100 uses.</span>
+<span class="sd">        There is a Food in the inventory with e.g. 10 uses.</span>
+<span class="sd">    </span>
+<span class="sd">    Purchase and resale amounts:</span>
+<span class="sd">    1) Buy: Remaining Uses * Purchase Cost</span>
+<span class="sd">        E.g. Buy Food with 4 uses left and purchase cost=10.</span>
+<span class="sd">        So 4 * 10 = $40.</span>
+<span class="sd">    2) Sell: Remaining Uses * Resale Cost</span>
+<span class="sd">        E.g. Sell Food with 4 uses left and resale cost=8.</span>
+<span class="sd">        So 4 * 8 = $32.</span>
+<span class="sd">    </span>
+<span class="sd">    Each purchase of an item just adds to the total remaining_uses.</span>
+<span class="sd">        </span>
+<span class="sd">    Inventory quick display (right side bar).</span>
+<span class="sd">        How about...</span>
+<span class="sd">        Any number of new cars will shows as &quot;NewCar: 100&quot; (for one car)</span>
+<span class="sd">            ...or &quot;NewCar: 200&quot; (for two cars)</span>
+<span class="sd">            ...or &quot;NewCar: 300&quot; (for three cars)</span>
+<span class="sd">            ... and so on</span>
+<span class="sd">        One food with 100 uses shows as &quot;Food: 100&quot;</span>
+<span class="sd">            ...or &quot;Food: 200&quot; (two purchases of food)</span>
+<span class="sd">            ...or &quot;Food: 300&quot; (three purchases of food)</span>
+<span class="sd">            ... and so on</span>
+<span class="sd">    &#39;&#39;&#39;</span> 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_type</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item_type</span> <span class="o">=</span> <span class="n">item_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_item</span><span class="p">(</span><span class="n">item_type</span><span class="p">)</span>
+            
+<div class="viewcode-block" id="Item.use_item"><a class="viewcode-back" href="../code.html#Trumpocalypse.Item.use_item">[docs]</a>    <span class="k">def</span> <span class="nf">use_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_type</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This will somehow use the item...&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39; Deincroment remaining_uses, along with in game effect&#39;&#39;&#39;</span>
+        
+        <span class="k">pass</span></div>
+        
+<div class="viewcode-block" id="Item.set_item"><a class="viewcode-back" href="../code.html#Trumpocalypse.Item.set_item">[docs]</a>    <span class="k">def</span> <span class="nf">set_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_type</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Food&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">10</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">8</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">10</span> 
+        <span class="k">elif</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Pie&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Garden&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">200</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">100</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="k">elif</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;LotteryTicket&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">10</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;NewCar&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">20000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">10000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;OldCar&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">10000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">4000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">60</span>
+        <span class="k">elif</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;UrbanHouse&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">40000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">40000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;SuburbanHouse&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">20000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">20000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">50</span>
+        <span class="k">elif</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;RuralHouse&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">10000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">10000</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="k">elif</span> <span class="n">item_type</span> <span class="o">==</span> <span class="s1">&#39;Cash&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">purchase_cost</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resale_cost</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remaining_uses</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># The item does not exist which must be a bug.</span>
+            <span class="c1"># Raise an error.</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span></div></div>
+            
+
+<div class="viewcode-block" id="GameState"><a class="viewcode-back" href="../code.html#Trumpocalypse.GameState">[docs]</a><span class="k">class</span> <span class="nc">GameState</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">testevents</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">game_state</span> <span class="c1"># Reference the global game state variable to this object.</span>
+        <span class="n">game_state</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">game</span> <span class="o">=</span> <span class="n">Game</span><span class="p">()</span>
+        <span class="c1"># Old starting method was:</span>
+    <span class="c1">#   self.current_screen = OpeningMenu()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events_loop</span> <span class="o">=</span> <span class="n">EventsLoop</span><span class="p">(</span><span class="n">testevents</span><span class="p">)</span> <span class="c1"># Starts with opening menu.</span></div>
+        
+<div class="viewcode-block" id="EventScreen"><a class="viewcode-back" href="../code.html#Trumpocalypse.EventScreen">[docs]</a><span class="k">class</span> <span class="nc">EventScreen</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#game_state.game.current_day = game_state.game.Day() #Game.Day()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_name</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events_values</span> <span class="o">=</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">events_values</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[</span>
+             <span class="n">DayScreen</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events_values</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_values</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;Back to Day&#39;</span><span class="p">]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="c1">#For some reason font size 32 looks a lot better than 30 or 34 </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+            <span class="s1">&#39;font_size&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">250</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_event</span> <span class="o">=</span> <span class="kc">True</span>
+<div class="viewcode-block" id="EventScreen.process_events"><a class="viewcode-back" href="../code.html#Trumpocalypse.EventScreen.process_events">[docs]</a>    <span class="k">def</span> <span class="nf">process_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chosen_position</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events_values</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span>  <span class="o">&lt;</span> <span class="n">chosen_position</span><span class="p">:</span>
+            <span class="k">return</span> 
+        <span class="n">event</span> <span class="o">=</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">event_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">events_values</span><span class="p">[</span><span class="n">chosen_position</span><span class="p">]]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;hours&quot;</span><span class="p">:</span>
+                <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">current_day</span><span class="o">.</span><span class="n">day_hours</span> <span class="o">+=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">all_choices</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">),</span><span class="n">n</span><span class="o">+</span><span class="n">value</span><span class="p">)</span></div></div>
+           
+            
+<div class="viewcode-block" id="Game"><a class="viewcode-back" href="../code.html#Trumpocalypse.Game">[docs]</a><span class="k">class</span> <span class="nc">Game</span><span class="p">:</span>
+    <span class="n">day_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">current_year</span> <span class="o">=</span> <span class="mi">2017</span>
+    <span class="n">month_counter</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">month_day</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">term_count</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">event_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Tsunami&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;health&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;sanity&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+                          <span class="s2">&quot;Win Lottery&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;Cash&quot;</span><span class="p">:</span><span class="mi">10000</span><span class="p">,</span><span class="s2">&quot;sanity&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,},</span>
+                          <span class="s2">&quot;Extreme Pollution&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;health&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;sanity&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+                          <span class="s2">&quot;Nuclear War&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;health&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;sanity&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">},</span>
+                          <span class="s2">&quot;Curfew&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;hours&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="s2">&quot;sanity&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+                          <span class="s2">&quot;Marshall Law&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;income&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">5000</span><span class="p">,</span><span class="s2">&quot;hours&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="s2">&quot;sanity&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">,},</span>
+                          <span class="s2">&quot;Power Sleep&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;hours&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;sanity&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">},</span>
+                          <span class="s2">&quot;Find Good Stuff&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;Food&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;Cash&#39;</span><span class="p">:</span><span class="mi">1000</span><span class="p">,</span><span class="s2">&quot;sanity&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span>
+                          <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_day</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1">#self.Day()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1">#Character(&#39;random&#39;) creates charecter on start menu becasue its an error.</span>
+        <span class="c1">#self.character = Character(&#39;random&#39;)</span>
+        <span class="c1">#self.score = ...  # will be calculated on game over</span>
+<div class="viewcode-block" id="Game.events_values"><a class="viewcode-back" href="../code.html#Trumpocalypse.Game.events_values">[docs]</a>    <span class="k">def</span> <span class="nf">events_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">events_temp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+            <span class="n">events_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">event_text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">events_temp</span></div>
+            
+        
+    
+<div class="viewcode-block" id="Game.Event"><a class="viewcode-back" href="../code.html#Trumpocalypse.Game.Event">[docs]</a>    <span class="k">class</span> <span class="nc">Event</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1">#self.event_type = None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">story_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">random_event</span><span class="p">()</span>
+<div class="viewcode-block" id="Game.Event.random_event"><a class="viewcode-back" href="../code.html#Trumpocalypse.Game.Event.random_event">[docs]</a>        <span class="k">def</span> <span class="nf">random_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">Game</span><span class="o">.</span><span class="n">event_dict</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_text</span> <span class="o">=</span> <span class="n">Game</span><span class="o">.</span><span class="n">event_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="n">num</span><span class="p">]</span></div></div>
+        <span class="c1">#def remove_event():</span>
+            
+        
+            
+            
+<div class="viewcode-block" id="Game.Day"><a class="viewcode-back" href="../code.html#Trumpocalypse.Game.Day">[docs]</a>    <span class="k">class</span> <span class="nc">Day</span><span class="p">:</span>
+        <span class="n">day_hours</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="n">generated_date</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">inauguration_day</span> <span class="o">=</span> <span class="s2">&quot;January 20th&quot;</span> <span class="c1">#Only needed to be used once, every other time you can use generated_date find it at the bottom of this class</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">day_hours</span> <span class="o">=</span> <span class="mi">16</span>
+        
+<div class="viewcode-block" id="Game.Day.gen_date"><a class="viewcode-back" href="../code.html#Trumpocalypse.Game.Day.gen_date">[docs]</a>        <span class="k">def</span> <span class="nf">gen_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span>
+            <span class="nb">print</span> <span class="s1">&#39;New day&#39;</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">day_counter</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">story_text</span> <span class="o">=</span> <span class="s2">&quot;Today is &quot;</span> <span class="o">+</span> <span class="n">Game</span><span class="o">.</span><span class="n">Day</span><span class="o">.</span><span class="n">inauguration_day</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\n</span><span class="s2">inauguration day, Trump is being sworn into office by Chief Justice John Roberts&quot;</span>         
+            <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">day_counter</span> <span class="o">%</span> <span class="mi">48</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">term_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">story_text</span> <span class="o">=</span> <span class="s2">&quot;Today is the Election day, Trump is up for Relection&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">story_text</span> <span class="o">=</span> <span class="s1">&#39;This is  new Day bros&#39;</span>
+            
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">month_counter</span> <span class="o">%</span> <span class="mi">12</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">g</span><span class="o">.</span><span class="n">day_counter</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">current_year</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">month_counter</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">13</span><span class="p">:</span>
+                <span class="n">x</span><span class="o">=</span><span class="mi">12</span>
+                <span class="n">month_day</span> <span class="o">=</span> <span class="mi">31</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">month_counter</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">month_day</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#Needed because when Game.month_counter == 12 it would go back a year, because it would be 12/?/2017 to 1/?/2017 and get confused</span>
+                              <span class="c1"># This implementation of month_day works as I tested it   </span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generated_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">randomDate</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">month_counter</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/1/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_year</span><span class="p">),</span>
+                                                   <span class="nb">str</span><span class="p">((</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">month_day</span><span class="p">)</span> <span class="o">+</span><span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_year</span><span class="p">),</span>
+                                                   <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span>
+            
+            <span class="c1">#Fix game day counter incromentation </span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">month_counter</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">month_counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="nb">print</span> <span class="n">g</span><span class="o">.</span><span class="n">day_counter</span></div>
+           
+            
+            
+<div class="viewcode-block" id="Game.Day.strTimeProp"><a class="viewcode-back" href="../code.html#Trumpocalypse.Game.Day.strTimeProp">[docs]</a>        <span class="k">def</span> <span class="nf">strTimeProp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">prop</span><span class="p">):</span>
+            <span class="c1"># Taken From : http://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates</span>
+            <span class="c1"># By: Tom Alsberg</span>
+            <span class="sd">&quot;&quot;&quot;Get a time at a proportion of a range of two formatted times.</span>
+
+<span class="sd">            start and end should be strings specifying times formated in the</span>
+<span class="sd">            given format (strftime-style), giving an interval [start, end].</span>
+<span class="sd">            prop specifies how a proportion of the interval to be taken after</span>
+<span class="sd">            start.  The returned time will be in the specified format.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">stime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">format</span><span class="p">))</span>
+            <span class="n">etime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="nb">format</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="nb">print</span> <span class="n">stime</span>
+            <span class="nb">print</span> <span class="n">etime</span>
+            <span class="n">ptime</span> <span class="o">=</span> <span class="n">stime</span> <span class="o">+</span> <span class="n">prop</span> <span class="o">*</span> <span class="p">(</span><span class="n">etime</span> <span class="o">-</span> <span class="n">stime</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">ptime</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Game.Day.randomDate"><a class="viewcode-back" href="../code.html#Trumpocalypse.Game.Day.randomDate">[docs]</a>        <span class="k">def</span> <span class="nf">randomDate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">prop</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">strTimeProp</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y&#39;</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span></div></div></div>
+        
+<div class="viewcode-block" id="CreateCharacterManual"><a class="viewcode-back" href="../code.html#Trumpocalypse.CreateCharacterManual">[docs]</a><span class="k">class</span> <span class="nc">CreateCharacterManual</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span> <span class="c1">#Not in effect yet</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Eg spend 20 points</span>
+<span class="sd">        intelligence, charisma, sanity, cash</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_name</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">StoryScreen</span><span class="p">,</span>
+            <span class="n">CreateCharacter</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Continue To Location&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Back To Previous Page&#39;</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CustomField</span><span class="p">(</span> <span class="c1"># Something along the lines of.........</span>
+            <span class="s1">&#39;list&#39;</span><span class="p">,</span>
+            <span class="p">[</span><span class="s1">&#39;Choice 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Choice 2&#39;</span><span class="p">,</span> <span class="s1">&#39;Choice 3&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;Make a &quot;good&quot; choice:&#39;</span><span class="p">,</span>
+            <span class="p">{</span> <span class="n">MOUSEBUTTONUP</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_on_mouseup</span> <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="c1">#~ self.CustomField( # Something along the lines of.........</span>
+            <span class="c1">#~ &#39;button&#39;,</span>
+            <span class="c1">#~ &#39;Some Button&#39;,</span>
+            <span class="c1">#~ False,</span>
+            <span class="c1">#~ { MOUSEBUTTONUP: self.button_on_mouseup }</span>
+        <span class="c1">#~ )</span>
+    
+<div class="viewcode-block" id="CreateCharacterManual.select_on_mouseup"><a class="viewcode-back" href="../code.html#Trumpocalypse.CreateCharacterManual.select_on_mouseup">[docs]</a>    <span class="k">def</span> <span class="nf">select_on_mouseup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="s1">&#39;This is called when selecting a choice from the select field!&#39;</span></div></div>
+        <span class="c1">#~ print event</span>
+        <span class="c1">#~ pos = pygame.mouse.get_pos()</span>
+        <span class="c1">#~ (pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()</span>
+        <span class="c1">#~ print &#39;Mouse click: &#39;, pos, pygame.mouse.get_pressed()</span>
+    
+<div class="viewcode-block" id="CreateCharacterAutomatic"><a class="viewcode-back" href="../code.html#Trumpocalypse.CreateCharacterAutomatic">[docs]</a><span class="k">class</span> <span class="nc">CreateCharacterAutomatic</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_name</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">StoryScreen</span><span class="p">,</span>
+            <span class="n">CreateCharacter</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Begin Your Adventure&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Back To Previous Page&#39;</span><span class="p">,</span>
+           
+        <span class="p">]</span>
+        <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">Character</span><span class="p">(</span><span class="s1">&#39;random&#39;</span><span class="p">)</span>
+        
+        <span class="n">name</span><span class="o">=</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">health</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">health</span><span class="p">)</span>
+        <span class="n">strength</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">strength</span><span class="p">)</span>
+        <span class="n">gender</span><span class="o">=</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">gender</span>
+        <span class="n">age</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+        <span class="n">charisma</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">charisma</span><span class="p">)</span>
+        <span class="n">intelligence</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">intelligence</span><span class="p">)</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">job</span>
+        <span class="n">income</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">income</span><span class="p">)</span>
+        <span class="n">sanity</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">sanity</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">PygameUI</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">item_count</span><span class="p">())</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">Menu</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span> <span class="o">-</span><span class="mi">154</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">Menu</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">border_width</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">draggable</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1">#Change to True is needs to be draggable </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Name: &quot;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;Health: &quot;</span><span class="o">+</span><span class="n">health</span><span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;Strength: &quot;</span><span class="o">+</span><span class="n">strength</span><span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="o">+</span><span class="s2">&quot;Gender: &quot;</span><span class="o">+</span><span class="n">gender</span><span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;Age: &quot;</span><span class="o">+</span><span class="n">age</span><span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;Charisma: &quot;</span><span class="o">+</span><span class="n">charisma</span><span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;Intelligence: &quot;</span>
+              <span class="o">+</span><span class="n">intelligence</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;Job: &quot;</span> <span class="o">+</span><span class="n">job</span><span class="o">+</span> <span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;Income: $&quot;</span><span class="o">+</span><span class="n">income</span><span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;Sanity: &quot;</span> <span class="o">+</span><span class="n">sanity</span><span class="p">),</span>
+            <span class="s1">&#39;font_size&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">300</span>
+        <span class="p">}</span></div>
+        
+<div class="viewcode-block" id="HighScores"><a class="viewcode-back" href="../code.html#Trumpocalypse.HighScores">[docs]</a><span class="k">class</span> <span class="nc">HighScores</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_name</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">OpeningMenu</span><span class="p">,</span>
+            <span class="n">ResetHighScore</span><span class="p">,</span>
+            <span class="n">Close</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="n">high_score_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;high_score.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;r+&quot;</span><span class="p">)</span>
+        <span class="n">high_score</span> <span class="o">=</span> <span class="n">high_score_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">high_score_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Main Menu&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Reset Highscore&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Quit&#39;</span><span class="p">,</span>
+           
+        <span class="p">]</span>
+        <span class="n">a</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">high_score</span><span class="p">)</span>
+ 
+        <span class="n">Text</span><span class="o">=</span><span class="s2">&quot;Highscore:&quot;</span><span class="o">+</span><span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">Text</span><span class="p">,</span>
+            <span class="s1">&#39;font_size&#39;</span><span class="p">:</span> <span class="mi">44</span><span class="p">,</span>
+            <span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">240</span><span class="p">,</span>
+            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">44</span>
+        <span class="p">}</span>
+    
+<div class="viewcode-block" id="HighScores.get_high_score"><a class="viewcode-back" href="../code.html#Trumpocalypse.HighScores.get_high_score">[docs]</a>    <span class="k">def</span> <span class="nf">get_high_score</span><span class="p">():</span>
+        <span class="n">high_score_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;high_score.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;r+&quot;</span><span class="p">)</span>
+        <span class="n">high_score</span> <span class="o">=</span> <span class="n">high_score_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">high_score_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="HighScores.save_high_score"><a class="viewcode-back" href="../code.html#Trumpocalypse.HighScores.save_high_score">[docs]</a>    <span class="k">def</span> <span class="nf">save_high_score</span><span class="p">():</span>
+        <span class="k">pass</span></div></div>
+
+<div class="viewcode-block" id="ResetHighScore"><a class="viewcode-back" href="../code.html#Trumpocalypse.ResetHighScore">[docs]</a><span class="k">class</span> <span class="nc">ResetHighScore</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">high_score_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;high_score.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">high_score_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">high_score_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">HighScores</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DayScreen"><a class="viewcode-back" href="../code.html#Trumpocalypse.DayScreen">[docs]</a><span class="k">class</span> <span class="nc">DayScreen</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">current_day</span>
+        <span class="nb">print</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">current_day</span><span class="o">.</span><span class="n">generated_date</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">PygameUI</span><span class="o">.</span><span class="n">List</span><span class="p">([</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;Hp: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">health</span><span class="p">),</span><span class="s1">&#39;Str: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">strength</span><span class="p">),</span>
+                           <span class="s1">&#39;Char: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">charisma</span><span class="p">),</span><span class="s1">&#39;Int: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">intelligence</span><span class="p">),</span>
+                           <span class="s1">&#39;Job: &#39;</span> <span class="o">+</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">job</span><span class="p">,</span> <span class="s1">&#39;Income: $&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">income</span><span class="p">),</span>
+                           <span class="s1">&#39;Sanity: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">sanity</span><span class="p">)])</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">Menu</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">border_width</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">draggable</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1">#Change to True is needs to be draggable </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">PygameUI</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">item_count</span><span class="p">())</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">Menu</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span> <span class="o">-</span><span class="mi">154</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">Menu</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">w</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">border_width</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">draggable</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1">#Change to True is needs to be draggable </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">day_counter</span> <span class="o">%</span> <span class="mi">48</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">EventScreen</span><span class="p">,</span>
+                <span class="n">StoryScreen</span><span class="p">,</span> <span class="c1">#Reset Game.Day.day_hours back to 16</span>
+                <span class="n">StoryScreen</span><span class="p">,</span><span class="c1">#Store -&gt; -2 on the Game.Day.day_hours (maybe)</span>
+                <span class="n">StoryScreen</span> <span class="c1">#Work -&gt; -8 on the Game.Day.day_hours</span>
+                
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;Events: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">events</span><span class="p">)),</span>
+                <span class="s1">&#39;Next Day&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Store&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Work&#39;</span><span class="p">,</span> 
+            <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">ElectionDay</span><span class="p">,</span> <span class="c1">#Reset Game.Day.day_hours back to 16</span>
+                <span class="n">StoryScreen</span><span class="p">,</span><span class="c1">#Store -&gt; -2 on the Game.Day.day_hours (maybe)</span>
+                <span class="n">StoryScreen</span> <span class="c1">#Work -&gt; -8 on the Game.Day.day_hours</span>
+                
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;Vote&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Store&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;Work&#39;</span><span class="p">,</span> 
+            <span class="p">]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Term Number: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">term_count</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\n</span><span class="s2">Day is: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">current_day</span><span class="o">.</span><span class="n">generated_date</span><span class="p">)</span>
+        <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">Hours Left: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">current_day</span><span class="o">.</span><span class="n">day_hours</span><span class="p">))</span> <span class="c1">#This displays a text box showing how many hours left in your day to spend</span>
+        <span class="c1">#For some reason font size 32 looks a lot better than 30 or 34</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+            <span class="s1">&#39;font_size&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">300</span>
+        <span class="p">}</span></div>
+        
+
+<div class="viewcode-block" id="ElectionDay"><a class="viewcode-back" href="../code.html#Trumpocalypse.ElectionDay">[docs]</a><span class="k">class</span> <span class="nc">ElectionDay</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span> <span class="c1">#Use on 48,96 .... +=48</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">current_day</span> <span class="o">=</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">Day</span><span class="p">()</span> <span class="c1">#Game.Day()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_name</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">DayScreen</span><span class="p">,</span>
+            <span class="n">EndGame</span><span class="p">,</span> <span class="c1"># Need to add class, build when highscore point system is in place</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Vote For Trump (Continue Playing)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Vote For Anyone Else (End)&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">current_day</span><span class="o">.</span><span class="n">story_text</span>
+        <span class="c1">#For some reason font size 32 looks a lot better than 30 or 34 </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+            <span class="s1">&#39;font_size&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">250</span>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="StoryScreen"><a class="viewcode-back" href="../code.html#Trumpocalypse.StoryScreen">[docs]</a><span class="k">class</span> <span class="nc">StoryScreen</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">day_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">month_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">current_day</span> <span class="o">=</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">Day</span><span class="p">()</span> <span class="c1">#Game.Day()</span>
+        <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">current_day</span><span class="o">.</span><span class="n">gen_date</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_name</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">DayScreen</span> 
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Start Day&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">current_day</span><span class="o">.</span><span class="n">story_text</span>
+        <span class="c1">#For some reason font size 32 looks a lot better than 30 or 34 </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+            <span class="s1">&#39;font_size&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+            <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">250</span>
+        <span class="p">}</span>
+        <span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">game_state</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">Event</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="CreateCharacter"><a class="viewcode-back" href="../code.html#Trumpocalypse.CreateCharacter">[docs]</a><span class="k">class</span> <span class="nc">CreateCharacter</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># some things in self are in the parent class.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_name</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">CreateCharacterManual</span><span class="p">,</span>
+            <span class="n">CreateCharacterAutomatic</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Manual&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Auto&#39;</span><span class="p">,</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="OpeningMenu"><a class="viewcode-back" href="../code.html#Trumpocalypse.OpeningMenu">[docs]</a><span class="k">class</span> <span class="nc">OpeningMenu</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># What does this do?: Menu.__init__(self)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu_name</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keypressArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">CreateCharacter</span><span class="p">,</span>
+            <span class="n">StoryScreen</span><span class="p">,</span> <span class="c1"># OptionsFunction #Using this for testing rn </span>
+            <span class="n">HighScores</span><span class="p">,</span>
+            <span class="n">Close</span><span class="p">,</span> <span class="c1"># QuitFunction</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Start&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Options&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Highscore&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Quit&#39;</span>
+        <span class="p">]</span>
+
+<div class="viewcode-block" id="OpeningMenu.box"><a class="viewcode-back" href="../code.html#Trumpocalypse.OpeningMenu.box">[docs]</a>    <span class="k">def</span> <span class="nf">box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="s1">&#39;Box&#39;</span></div></div>
+
+<div class="viewcode-block" id="Close"><a class="viewcode-back" href="../code.html#Trumpocalypse.Close">[docs]</a><span class="k">class</span> <span class="nc">Close</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span></div>
+<div class="viewcode-block" id="EndGame"><a class="viewcode-back" href="../code.html#Trumpocalypse.EndGame">[docs]</a><span class="k">class</span> <span class="nc">EndGame</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titlesArray</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Test&#39;</span><span class="p">,</span>
+        <span class="p">]</span></div>
+
+<span class="c1"># Sample unittest test case.</span>
+<span class="c1">#class TestGame(unittest.TestCase):</span>
+<span class="c1">#    def test1(self):</span>
+<span class="c1">#        print &#39;xxx&#39;</span>
+
+<div class="viewcode-block" id="run_tests"><a class="viewcode-back" href="../code.html#Trumpocalypse.run_tests">[docs]</a><span class="k">def</span> <span class="nf">run_tests</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;.. function:: run_tests()</span>
+
+<span class="sd">    This is where tests are run.</span>
+<span class="sd">    </span>
+<span class="sd">    In the python shell run `import Trumpocalypse.py`.</span>
+<span class="sd">    Then run Trumpocalypse.run_tests() to run this code.</span>
+<span class="sd">    </span>
+<span class="sd">    :param: None.</span>
+<span class="sd">    :rtype: Does not a return value.</span>
+<span class="sd">    :raises: None.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="mi">854</span><span class="p">,</span><span class="mi">480</span><span class="p">))</span> <span class="c1">#0,6671875 and 0,(6) of HD resoultion</span>
+    <span class="n">surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="mi">71</span><span class="p">))</span> <span class="c1">#Color of the background of window</span>
+    <span class="n">GameState</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span> <span class="n">x</span><span class="o">*</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)])</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    
+    <span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="mi">854</span><span class="p">,</span><span class="mi">480</span><span class="p">))</span> <span class="c1">#0,6671875 and 0,(6) of HD resoultion</span>
+    <span class="n">surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="mi">71</span><span class="p">))</span> <span class="c1">#Color of the background of window</span>
+<span class="c1">#    pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11</span>
+    <span class="sd">&#39;&#39;&#39;First you have to make an object of a *Menu class.</span>
+<span class="sd">    *init take 2 arguments. list of fields and destination surface.</span>
+<span class="sd">    Then you have a 4 configuration options:</span>
+<span class="sd">    *set_colors will set colors of menu (text, selection, background)</span>
+<span class="sd">    *set_fontsize will set size of font.</span>
+<span class="sd">    *set_font take a path to font you choose.</span>
+<span class="sd">    *move_menu is quite interseting. It is only option which you can use before </span>
+<span class="sd">    and after *init statement. When you use it before you will move menu from </span>
+<span class="sd">    center of your surface. When you use it after it will set constant coordinates. </span>
+<span class="sd">    Uncomment every one and check what is result!</span>
+<span class="sd">    *draw will blit menu on the surface. Be carefull better set only -1 and 1 </span>
+<span class="sd">    arguments to move selection or nothing. This function will return actual </span>
+<span class="sd">    position of selection.</span>
+<span class="sd">    *get_postion will return actual position of seletion. &#39;&#39;&#39;</span>
+    <span class="n">GameState</span><span class="p">()</span>
+    <span class="c1">#unittest.main()</span>
+<span class="c1">#else: #used for testing #To run this code do import Trumpocalypse in python shell</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Roland, Nick, Jesse, David, Mahir.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
