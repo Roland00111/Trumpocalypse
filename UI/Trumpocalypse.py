@@ -1,10 +1,10 @@
 import time
 import pygame
-import unittest
+#import unittest
 import random
 from TextWrap import *
 import PygameUI
-import gc
+#import gc
 import math
 
 from pygame.locals import *
@@ -991,9 +991,28 @@ class EndGame(Menu):
         self.titlesArray = [
             'Test',
         ]
-class TestGame(unittest.TestCase):
-    def test1(self):
-        print 'xxx'
+
+# Sample unittest test case.
+#class TestGame(unittest.TestCase):
+#    def test1(self):
+#        print 'xxx'
+
+def run_tests():
+    '''.. function:: run_tests()
+
+    This is where tests are run.
+    
+    In the python shell run `import Trumpocalypse.py`.
+    Then run Trumpocalypse.run_tests() to run this code.
+    
+    :param: None.
+    :rtype: Does not a return value.
+    :raises: None.
+    '''
+    import sys
+    surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
+    surface.fill((255,120,71)) #Color of the background of window
+    GameState([0,1] + [ x*0 for x in range(1000)])
 
 if __name__ == "__main__":
     import sys
@@ -1017,12 +1036,5 @@ if __name__ == "__main__":
     *get_postion will return actual position of seletion. '''
     GameState()
     #unittest.main()
-else: #used for testing #To run this code do import Trumpocalypse in python shell
-    #Needed for testing
-    import sys
-    surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
-    surface.fill((255,120,71)) #Color of the background of window
-    #test = [ x for x in range(1000)]
-    #print test
-    GameState([ x*0 for x in range(1000)])
+#else: #used for testing #To run this code do import Trumpocalypse in python shell
 
