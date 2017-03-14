@@ -164,7 +164,7 @@ sphinx-build
 
  $ deactivate
 
- $ git add -A; git commit -m ''; git push;
+ $ git add -A; git commit -m 'Update.'; git push;
 
 | # Finally, visit readthedocs.io to build the documentation there.
 
