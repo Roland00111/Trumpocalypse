@@ -21,6 +21,11 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+Links
+=====
+Sphinx documentation: http://www.sphinx-doc.org/en/stable/domains.html#info-field-lists
+reStructuredText cheat sheet: http://docutils.sourceforge.net/docs/user/rst/quickref.html
+
 To make this documentation...
 -----------------------------
 
