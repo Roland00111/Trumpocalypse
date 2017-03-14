@@ -584,11 +584,9 @@ class LocationsHandler():
 
 class Event:
     def __init__(self, event_text, bonuses = {}, story_text = ''):
-        #self.event_type = None
         self.event_text = event_text
         self.story_text = story_text
         self.bonuses = bonuses
-        #~ self.random_event()
         
 class EventsHandler():
     events_array = [
@@ -615,10 +613,8 @@ class EventsHandler():
         :rtype: array
         '''
         events_temp = []
-        #~ print self.inactive_events
         for event in self.inactive_events:
             events_temp.append(event.event_text)
-        #~ print events_temp
         return events_temp
         
     def random_event(self):
@@ -644,7 +640,6 @@ class EventsHandler():
         
 class EventScreen(Menu): 
     def __init__(self):
-        #game_state.game.current_day = game_state.game.Day() #Game.Day()
         self.menu_name = '...'
         self.events_values = game_state.game.events_handler.events_values()
         self.keypressArray = [
@@ -691,8 +686,7 @@ class EventScreen(Menu):
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
-        
-        # Remove func
+        # Go from inactive to active.
         game_state.game.events_handler.toggle_event(event)
             
 class Game:
