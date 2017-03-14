@@ -27,7 +27,7 @@ Sphinx documentation: http://www.sphinx-doc.org/en/stable/domains.html#info-fiel
 reStructuredText cheat sheet: http://docutils.sourceforge.net/docs/user/rst/quickref.html
 
 To make this documentation...
------------------------------
+=============================
 
 ::
 
