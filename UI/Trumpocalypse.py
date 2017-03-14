@@ -402,32 +402,14 @@ class Character:
         print self.name, ' is alive!'
     def died(self):
         print self.name, ' is dead!'
-
-class Location:
-    '''https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States'''
-    def __init__(self):
-        self.environment_bonus = 1
-        self.all_locations = [
-            'Middle Atlantic',
-            'New England',
-            'South Atlantic',
-            'East South Central',
-            'East North Central',
-            'West North Central',
-            'West South Central',
-            'Mountain',
-            'Pacific'
-        ]
-        # Default location is random.
-        self.name = self.all_locations[ random.randint(0,8) ] # Any of 0,1,2,3,4,5,6,7,8
-        
+      
 class Inventory:
     def __init__(self):
         self.max_items = 999
         self.items = [] # Array of items.
         self.all_choices = [
             'Food','Pie','Garden','LotteryTicket','NewCar','OldCar',
-            'UrbanHouse','SuburbanHouse','RuralHouse','Cash','Food',
+            'UrbanHouse','SuburbanHouse','RuralHouse','Cash',
         ]
     def item_count(self):
         #Iterates throught self.items and returns a list of all items in array with number of uses left
@@ -575,13 +557,98 @@ class GameState:
     #   self.current_screen = OpeningMenu()
         self.events_loop = EventsLoop(testevents) # Starts with opening menu.
         
+class Location:
+    '''https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States'''
+    def __init__(self):
+        #~ self.environment_bonus = 1
+        self.location_name = ''
+        self.connected_regions = []
+        #~ self.all_locations = [
+            #~ 'Middle Atlantic',
+            #~ 'New England',
+            #~ 'South Atlantic',
+            #~ 'East South Central',
+            #~ 'East North Central',
+            #~ 'West North Central',
+            #~ 'West South Central',
+            #~ 'Mountain',
+            #~ 'Pacific'
+        #~ ]
+        # Default location is random.
+        #~ self.name = self.all_locations[ random.randint(0,8) ] # Any of 0,1,2,3,4,5,6,7,8
+    
+class LocationsHandler():
+    locations = []
+    def __init__(self):
+        pass
+
+class Event:
+    def __init__(self, event_text, bonuses = {}, story_text = ''):
+        #self.event_type = None
+        self.event_text = event_text
+        self.story_text = story_text
+        self.bonuses = bonuses
+        #~ self.random_event()
+        
+class EventsHandler():
+    events_array = [
+        Event('Tsunami', {"health":-1,"sanity":-1}, ""),
+        Event('Win Lottery', {"Cash":10000,"sanity":1}, ""),
+        Event('Extreme Pollution', {"health":-1,"sanity":-1}, ""),
+        Event('Nuclear War', {"health":-2,"sanity":-5}, ""),
+        Event('Curfew', {"hours":-4,"sanity":-1}, ""),
+        Event('Marshall Law', {"hours":-4,"sanity":-2,"income":-5000}, ""),
+        Event('Power Sleep', {"hours":2,"sanity":2}, ""),
+        Event('Find Good Stuff', {"Food":5,"Cash":1000,"sanity":1}, ""),
+    ]
+    events_dict = {}
+    
+    def __init__(self):
+        self.inactive_events = []
+        self.active_events = []
+        pass
+    
+    def events_values(self):
+        '''Returns an array of titles of current inactive events.
+        
+        :return: Array of titles of current inactive events
+        :rtype: array
+        '''
+        events_temp = []
+        #~ print self.inactive_events
+        for event in self.inactive_events:
+            events_temp.append(event.event_text)
+        #~ print events_temp
+        return events_temp
+        
+    def random_event(self):
+        '''Add a random event to inactive_events.'''
+        num = random.randint(0,len(EventsHandler.events_array)-1) 
+        event = EventsHandler.events_array[num]
+        # Add to inactive events
+        # Shallow copy?
+        self.inactive_events.append(event)
+        
+    def toggle_event(self, event):
+        '''Move an event from self.inactive_event to self.active_event.
+        Assumption: Once an event is activated it stays active until
+        it runs out. Then it is removed altogether.
+        
+        :param event: The event to toggle.
+        :type event: Event
+        '''
+        self.active_events.append(event)
+        for k,v in enumerate(self.inactive_events):
+            if v == event:
+                del self.inactive_events[k]
+        
 class EventScreen(Menu): 
     def __init__(self):
         #game_state.game.current_day = game_state.game.Day() #Game.Day()
         self.menu_name = '...'
-        self.events_values = game_state.game.events_values()
+        self.events_values = game_state.game.events_handler.events_values()
         self.keypressArray = [
-             DayScreen for x in range(len(self.events_values)+1)
+             DayScreen for x in range(len(game_state.game.events_handler.inactive_events)+1)
         ]
         self.titlesArray = self.events_values + ['Back to Day']
         text = ""
@@ -593,12 +660,30 @@ class EventScreen(Menu):
             'height': 250
         }
         self.process_event = True
+    
     def process_events(self,chosen_position):
+        '''Define this menu's process_events function.
+
+        This will be called just before changing to the next menu.
+        
+        Updates the game based on the event chosen by the user.
+        
+        If the user does not choose an event then return immediately to the
+        DayScreen. Otherwise, each bonus of the event does one of the
+        following:
+            1) update day hours remaining;
+            2) update or add an inventory item;
+            3) or, change one of the character's attributes, such as hp.
+        
+        :param chosen_position: The position of the menu selected by user.
+        :type chosen_position: int
+        :return: Does not return a value.
+        '''
         if len(self.events_values) -1  < chosen_position:
-            return 
-        event = game_state.game.event_dict[self.events_values[chosen_position]]
+            return
+        event = game_state.game.events_handler.inactive_events[chosen_position]
         c = game_state.game.character
-        for key, value in event.iteritems():
+        for key, value in event.bonuses.iteritems():
             if key == "hours":
                 game_state.game.current_day.day_hours += value
             elif key in c.inventory.all_choices:
@@ -606,7 +691,9 @@ class EventScreen(Menu):
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
-           
+        
+        # Remove func
+        game_state.game.events_handler.toggle_event(event)
             
 class Game:
     day_counter = 0
@@ -614,42 +701,23 @@ class Game:
     month_counter = 1
     month_day = 1
     term_count = 1
-    events = []
-    event_dict = {"Tsunami": {"health":-1,"sanity":-1},
-                          "Win Lottery": {"Cash":10000,"sanity":1,},
-                          "Extreme Pollution": {"health":-1,"sanity":-1},
-                          "Nuclear War": {"health":-2,"sanity":-5},
-                          "Curfew": {"hours":-4,"sanity":-1},
-                          "Marshall Law": {"income":-5000,"hours":-4,"sanity":-2,},
-                          "Power Sleep": {"hours":2,"sanity":2},
-                          "Find Good Stuff": {"Food":5,'Cash':1000,"sanity":1},
-                          }
+    locations_handler = LocationsHandler()
+    events_handler = EventsHandler()
+    #~ events = []
+    #~ event_dict = {"Tsunami": {"health":-1,"sanity":-1},
+                          #~ "Win Lottery": {"Cash":10000,"sanity":1,},
+                          #~ "Extreme Pollution": {"health":-1,"sanity":-1},
+                          #~ "Nuclear War": {"health":-2,"sanity":-5},
+                          #~ "Curfew": {"hours":-4,"sanity":-1},
+                          #~ "Marshall Law": {"income":-5000,"hours":-4,"sanity":-2,},
+                          #~ "Power Sleep": {"hours":2,"sanity":2},
+                          #~ "Find Good Stuff": {"Food":5,'Cash':1000,"sanity":1},
+                          #~ }
     def __init__(self):
         self.current_day = None #self.Day()
         self.character = None #Character('random') creates charecter on start menu becasue its an error.
         #self.character = Character('random')
         #self.score = ...  # will be calculated on game over
-    def events_values(self):
-        events_temp = []
-        for event in self.events:
-            events_temp.append(event.event_text)
-        return events_temp
-            
-        
-    
-    class Event:
-        def __init__(self):
-            #self.event_type = None
-            self.event_text = ""
-            self.story_text = ""
-            self.random_event()
-        def random_event(self):
-            num = random.randint(0,len(Game.event_dict)-1) 
-            self.event_text = Game.event_dict.keys()[num]
-        #def remove_event():
-            
-        
-            
             
     class Day:
         day_hours = 16
@@ -868,7 +936,7 @@ class DayScreen(Menu):
                 
             ]
             self.titlesArray = [
-                'Events: ' + str(len(game_state.game.events)),
+                'Events: ' + str(len(game_state.game.events_handler.inactive_events)),
                 'Next Day', 
                 'Store', 
                 'Work', 
@@ -941,7 +1009,8 @@ class StoryScreen(Menu):
             'top': 60,
             'height': 250
         }
-        game_state.game.events.append(game_state.game.Event())
+        # Do a random event
+        game_state.game.events_handler.random_event()
 
 class CreateCharacter(Menu):
     """
