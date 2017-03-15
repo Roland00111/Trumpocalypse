@@ -410,8 +410,8 @@ class Inventory:
         self.max_items = 999
         self.items = [] # Array of items.
         self.all_choices = [
-            'Food','Pie','Garden','LotteryTicket','NewCar','OldCar',
-            'UrbanHouse','SuburbanHouse','RuralHouse','Cash',
+            'Food','Pie','Garden','Lottery Ticket','New Car','Old Car',
+            'Urban House','Suburban House','Rural House','Cash','First Aid Kit',
         ]
     def item_count(self):
         #Iterates throught self.items and returns a list of all items in array with number of uses left
@@ -504,6 +504,7 @@ class Item:
         pass
         
     def set_item(self, item_type):
+        print item_type
         if item_type == 'Food':
             self.purchase_cost = 10 
             self.resale_cost = 8
@@ -516,27 +517,27 @@ class Item:
             self.purchase_cost = 200
             self.resale_cost = 100
             self.remaining_uses = 10
-        elif item_type == 'LotteryTicket':
+        elif item_type == 'Lottery Ticket':
             self.purchase_cost = 10
             self.resale_cost = 4
             self.remaining_uses = 1
-        elif item_type == 'NewCar':
+        elif item_type == 'New Car':
             self.purchase_cost = 20000
             self.resale_cost = 10000
             self.remaining_uses = 100
-        elif item_type == 'OldCar':
+        elif item_type == 'Old Car':
             self.purchase_cost = 10000
             self.resale_cost = 4000
             self.remaining_uses = 60
-        elif item_type == 'UrbanHouse':
+        elif item_type == 'Urban House':
             self.purchase_cost = 40000
             self.resale_cost = 40000
             self.remaining_uses = 100
-        elif item_type == 'SuburbanHouse':
+        elif item_type == 'Suburban House':
             self.purchase_cost = 20000
             self.resale_cost = 20000
             self.remaining_uses = 50
-        elif item_type == 'RuralHouse':
+        elif item_type == 'Rural House':
             self.purchase_cost = 10000
             self.resale_cost = 10000
             self.remaining_uses = 20
@@ -544,6 +545,10 @@ class Item:
             self.purchase_cost = 0
             self.resale_cost = 0
             self.remaining_uses = 0
+        elif item_type == 'First Aid Kit':
+            self.purchase_cost = 10
+            self.resale_cost = 8
+            self.remaining_uses = 2
         else:
             # The item does not exist which must be a bug.
             # Raise an error.
@@ -558,46 +563,116 @@ class GameState:
         # Old starting method was:
     #   self.current_screen = OpeningMenu()
         self.events_loop = EventsLoop(testevents) # Starts with opening menu.
-        
-class Location:
-    '''https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States'''
-    def __init__(self):
-        #~ self.environment_bonus = 1
-        self.location_name = ''
-        self.connected_regions = []
-        #~ self.all_locations = [
-            #~ 'Middle Atlantic',
-            #~ 'New England',
-            #~ 'South Atlantic',
-            #~ 'East South Central',
-            #~ 'East North Central',
-            #~ 'West North Central',
-            #~ 'West South Central',
-            #~ 'Mountain',
-            #~ 'Pacific'
-        #~ ]
-        # Default location is random.
-        #~ self.name = self.all_locations[ random.randint(0,8) ] # Any of 0,1,2,3,4,5,6,7,8
-    
-class LocationsHandler:
-    locations = []
-    def __init__(self):
-        pass
 
 class Store:
-    grocery_types = [   'Bodega',   'Mini-Market',  'Supermarket'
-                        'Market',   'Delicatessen', 'Fishmonger'
+    grocery_types = [   'Bodega',   'Mini-Market',  'Supermarket',
+                        'Market',   'Delicatessen', 'Fishmonger',
                         'Butcher',  'Convenience Store',
-                        'Mom-and-Pop',              'Corner Store'
-    ]
+                        'Mom-and-Pop',              'Corner Store']
     def __init__(self):
-        self.distance_from_character = random.randint(0, 4)
+        #~ global NAMES_LIST
+        self.distance = random.randint(0, 4)
         self.inventory = Inventory()
         for i in range(20):
-            self.inventory.add_items()
+            self.inventory.add_item()
         self.grocery_type = self.grocery_types[ random.randint(0, len(self.grocery_types)-1) ]
-        self.name = NAMES_LIST[ random.randint(0, len(NAMES_LIST)-1) ] + "'s" + self.grocery_type
+        self.name = names.NAMES_LIST[ random.randint(0, len(names.NAMES_LIST)-1) ] + "'s " + self.grocery_type
+
+class StoreScreenSelect(Menu):
+    def __init__(self):
+        self.menu_name = '...'
+        location = game_state.game.locations_handler.location
+        store = location.stores[ location.active_store_idx ]
+        
+        x = PygameUI.List(store.inventory.item_count())
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-50, 100, 400, Menu.scene.frame.h -220)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 1
+        x.container.draggable = True
+        self.scene.add_child(x)
+        
+        self.keypressArray = [
+             StoreScreen,
+             DayScreen
+        ]
+        self.titlesArray = ['Back to Store List', 'Back to Day']
+        self.process_event = True
+        self.body = {
+            'text': 'Welcome to '+store.name+'!',
+            'font_size': 40,
+            'top': 10,
+            'height': 80
+        }
     
+    def process_events(self,chosen_position):
+        '''Reset location.active_store_idx before leaving.
+        '''
+        location = game_state.game.locations_handler.location
+        location.active_store_idx = None
+        pass
+            
+class StoreScreen(Menu):
+    '''Class StoreScreen. This shows the stores in the character's current
+    location. Then the user chooses to go to a specific store.
+    '''
+    def __init__(self):
+        self.menu_name = '...'
+        location = game_state.game.locations_handler.location
+        self.keypressArray = [ StoreScreenSelect for x in range(len(location.stores)) ] + [ DayScreen ]
+        
+        self.titlesArray = location.menu_values() + ['Back to Day']
+        self.process_event = True
+    
+    def process_events(self,chosen_position):
+        '''Subtract the mileage from the hours.
+        Also, validate that character has enough resources to make this
+        trip. (Need to implement.)
+        '''
+        location = game_state.game.locations_handler.location
+        if len(location.stores) -1  < chosen_position:
+            return
+        location.active_store_idx = chosen_position
+        pass
+
+class Location:
+    '''https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States'''
+    all_locations = [ #prototype
+        'Middle Atlantic',
+        'New England',
+        'South Atlantic',
+        'East South Central',
+        'East North Central',
+        'West North Central',
+        'West South Central',
+        'Mountain',
+        'Pacific'
+    ]
+
+    def __init__(self):
+        self.location_name = 'Town of Anywhere'
+        self.connected_regions = []
+        self.stores = [
+            Store() for i in range(random.randint(1,3))
+        ]
+        self.active_store_idx = None # Index of store being visited.
+
+    def menu_values(self):
+        temp_array = []
+        for store in self.stores:
+            temp_array.append(store.name + ': ' + str(store.distance) + ' miles')
+        return temp_array
+    
+class LocationsHandler:
+    locations = [ Location() for i in range(0,8) ]
+    def __init__(self):
+        # Start in random location.
+        self.location = self.locations[ random.randint(0, len(self.locations)-1) ]
+    def random_location(self):
+        '''Not implemented.
+        '''
+        pass
+
 class Event:
     def __init__(self, event_text, bonuses={}, story_text='', base_duration=0,
                  duration_rand_min=0, duration_rand_max=0):
@@ -988,7 +1063,7 @@ class DayScreen(Menu):
             self.keypressArray = [
                 EventScreen,
                 StoryScreen, #Reset Game.Day.day_hours back to 16
-                StoryScreen,#Store -> -2 on the Game.Day.day_hours (maybe)
+                StoreScreen,
                 StoryScreen #Work -> -8 on the Game.Day.day_hours
                 
             ]
@@ -1001,7 +1076,7 @@ class DayScreen(Menu):
         else:
             self.keypressArray = [
                 ElectionDay, #Reset Game.Day.day_hours back to 16
-                StoryScreen,#Store -> -2 on the Game.Day.day_hours (maybe)
+                StoreScreen,
                 StoryScreen #Work -> -8 on the Game.Day.day_hours
                 
             ]
