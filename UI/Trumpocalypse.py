@@ -583,11 +583,24 @@ class LocationsHandler():
         pass
 
 class Event:
-    def __init__(self, event_text, bonuses = {}, story_text = ''):
+    def __init__(self, event_text, bonuses={}, story_text='', duration=0,
+                 duration_rand_min=0, duration_rand_max=0):
         self.event_text = event_text
         self.story_text = story_text
         self.bonuses = bonuses
+        self.duration = duration
+        self.months_remaining = None # Dynamic
+        self.duration_rand_min = duration_rand_min
+        self.duration_rand_max = duration_rand_max
+        
     def process(self):
+        '''Process event. Each time the event happens months_remaining -= 1.
+        
+        Each bonus of the event does one of the following:
+            1) update day hours remaining;
+            2) update or add an inventory item;
+            3) or, change one of the character's attributes, such as hp.
+        '''
         c = game_state.game.character
         for key, value in self.bonuses.iteritems():
             if key == "hours":
@@ -597,19 +610,28 @@ class Event:
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
+        self.months_remaining -= 1
+    
+    def generate_duration(self):
+        '''Generate the duration of this event. It is between
+        [duration + duration_rand_min] and [duration + duration_rand_max].
+        Then set months_remaining to be duration.
+        '''
+        self.duration = self.duration + random.randint(self.duration_rand_min, self.duration_rand_max)
+        self.months_remaining = self.duration
         
 class EventsHandler():
     events_array = [
-        Event('Tsunami', {"health":-1,"sanity":-1}, ""),
-        Event('Win Lottery', {"Cash":10000,"sanity":1}, ""),
-        Event('Extreme Pollution', {"health":-1,"sanity":-1}, ""),
-        Event('Nuclear War', {"health":-2,"sanity":-5}, ""),
-        Event('Curfew', {"hours":-4,"sanity":-1}, ""),
-        Event('Marshall Law', {"hours":-4,"sanity":-2,"income":-5000}, ""),
-        Event('Power Sleep', {"hours":2,"sanity":2}, ""),
-        Event('Find Good Stuff', {"Food":5,"Cash":1000,"sanity":1}, ""),
+        Event('Tsunami', {"health":-1,"sanity":-1}, "", 2, 0, 1),
+        Event('Win Lottery', {"Cash":10000,"sanity":1}, "", 2, 0, 1),
+        Event('Extreme Pollution', {"health":-1,"sanity":-1}, "", 2, 0, 1),
+        Event('Nuclear War', {"health":-2,"sanity":-5}, "", 2, 0, 1),
+        Event('Curfew', {"hours":-4,"sanity":-1}, "", 2, 0, 1),
+        Event('Marshall Law', {"hours":-4,"sanity":-2,"income":-5000}, "", 2, 0, 1),
+        Event('Power Sleep', {"hours":2,"sanity":2}, "", 2, 0, 1),
+        Event('Find Good Stuff', {"Food":5,"Cash":1000,"sanity":1}, "", 2, 0, 1),
     ]
-    events_dict = {}
+    #~ events_dict = {}
     
     def __init__(self):
         self.inactive_events = []
@@ -631,6 +653,8 @@ class EventsHandler():
         '''Add a random event to inactive_events.'''
         num = random.randint(0,len(EventsHandler.events_array)-1) 
         event = EventsHandler.events_array[num]
+        # Generate event duration.
+        event.generate_duration()
         # Add to inactive events
         # Shallow copy?
         self.inactive_events.append(event)
@@ -674,11 +698,10 @@ class EventScreen(Menu):
         Updates the game based on the event chosen by the user.
         
         If the user does not choose an event then return immediately to the
-        DayScreen. Otherwise, each bonus of the event does one of the
-        following:
-            1) update day hours remaining;
-            2) update or add an inventory item;
-            3) or, change one of the character's attributes, such as hp.
+        DayScreen. Otherwise, mark the event as active so that it processes
+        from now on during StoryScreen (new month).
+        
+        Also, process the event for the first time starting now.
         
         :param chosen_position: The position of the menu selected by user.
         :type chosen_position: int
