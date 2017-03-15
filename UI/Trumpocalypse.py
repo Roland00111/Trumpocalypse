@@ -539,7 +539,7 @@ class Item:
         
         House: -1 use/day;
             If Houses=0: -1Charisma, (-1I)
-            If 0, alert_user( no_color "...need to find a house!" )
+            If 0, alert_user( no_color "...sure would be nice to have a roof to sleep under!" )
         '''
         if item_type == 'Food':
             self.purchase_cost = 10 
