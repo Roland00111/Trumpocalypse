@@ -614,7 +614,7 @@ class Event:
                 setattr(c,str(key),n+value)
         self.months_remaining -= 1
         # If self.months_remaining <= 0 ...
-        print 'process:',self.event_text,',duration=',self.duration
+        # Then ...
     
     def generate_duration(self):
         '''Generate the duration of this event. It is between
@@ -623,7 +623,6 @@ class Event:
         '''
         self.duration = self.base_duration + random.randint(self.duration_rand_min, self.duration_rand_max)
         self.months_remaining = self.duration
-        print self.event_text,',duration=',self.duration
         
 class EventsHandler():
     events_array = [
@@ -643,6 +642,9 @@ class EventsHandler():
                 "...story...",
                 2, 0, 1),
         Event(  'Marshall Law', {"hours":-4,"sanity":-2,"income":-5000},
+                "...story...",
+                4, 0, 8),
+        Event(  'Zombie Apocalypse', {"hours":-4,"sanity":-2,"income":-5000},
                 "...story...",
                 4, 0, 8),
         Event(  'Power Sleep', {"hours":2,"sanity":2},
