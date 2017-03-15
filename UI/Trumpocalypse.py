@@ -408,7 +408,8 @@ class Inventory:
         self.items = [] # Array of items.
         self.all_choices = [
             'Food','Pie','Garden','Lottery Ticket','New Car','Old Car',
-            'Urban House','Suburban House','Rural House','Cash','First Aid Kit',
+            'Urban House','Suburban House','Rural House','Cash',
+            'First Aid Kit','Bicycle','Seeds','Clothing','Transit Pass',
         ]
     def item_count(self):
         #Iterates throught self.items and returns a list of all items in array with number of uses left
@@ -545,6 +546,22 @@ class Item:
             self.purchase_cost = 10
             self.resale_cost = 8
             self.remaining_uses = 2
+        elif item_type == 'Bicycle':
+            self.purchase_cost = 10
+            self.resale_cost = 8
+            self.remaining_uses = 2
+        elif item_type == 'Seeds':
+            self.purchase_cost = 1
+            self.resale_cost = 1
+            self.remaining_uses = 20
+        elif item_type == 'Clothing':
+            self.purchase_cost = 10
+            self.resale_cost = 4
+            self.remaining_uses = 20
+        elif item_type == 'Transit Pass':
+            self.purchase_cost = 100
+            self.resale_cost = 2
+            self.remaining_uses = 20
         else:
             # The item does not exist which must be a bug.
             # Raise an error.
@@ -565,7 +582,7 @@ class Store:
     def __init__(self):
         self.distance = random.randint(0, 4)
         self.inventory = Inventory()
-        for i in range(20):
+        for i in range(40):
             self.inventory.add_item()
         self.grocery_type = self.grocery_types[ random.randint(0, len(self.grocery_types)-1) ]
         self.name = names.NAMES_LIST[ random.randint(0, len(names.NAMES_LIST)-1) ] + "'s " + self.grocery_type
