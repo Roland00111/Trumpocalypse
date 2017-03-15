@@ -491,7 +491,25 @@ class Item:
             ...or "Food: 200" (two purchases of food)
             ...or "Food: 300" (three purchases of food)
             ... and so on
-    ''' 
+    '''
+    all_items = {           # Cost, Resale, Amount, Remaining Use (None=Grouped)
+        'Food':             [10,8,10, None], # 10 food cost $10; while life=9 food per day.
+        'Pie':              [1,0,1, None],
+        'Garden':           [200,100,10, None],
+        'Lottery Ticket':   [10,4,1, None],
+        'New Car':          [20000,10000,1,100],
+        'Old Car':          [10000,4000,1,60],
+        'Speed Boat':       [20000,8000,1,40],
+        'Urban House':      [400000,300000,1,100],
+        'Suburban House':   [200000,100000,1,90],
+        'Rural House':      [100000,80000,1,80],
+        'Cash':             [0,0,1,None], #?
+        'First Aid Kit':    [10,6,2,None],
+        'Bicycle':          [100,80,1,40],
+        'Seeds':            [2,1,20,None],
+        'Clothing':         [20,8,1,None],
+        'Transit Pass':     [100,60,1,40],
+    }
     def __init__(self, item_type = None):
         self.item_type = item_type
         self.purchase_cost = 1
@@ -541,7 +559,30 @@ class Item:
         House: -1 use/day;
             If Houses=0: -1Charisma, (-1I)
             If 0, alert_user( no_color "...sure would be nice to have a roof to sleep under!" )
+        
+        ================================================================
+            
+        How about "single items" versus "grouped items".
+        So house, car, bike ... are single items.
+        Food, garden, lottery tickets, cash, first aid kit ... are grouped.
+        
+        Single use items have remaining_use that declines.
+        
+        Grouped use items have num_in_group that declines.
+        
+        So 1000 food:
+            food.amount = 1000
+            food.amount -= 3 per day
+            food.remaining_use = None
+            
+        So two bikes:
+            one bike:       bike.remaining_use = 20
+                            bike.amount = 1
+            another bike:   bike.remaining_use = 20
+                            bike.amount = 1
+            
         '''
+    
         if item_type == 'Food':
             self.purchase_cost = 10 
             self.resale_cost = 8
@@ -596,7 +637,7 @@ class Item:
             self.purchase_cost = 10
             self.resale_cost = 8
             self.remaining_uses = 2
-        elif item_type == 'Bicycle':
+        elif item_type == 'Bicycle':        #20/20 = 1 bicycle
             self.purchase_cost = 10
             self.resale_cost = 8
             self.remaining_uses = 20
@@ -606,12 +647,12 @@ class Item:
             self.resale_cost = 1
             self.remaining_uses = 20
             self.single_amount = 1
-        elif item_type == 'Clothing':
+        elif item_type == 'Clothing':       #20/1 = 20 clothes 
             self.purchase_cost = 10
             self.resale_cost = 4
             self.remaining_uses = 20
             self.single_amount = 1
-        elif item_type == 'Transit Pass':
+        elif item_type == 'Transit Pass':   #20/1 = 20 passes
             self.purchase_cost = 100
             self.resale_cost = 2
             self.remaining_uses = 20
