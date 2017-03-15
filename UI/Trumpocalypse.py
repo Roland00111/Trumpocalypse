@@ -217,7 +217,6 @@ class EventsLoop:
                 while testevents:
                     cm = self.current_menu # A quick shortcut
                     chosen_position = testevents.pop(0)
-                    #print chosen_position
                     while cm.scene.children:
                     # This does work to remove Scene() children.
                         for child in cm.scene.children:
@@ -244,8 +243,6 @@ class EventsLoop:
                         font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
                         drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
                     pygame.display.update()
-                    #print cm.keypressArray[chosen_position]
-                    #print cm.keypressArray
                     self.current_menu = cm.keypressArray[chosen_position]()
                 return
             #####################################################################
@@ -504,7 +501,6 @@ class Item:
         pass
         
     def set_item(self, item_type):
-        print item_type
         if item_type == 'Food':
             self.purchase_cost = 10 
             self.resale_cost = 8
@@ -554,14 +550,11 @@ class Item:
             # Raise an error.
             raise TypeError
             
-
 class GameState:
     def __init__(self,testevents = None):
         global game_state # Reference the global game state variable to this object.
         game_state = self
         self.game = Game()
-        # Old starting method was:
-    #   self.current_screen = OpeningMenu()
         self.events_loop = EventsLoop(testevents) # Starts with opening menu.
 
 class Store:
@@ -570,7 +563,6 @@ class Store:
                         'Butcher',  'Convenience Store',
                         'Mom-and-Pop',              'Corner Store']
     def __init__(self):
-        #~ global NAMES_LIST
         self.distance = random.randint(0, 4)
         self.inventory = Inventory()
         for i in range(20):
