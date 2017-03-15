@@ -516,6 +516,31 @@ class Item:
         return math.ceil(self.remaining_uses / self.single_amount)
         
     def set_item(self, item_type):
+        '''K=1 Karma, I=1 Influence, B=1 Butterfly
+        Alert levels: red, yellow, no_color
+        
+        Food: 10 uses (3 uses per day);
+            If Food=0: HP-=1/day
+            If 0, alert_user( red "...need to find food! ...so hon-gry!" )
+        
+        Garden: 10 uses; -2hours/use, +6 Food/use, Strength+=0.1, (+K,+I,+B);
+        
+        Bicycle: 2x time travel, -1 use/mile commute, Strength+=0.1, (+K+I+B)
+        
+        Walking(?): 4x time travel, Strength+=0.1, (+K+I+B)
+        
+        Clothing: -1 use/day;
+            If Clothing=0: -1Charisma/day, (-I)
+            If 0, alert_user( yellow "...need to find clothes!" )
+        
+        Transit Pass: 1x time travel, -1 use/mile travel; (+K+I+B)
+        
+        Car: 1x time travel, -1 use/mile travel; (-1K-1B)
+        
+        House: -1 use per day;
+            If Houses=0: -1Charisma;(-1I)
+            If 0, alert_user( no_color "...need to find a house!" )
+        '''
         if item_type == 'Food':
             self.purchase_cost = 10 
             self.resale_cost = 8
@@ -574,15 +599,17 @@ class Item:
             self.purchase_cost = 1
             self.resale_cost = 1
             self.remaining_uses = 20
+            self.amount = 1
         elif item_type == 'Clothing':
             self.purchase_cost = 10
             self.resale_cost = 4
             self.remaining_uses = 20
+            self.amount = 1
         elif item_type == 'Transit Pass':
             self.purchase_cost = 100
             self.resale_cost = 2
             self.remaining_uses = 20
-            self.single_amount = 20
+            self.amount = 1
         else:
             # The item does not exist which must be a bug.
             # Raise an error.
