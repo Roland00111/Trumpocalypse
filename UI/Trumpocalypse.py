@@ -605,17 +605,17 @@ class Item:
             self.purchase_cost = 1
             self.resale_cost = 1
             self.remaining_uses = 20
-            self.amount = 1
+            self.single_amount = 1
         elif item_type == 'Clothing':
             self.purchase_cost = 10
             self.resale_cost = 4
             self.remaining_uses = 20
-            self.amount = 1
+            self.single_amount = 1
         elif item_type == 'Transit Pass':
             self.purchase_cost = 100
             self.resale_cost = 2
             self.remaining_uses = 20
-            self.amount = 1
+            self.single_amount = 1
         else:
             # The item does not exist which must be a bug.
             # Raise an error.
