@@ -433,11 +433,11 @@ class Inventory:
             new_item = Item(item_type)
             if remaining_uses == 'random':
                 if item_type == 'Cash':
-                    remaining_uses = random.randint(0,10000)
-                    new_item.remaining_uses = remaining_uses
+                    amount = random.randint(0,10000)
+                    new_item.amount = amount
                 elif item_type == 'Food':
-                    remaining_uses = random.randint(0,100)
-                    new_item.remaining_uses = remaining_uses
+                    amount = random.randint(0,100)
+                    new_item.amount = amount
             else: #remaining_uses != None:
                 new_item.remaining_uses = remaining_uses
             self.update_or_add_item(new_item)
@@ -450,8 +450,13 @@ class Inventory:
     def update_or_add_item(self, new_item):
         existing_item = self.contains_item(new_item.item_type)
         if existing_item != False:
-            # Add to the remaining uses.
-            existing_item.remaining_uses += new_item.remaining_uses
+            # Add to existing item.
+            if existing_item.remaining_uses != None:    # Single item.
+                # Always add another single item.
+                self.items.append( new_item )
+                #existing_item.remaining_uses += new_item.remaining_uses
+            else:                                       # Grouped item.
+                existing_item.amount += new_item.amount
         else:
             self.items.append( new_item )
     
@@ -512,27 +517,41 @@ class Item:
     }
     def __init__(self, item_type = None):
         self.item_type = item_type
-        self.purchase_cost = 1
+        self.purchase_cost = 0
         self.resale_cost = 0
-        self.remaining_uses = 100
-        self.single_amount = 1 # Default = 1, Big items = 1-to-1
+        self.amount = 0
+        self.remaining_uses = None
+        self.max_remaining_uses = None # To show how much is left.
+        #~ self.single_amount = 1 # Default = 1, Big items = 1-to-1
         self.set_item(item_type)
             
     def use_item(self, item_type):
         '''To implement.
-        This will somehow use the item...
-        Deincroment remaining_uses, along with in game effect'''
+        This will somehow use the item.
+        Deincroment remaining_uses, along with in game effect.'''
         
         pass
     
     def sell_item(self):
         '''To implement.
-        Sells the item based on its remaining uses
+        Sells the item based on either its remaining uses or amount remaining.
         '''
         pass
         
     def show_amount(self):
-        return math.ceil(self.remaining_uses / self.single_amount)
+        '''
+        :return: The display value.
+        :rtype: int.
+        '''
+        print self.item_type
+        print self.amount
+        print self.remaining_uses
+        print self.max_remaining_uses
+        if self.remaining_uses == None: # Grouped item (num remaining)
+            return self.amount
+        else:                           # Single item (% remaining)
+            return str(math.ceil(100*(self.remaining_uses / self.max_remaining_uses)))+'%'
+        #~ return math.ceil(self.remaining_uses / self.single_amount)
         
     def set_item(self, item_type):
         '''K=1 Karma, I=1 Influence, B=1 Butterfly
@@ -580,86 +599,97 @@ class Item:
                             bike.amount = 1
             another bike:   bike.remaining_use = 20
                             bike.amount = 1
-            
+        
+        :rtype: None
+        :raises TypeError: If item_type is not in self.all_items
         '''
-        if item_type == 'Food':
-            self.purchase_cost = 10 
-            self.resale_cost = 8
-            self.remaining_uses = 10 
-        elif item_type == 'Pie':
-            self.purchase_cost = 1
-            self.resale_cost = 0
-            self.remaining_uses = 1
-        elif item_type == 'Garden':
-            self.purchase_cost = 200
-            self.resale_cost = 100
-            self.remaining_uses = 10
-        elif item_type == 'Lottery Ticket':
-            self.purchase_cost = 10
-            self.resale_cost = 4
-            self.remaining_uses = 1
-        elif item_type == 'New Car':
-            self.purchase_cost = 20000
-            self.resale_cost = 10000
-            self.remaining_uses = 100
-            self.single_amount = 100
-        elif item_type == 'Old Car':
-            self.purchase_cost = 10000
-            self.resale_cost = 4000
-            self.remaining_uses = 60
-            self.single_amount = 60
-        elif item_type == 'Speed Boat':
-            self.purchase_cost = 20000
-            self.resale_cost = 10000
-            self.remaining_uses = 40
-            self.single_amount = 40
-        elif item_type == 'Urban House':
-            self.purchase_cost = 40000
-            self.resale_cost = 40000
-            self.remaining_uses = 100
-            self.single_amount = 100
-        elif item_type == 'Suburban House':
-            self.purchase_cost = 20000
-            self.resale_cost = 20000
-            self.remaining_uses = 50
-            self.single_amount = 50
-        elif item_type == 'Rural House':
-            self.purchase_cost = 10000
-            self.resale_cost = 10000
-            self.remaining_uses = 20
-            self.single_amount = 20
-        elif item_type == 'Cash':
-            self.purchase_cost = 0
-            self.resale_cost = 0
-            self.remaining_uses = 0
-        elif item_type == 'First Aid Kit':
-            self.purchase_cost = 10
-            self.resale_cost = 8
-            self.remaining_uses = 2
-        elif item_type == 'Bicycle':        #20/20 = 1 bicycle
-            self.purchase_cost = 10
-            self.resale_cost = 8
-            self.remaining_uses = 20
-            self.single_amount = 20
-        elif item_type == 'Seeds':
-            self.purchase_cost = 1
-            self.resale_cost = 1
-            self.remaining_uses = 20
-            self.single_amount = 1
-        elif item_type == 'Clothing':       #20/1 = 20 clothes 
-            self.purchase_cost = 10
-            self.resale_cost = 4
-            self.remaining_uses = 20
-            self.single_amount = 1
-        elif item_type == 'Transit Pass':   #20/1 = 20 passes
-            self.purchase_cost = 100
-            self.resale_cost = 2
-            self.remaining_uses = 20
-            self.single_amount = 1
-        else:
-            # The item does not exist which must be a bug.
-            # Raise an error.
+        try:
+            n = self.all_items[item_type]
+            self.purchase_cost = n[0]
+            self.resale_cost = n[1]
+            self.amount = n[2]
+            self.remaining_uses = n[3]
+            self.max_remaining_uses = n[3]
+        except:
             raise TypeError
+        #~ if item_type == 'Food':
+            #~ self.purchase_cost = 10 
+            #~ self.resale_cost = 8
+            #~ self.remaining_uses = 10 
+        #~ elif item_type == 'Pie':
+            #~ self.purchase_cost = 1
+            #~ self.resale_cost = 0
+            #~ self.remaining_uses = 1
+        #~ elif item_type == 'Garden':
+            #~ self.purchase_cost = 200
+            #~ self.resale_cost = 100
+            #~ self.remaining_uses = 10
+        #~ elif item_type == 'Lottery Ticket':
+            #~ self.purchase_cost = 10
+            #~ self.resale_cost = 4
+            #~ self.remaining_uses = 1
+        #~ elif item_type == 'New Car':
+            #~ self.purchase_cost = 20000
+            #~ self.resale_cost = 10000
+            #~ self.remaining_uses = 100
+            #~ self.single_amount = 100
+        #~ elif item_type == 'Old Car':
+            #~ self.purchase_cost = 10000
+            #~ self.resale_cost = 4000
+            #~ self.remaining_uses = 60
+            #~ self.single_amount = 60
+        #~ elif item_type == 'Speed Boat':
+            #~ self.purchase_cost = 20000
+            #~ self.resale_cost = 10000
+            #~ self.remaining_uses = 40
+            #~ self.single_amount = 40
+        #~ elif item_type == 'Urban House':
+            #~ self.purchase_cost = 40000
+            #~ self.resale_cost = 40000
+            #~ self.remaining_uses = 100
+            #~ self.single_amount = 100
+        #~ elif item_type == 'Suburban House':
+            #~ self.purchase_cost = 20000
+            #~ self.resale_cost = 20000
+            #~ self.remaining_uses = 50
+            #~ self.single_amount = 50
+        #~ elif item_type == 'Rural House':
+            #~ self.purchase_cost = 10000
+            #~ self.resale_cost = 10000
+            #~ self.remaining_uses = 20
+            #~ self.single_amount = 20
+        #~ elif item_type == 'Cash':
+            #~ self.purchase_cost = 0
+            #~ self.resale_cost = 0
+            #~ self.remaining_uses = 0
+        #~ elif item_type == 'First Aid Kit':
+            #~ self.purchase_cost = 10
+            #~ self.resale_cost = 8
+            #~ self.remaining_uses = 2
+        #~ elif item_type == 'Bicycle':        #20/20 = 1 bicycle
+            #~ self.purchase_cost = 10
+            #~ self.resale_cost = 8
+            #~ self.remaining_uses = 20
+            #~ self.single_amount = 20
+        #~ elif item_type == 'Seeds':
+            #~ self.purchase_cost = 1
+            #~ self.resale_cost = 1
+            #~ self.remaining_uses = 20
+            #~ self.single_amount = 1
+        #~ elif item_type == 'Clothing':       #20/1 = 20 clothes 
+            #~ self.purchase_cost = 10
+            #~ self.resale_cost = 4
+            #~ self.remaining_uses = 20
+            #~ self.single_amount = 1
+        #~ elif item_type == 'Transit Pass':   #20/1 = 20 passes
+            #~ self.purchase_cost = 100
+            #~ self.resale_cost = 2
+            #~ self.remaining_uses = 20
+            #~ self.single_amount = 1
+        #~ else:
+            #~ # The item does not exist which must be a bug.
+            #~ # Raise an error.
+            #~ raise TypeError
             
 class GameState:
     def __init__(self,testevents = None):
