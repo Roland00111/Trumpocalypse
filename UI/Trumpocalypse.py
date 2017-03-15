@@ -519,26 +519,26 @@ class Item:
         '''K=1 Karma, I=1 Influence, B=1 Butterfly
         Alert levels: red, yellow, no_color
         
-        Food: 10 uses (3 uses per day);
+        Food: Basic amount=10 uses, 3 uses/day;
             If Food=0: HP-=1/day
             If 0, alert_user( red "...need to find food! ...so hon-gry!" )
         
-        Garden: 10 uses; -2hours/use, +6 Food/use, Strength+=0.1, (+K,+I,+B);
+        Garden: Basic amount=10 uses, -1garden/use, -2hours/use, +6 Food/use, Strength+=0.1/use, (+K,+I,+B)
         
-        Bicycle: 2x time travel, -1 use/mile commute, Strength+=0.1, (+K+I+B)
+        Bicycle: 0.5x time travel, -1 use/mile travel, Strength+=0.1, (+K+I+B)
         
-        Walking(?): 4x time travel, Strength+=0.1, (+K+I+B)
+        Walking(?): 0.25x time travel, Strength+=0.1, (+K+I+B)
         
         Clothing: -1 use/day;
             If Clothing=0: -1Charisma/day, (-I)
             If 0, alert_user( yellow "...need to find clothes!" )
         
-        Transit Pass: 1x time travel, -1 use/mile travel; (+K+I+B)
+        Transit Pass: 1x time travel, -1 use/mile travel, (+K+I+B)
         
-        Car: 1x time travel, -1 use/mile travel; (-1K-1B)
+        Car: 1x time travel, -1 use/mile travel, (-1K-1B)
         
-        House: -1 use per day;
-            If Houses=0: -1Charisma;(-1I)
+        House: -1 use/day;
+            If Houses=0: -1Charisma, (-1I)
             If 0, alert_user( no_color "...need to find a house!" )
         '''
         if item_type == 'Food':
