@@ -415,12 +415,13 @@ class Inventory:
         #Iterates throught self.items and returns a list of all items in array with number of uses left
         storage = []
         for item in self.items:
-            storage.append(item.item_type + ': ' + str(item.remaining_uses))
+            storage.append(item.item_type + ': ' + str(item.show_amount()))
         return storage
     
     def num_items(self):
         # Returns the number of items in the inventory
         return len(self.items)
+    
     def add_item(self, item_type = None,remaining_uses = None):
         # Add an item to this inventory.
         # If item_type is None then add a random item.
@@ -444,6 +445,7 @@ class Inventory:
             n = random.randint(0, len(self.all_choices)-1)
             rand_item = Item( self.all_choices[n] )
             self.update_or_add_item(rand_item)
+    
     def update_or_add_item(self, new_item):
         existing_item = self.contains_item(new_item.item_type)
         if existing_item != False:
@@ -451,6 +453,7 @@ class Inventory:
             existing_item.remaining_uses += new_item.remaining_uses
         else:
             self.items.append( new_item )
+    
     def contains_item(self, item_type):
         # Returns the item in the inventory if it exists.
         # Otherwise returns False.
@@ -492,14 +495,25 @@ class Item:
         self.item_type = item_type
         self.purchase_cost = 1
         self.resale_cost = 0
-        self.remaining_uses = 1
+        self.remaining_uses = 100
+        self.single_amount = 1 # Default = 1, Big items = 1-to-1
         self.set_item(item_type)
             
     def use_item(self, item_type):
-        '''This will somehow use the item...'''
-        ''' Deincroment remaining_uses, along with in game effect'''
+        '''To implement.
+        This will somehow use the item...
+        Deincroment remaining_uses, along with in game effect'''
         
         pass
+    
+    def sell_item(self):
+        '''To implement.
+        Sells the item based on its remaining uses
+        '''
+        pass
+        
+    def show_amount(self):
+        return math.ceil(self.remaining_uses / self.single_amount)
         
     def set_item(self, item_type):
         if item_type == 'Food':
@@ -522,22 +536,27 @@ class Item:
             self.purchase_cost = 20000
             self.resale_cost = 10000
             self.remaining_uses = 100
+            self.single_amount = 100
         elif item_type == 'Old Car':
             self.purchase_cost = 10000
             self.resale_cost = 4000
             self.remaining_uses = 60
+            self.single_amount = 60
         elif item_type == 'Urban House':
             self.purchase_cost = 40000
             self.resale_cost = 40000
             self.remaining_uses = 100
+            self.single_amount = 100
         elif item_type == 'Suburban House':
             self.purchase_cost = 20000
             self.resale_cost = 20000
             self.remaining_uses = 50
+            self.single_amount = 50
         elif item_type == 'Rural House':
             self.purchase_cost = 10000
             self.resale_cost = 10000
             self.remaining_uses = 20
+            self.single_amount = 20
         elif item_type == 'Cash':
             self.purchase_cost = 0
             self.resale_cost = 0
@@ -549,7 +568,8 @@ class Item:
         elif item_type == 'Bicycle':
             self.purchase_cost = 10
             self.resale_cost = 8
-            self.remaining_uses = 2
+            self.remaining_uses = 20
+            self.single_amount = 20
         elif item_type == 'Seeds':
             self.purchase_cost = 1
             self.resale_cost = 1
@@ -562,6 +582,7 @@ class Item:
             self.purchase_cost = 100
             self.resale_cost = 2
             self.remaining_uses = 20
+            self.single_amount = 20
         else:
             # The item does not exist which must be a bug.
             # Raise an error.
