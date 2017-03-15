@@ -6,6 +6,7 @@ from TextWrap import *
 import PygameUI
 #import gc
 import math
+import copy
 
 from pygame.locals import *
 
@@ -583,12 +584,13 @@ class LocationsHandler():
         pass
 
 class Event:
-    def __init__(self, event_text, bonuses={}, story_text='', duration=0,
+    def __init__(self, event_text, bonuses={}, story_text='', base_duration=0,
                  duration_rand_min=0, duration_rand_max=0):
         self.event_text = event_text
         self.story_text = story_text
         self.bonuses = bonuses
-        self.duration = duration
+        self.base_duration = base_duration
+        self.duration = None # Dynamic
         self.months_remaining = None # Dynamic
         self.duration_rand_min = duration_rand_min
         self.duration_rand_max = duration_rand_max
@@ -611,25 +613,44 @@ class Event:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
         self.months_remaining -= 1
+        # If self.months_remaining <= 0 ...
+        print 'process:',self.event_text,',duration=',self.duration
     
     def generate_duration(self):
         '''Generate the duration of this event. It is between
-        [duration + duration_rand_min] and [duration + duration_rand_max].
+        [base_duration + duration_rand_min] and [base_duration + duration_rand_max].
         Then set months_remaining to be duration.
         '''
-        self.duration = self.duration + random.randint(self.duration_rand_min, self.duration_rand_max)
+        self.duration = self.base_duration + random.randint(self.duration_rand_min, self.duration_rand_max)
         self.months_remaining = self.duration
+        print self.event_text,',duration=',self.duration
         
 class EventsHandler():
     events_array = [
-        Event('Tsunami', {"health":-1,"sanity":-1}, "", 2, 0, 1),
-        Event('Win Lottery', {"Cash":10000,"sanity":1}, "", 2, 0, 1),
-        Event('Extreme Pollution', {"health":-1,"sanity":-1}, "", 2, 0, 1),
-        Event('Nuclear War', {"health":-2,"sanity":-5}, "", 2, 0, 1),
-        Event('Curfew', {"hours":-4,"sanity":-1}, "", 2, 0, 1),
-        Event('Marshall Law', {"hours":-4,"sanity":-2,"income":-5000}, "", 2, 0, 1),
-        Event('Power Sleep', {"hours":2,"sanity":2}, "", 2, 0, 1),
-        Event('Find Good Stuff', {"Food":5,"Cash":1000,"sanity":1}, "", 2, 0, 1),
+        Event(  'Tsunami', {"health":-1,"sanity":-1},
+                "...story...",
+                2, 0, 1),
+        Event(  'Win Lottery', {"Cash":10000,"sanity":1},
+                "...story...",
+                1, 0, 0),
+        Event(  'Extreme Pollution', {"health":-1,"sanity":-1},
+                "...story...",
+                4, 0, 4),
+        Event(  'Nuclear War', {"health":-2,"sanity":-5},
+                "...story...",
+                6, 0, 6),
+        Event(  'Curfew', {"hours":-4,"sanity":-1},
+                "...story...",
+                2, 0, 1),
+        Event(  'Marshall Law', {"hours":-4,"sanity":-2,"income":-5000},
+                "...story...",
+                4, 0, 8),
+        Event(  'Power Sleep', {"hours":2,"sanity":2},
+                "...story...",
+                1, 0, 0),
+        Event(  'Find Good Stuff', {"Food":5,"Cash":1000,"sanity":1},
+                "...story...",
+                1, 0, 0),
     ]
     #~ events_dict = {}
     
@@ -652,7 +673,7 @@ class EventsHandler():
     def random_event(self):
         '''Add a random event to inactive_events.'''
         num = random.randint(0,len(EventsHandler.events_array)-1) 
-        event = EventsHandler.events_array[num]
+        event = copy.deepcopy(EventsHandler.events_array[num])
         # Generate event duration.
         event.generate_duration()
         # Add to inactive events
