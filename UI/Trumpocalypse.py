@@ -7,6 +7,7 @@ import PygameUI
 #import gc
 import math
 import copy
+import names # People's names.
 
 from pygame.locals import *
 
@@ -578,11 +579,25 @@ class Location:
         # Default location is random.
         #~ self.name = self.all_locations[ random.randint(0,8) ] # Any of 0,1,2,3,4,5,6,7,8
     
-class LocationsHandler():
+class LocationsHandler:
     locations = []
     def __init__(self):
         pass
 
+class Store:
+    grocery_types = [   'Bodega',   'Mini-Market',  'Supermarket'
+                        'Market',   'Delicatessen', 'Fishmonger'
+                        'Butcher',  'Convenience Store',
+                        'Mom-and-Pop',              'Corner Store'
+    ]
+    def __init__(self):
+        self.distance_from_character = random.randint(0, 4)
+        self.inventory = Inventory()
+        for i in range(20):
+            self.inventory.add_items()
+        self.grocery_type = self.grocery_types[ random.randint(0, len(self.grocery_types)-1) ]
+        self.name = NAMES_LIST[ random.randint(0, len(NAMES_LIST)-1) ] + "'s" + self.grocery_type
+    
 class Event:
     def __init__(self, event_text, bonuses={}, story_text='', base_duration=0,
                  duration_rand_min=0, duration_rand_max=0):
@@ -624,7 +639,7 @@ class Event:
         self.duration = self.base_duration + random.randint(self.duration_rand_min, self.duration_rand_max)
         self.months_remaining = self.duration
         
-class EventsHandler():
+class EventsHandler:
     events_array = [
         Event(  'Tsunami', {"health":-1,"sanity":-1},
                 "...story...",
