@@ -582,7 +582,6 @@ class Item:
                             bike.amount = 1
             
         '''
-    
         if item_type == 'Food':
             self.purchase_cost = 10 
             self.resale_cost = 8
