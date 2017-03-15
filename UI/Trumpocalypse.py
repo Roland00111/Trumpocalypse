@@ -666,19 +666,6 @@ class StoreScreen(Menu):
         pass
 
 class Location:
-    '''https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States'''
-    all_locations = [ #prototype
-        'Middle Atlantic',
-        'New England',
-        'South Atlantic',
-        'East South Central',
-        'East North Central',
-        'West North Central',
-        'West South Central',
-        'Mountain',
-        'Pacific'
-    ]
-
     def __init__(self):
         self.location_name = 'Town of Anywhere'
         self.connected_regions = []
@@ -693,7 +680,19 @@ class Location:
             temp_array.append(store.name + ': ' + str(store.distance) + ' miles')
         return temp_array
     
-class LocationsHandler:
+class Locations:
+    '''https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States'''
+    all_locations = [ #prototype
+        'Middle Atlantic',
+        'New England',
+        'South Atlantic',
+        'East South Central',
+        'East North Central',
+        'West North Central',
+        'West South Central',
+        'Mountain',
+        'Pacific'
+    ]
     locations = [ Location() for i in range(0,8) ]
     def __init__(self):
         # Start in random location.
@@ -744,7 +743,7 @@ class Event:
         self.duration = self.base_duration + random.randint(self.duration_rand_min, self.duration_rand_max)
         self.months_remaining = self.duration
         
-class EventsHandler:
+class Events:
     events_array = [
         Event(  'Tsunami', {"health":-1,"sanity":-1},
                 "...story...",
@@ -794,8 +793,8 @@ class EventsHandler:
         
     def random_event(self):
         '''Add a random event to inactive_events.'''
-        num = random.randint(0,len(EventsHandler.events_array)-1) 
-        event = copy.deepcopy(EventsHandler.events_array[num])
+        num = random.randint(0,len(Events.events_array)-1) 
+        event = copy.deepcopy(Events.events_array[num])
         # Generate event duration.
         event.generate_duration()
         # Add to inactive events
@@ -863,8 +862,8 @@ class Game:
     month_counter = 1
     month_day = 1
     term_count = 1
-    locations_handler = LocationsHandler()
-    events_handler = EventsHandler()
+    locations_handler = Locations()
+    events_handler = Events()
     #~ events = []
     #~ event_dict = {"Tsunami": {"health":-1,"sanity":-1},
                           #~ "Win Lottery": {"Cash":10000,"sanity":1,},
