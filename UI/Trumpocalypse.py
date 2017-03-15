@@ -410,6 +410,7 @@ class Inventory:
             'Food','Pie','Garden','Lottery Ticket','New Car','Old Car',
             'Urban House','Suburban House','Rural House','Cash',
             'First Aid Kit','Bicycle','Seeds','Clothing','Transit Pass',
+            'Speed Boat'
         ]
     def item_count(self):
         #Iterates throught self.items and returns a list of all items in array with number of uses left
@@ -567,6 +568,11 @@ class Item:
             self.resale_cost = 4000
             self.remaining_uses = 60
             self.single_amount = 60
+        elif item_type == 'Speed Boat':
+            self.purchase_cost = 20000
+            self.resale_cost = 10000
+            self.remaining_uses = 40
+            self.single_amount = 40
         elif item_type == 'Urban House':
             self.purchase_cost = 40000
             self.resale_cost = 40000
