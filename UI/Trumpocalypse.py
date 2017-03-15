@@ -587,6 +587,16 @@ class Event:
         self.event_text = event_text
         self.story_text = story_text
         self.bonuses = bonuses
+    def process(self):
+        c = game_state.game.character
+        for key, value in self.bonuses.iteritems():
+            if key == "hours":
+                game_state.game.current_day.day_hours += value
+            elif key in c.inventory.all_choices:
+                c.inventory.add_item(str(key),int(value))
+            else:
+                n = getattr(c,str(key))
+                setattr(c,str(key),n+value)
         
 class EventsHandler():
     events_array = [
@@ -677,15 +687,7 @@ class EventScreen(Menu):
         if len(self.events_values) -1  < chosen_position:
             return
         event = game_state.game.events_handler.inactive_events[chosen_position]
-        c = game_state.game.character
-        for key, value in event.bonuses.iteritems():
-            if key == "hours":
-                game_state.game.current_day.day_hours += value
-            elif key in c.inventory.all_choices:
-                c.inventory.add_item(str(key),int(value))
-            else:
-                n = getattr(c,str(key))
-                setattr(c,str(key),n+value)
+        event.process()
         # Go from inactive to active.
         game_state.game.events_handler.toggle_event(event)
             
