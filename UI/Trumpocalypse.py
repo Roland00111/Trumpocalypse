@@ -346,7 +346,7 @@ class Character:
         self.inventory = Inventory() # Give character an inventory.
         self.transit_mode = 0 # Default index=0, which is walking.
         self.selected_house_idx = 0         # House index, default=0
-        self.selected_house = 'In the Park' # House title, default='In the Park'
+        self.selected_house = 'Staying with Friends' # House title, default='Staying with Friends'
         if create_type == 'random':
             self.randomGenerate()
             pass
@@ -590,7 +590,7 @@ class Item:
         'Transit Pass',
     ]
     housing_types = [ # Array of transit modes
-        'In the Park',
+        'Staying with Friends',
         'Urban House',
         'Suburban House',
         'Rural House',
@@ -801,7 +801,7 @@ class Store:
                 'Urban House':      x,
                 'Suburban House':   x+random.uniform(0.0,4.0),
                 'Rural House':      x+random.uniform(0.0,8.0),
-                'In the Park':      x+random.uniform(0.0,1.0),
+                'Staying with Friends':      x+random.uniform(0.0,1.0),
             }
         elif self.store_location == 'suburban':
             x = random.uniform(0.0,4.0)
@@ -809,7 +809,7 @@ class Store:
                 'Urban House':      x+random.uniform(0.0,4.0),
                 'Suburban House':   x,
                 'Rural House':      x+random.uniform(0.0,4.0),
-                'In the Park':      x+random.uniform(0.0,1.0),
+                'Staying with Friends':      x+random.uniform(0.0,1.0),
             }
         else: # Assume rural
             x = random.uniform(0.0,8.0)
@@ -817,13 +817,14 @@ class Store:
                 'Urban House':      x+random.uniform(0.0,8.0),
                 'Suburban House':   x+random.uniform(0.0,4.0),
                 'Rural House':      x,
-                'In the Park':      x+random.uniform(0.0,1.0),
+                'Staying with Friends':      x+random.uniform(0.0,1.0),
             }
         # Round distances to the nearest tenth.
         self.distance['Urban House'] = round(self.distance['Urban House'], 1)
         self.distance['Suburban House'] = round(self.distance['Suburban House'], 1)
         self.distance['Rural House'] = round(self.distance['Rural House'], 1)
-        self.distance['In the Park'] = round(self.distance['In the Park'], 1)
+        self.distance['Staying with Friends'] = round(self.distance['Staying with Friends'], 1)
+        
     def distance_from_house(self):
         '''
         game_state.game.character.selected_house is a string
@@ -861,11 +862,11 @@ class CharacterHUD:
         lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -200, 150, 20)
         current_menu.scene.add_child(lbl)
         # List of available transit types.
-        x = PygameUI.List(['In the Park']+game_state.game.character.inventory.list_housing_types(), (200, 224, 200))
+        x = PygameUI.List(['Staying with Friends']+game_state.game.character.inventory.list_housing_types(), (200, 224, 200))
         x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -180, 150, 80)
         #~ x.frame.w = x.container.frame.w
         x.frame.w = 150
-        x.selected_index = game_state.game.character.selected_house_idx # selected mode, default = In the Park
+        x.selected_index = game_state.game.character.selected_house_idx # selected mode, default = Staying with Friends
         x.border_width = 1
         x.container.draggable = True
         # What to do on change mode? (i.e. clicked)
@@ -901,8 +902,8 @@ class CharacterHUD:
         selected index.
         '''
         game_state.game.character.selected_house_idx = selected_index
-        if selected_value == 'In the Park':
-            game_state.game.character.selected_house = 'In the Park'
+        if selected_value == 'Staying with Friends':
+            game_state.game.character.selected_house = 'Staying with Friends'
         elif 'Urban House' in selected_value:
             game_state.game.character.selected_house = 'Urban House'
         elif 'Suburban House' in selected_value:
