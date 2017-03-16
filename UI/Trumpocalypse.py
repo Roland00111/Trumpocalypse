@@ -412,6 +412,8 @@ class Inventory:
             'First Aid Kit','Bicycle','Seeds','Clothing','Transit Pass',
             'Speed Boat'
         ]
+        self.is_store = False
+        
     def item_count(self):
         #Iterates throught self.items and returns a list of all items in array with number of uses left
         storage = []
@@ -419,16 +421,34 @@ class Inventory:
             storage.append(item.item_type + ': ' + item.show_amount())
         return storage
     
+    def item_count_buy(self):
+        #Iterates throught self.items and returns a list of all items in array with number of uses left
+        storage = []
+        for item in self.items:
+            storage.append(item.item_type + ': ' + item.show_amount() + ' $' + item.calculate_purchase_cost())
+        return storage
+    
+    def item_count_sell(self):
+        #Iterates throught self.items and returns a list of all items in array with number of uses left
+        storage = []
+        for item in self.items:
+            storage.append(item.item_type + ': ' + item.show_amount() + ' $' + item.calculate_resale_cost())
+        return storage
+    
     def num_items(self):
         # Returns the number of items in the inventory
         return len(self.items)
     
     def add_item(self, item_type = None,remaining_uses = None):
-        # Add an item to this inventory.
-        # If item_type is None then add a random item.
-        # If item_type is not None then add item of this type.
-        # Does the item already exist in the inventory?
-        # If so, then add the item's stats.    
+        '''Add an item to this inventory.
+        
+        If item_type is None then add a random item.
+        
+        If item_type is not None then add item of this type.
+        
+        Does the item already exist in the inventory?
+        If so, then add the item's stats.
+        '''
         if item_type != None:
             new_item = Item(item_type)
             if remaining_uses == 'random':
@@ -451,12 +471,14 @@ class Inventory:
         existing_item = self.contains_item(new_item.item_type)
         if existing_item != False:
             # Add to existing item.
-            if existing_item.remaining_uses != None:    # Single item.
+            if existing_item.grouped_item is False:    # Single item.
                 # Always add another single item.
                 self.items.append( new_item )
-                #existing_item.remaining_uses += new_item.remaining_uses
             else:                                       # Grouped item.
-                existing_item.amount += new_item.amount
+                if self.is_store:   # Store inventory (unbundle store inventory)
+                    self.items.append( new_item )
+                else:               # Character
+                    existing_item.amount += new_item.amount
         else:
             self.items.append( new_item )
     
@@ -469,6 +491,24 @@ class Inventory:
                 return existing_item
         # Still here? Then the item is not in the inventory.
         return False
+    
+    def shabbitize(self, shabbiness):
+        '''Make this inventory shabby.
+        
+        Always floor the shabbiness. So that 1 pie never become 0 pies.
+        
+        So Food=110; Food-=ceil(110*.99)=[110-109]=1.
+        
+        :param shabbiness: The shabbiness ratio, expressed between 0 and 0.99.
+        :type shabbiness: float.
+        '''
+        if shabbiness > 0:
+            for item in self.items:
+                rand_shabby = random.randint(20, 100) / 100.0 # Make the shabbiness vary some, between 20%-100% of current shabbiness.
+                if item.grouped_item is True:   # Grouped
+                    item.amount -= math.floor(item.amount * shabbiness * rand_shabby)
+                else:                           # Single
+                    item.remaining_uses -= math.floor(item.remaining_uses * shabbiness * rand_shabby)
         
 class Item:
     '''
@@ -498,30 +538,32 @@ class Item:
             ... and so on
     '''
     all_items = {           # Cost, Resale, Amount, Remaining Use (None=Grouped)
-        'Food':             [10,8,10, None], # 10 food cost $10; while life=9 food per day.
+        'Food':             [10,0.8,10, None], # 10 food cost $10; while life=9 food per day.
         'Pie':              [1,0,1, None],
-        'Garden':           [200,100,10, None],
-        'Lottery Ticket':   [10,4,1, None],
-        'New Car':          [20000,10000,1,100],
-        'Old Car':          [10000,4000,1,60],
-        'Speed Boat':       [20000,8000,1,40],
-        'Urban House':      [400000,300000,1,100],
-        'Suburban House':   [200000,100000,1,90],
-        'Rural House':      [100000,80000,1,80],
+        'Garden':           [200,0.5,10, None],
+        'Lottery Ticket':   [10,0.4,1, None],
+        'New Car':          [20000,0.5,1,100],
+        'Old Car':          [10000,0.4,1,60],
+        'Speed Boat':       [20000,0.4,1,40],
+        'Urban House':      [400000,0.7,1,100],
+        'Suburban House':   [200000,0.5,1,90],
+        'Rural House':      [100000,0.8,1,80],
         'Cash':             [0,0,1,None], #?
-        'First Aid Kit':    [10,6,2,None],
-        'Bicycle':          [100,80,1,40],
-        'Seeds':            [2,1,20,None],
-        'Clothing':         [20,8,1,None],
-        'Transit Pass':     [100,60,1,40],
+        'First Aid Kit':    [10,0.6,2,None],
+        'Bicycle':          [100,0.8,1,40],
+        'Seeds':            [2,0.5,20,None],
+        'Clothing':         [200,0.4,20,None], # 20 shirts for $10 per shirt = $200.
+        'Transit Pass':     [100,0.6,1,40],
     }
     def __init__(self, item_type = None):
         self.item_type = item_type
         self.purchase_cost = 0
-        self.resale_cost = 0
+        self.resale_cost = 0 # A ratio of original cost, between zero to one.
         self.amount = 0
+        self.original_amount = 0
         self.remaining_uses = None
-        self.max_remaining_uses = None # To show how much is left.
+        self.max_remaining_uses = None  # To show how much is left.
+        self.grouped_item = True        # Default is grouped.
         self.set_item(item_type)
             
     def use_item(self, item_type):
@@ -536,19 +578,58 @@ class Item:
         Sells the item based on either its remaining uses or amount remaining.
         '''
         pass
+    
+    def calculate_purchase_cost(self):
+        '''Returns the purchase cost of the item or group of items.
         
+        The cost is always rounded up.
+        
+        This is the same as self.calculate_resale_cost except
+        the seller never pays the resale ratio.
+        That is, the seller always sells as though the item were
+        in new condition, minus whatever amount has been used.
+        
+        :return: The purchase cost of this item.
+        :rtype: str.
+        '''
+        if self.grouped_item: # Grouped item (num remaining)
+            return str(math.floor(self.purchase_cost * (self.amount / self.original_amount)))
+        else:                 # Single item (% remaining)
+            return str(math.floor(self.purchase_cost * (self.remaining_uses / self.max_remaining_uses)))
+            
+    def calculate_resale_cost(self):
+        '''Returns the sell cost of the item or group of items.
+        
+        The cost is always rounded down. So if an item is only
+        worth $0.80 then it is really worth $0.
+        
+        In the case of grouped items this is:
+            floor: [ self.resale_cost * (self.amount / self.original_amount) ]
+        
+        In the case of single items this is:
+            floor: [ self.resale_cost * (self.remaining_uses / self.max_remaining_uses) ]
+            
+        :return: The sell cost of this item.
+        :rtype: str.
+        '''
+        if self.grouped_item: # Grouped item (num remaining)
+            return str(math.floor(self.purchase_cost * self.resale_cost * (self.amount / self.original_amount)))
+        else:                 # Single item (% remaining)
+            return str(math.floor(self.purchase_cost * self.resale_cost * (self.remaining_uses / self.max_remaining_uses)))
+    
     def show_amount(self):
         '''
         :return: The display value.
         :rtype: str.
         '''
-        if self.remaining_uses == None: # Grouped item (num remaining)
+        if self.grouped_item: # Grouped item (num remaining)
             return str(self.amount)
-        else:                           # Single item (% remaining)
+        else:                 # Single item (% remaining)
             return str(math.ceil(100*(self.remaining_uses / self.max_remaining_uses)))+'%'
         
     def set_item(self, item_type):
         '''K=1 Karma, I=1 Influence, B=1 Butterfly
+        
         Alert levels: red, yellow, no_color
         
         Food: Basic amount=10 uses, 3 uses/day;
@@ -602,88 +683,15 @@ class Item:
             self.purchase_cost = n[0]
             self.resale_cost = n[1]
             self.amount = n[2]
+            self.original_amount = n[2]
             self.remaining_uses = n[3]
             self.max_remaining_uses = n[3]
+            if self.remaining_uses is None:
+                self.grouped_item = True # Set self.grouped_item
+            else:
+                self.grouped_item = False
         except:
             raise TypeError
-        #~ if item_type == 'Food':
-            #~ self.purchase_cost = 10 
-            #~ self.resale_cost = 8
-            #~ self.remaining_uses = 10 
-        #~ elif item_type == 'Pie':
-            #~ self.purchase_cost = 1
-            #~ self.resale_cost = 0
-            #~ self.remaining_uses = 1
-        #~ elif item_type == 'Garden':
-            #~ self.purchase_cost = 200
-            #~ self.resale_cost = 100
-            #~ self.remaining_uses = 10
-        #~ elif item_type == 'Lottery Ticket':
-            #~ self.purchase_cost = 10
-            #~ self.resale_cost = 4
-            #~ self.remaining_uses = 1
-        #~ elif item_type == 'New Car':
-            #~ self.purchase_cost = 20000
-            #~ self.resale_cost = 10000
-            #~ self.remaining_uses = 100
-            #~ self.single_amount = 100
-        #~ elif item_type == 'Old Car':
-            #~ self.purchase_cost = 10000
-            #~ self.resale_cost = 4000
-            #~ self.remaining_uses = 60
-            #~ self.single_amount = 60
-        #~ elif item_type == 'Speed Boat':
-            #~ self.purchase_cost = 20000
-            #~ self.resale_cost = 10000
-            #~ self.remaining_uses = 40
-            #~ self.single_amount = 40
-        #~ elif item_type == 'Urban House':
-            #~ self.purchase_cost = 40000
-            #~ self.resale_cost = 40000
-            #~ self.remaining_uses = 100
-            #~ self.single_amount = 100
-        #~ elif item_type == 'Suburban House':
-            #~ self.purchase_cost = 20000
-            #~ self.resale_cost = 20000
-            #~ self.remaining_uses = 50
-            #~ self.single_amount = 50
-        #~ elif item_type == 'Rural House':
-            #~ self.purchase_cost = 10000
-            #~ self.resale_cost = 10000
-            #~ self.remaining_uses = 20
-            #~ self.single_amount = 20
-        #~ elif item_type == 'Cash':
-            #~ self.purchase_cost = 0
-            #~ self.resale_cost = 0
-            #~ self.remaining_uses = 0
-        #~ elif item_type == 'First Aid Kit':
-            #~ self.purchase_cost = 10
-            #~ self.resale_cost = 8
-            #~ self.remaining_uses = 2
-        #~ elif item_type == 'Bicycle':        #20/20 = 1 bicycle
-            #~ self.purchase_cost = 10
-            #~ self.resale_cost = 8
-            #~ self.remaining_uses = 20
-            #~ self.single_amount = 20
-        #~ elif item_type == 'Seeds':
-            #~ self.purchase_cost = 1
-            #~ self.resale_cost = 1
-            #~ self.remaining_uses = 20
-            #~ self.single_amount = 1
-        #~ elif item_type == 'Clothing':       #20/1 = 20 clothes 
-            #~ self.purchase_cost = 10
-            #~ self.resale_cost = 4
-            #~ self.remaining_uses = 20
-            #~ self.single_amount = 1
-        #~ elif item_type == 'Transit Pass':   #20/1 = 20 passes
-            #~ self.purchase_cost = 100
-            #~ self.resale_cost = 2
-            #~ self.remaining_uses = 20
-            #~ self.single_amount = 1
-        #~ else:
-            #~ # The item does not exist which must be a bug.
-            #~ # Raise an error.
-            #~ raise TypeError
             
 class GameState:
     def __init__(self,testevents = None):
@@ -700,8 +708,14 @@ class Store:
     def __init__(self):
         self.distance = random.randint(0, 4)
         self.inventory = Inventory()
+        self.inventory.is_store = True # Set so that inventory is unbundled.
+        # Give store a shabbiness-gaudiness value.
+        #  0 is low shabbiness.
+        #  0.99 is highly shabby.
+        self.shabby = random.randint(0, 99) / 100.0
         for i in range(40):
             self.inventory.add_item()
+        self.inventory.shabbitize(self.shabby)
         self.grocery_type = self.grocery_types[ random.randint(0, len(self.grocery_types)-1) ]
         self.name = names.NAMES_LIST[ random.randint(0, len(names.NAMES_LIST)-1) ] + "'s " + self.grocery_type
 
@@ -711,7 +725,8 @@ class StoreScreenSelect(Menu):
         location = game_state.game.locations_handler.location
         store = location.stores[ location.active_store_idx ]
         
-        x = PygameUI.List(store.inventory.item_count())
+        # List of items for sale.
+        x = PygameUI.List(store.inventory.item_count_buy())
         x.frame = pygame.Rect((Menu.scene.frame.w // 2)-50, 100, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
