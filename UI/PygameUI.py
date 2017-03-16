@@ -234,10 +234,8 @@ class Label(Control):
 
 class List(Control):
     
-    def __init__(self, labels, selected_bgcolor):
+    def __init__(self, labels, selected_bgcolor, callback_function = False):
         Control.__init__(self)
-        #~ print Control.scene.children #()
-        #~ print Control.children #()
         self.border_width = 1
         self.labels = labels
         self._selected_index = None
@@ -246,27 +244,8 @@ class List(Control):
         self.container.draggable = True
         self.container.on_mouse_down.add(self.container_down)
         self.container.on_mouse_up.add(self.container_up)
+        self.callback_function = callback_function
         y, w = 0, 0
-        
-        
-        #~ if title != None: ## , title=None
-            #~ self.title_container = Control()
-            #~ self.title_container.draggable = False
-            #~ self.title_container.on_mouse_down.add(self.container_down)
-            #~ self.title_container.on_mouse_up.add(self.container_up)
-            #~ lbl = Label(title,selected_bgcolor)
-            #~ lbl.frame.topleft = (0, y)
-            #~ size = lbl.size_of(title)
-            #~ y += size[1]
-            #~ w = max(w, size[0])
-            #~ lbl.size_to_fit()
-            #~ self.title_container.add_child(lbl)
-
-            #~ for child in self.title_container.children:
-                #~ child.frame.w = w
-            #~ self.title_container.frame.size = (w, y)
-            #~ self.add_child(self.title_container)
-        
         for text in labels:
             lbl = Label(text,selected_bgcolor)
             lbl.frame.topleft = (0, y)
@@ -297,6 +276,10 @@ class List(Control):
         for i, child in enumerate(self.container.children):
             if child.frame.collidepoint(mouse_pos):
                 self.selected_index = i
+                if self.callback_function:
+                    # Callback function.
+                    # Pass in selected index.
+                    self.callback_function(self.selected_index)
                 return
         self.selected_index = None
     

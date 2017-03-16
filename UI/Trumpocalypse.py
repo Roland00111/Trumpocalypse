@@ -775,7 +775,14 @@ class CharacterHUD:
         x.selected_index = game_state.game.character.transit_mode # selected mode, default = walking
         x.border_width = 1
         x.container.draggable = True
+        # What to do on change mode? (i.e. clicked)
+        x.callback_function = self.click_transit
         current_menu.scene.add_child(x)
+    
+    def click_transit(self, selected_index):
+        '''Update game_state.game.character.transit_mode
+        '''
+        game_state.game.character.transit_mode = selected_index
         
 class StoreScreenSelect(Menu):
     def __init__(self):
