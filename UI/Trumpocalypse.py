@@ -345,6 +345,7 @@ class Character:
         self.sanity = 30
         self.inventory = Inventory() # Give character an inventory.
         self.transit_mode = 0 # Default index=0, which is walking.
+        self.selected_house = 0 # Default index=0, which is None if character does not own a house (or in the park?).
         if create_type == 'random':
             self.randomGenerate()
             pass
@@ -436,6 +437,16 @@ class Inventory:
         storage = []
         for item in self.items:
             storage.append(item.item_type + ': ' + item.show_amount() + ' $' + item.calculate_resale_cost())
+        return storage
+    
+    def list_housing_types(self):
+        '''Iterates through self.items and returns a list of all items
+        that are considered housing types.
+        '''
+        storage = []
+        for item in self.items:
+            if item.item_type in item.housing_types:
+                storage.append(item.item_type + ': ' + item.show_amount())
         return storage
     
     def list_transit_types(self):
@@ -577,15 +588,21 @@ class Item:
         'Racing Bicycle',
         'Transit Pass',
     ]
-    transit_attributes = {  # Speed, Karma, Influence, Butterfly,
+    housing_types = [ # Array of transit modes
+        'In the Park',
+        'Urban House',
+        'Suburban House',
+        'Rural House',
+    ]
+    transit_attributes = {  # Speed, Karma, Influence, Butterfly, Health Bonus
                             # KIB based on CO2 emissions.
-        'New Car':          [9,-1,-1,-1],
-        'Old Car':          [8,0,-1,-1],
-        'Speed Boat':       [5,-1,1,-1],
-        'Bicycle':          [5,1,1,1],
-        'Racing Bicycle':   [7,1,1,1],
-        'Transit Pass':     [7,1,1,1],
-        'Walking':          [2,1,1,1],
+        'New Car':          [9,-1,-1,-1,0],
+        'Old Car':          [8,0,-1,-1,0],
+        'Speed Boat':       [5,-1,1,-1,0],
+        'Bicycle':          [5,1,1,1,0.2],
+        'Racing Bicycle':   [7,1,1,1,0.2],
+        'Transit Pass':     [7,1,1,1,0.1],
+        'Walking':          [2,1,1,1,0.2],
     }
     def __init__(self, item_type = None):
         self.item_type = item_type
@@ -722,6 +739,7 @@ class Item:
                 self.grouped_item = True # Set self.grouped_item
             else:
                 self.grouped_item = False
+            # If transit item...
         except:
             raise TypeError
             
@@ -774,14 +792,31 @@ class CharacterHUD:
         x.container.draggable = False #Change to True is needs to be draggable 
         current_menu.scene.add_child(x)
         
+        # Selected mode of housing.
+        # Title.
+        lbl = PygameUI.Label('Housing:')
+        lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -200, 150, 20)
+        current_menu.scene.add_child(lbl)
+        # List of available transit types.
+        x = PygameUI.List(['In the Park']+game_state.game.character.inventory.list_housing_types(), (200, 224, 200))
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -180, 150, 80)
+        #~ x.frame.w = x.container.frame.w
+        x.frame.w = 150
+        x.selected_index = game_state.game.character.selected_house # selected mode, default = In the Park
+        x.border_width = 1
+        x.container.draggable = True
+        # What to do on change mode? (i.e. clicked)
+        x.callback_function = self.click_housing
+        current_menu.scene.add_child(x)
+        
         # Selected mode of transit.
         # Title.
         lbl = PygameUI.Label('Transit Mode:')
-        lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -120, 150, 20)
+        lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -100, 150, 20)
         current_menu.scene.add_child(lbl)
         # List of available transit types.
         x = PygameUI.List(['Walking']+game_state.game.character.inventory.list_transit_types(), (200, 224, 200))
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -100, 150, 100)
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -80, 150, 80)
         #~ x.frame.w = x.container.frame.w
         x.frame.w = 150
         x.selected_index = game_state.game.character.transit_mode # selected mode, default = walking
@@ -790,6 +825,18 @@ class CharacterHUD:
         # What to do on change mode? (i.e. clicked)
         x.callback_function = self.click_transit
         current_menu.scene.add_child(x)
+    
+    def click_housing(self, selected_index):
+        '''Update game_state.game.character.selected_house
+        
+        Make an alert here saying that it will take X hours to move.
+        Default=1. Based on transit?
+        
+        Or just automatically subtract 1 always.
+        And then if 0 hours remain change back to previous
+        selected index.
+        '''
+        game_state.game.character.selected_house = selected_index
     
     def click_transit(self, selected_index):
         '''Update game_state.game.character.transit_mode
