@@ -162,6 +162,8 @@ class Menu:
             x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
             x.frame.w = x.container.frame.w
             x.selected_index = 1
+            x.border_width = 1
+            x.container.draggable = True
             Menu.scene.add_child(x)
 
             x = PygameUI.TextField()
@@ -744,10 +746,9 @@ class StoreScreenSelect(Menu):
         self.scene.add_child(x)
         
         self.keypressArray = [
-             StoreScreen,
              DayScreen
         ]
-        self.titlesArray = ['Back to Store List', 'Back to Day']
+        self.titlesArray = ['Back to Day'] # Just back to day, no "Back to Store List" 
         self.process_event = True
         self.body = {
             'text': 'Welcome to '+store.name+'!',
