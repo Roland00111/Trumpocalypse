@@ -727,23 +727,34 @@ class StoreScreenSelect(Menu):
         location = game_state.game.locations_handler.location
         store = location.stores[ location.active_store_idx ]
         
+        # Title for list.
+        lbl = PygameUI.Label('Click to Buy')
+        lbl.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400, Menu.scene.frame.h -220)
+        self.scene.add_child(lbl)
         # List of items for sale.
         x = PygameUI.List(store.inventory.item_count_buy(), (200, 224, 200))
-        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400, Menu.scene.frame.h -220)
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
         x.border_width = 1
         x.container.draggable = True
         self.scene.add_child(x)
         
+        # Title for list.
+        lbl = PygameUI.Label('Click to Sell')
+        lbl.frame = pygame.Rect((Menu.scene.frame.w // 2), 100, 400, Menu.scene.frame.h -220)
+        self.scene.add_child(lbl)
         # List of items to sell.
         x = PygameUI.List(game_state.game.character.inventory.item_count_sell(), (200, 224, 200))
-        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 100, 400, Menu.scene.frame.h -220)
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
         x.border_width = 1
         x.container.draggable = True
         self.scene.add_child(x)
+        
+        
+        
         
         self.keypressArray = [
              DayScreen

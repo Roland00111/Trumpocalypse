@@ -15,6 +15,7 @@ class Signal(object):
     def __call__(self, *args, **kwargs):
         for slot in self.slots:
             slot(*args, **kwargs)
+
 class Control(object):
     bgcolor = (255,120,71) #(255, 255, 255)
     border_color = (200, 200, 200)
@@ -160,6 +161,7 @@ class Control(object):
         while curr.parent is not None and not isinstance(curr.parent, Scene):
             curr = curr.parent
         return curr.parent
+
 class Scene(Control):
     def __init__(self):
         Control.__init__(self)
@@ -190,15 +192,16 @@ class Scene(Control):
         alert = Alert(message)
         alert.frame = rect(0, 0, self.frame.w, max(120, self.frame.h // 3))
         self.add_child(alert)
+
 class Label(Control):
     text_color = (90, 95, 90)
     padding = (8, 8)
     selected_bgcolor = (200, 224, 200)
     bgcolor = Control.bgcolor
 
-    def __init__(self, text=None,label_bgcolor = (0,0,0)):
+    def __init__(self, text=None, label_bgcolor = (0,0,0)):
         Control.__init__(self)
-        Label.selected_bgcolor = label_bgcolor
+        self.selected_bgcolor = label_bgcolor
         self.interactive = False
         self.font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 16)
         self.text = text
@@ -225,13 +228,16 @@ class Label(Control):
     def became_selected(self, yesno):
         Control.became_selected(self, yesno)
         if yesno:
-            self.bgcolor = Label.selected_bgcolor
+            self.bgcolor = self.selected_bgcolor
         else:
             self.bgcolor = Label.bgcolor
+
 class List(Control):
     
     def __init__(self, labels, selected_bgcolor):
         Control.__init__(self)
+        #~ print Control.scene.children #()
+        #~ print Control.children #()
         self.border_width = 1
         self.labels = labels
         self._selected_index = None
@@ -241,9 +247,28 @@ class List(Control):
         self.container.on_mouse_down.add(self.container_down)
         self.container.on_mouse_up.add(self.container_up)
         y, w = 0, 0
+        
+        
+        #~ if title != None: ## , title=None
+            #~ self.title_container = Control()
+            #~ self.title_container.draggable = False
+            #~ self.title_container.on_mouse_down.add(self.container_down)
+            #~ self.title_container.on_mouse_up.add(self.container_up)
+            #~ lbl = Label(title,selected_bgcolor)
+            #~ lbl.frame.topleft = (0, y)
+            #~ size = lbl.size_of(title)
+            #~ y += size[1]
+            #~ w = max(w, size[0])
+            #~ lbl.size_to_fit()
+            #~ self.title_container.add_child(lbl)
+
+            #~ for child in self.title_container.children:
+                #~ child.frame.w = w
+            #~ self.title_container.frame.size = (w, y)
+            #~ self.add_child(self.title_container)
+        
         for text in labels:
             lbl = Label(text,selected_bgcolor)
-            #~ lbl = Label(text,(255,120,71))
             lbl.frame.topleft = (0, y)
             size = lbl.size_of(text)
             y += size[1]
@@ -288,7 +313,6 @@ class List(Control):
             prev.selected = False
         self._selected_index = index
         self.on_selection(self, index)
-
 
 class TextField(Control):
     prompt = '_'
@@ -338,4 +362,4 @@ class TextField(Control):
             self.label.frame.left = self.padding[0]
 
     def mouse_up(self, button, pt):
-	self.scene.focus = self
+        self.scene.focus = self
