@@ -416,7 +416,7 @@ class Inventory:
         #Iterates throught self.items and returns a list of all items in array with number of uses left
         storage = []
         for item in self.items:
-            storage.append(item.item_type + ': ' + str(item.show_amount()))
+            storage.append(item.item_type + ': ' + item.show_amount())
         return storage
     
     def num_items(self):
@@ -522,7 +522,6 @@ class Item:
         self.amount = 0
         self.remaining_uses = None
         self.max_remaining_uses = None # To show how much is left.
-        #~ self.single_amount = 1 # Default = 1, Big items = 1-to-1
         self.set_item(item_type)
             
     def use_item(self, item_type):
@@ -541,17 +540,12 @@ class Item:
     def show_amount(self):
         '''
         :return: The display value.
-        :rtype: int.
+        :rtype: str.
         '''
-        print self.item_type
-        print self.amount
-        print self.remaining_uses
-        print self.max_remaining_uses
         if self.remaining_uses == None: # Grouped item (num remaining)
-            return self.amount
+            return str(self.amount)
         else:                           # Single item (% remaining)
             return str(math.ceil(100*(self.remaining_uses / self.max_remaining_uses)))+'%'
-        #~ return math.ceil(self.remaining_uses / self.single_amount)
         
     def set_item(self, item_type):
         '''K=1 Karma, I=1 Influence, B=1 Butterfly
