@@ -726,8 +726,17 @@ class StoreScreenSelect(Menu):
         store = location.stores[ location.active_store_idx ]
         
         # List of items for sale.
-        x = PygameUI.List(store.inventory.item_count_buy())
-        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-50, 100, 400, Menu.scene.frame.h -220)
+        x = PygameUI.List(store.inventory.item_count_buy(), (200, 224, 200))
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400, Menu.scene.frame.h -220)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 1
+        x.container.draggable = True
+        self.scene.add_child(x)
+        
+        # List of items to sell.
+        x = PygameUI.List(game_state.game.character.inventory.item_count_sell(), (200, 224, 200))
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 100, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
         x.border_width = 1
@@ -1114,7 +1123,7 @@ class CreateCharacterAutomatic(Menu):
         income = str(game_state.game.character.income)
         sanity = str(game_state.game.character.sanity)
 
-        x = PygameUI.List(game_state.game.character.inventory.item_count())
+        x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
         x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
@@ -1183,7 +1192,7 @@ class DayScreen(Menu):
         x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
                            'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
                            'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income),
-                           'Sanity: ' + str(game_state.game.character.sanity)])
+                           'Sanity: ' + str(game_state.game.character.sanity)], (255,120,71))
         x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
@@ -1191,7 +1200,7 @@ class DayScreen(Menu):
         x.container.draggable = False #Change to True is needs to be draggable 
         self.scene.add_child(x)
 
-        x = PygameUI.List(game_state.game.character.inventory.item_count())
+        x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
         x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
         x.selected_index = 1

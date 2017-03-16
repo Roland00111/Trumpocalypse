@@ -230,7 +230,7 @@ class Label(Control):
             self.bgcolor = Label.bgcolor
 class List(Control):
     
-    def __init__(self, labels):
+    def __init__(self, labels, selected_bgcolor):
         Control.__init__(self)
         self.border_width = 1
         self.labels = labels
@@ -242,7 +242,8 @@ class List(Control):
         self.container.on_mouse_up.add(self.container_up)
         y, w = 0, 0
         for text in labels:
-            lbl = Label(text,(255,120,71))
+            lbl = Label(text,selected_bgcolor)
+            #~ lbl = Label(text,(255,120,71))
             lbl.frame.topleft = (0, y)
             size = lbl.size_of(text)
             y += size[1]
