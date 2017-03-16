@@ -593,9 +593,9 @@ class Item:
         :rtype: str.
         '''
         if self.grouped_item: # Grouped item (num remaining)
-            return str(math.floor(self.purchase_cost * (self.amount / self.original_amount)))
+            return str(math.ceil(self.purchase_cost * (self.amount / self.original_amount)))
         else:                 # Single item (% remaining)
-            return str(math.floor(self.purchase_cost * (self.remaining_uses / self.max_remaining_uses)))
+            return str(math.ceil(self.purchase_cost * (self.remaining_uses / self.max_remaining_uses)))
             
     def calculate_resale_cost(self):
         '''Returns the sell cost of the item or group of items.
