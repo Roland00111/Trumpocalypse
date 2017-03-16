@@ -564,6 +564,7 @@ class Item:
         'Cash':             [0,0,1,None], #?
         'First Aid Kit':    [10,0.6,2,None],
         'Bicycle':          [100,0.8,1,40],
+        'Racing Bicycle':   [400,0.8,1,40],
         'Seeds':            [2,0.5,20,None],
         'Clothing':         [200,0.4,20,None], # 20 shirts for $10 per shirt = $200.
         'Transit Pass':     [100,0.6,1,40],
@@ -573,8 +574,19 @@ class Item:
         'Old Car',
         'Speed Boat',
         'Bicycle',
+        'Racing Bicycle',
         'Transit Pass',
     ]
+    transit_attributes = {  # Speed, Karma, Influence, Butterfly,
+                            # KIB based on CO2 emissions.
+        'New Car':          [9,-1,-1,-1],
+        'Old Car':          [8,0,-1,-1],
+        'Speed Boat':       [5,-1,1,-1],
+        'Bicycle':          [5,1,1,1],
+        'Racing Bicycle':   [7,1,1,1],
+        'Transit Pass':     [7,1,1,1],
+        'Walking':          [2,1,1,1],
+    }
     def __init__(self, item_type = None):
         self.item_type = item_type
         self.purchase_cost = 0
