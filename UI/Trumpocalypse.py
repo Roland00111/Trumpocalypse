@@ -345,7 +345,8 @@ class Character:
         self.sanity = 30
         self.inventory = Inventory() # Give character an inventory.
         self.transit_mode = 0 # Default index=0, which is walking.
-        self.selected_house = 0 # Default index=0, which is None if character does not own a house (or in the park?).
+        self.selected_house_idx = 0         # House index, default=0
+        self.selected_house = 'In the Park' # House title, default='In the Park'
         if create_type == 'random':
             self.randomGenerate()
             pass
@@ -751,12 +752,36 @@ class GameState:
         self.events_loop = EventsLoop(testevents) # Starts with opening menu.
 
 class Store:
+    '''
+    Each store is located in a urban, suburban, or rural location.
+    
+    Then based on this, each store has a distance to park, to urban
+    house, to suburban house, and to rural house.
+    
+    If urban,       distance=rand_float(0,2.0),
+                    sub=dist+rand_float(0,4.0),
+                    rur=dist+rand_float(0,8.0)
+    If suburban,    distance=rand_float(0,4.0),
+                    urb=dist+rand_float(0,4.0),
+                    rur=dist+rand_float(0,8.0)
+    If rural,       distance=rand_float(0,8.0),
+                    urb=dist+rand_float(0,4.0),
+                    sub=dist+rand_float(0,4.0)
+    '''
     grocery_types = [   'Bodega',   'Mini-Market',  'Supermarket',
                         'Market',   'Delicatessen', 'Fishmonger',
                         'Butcher',  'Convenience Store',
                         'Mom-and-Pop',              'Corner Store']
+    store_locations = [
+        'urban', 'suburban', 'rural'
+    ]
+    
     def __init__(self):
         self.distance = random.randint(0, 4)
+        self.distance = random.randint(0, 4)
+        self.store_location = self.store_locations[ random.randint(0, 2) ]
+        self.distance = None
+        self.distances() # Set distances
         self.inventory = Inventory()
         self.inventory.is_store = True # Set so that inventory is unbundled.
         # Give store a shabbiness-gaudiness value.
@@ -768,7 +793,45 @@ class Store:
         self.inventory.shabbitize(self.shabby)
         self.grocery_type = self.grocery_types[ random.randint(0, len(self.grocery_types)-1) ]
         self.name = names.NAMES_LIST[ random.randint(0, len(names.NAMES_LIST)-1) ] + "'s " + self.grocery_type
-
+    
+    def distances(self):
+        if self.store_location == 'urban':
+            x = random.uniform(0.0,2.0)
+            self.distance = {
+                'Urban House':      x,
+                'Suburban House':   x+random.uniform(0.0,4.0),
+                'Rural House':      x+random.uniform(0.0,8.0),
+                'In the Park':      x+random.uniform(0.0,1.0),
+            }
+        elif self.store_location == 'suburban':
+            x = random.uniform(0.0,4.0)
+            self.distance = {
+                'Urban House':      x+random.uniform(0.0,4.0),
+                'Suburban House':   x,
+                'Rural House':      x+random.uniform(0.0,4.0),
+                'In the Park':      x+random.uniform(0.0,1.0),
+            }
+        else: # Assume rural
+            x = random.uniform(0.0,8.0)
+            self.distance = {
+                'Urban House':      x+random.uniform(0.0,8.0),
+                'Suburban House':   x+random.uniform(0.0,4.0),
+                'Rural House':      x,
+                'In the Park':      x+random.uniform(0.0,1.0),
+            }
+        # Round distances to the nearest tenth.
+        self.distance['Urban House'] = round(self.distance['Urban House'], 1)
+        self.distance['Suburban House'] = round(self.distance['Suburban House'], 1)
+        self.distance['Rural House'] = round(self.distance['Rural House'], 1)
+        self.distance['In the Park'] = round(self.distance['In the Park'], 1)
+    def distance_from_house(self):
+        '''
+        game_state.game.character.selected_house is a string
+        that is character's current housing.
+        '''
+        d = self.distance[ game_state.game.character.selected_house ]    
+        return str(d)
+    
 class CharacterHUD:
     def __init__(self, current_menu):
         # Character attributes
@@ -802,7 +865,7 @@ class CharacterHUD:
         x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -180, 150, 80)
         #~ x.frame.w = x.container.frame.w
         x.frame.w = 150
-        x.selected_index = game_state.game.character.selected_house # selected mode, default = In the Park
+        x.selected_index = game_state.game.character.selected_house_idx # selected mode, default = In the Park
         x.border_width = 1
         x.container.draggable = True
         # What to do on change mode? (i.e. clicked)
@@ -826,8 +889,9 @@ class CharacterHUD:
         x.callback_function = self.click_transit
         current_menu.scene.add_child(x)
     
-    def click_housing(self, selected_index):
-        '''Update game_state.game.character.selected_house
+    def click_housing(self, selected_index, selected_value):
+        '''Update game_state.game.character.selected_house_idx and
+        game_state.game.character.selected_house.
         
         Make an alert here saying that it will take X hours to move.
         Default=1. Based on transit?
@@ -836,9 +900,20 @@ class CharacterHUD:
         And then if 0 hours remain change back to previous
         selected index.
         '''
-        game_state.game.character.selected_house = selected_index
+        game_state.game.character.selected_house_idx = selected_index
+        if selected_value == 'In the Park':
+            game_state.game.character.selected_house = 'In the Park'
+        elif 'Urban House' in selected_value:
+            game_state.game.character.selected_house = 'Urban House'
+        elif 'Suburban House' in selected_value:
+            game_state.game.character.selected_house = 'Suburban House'
+        elif 'Rural House' in selected_value:
+            game_state.game.character.selected_house = 'Rural House'
+        else:
+            # Raise?
+            pass
     
-    def click_transit(self, selected_index):
+    def click_transit(self, selected_index, selected_value):
         '''Update game_state.game.character.transit_mode
         '''
         game_state.game.character.transit_mode = selected_index
@@ -927,14 +1002,14 @@ class Location:
         self.location_name = 'Town of Anywhere'
         self.connected_regions = []
         self.stores = [
-            Store() for i in range(random.randint(1,3))
+            Store() for i in range(random.randint(1,4))
         ]
         self.active_store_idx = None # Index of store being visited.
 
     def menu_values(self):
         temp_array = []
         for store in self.stores:
-            temp_array.append(store.name + ': ' + str(store.distance) + ' miles')
+            temp_array.append(store.name + ': ' + str(store.distance_from_house()) + ' miles')
         return temp_array
     
 class Locations:

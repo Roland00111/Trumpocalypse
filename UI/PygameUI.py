@@ -278,8 +278,8 @@ class List(Control):
                 self.selected_index = i
                 if self.callback_function:
                     # Callback function.
-                    # Pass in selected index.
-                    self.callback_function(self.selected_index)
+                    # Pass in selected index and child text.
+                    self.callback_function(self.selected_index, child.text)
                 return
         self.selected_index = None
     
