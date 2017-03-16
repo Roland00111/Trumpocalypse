@@ -344,6 +344,7 @@ class Character:
         self.intelligence = 3
         self.sanity = 30
         self.inventory = Inventory() # Give character an inventory.
+        self.transit_mode = 0 # Default index=0, which is walking.
         if create_type == 'random':
             self.randomGenerate()
             pass
@@ -435,6 +436,16 @@ class Inventory:
         storage = []
         for item in self.items:
             storage.append(item.item_type + ': ' + item.show_amount() + ' $' + item.calculate_resale_cost())
+        return storage
+    
+    def list_transit_types(self):
+        '''Iterates through self.items and returns a list of all items
+        that are considered transit types.
+        '''
+        storage = []
+        for item in self.items:
+            if item.item_type in item.transit_types:
+                storage.append(item.item_type + ': ' + item.show_amount())
         return storage
     
     def num_items(self):
@@ -557,6 +568,13 @@ class Item:
         'Clothing':         [200,0.4,20,None], # 20 shirts for $10 per shirt = $200.
         'Transit Pass':     [100,0.6,1,40],
     }
+    transit_types = [ # Array of transit modes
+        'New Car',
+        'Old Car',
+        'Speed Boat',
+        'Bicycle',
+        'Transit Pass',
+    ]
     def __init__(self, item_type = None):
         self.item_type = item_type
         self.purchase_cost = 0
@@ -721,6 +739,44 @@ class Store:
         self.grocery_type = self.grocery_types[ random.randint(0, len(self.grocery_types)-1) ]
         self.name = names.NAMES_LIST[ random.randint(0, len(names.NAMES_LIST)-1) ] + "'s " + self.grocery_type
 
+class CharacterHUD:
+    def __init__(self, current_menu):
+        # Character attributes
+        x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
+                           'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
+                           'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income),
+                           'Sanity: ' + str(game_state.game.character.sanity)], (255,120,71))
+        x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 0
+        x.container.draggable = False #Change to True is needs to be draggable 
+        current_menu.scene.add_child(x)
+
+        # Character items
+        x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 0
+        x.container.draggable = False #Change to True is needs to be draggable 
+        current_menu.scene.add_child(x)
+        
+        # Selected mode of transit.
+        # Title.
+        lbl = PygameUI.Label('Transit Mode:')
+        lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -120, 150, 20)
+        current_menu.scene.add_child(lbl)
+        # List of available transit types.
+        x = PygameUI.List(['Walking']+game_state.game.character.inventory.list_transit_types(), (200, 224, 200))
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -100, 150, 100)
+        #~ x.frame.w = x.container.frame.w
+        x.frame.w = 150
+        x.selected_index = game_state.game.character.transit_mode # selected mode, default = walking
+        x.border_width = 1
+        x.container.draggable = True
+        current_menu.scene.add_child(x)
+        
 class StoreScreenSelect(Menu):
     def __init__(self):
         self.menu_name = '...'
@@ -753,8 +809,8 @@ class StoreScreenSelect(Menu):
         x.container.draggable = True
         self.scene.add_child(x)
         
-        
-        
+        # HUD
+        CharacterHUD(self)
         
         self.keypressArray = [
              DayScreen
@@ -783,9 +839,11 @@ class StoreScreen(Menu):
         self.menu_name = '...'
         location = game_state.game.locations_handler.location
         self.keypressArray = [ StoreScreenSelect for x in range(len(location.stores)) ] + [ DayScreen ]
-        
         self.titlesArray = location.menu_values() + ['Back to Day']
         self.process_event = True
+        
+        # HUD
+        CharacterHUD(self)
     
     def process_events(self,chosen_position):
         '''Subtract the mileage from the hours.
@@ -1201,25 +1259,10 @@ class DayScreen(Menu):
     def __init__(self):
         print game_state.game.current_day
         print game_state.game.current_day.generated_date
-        x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
-                           'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
-                           'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income),
-                           'Sanity: ' + str(game_state.game.character.sanity)], (255,120,71))
-        x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
-        x.frame.w = x.container.frame.w
-        x.selected_index = 1
-        x.border_width = 0
-        x.container.draggable = False #Change to True is needs to be draggable 
-        self.scene.add_child(x)
-
-        x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
-        x.frame.w = x.container.frame.w
-        x.selected_index = 1
-        x.border_width = 0
-        x.container.draggable = False #Change to True is needs to be draggable 
-        self.scene.add_child(x)
-
+        
+        # Add HUD
+        CharacterHUD(self)
+        
         if game_state.game.day_counter % 48 != 0:
             
             self.keypressArray = [
