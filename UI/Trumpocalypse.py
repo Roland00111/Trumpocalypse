@@ -158,7 +158,7 @@ class Menu:
             # There could be a label passed into CustomField
             # that is added to the left of each list.
             # Is it possible to add this with the Label class?
-            x = PygameUI.List(['Item %s' % str(i) for i in range(20)])
+            x = PygameUI.List(['Item %s' % str(i) for i in range(20)], (200, 224, 200))
             x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
             x.frame.w = x.container.frame.w
             x.selected_index = 1
