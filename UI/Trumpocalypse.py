@@ -852,6 +852,7 @@ class CharacterHUD:
         self.current_menu = current_menu
         self.warning_change_house = 'Warning: Changing housing takes one hour to complete!'
         self.warning_cannot_change_house = 'Warning: Changing housing is only allowed at home (home screen)!'
+        self.warning_not_enough_hours = 'Warning: Not enough day hours remaining to change housing!'
         game_state.game.character_hud = self # Add to global.
         
         # Character attributes
@@ -927,6 +928,11 @@ class CharacterHUD:
         # But show warning.
         if self.current_menu.menu_name != 'DayScreen':
             self.current_menu.scene.show_alert(self.warning_cannot_change_house, 'OK', None, self.click_no_change)
+            return
+        # If hours remaining = 0 then do nothing.
+        # But show warning.
+        if game_state.game.current_day.day_hours < 1:
+            self.current_menu.scene.show_alert(self.warning_not_enough_hours, 'OK', None, self.click_no_change)
             return
         # Force user to confirm change.
         self.current_menu.scene.show_alert(self.warning_change_house, 'Yes, change housing.', 'No, stay put.', self.click_alert)
