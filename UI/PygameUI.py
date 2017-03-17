@@ -190,7 +190,7 @@ class Scene(Control):
 
     def show_alert(self, message):
         alert = Alert(message)
-        alert.frame = rect(0, 0, self.frame.w, max(120, self.frame.h // 3))
+        alert.frame = pygame.Rect(0, 0, self.frame.w, max(120, self.frame.h // 3))
         self.add_child(alert)
 
 class Label(Control):
@@ -346,3 +346,87 @@ class TextField(Control):
 
     def mouse_up(self, button, pt):
         self.scene.focus = self
+
+class Alert(Control):
+    bgcolor = (240, 240, 200)
+
+    def __init__(self, message):
+        Control.__init__(self)
+
+        self.bgcolor = Alert.bgcolor
+
+        self.message = Label(message)
+        large_font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 16*2)
+        self.message.font = large_font
+        self.message.size_to_fit()
+        self.message.bgcolor = self.bgcolor
+        self.add_child(self.message)
+
+        self.btn = Button('OK')
+        self.btn.size_to_fit()
+        self.btn.on_clicked.add(lambda btn: self.dismiss())
+        self.add_child(self.btn)
+
+    def layout(self):
+        self.btn.frame.centerx = self.frame.w // 2
+        self.btn.frame.bottom = self.frame.h - 10
+        self.message.frame.centerx = self.frame.w // 2
+        self.message.frame.centery = (self.btn.frame.top // 2)
+
+    def dismiss(self):
+        self.scene.remove_child(self)
+
+    def draw(self):
+        surf = Control.draw(self)
+        pygame.draw.line(surf, (200, 200, 160),
+                         (0, self.frame.bottom - 1),
+                         (self.frame.w, self.frame.bottom - 1), 2)
+        return surf
+
+class Button(Control):
+    bgcolor = (220, 220, 220)
+    active_bgcolor = (200, 200, 200)
+    border_width = 1
+    border_color = (100, 100, 100)
+    disabled_text_color = (128, 128, 128)
+
+    def __init__(self, text):
+        Control.__init__(self)
+        self.border_width = Button.border_width
+        self.border_color = Button.border_color
+        self.label = Label(text)
+        bold_font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 20)
+        self.label.font = bold_font
+        self.label.bgcolor = Button.bgcolor
+        self.bgcolor = Button.bgcolor
+        self.active_bgcolor = Button.active_bgcolor
+        self.add_child(self.label)
+        self.on_clicked = Signal()
+        self.is_pressed = False
+
+    def enable(self, yesno):
+        self.enabled = yesno
+        if self.enabled:
+            self.label.text_color = Label.text_color
+        else:
+            self.label.text_color = Button.disabled_text_color
+
+    def layout(self):
+        Control.layout(self)
+        self.label.frame.size = self.frame.size
+
+    def size_to_fit(self):
+        self.label.size_to_fit()
+        self.frame.size = self.label.frame.size
+
+    def mouse_down(self, btn, pt):
+        Control.mouse_down(self, btn, pt)
+        if self.enabled:
+            self.label.bgcolor = self.active_bgcolor
+            self.is_pressed = True
+
+    def mouse_up(self, button, pt):
+        Control.mouse_up(self, button, pt)
+        self.label.bgcolor = self.bgcolor
+        self.is_pressed = False
+        self.on_clicked(self)

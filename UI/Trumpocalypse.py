@@ -835,6 +835,9 @@ class Store:
     
 class CharacterHUD:
     def __init__(self, current_menu):
+        self.current_menu = current_menu
+        self.warning_change_house = 'Warning: Changing housing takes one hour to complete!'
+        
         # Character attributes
         x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
                            'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
@@ -901,6 +904,9 @@ class CharacterHUD:
         And then if 0 hours remain change back to previous
         selected index.
         '''
+        # Alert...
+        self.current_menu.scene.show_alert(self.warning_change_house)
+        
         game_state.game.character.selected_house_idx = selected_index
         if selected_value == 'Staying with Friends':
             game_state.game.character.selected_house = 'Staying with Friends'
