@@ -250,6 +250,24 @@ class EventsLoop:
                 return
             #####################################################################
             for event in pygame.event.get():
+                # If there is an alert then stop everything except
+                # mouse down, mouse up, and quit.
+                # Use continue to jump forward in loop.
+                if cm.scene._has_alert is True and (
+                    event.type == pygame.MOUSEBUTTONDOWN or
+                    event.type == pygame.MOUSEBUTTONUP or
+                    event.type == QUIT):
+                    # Allow only cm.scene.hit(event.pos) = <PygameUI.Button object at ...>
+                    # That is, only allow button presses.
+                    if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
+                        hit = cm.scene.hit(event.pos)
+                        if type(hit) != PygameUI.Button:
+                            continue
+                    elif event.type == QUIT: # Quit. (Could let this exit further down...)
+                        pygame.display.quit()
+                        sys.exit()
+                elif cm.scene._has_alert is True:
+                    continue
                 if event.type == KEYDOWN:
                     print(str(event.unicode))
                     if event.key == K_UP:
@@ -266,23 +284,24 @@ class EventsLoop:
                 elif event.type == QUIT:
                     pygame.display.quit()
                     sys.exit()
-                elif event.type == MOUSEBUTTONUP:
-                        '''
-                        http://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection
-                        '''
-                        pos = pygame.mouse.get_pos()
-                        (pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()
-                        print 'Mouse click: ', pos, pygame.mouse.get_pressed()
-                        # This will check if a Rect was clicked:
-                        #~ if Rectplace.collidepoint(pos)& pressed1==1:
-                            #~ print("You have opened a chest!")
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     global down_in
                     down_in = cm.scene.hit(event.pos)
                     if down_in is not None and not isinstance(down_in, PygameUI.Scene):
                         down_in.mouse_down(event.button, down_in.from_window_point(event.pos))
                 elif event.type == pygame.MOUSEBUTTONUP:
+                    '''
+                    http://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection
+                    '''
+                    pos = pygame.mouse.get_pos()
+                    (pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()
+                    print 'Mouse click: ', pos, pygame.mouse.get_pressed()
+                            # This will check if a Rect was clicked:
+                            # if Rectplace.collidepoint(pos)& pressed1==1:
+                                # print("You have opened a chest!")
+                    # PygameUI
                     up_in = cm.scene.hit(event.pos)
+                    print up_in
                     if down_in == up_in:
                         down_in.mouse_up(event.button, down_in.from_window_point(event.pos))
                     down_in = None
