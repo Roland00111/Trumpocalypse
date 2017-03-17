@@ -294,18 +294,14 @@ class EventsLoop:
                     cm.scene.key_down(event.key, event.unicode)
                 elif event.type == pygame.KEYUP:
                     cm.scene.key_up(event.key)
-                # Draw the pygameui input boxes
-                surface.blit(cm.scene.draw(), (0, 0))
-                # Draw other menu content
-                if cm.body is False:
-                    # Draw non-body menu
-                    cm.init(cm.titlesArray, surface)
+                surface.blit(cm.scene.draw(), (0, 0))# Draw pygameui.
+                if cm.body is False:                 # Draw other menu content
+                    cm.init(cm.titlesArray, surface) # Draw non-body menu
                     cm.draw()
                 else:
-                    # Draw menu plus body
-                    cm.init(cm.titlesArray, surface, 200)
+                    cm.init(cm.titlesArray, surface, 200) # Draw menu plus body
                     cm.draw()
-                    x = cm.dest_surface.get_rect().centerx - 150 #300 - self.menu_width / 2  Calculate the x offset
+                    x = cm.dest_surface.get_rect().centerx - 150 # Calculate x offset
                     pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, cm.body['top'], 300, cm.body['height']), 10) # Draw a box background.
                                                #Box color
                     # There is a slight offset from the text and the box.
@@ -315,12 +311,9 @@ class EventsLoop:
                     font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
                     drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
                 pygame.display.update()
+            # If there is a chosen position,
+            # change to new menu.
             if chosen_position is not None:
-                # There is a chosen position.
-                # Change to a new menu class.
-        # The following does not work to remove Scene() children:
-        #   del self.current_menu
-        #   self.scene.__del__()
                 while cm.scene.children:
             # This does work to remove Scene() children.
                     for child in cm.scene.children:
