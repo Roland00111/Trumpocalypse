@@ -425,6 +425,11 @@ class Inventory:
     def __init__(self):
         self.max_items = 999
         self.items = [] # Array of items.
+        self.sorted_items = { # Sorted items
+            'housing':[],
+            'transit':[],
+            'other':[],
+        }
         self.all_choices = [
             'Food','Pie','Garden','Lottery Ticket','New Car','Old Car',
             'Urban House','Suburban House','Rural House','Cash',
@@ -506,6 +511,14 @@ class Inventory:
             rand_item = Item( self.all_choices[n] )
             self.update_or_add_item(rand_item)
     
+    def sorted_append(self, new_item):
+        if new_item.item_type in new_item.transit_types:
+            self.sorted_items['transit'].append(new_item)
+        elif new_item.item_type in new_item.housing_types:
+            self.sorted_items['housing'].append(new_item)
+        else:
+            self.sorted_items['other'].append(new_item)
+            
     def update_or_add_item(self, new_item):
         existing_item = self.contains_item(new_item.item_type)
         if existing_item != False:
@@ -513,13 +526,16 @@ class Inventory:
             if existing_item.grouped_item is False:    # Single item.
                 # Always add another single item.
                 self.items.append( new_item )
+                self.sorted_append( new_item )
             else:                                       # Grouped item.
                 if self.is_store:   # Store inventory (unbundle store inventory)
                     self.items.append( new_item )
+                    self.sorted_append( new_item )
                 else:               # Character
                     existing_item.amount += new_item.amount
         else:
             self.items.append( new_item )
+            self.sorted_append( new_item )
     
     def contains_item(self, item_type):
         # Returns the item in the inventory if it exists.
@@ -628,6 +644,7 @@ class Item:
         self.remaining_uses = None
         self.max_remaining_uses = None  # To show how much is left.
         self.grouped_item = True        # Default is grouped.
+        self.coordinates = {}         # For mapped items.
         self.set_item(item_type)
             
     def use_item(self, item_type):
@@ -755,6 +772,17 @@ class Item:
             else:
                 self.grouped_item = False
             # If transit item...
+            # If housing item...
+            if item_type in self.housing_types:
+                if item_type == 'Urban House':
+                    self.coordinates['x'] = random.uniform(0.0,2.0) * plus_minus()
+                    self.coordinates['y'] = random.uniform(0.0,2.0) * plus_minus()
+                elif item_type == 'Suburban House':
+                    self.coordinates['x'] = random.uniform(2.0,8.0) * plus_minus()
+                    self.coordinates['y'] = random.uniform(2.0,8.0) * plus_minus()
+                elif item_type == 'Rural House':
+                    self.coordinates['x'] = random.uniform(8.0,20.0) * plus_minus()
+                    self.coordinates['y'] = random.uniform(8.0,20.0) * plus_minus()
         except:
             raise TypeError
             
@@ -765,6 +793,9 @@ class GameState:
         self.game = Game()
         self.events_loop = EventsLoop(testevents) # Starts with opening menu.
 
+def plus_minus():
+    return random.random() * 2 - 1
+    
 class Store:
     '''
     Each store is located in a urban, suburban, or rural location.
@@ -791,10 +822,8 @@ class Store:
     ]
     
     def __init__(self):
-        self.distance = random.randint(0, 4)
-        self.distance = random.randint(0, 4)
         self.store_location = self.store_locations[ random.randint(0, 2) ]
-        self.distance = None
+        self.coordinates = {} # 0=x, 1=y
         self.distances() # Set distances
         self.inventory = Inventory()
         self.inventory.is_store = True # Set so that inventory is unbundled.
@@ -809,43 +838,36 @@ class Store:
         self.name = names.NAMES_LIST[ random.randint(0, len(names.NAMES_LIST)-1) ] + "'s " + self.grocery_type
     
     def distances(self):
+        '''
+        Note: Random choice provides random between + and - number:
+        https://docs.python.org/2/library/random.html#random.choice
+        '''
         if self.store_location == 'urban':
-            x = random.uniform(0.0,2.0)
-            self.distance = {
-                'Urban House':      x,
-                'Suburban House':   x+random.uniform(0.0,4.0),
-                'Rural House':      x+random.uniform(0.0,8.0),
-                'Staying with Friends':      x+random.uniform(0.0,1.0),
-            }
+            self.coordinates['x'] = random.uniform(0.0,2.0) * plus_minus()
+            self.coordinates['y'] = random.uniform(0.0,2.0) * plus_minus()
         elif self.store_location == 'suburban':
-            x = random.uniform(0.0,4.0)
-            self.distance = {
-                'Urban House':      x+random.uniform(0.0,4.0),
-                'Suburban House':   x,
-                'Rural House':      x+random.uniform(0.0,4.0),
-                'Staying with Friends':      x+random.uniform(0.0,1.0),
-            }
+            self.coordinates['x'] = random.uniform(2.0,8.0) * plus_minus()
+            self.coordinates['y'] = random.uniform(2.0,8.0) * plus_minus()
         else: # Assume rural
-            x = random.uniform(0.0,8.0)
-            self.distance = {
-                'Urban House':      x+random.uniform(0.0,8.0),
-                'Suburban House':   x+random.uniform(0.0,4.0),
-                'Rural House':      x,
-                'Staying with Friends':      x+random.uniform(0.0,1.0),
-            }
-        # Round distances to the nearest tenth.
-        self.distance['Urban House'] = round(self.distance['Urban House'], 1)
-        self.distance['Suburban House'] = round(self.distance['Suburban House'], 1)
-        self.distance['Rural House'] = round(self.distance['Rural House'], 1)
-        self.distance['Staying with Friends'] = round(self.distance['Staying with Friends'], 1)
-        
+            self.coordinates['x'] = random.uniform(8.0,20.0) * plus_minus()
+            self.coordinates['y'] = random.uniform(8.0,20.0) * plus_minus()
+    
+    def euclidean(self, p1, p2):
+        return math.sqrt((p2[0] - p1[0]) ** 2 +
+                         (p2[1] - p1[1]) ** 2)
+                         
     def distance_from_house(self):
         '''
         game_state.game.character.selected_house is a string
         that is character's current housing.
         '''
-        d = self.distance[ game_state.game.character.selected_house ]    
-        return str(d)
+        if game_state.game.character.selected_house_idx == 0: # Friend's house
+            c1 = {'x':0, 'y':0}
+        else:
+            idx = game_state.game.character.selected_house_idx - 1 # Housing is always -1
+            c1 = game_state.game.character.inventory.sorted_items[ 'housing' ][ idx ].coordinates
+        c2 = self.coordinates
+        return str(round(self.euclidean([c1['x'], c1['y']], [c2['x'], c2['y']]), 1))
     
 class CharacterHUD:
     def __init__(self, current_menu):
