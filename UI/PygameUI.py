@@ -87,8 +87,12 @@ class Control(object):
             child_surf = child.draw()
             surf.blit(child_surf, child._frame.topleft)
             if (child.border_width is not None and child.border_width > 0):
-                pygame.draw.rect(surf, child.border_color, child._frame,
-                                 child.border_width)
+                pygame.draw.rect(
+                    surf,
+                    child.border_color,
+                    child._frame,
+                    child.border_width
+                )
         return surf
 
     def became_focused(self):
@@ -167,6 +171,8 @@ class Scene(Control):
         Control.__init__(self)
         self._frame = pygame.Rect((0, 0), (854,480))
         self._focus = None
+        self._has_alert = False
+        self._alert = None
 
     def key_down(self, key, code):
         if self._focus is not None:
@@ -189,9 +195,33 @@ class Scene(Control):
             self._focus.became_focused()
 
     def show_alert(self, message):
-        alert = Alert(message)
+        alert = Alert(message, self)
         alert.frame = pygame.Rect(0, 0, self.frame.w, max(120, self.frame.h // 3))
+        self._has_alert = True   # :)
+        self._alert = alert     # :)
         self.add_child(alert)
+        
+    def draw_alert(self):
+        '''Separate draw function.
+        '''
+        return self._alert.draw()
+        #~ if self._alert is not None:
+            #~ return self._alert.draw()
+            #~ surf = pygame.surface.Surface(self._frame.size)
+            #~ surf.fill(self.bgcolor)
+            #~ for child in self.children:
+                #~ if child.hidden:
+                    #~ continue
+                #~ child_surf = child.draw()
+                #~ surf.blit(child_surf, child._frame.topleft)
+                #~ if (child.border_width is not None and child.border_width > 0):
+                    #~ pygame.draw.rect(
+                        #~ surf,
+                        #~ child.border_color,
+                        #~ child._frame,
+                        #~ child.border_width
+                    #~ )
+        #~ return surf
 
 class Label(Control):
     text_color = (90, 95, 90)
@@ -350,7 +380,7 @@ class TextField(Control):
 class Alert(Control):
     bgcolor = (240, 240, 200)
 
-    def __init__(self, message):
+    def __init__(self, message, parent_scene):
         Control.__init__(self)
 
         self.bgcolor = Alert.bgcolor
@@ -366,6 +396,8 @@ class Alert(Control):
         self.btn.size_to_fit()
         self.btn.on_clicked.add(lambda btn: self.dismiss())
         self.add_child(self.btn)
+        
+        #~ self.parent_scene = parent_scene
 
     def layout(self):
         self.btn.frame.centerx = self.frame.w // 2
@@ -374,7 +406,17 @@ class Alert(Control):
         self.message.frame.centery = (self.btn.frame.top // 2)
 
     def dismiss(self):
+        #~ print 'x'
+        #~ self.parent_scene._alert = None
+        #~ Control.remove_child(self)
+        #~ self.parent_scene.remove_child(self)
+        #~ self.scene._alert = None
+        #~ del self
+        
+        self.scene._has_alert = False
         self.scene.remove_child(self)
+        #~ print self.scene
+        #~ print self.parent_scene
 
     def draw(self):
         surf = Control.draw(self)
@@ -426,6 +468,7 @@ class Button(Control):
             self.is_pressed = True
 
     def mouse_up(self, button, pt):
+        print 'x'
         Control.mouse_up(self, button, pt)
         self.label.bgcolor = self.bgcolor
         self.is_pressed = False

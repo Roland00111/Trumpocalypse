@@ -54,6 +54,7 @@ class Menu:
     titlesArray = []
     custom_fields = []              # To be filled in by menu classes that need buttons, selects, inputs, and number inputs
     scene = PygameUI.Scene()        # For utilizing pygameui
+    #~ scene2= PygameUI.Scene()        # For utilizing pygameui
     body = False                    # This is for main text area.
     
      
@@ -310,9 +311,11 @@ class EventsLoop:
                     rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
                     font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
                     drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
+                #~ surface.blit(cm.scene2.draw(), (0, 0)) # Draw alerts
+                if cm.scene._has_alert is True:
+                    surface.blit(cm.scene.draw_alert(), (0, 0))
                 pygame.display.update()
-            # If there is a chosen position,
-            # change to new menu.
+            # If there is a chosen position, change to new menu.
             if chosen_position is not None:
                 while cm.scene.children:
             # This does work to remove Scene() children.
@@ -899,6 +902,7 @@ class CharacterHUD:
         '''
         # Alert...
         self.current_menu.scene.show_alert(self.warning_change_house)
+        #~ self.current_menu.scene.show_alert(self.warning_change_house)
         
         game_state.game.character.selected_house_idx = selected_index
         if selected_value == 'Staying with Friends':
