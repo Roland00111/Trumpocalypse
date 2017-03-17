@@ -301,7 +301,6 @@ class EventsLoop:
                                 # print("You have opened a chest!")
                     # PygameUI
                     up_in = cm.scene.hit(event.pos)
-                    print up_in
                     if down_in == up_in:
                         down_in.mouse_up(event.button, down_in.from_window_point(event.pos))
                     down_in = None
