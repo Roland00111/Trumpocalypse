@@ -208,7 +208,7 @@ class EventsLoop:
     '''
     current_menu = None
     
-    def __init__(self,testevents = None): # , text = False, size=22,top=40,boxHeight=300
+    def __init__(self,testevents = None):
         self.current_menu = OpeningMenu() # Starts on opening menu. Then changes.
         event_loop = True
         recurse_test = 0
@@ -266,7 +266,7 @@ class EventsLoop:
                 elif event.type == QUIT:
                     pygame.display.quit()
                     sys.exit()
-                elif event.type == MOUSEBUTTONUP: #pygame.MOUSEBUTTONUP
+                elif event.type == MOUSEBUTTONUP:
                         '''
                         http://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection
                         '''
@@ -311,8 +311,7 @@ class EventsLoop:
                     rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
                     font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
                     drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
-                #~ surface.blit(cm.scene2.draw(), (0, 0)) # Draw alerts
-                if cm.scene._has_alert is True:
+                if cm.scene._has_alert is True: # Draw scene alert.
                     surface.blit(cm.scene.draw_alert(), (0, 0))
                 pygame.display.update()
             # If there is a chosen position, change to new menu.
