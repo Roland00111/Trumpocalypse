@@ -195,6 +195,8 @@ class Scene(Control):
             self._focus.became_focused()
 
     def show_alert(self, message):
+        if self._has_alert is True: # Do not do two alerts at once (for now)
+            return
         alert = Alert(message)
         alert.frame = pygame.Rect(0, 0, self.frame.w, max(120, self.frame.h // 3))
         self._has_alert = True   # :)
@@ -440,7 +442,6 @@ class Button(Control):
             self.is_pressed = True
 
     def mouse_up(self, button, pt):
-        print 'x'
         Control.mouse_up(self, button, pt)
         self.label.bgcolor = self.bgcolor
         self.is_pressed = False
