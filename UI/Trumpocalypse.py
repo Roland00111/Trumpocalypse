@@ -59,6 +59,7 @@ class Menu:
     
      
     def __init__(self):
+        self.menu_name = '...' # Default menu name.
         pass
         
     class Field:
@@ -850,6 +851,8 @@ class CharacterHUD:
     def __init__(self, current_menu):
         self.current_menu = current_menu
         self.warning_change_house = 'Warning: Changing housing takes one hour to complete!'
+        self.warning_cannot_change_house = 'Warning: Changing housing is only allowed at home (home screen)!'
+        game_state.game.character_hud = self # Add to global.
         
         # Character attributes
         x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
@@ -878,16 +881,15 @@ class CharacterHUD:
         lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -200, 150, 20)
         current_menu.scene.add_child(lbl)
         # List of available transit types.
-        x = PygameUI.List(['Staying with Friends']+game_state.game.character.inventory.list_housing_types(), (200, 224, 200))
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -180, 150, 80)
-        #~ x.frame.w = x.container.frame.w
-        x.frame.w = 150
-        x.selected_index = game_state.game.character.selected_house_idx # selected mode, default = Staying with Friends
-        x.border_width = 1
-        x.container.draggable = True
-        # What to do on change mode? (i.e. clicked)
-        x.callback_function = self.click_housing
-        current_menu.scene.add_child(x)
+        self.select_housing = PygameUI.List(['Staying with Friends']+game_state.game.character.inventory.list_housing_types(), (200, 224, 200))
+        self.select_housing.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -180, 150, 80)
+        self.select_housing.frame.w = 150
+        self.select_housing.selected_index = game_state.game.character.selected_house_idx # selected mode, default = Staying with Friends
+        self.select_housing.border_width = 1
+        self.select_housing.container.draggable = True
+        # What to do on change mode? (i.e. click)
+        self.select_housing.callback_function = self.click_housing
+        current_menu.scene.add_child(self.select_housing)
         
         # Selected mode of transit.
         # Title.
@@ -897,12 +899,11 @@ class CharacterHUD:
         # List of available transit types.
         x = PygameUI.List(['Walking']+game_state.game.character.inventory.list_transit_types(), (200, 224, 200))
         x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -80, 150, 80)
-        #~ x.frame.w = x.container.frame.w
         x.frame.w = 150
         x.selected_index = game_state.game.character.transit_mode # selected mode, default = walking
         x.border_width = 1
         x.container.draggable = True
-        # What to do on change mode? (i.e. clicked)
+        # What to do on change mode? (i.e. click)
         x.callback_function = self.click_transit
         current_menu.scene.add_child(x)
     
@@ -917,27 +918,55 @@ class CharacterHUD:
         And then if 0 hours remain change back to previous
         selected index.
         '''
-        # Alert...
-        self.current_menu.scene.show_alert(self.warning_change_house)
-        #~ self.current_menu.scene.show_alert(self.warning_change_house)
+        # If the selected house is the same as current house,
+        # then do nothing.
+        if (selected_index == game_state.game.character.selected_house_idx and
+            selected_value == game_state.game.character.selected_house):
+            return
+        # If not DayScreen then do nothing.
+        # But show warning.
+        if self.current_menu.menu_name != 'DayScreen':
+            self.current_menu.scene.show_alert(self.warning_cannot_change_house, 'OK', None, self.click_no_change)
+            return
+        # Force user to confirm change.
+        self.current_menu.scene.show_alert(self.warning_change_house, 'Yes, change houses.', 'No, stay put.', self.click_alert)
         
-        game_state.game.character.selected_house_idx = selected_index
-        if selected_value == 'Staying with Friends':
-            game_state.game.character.selected_house = 'Staying with Friends'
-        elif 'Urban House' in selected_value:
-            game_state.game.character.selected_house = 'Urban House'
-        elif 'Suburban House' in selected_value:
-            game_state.game.character.selected_house = 'Suburban House'
-        elif 'Rural House' in selected_value:
-            game_state.game.character.selected_house = 'Rural House'
-        else:
-            # Raise?
-            pass
-    
     def click_transit(self, selected_index, selected_value):
         '''Update game_state.game.character.transit_mode
         '''
         game_state.game.character.transit_mode = selected_index
+    
+    def click_no_change(self, yes_or_no):
+        '''
+        '''
+        # Reset index of housing list.
+        self.select_housing.selected_index = game_state.game.character.selected_house_idx
+        return
+        
+    def click_alert(self, yes_or_no):
+        '''Handle alert button click.
+        :param boolean yes_or_no: True if first button clicked, False if second button clicked.
+        '''
+        if yes_or_no is True: # "Yes, change..."
+            game_state.game.character.selected_house_idx = self.select_housing.selected_index
+            v = self.select_housing.selected_value
+            if v == 'Staying with Friends':
+                game_state.game.character.selected_house = 'Staying with Friends'
+            elif 'Urban House' in v: # "Urban House: 88%"
+                game_state.game.character.selected_house = 'Urban House'
+            elif 'Suburban House' in v:
+                game_state.game.character.selected_house = 'Suburban House'
+            elif 'Rural House' in v:
+                game_state.game.character.selected_house = 'Rural House'
+            else: # Raise?
+                pass
+            game_state.game.current_day.day_hours -= 1 # Reduce day hours.
+            self.current_menu.update_body() # update menu
+        elif yes_or_no is False: # "No, stay..."
+            # Reset index of housing list.
+            self.select_housing.selected_index = game_state.game.character.selected_house_idx
+        else: # Pass
+            pass
         
 class StoreScreenSelect(Menu):
     def __init__(self):
@@ -1421,6 +1450,7 @@ class DayScreen(Menu):
     def __init__(self):
         print game_state.game.current_day
         print game_state.game.current_day.generated_date
+        self.menu_name = 'DayScreen'
         
         # Add HUD
         CharacterHUD(self)
@@ -1461,7 +1491,16 @@ class DayScreen(Menu):
             'top': 20,
             'height': 300
         }
-        
+    
+    def update_body(self):
+        text = ("Term Number: " + str(game_state.game.term_count) + " \nDay is: " + str(game_state.game.current_day.generated_date)
+        + " \n" +" \nHours Left: " + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 20,
+            'height': 300
+        }
 
 class ElectionDay(Menu): #Use on 48,96 .... +=48
     def __init__(self):

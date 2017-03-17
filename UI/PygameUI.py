@@ -194,10 +194,10 @@ class Scene(Control):
             self._focus = new_focus
             self._focus.became_focused()
 
-    def show_alert(self, message):
+    def show_alert(self, message, btn1_text, btn2_text, btn_action):
         if self._has_alert is True: # Do not do two alerts at once (for now)
             return
-        alert = Alert(message)
+        alert = Alert(message, btn1_text, btn2_text, btn_action)
         alert.frame = pygame.Rect(0, 0, self.frame.w, max(120, self.frame.h // 3))
         self._has_alert = True   # :)
         self._alert = alert      # :)
@@ -254,6 +254,7 @@ class List(Control):
         self.border_width = 1
         self.labels = labels
         self._selected_index = None
+        self.selected_value = None # Value of selected item
         self.on_selection = Signal()
         self.container = Control()
         self.container.draggable = True
@@ -286,14 +287,19 @@ class List(Control):
         self.down_at = mouse_pos
     
     def container_up(self, control, mouse_button, mouse_pos):
+        '''
+        If there is a callback function, then pass back the selected
+        index and child text.
+        '''
         if self.down_at is None:
             return
         for i, child in enumerate(self.container.children):
             if child.frame.collidepoint(mouse_pos):
+                if self._selected_index == i:
+                    return # No change in index.
                 self.selected_index = i
+                self.selected_value = child.text
                 if self.callback_function:
-                    # Callback function.
-                    # Pass in selected index and child text.
                     self.callback_function(self.selected_index, child.text)
                 return
         self.selected_index = None
@@ -304,11 +310,11 @@ class List(Control):
     
     @selected_index.setter
     def selected_index(self, index):
-        child = self.container.children[index]
-        child.selected = True
+        child = self.container.children[index] # child=Label object
         if self._selected_index is not None:
             prev = self.container.children[self._selected_index]
             prev.selected = False
+        child.selected = True
         self._selected_index = index
         self.on_selection(self, index)
 
@@ -365,7 +371,19 @@ class TextField(Control):
 class Alert(Control):
     bgcolor = (240, 240, 200)
 
-    def __init__(self, message):
+    def __init__(self, message, btn1_text, btn2_text=None, callback_function=None):
+        '''Create an alert box.
+        
+        If no value is passed to btn2_text then only one button is
+        created.
+        
+        :param str message: The message on the alert.
+        :param str btn1_text: The message on the first button.
+        :param btn2_text: The message on the second button.
+        :param callback_function: The function called for button clicks (with return arguments: True or False).
+        :type btn2_text: str or None
+        :type callback_function: def or None
+        '''
         Control.__init__(self)
 
         self.bgcolor = Alert.bgcolor
@@ -376,22 +394,47 @@ class Alert(Control):
         self.message.size_to_fit()
         self.message.bgcolor = self.bgcolor
         self.add_child(self.message)
+        self.btn1_text = btn1_text
+        self.btn2_text = btn2_text
+        self.callback_function = callback_function
 
-        self.btn = Button('OK')
-        self.btn.size_to_fit()
-        self.btn.on_clicked.add(lambda btn: self.dismiss())
-        self.add_child(self.btn)
+        if btn2_text == None:   # One button.
+            self.btn = Button(btn1_text)
+            self.btn.size_to_fit()
+            self.btn.on_clicked.add(lambda btn: self.press(True))
+            self.add_child(self.btn)
+        else:                   # Two buttons.
+            self.btn = Button(btn1_text)
+            self.btn.size_to_fit()
+            self.btn.on_clicked.add(lambda btn: self.press(True))
+            self.add_child(self.btn)
+            
+            self.btn2 = Button(btn2_text)
+            self.btn2.size_to_fit()
+            self.btn2.on_clicked.add(lambda btn: self.press(False))
+            self.add_child(self.btn2)
 
     def layout(self):
-        self.btn.frame.centerx = self.frame.w // 2
-        self.btn.frame.bottom = self.frame.h - 10
+        if self.btn2_text == None:  # One button.
+            self.btn.frame.centerx = self.frame.w // 2
+            self.btn.frame.bottom = self.frame.h - 10
+        else:                       # Two buttons. Offset them 2+2=4px.
+            self.btn.frame.left = self.frame.w // 2 - self.btn.frame.w - 2
+            self.btn.frame.bottom = self.frame.h - 10
+            self.btn2.frame.left = self.frame.w // 2 + 2
+            self.btn2.frame.bottom = self.frame.h - 10
         self.message.frame.centerx = self.frame.w // 2
         self.message.frame.centery = (self.btn.frame.top // 2)
 
     def dismiss(self):
         self.scene._has_alert = False
         self.scene.remove_child(self)
-
+        
+    def press(self, yes_or_no):
+        if self.callback_function != None:
+            self.callback_function(yes_or_no) # Call action
+        self.dismiss()
+    
     def draw(self):
         surf = Control.draw(self)
         pygame.draw.line(surf, (200, 200, 160),
