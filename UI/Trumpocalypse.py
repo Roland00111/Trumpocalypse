@@ -929,7 +929,7 @@ class CharacterHUD:
             self.current_menu.scene.show_alert(self.warning_cannot_change_house, 'OK', None, self.click_no_change)
             return
         # Force user to confirm change.
-        self.current_menu.scene.show_alert(self.warning_change_house, 'Yes, change houses.', 'No, stay put.', self.click_alert)
+        self.current_menu.scene.show_alert(self.warning_change_house, 'Yes, change housing.', 'No, stay put.', self.click_alert)
         
     def click_transit(self, selected_index, selected_value):
         '''Update game_state.game.character.transit_mode
