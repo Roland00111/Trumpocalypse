@@ -935,6 +935,7 @@ class CharacterHUD:
         if len(self.elements) > 0:
             for e in self.elements:
                 self.current_menu.scene.remove_child(e)
+        self.elements = []
         
         # Character attributes
         x = PygameUI.List([
@@ -968,10 +969,10 @@ class CharacterHUD:
         
         # Selected mode of housing.
         # Title.
-        lbl = PygameUI.Label('Housing:')
-        lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -200, 150, 20)
-        self.current_menu.scene.add_child(lbl)
-        self.elements.append(lbl)
+        x = PygameUI.Label('Housing:')
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -200, 150, 20)
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
         # List of available transit types.
         self.select_housing = PygameUI.List(
             [{'item':None,'value':'Staying with Friends'}]+game_state.game.character.inventory.list_housing_types(),
@@ -989,10 +990,10 @@ class CharacterHUD:
         
         # Selected mode of transit.
         # Title.
-        lbl = PygameUI.Label('Transit Mode:')
-        lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -100, 150, 20)
-        self.current_menu.scene.add_child(lbl)
-        self.elements.append(lbl)
+        x = PygameUI.Label('Transit Mode:')
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -100, 150, 20)
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
         # List of available transit types.
         x = PygameUI.List(
             [{'item':None,'value':'Walking'}]+game_state.game.character.inventory.list_transit_types(),
@@ -1100,11 +1101,13 @@ class StoreScreenSelect(Menu):
         if len(self.lists) != 0:
             for l in self.lists:
                 self.scene.remove_child(l)
+        self.lists = []
         
         # Title for list.
-        lbl = PygameUI.Label('Click to Buy')
-        lbl.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400, Menu.scene.frame.h -220)
-        self.scene.add_child(lbl)
+        x = PygameUI.Label('Click to Buy')
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400, Menu.scene.frame.h -220)
+        self.scene.add_child(x)
+        self.lists.append(x)
         # List of items for sale.
         x = PygameUI.List(self.store.inventory.item_count_buy(), (200, 224, 200))
         x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400, Menu.scene.frame.h -220)
@@ -1117,9 +1120,10 @@ class StoreScreenSelect(Menu):
         self.lists.append(x)
         
         # Title for list.
-        lbl = PygameUI.Label('Click to Sell')
-        lbl.frame = pygame.Rect((Menu.scene.frame.w // 2), 100, 400, Menu.scene.frame.h -220)
-        self.scene.add_child(lbl)
+        x = PygameUI.Label('Click to Sell')
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 100, 400, Menu.scene.frame.h -220)
+        self.scene.add_child(x)
+        self.lists.append(x)
         # List of items to sell.
         x = PygameUI.List(game_state.game.character.inventory.item_count_sell(), (200, 224, 200))
         x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400, Menu.scene.frame.h -220)
