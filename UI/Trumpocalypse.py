@@ -1137,7 +1137,7 @@ class StoreScreen(Menu):
         if game_state.game.current_day.day_hours < travel_time: # No store.
             store_name = game_state.game.locations_handler.location.stores[ chosen_position ].name
             m = ('Warning: There is not enough time visit '+store_name+'.\nThe trip takes '+
-                str(travel_time)+' hours but only '+str(game_state.game.current_day.day_hours)+' remain!')
+                str(travel_time)+' hours but only '+str(game_state.game.current_day.day_hours)+' hours remain!')
             self.alert(m, 'OK', None, self.click_no_change)
             return False
         else: # Subtract

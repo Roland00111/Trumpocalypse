@@ -387,13 +387,25 @@ class Alert(Control):
         Control.__init__(self)
 
         self.bgcolor = Alert.bgcolor
-
-        self.message = Label(message)
-        large_font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 16*2)
-        self.message.font = large_font
-        self.message.size_to_fit()
-        self.message.bgcolor = self.bgcolor
-        self.add_child(self.message)
+        
+        # Consider \n
+        m = message.split('\n')
+        self.messages = []
+        for text in m:
+            l = Label(text)
+            large_font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 16*2)
+            l.font = large_font
+            l.size_to_fit()
+            l.bgcolor = self.bgcolor
+            self.add_child(l)
+            self.messages.append(l)
+            
+        #~ self.message = Label(message)
+        #~ large_font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 16*2)
+        #~ self.message.font = large_font
+        #~ self.message.size_to_fit()
+        #~ self.message.bgcolor = self.bgcolor
+        #~ self.add_child(self.message)
         self.btn1_text = btn1_text
         self.btn2_text = btn2_text
         self.callback_function = callback_function
@@ -423,8 +435,21 @@ class Alert(Control):
             self.btn.frame.bottom = self.frame.h - 10
             self.btn2.frame.left = self.frame.w // 2 + 2
             self.btn2.frame.bottom = self.frame.h - 10
-        self.message.frame.centerx = self.frame.w // 2
-        self.message.frame.centery = (self.btn.frame.top // 2)
+        if len(self.messages) == 1:     # Zero \n.
+            self.messages[0].frame.centerx = self.frame.w // 2
+            self.messages[0].frame.centery = (self.btn.frame.top // 2)
+        elif len(self.messages) == 2:   # One \n.
+            self.messages[0].frame.centerx = self.frame.w // 2
+            self.messages[0].frame.centery = (self.btn.frame.top // 2) - self.messages[0].frame.h
+            self.messages[1].frame.centerx = self.frame.w // 2
+            self.messages[1].frame.centery = (self.btn.frame.top // 2)
+        else:                           # Assume no more than two \n.
+            self.messages[0].frame.centerx = self.frame.w // 2
+            self.messages[0].frame.centery = (self.btn.frame.top // 2) - self.messages[0].frame.h - self.messages[1].frame.h
+            self.messages[1].frame.centerx = self.frame.w // 2
+            self.messages[1].frame.centery = (self.btn.frame.top // 2) - self.messages[0].frame.h
+            self.messages[2].frame.centerx = self.frame.w // 2
+            self.messages[2].frame.centery = (self.btn.frame.top // 2)
 
     def dismiss(self):
         self.scene._has_alert = False
