@@ -384,10 +384,7 @@ class Character:
         self.intelligence = 3
         self.sanity = 30
         self.inventory = Inventory() # Give character an inventory.
-        self.transit_mode_idx = 0                       # Transit index, default=0 (walking).
-        self.transit_mode = 'Walking'                   # Transit title, default="Walking"
-        self.selected_house_idx = 0                     # House index, default=0
-        self.selected_house = 'Staying with Friends'    # House title, default="Staying with Friends"
+        self.reset_modes() # Set transit and housing type.
         if create_type == 'random':
             self.randomGenerate()
             pass
@@ -398,6 +395,14 @@ class Character:
         #~ def __init__(self):
             #~ print 'test'
     
+    def reset_modes(self):
+        '''Reset transit and housing type to original values.
+        '''
+        self.transit_mode_idx = 0                       # Transit index, default=0 (walking).
+        self.transit_mode = 'Walking'                   # Transit title, default="Walking"
+        self.selected_house_idx = 0                     # House index, default=0
+        self.selected_house = 'Staying with Friends'    # House title, default="Staying with Friends"
+        
     def randomGenerate(self):
         num = random.randint(0,1)
         global CharacterDictionary
@@ -1081,7 +1086,7 @@ class StoreScreenSelect(Menu):
         CharacterHUD(self)
         
         # Lists
-        self.lists = []
+        self.elements = []
         self.draw_store_lists()
         
         self.keypressArray = [
@@ -1097,17 +1102,17 @@ class StoreScreenSelect(Menu):
         }
     
     def draw_store_lists(self):
-        # Remove old lists, if they exist (on update lists).
-        if len(self.lists) != 0:
-            for l in self.lists:
+        # Remove old elements, if they exist (on update lists).
+        if len(self.elements) != 0:
+            for l in self.elements:
                 self.scene.remove_child(l)
-        self.lists = []
+        self.elements = []
         
         # Title for list.
         x = PygameUI.Label('Click to Buy')
         x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400, Menu.scene.frame.h -220)
         self.scene.add_child(x)
-        self.lists.append(x)
+        self.elements.append(x)
         # List of items for sale.
         x = PygameUI.List(self.store.inventory.item_count_buy(), (200, 224, 200))
         x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400, Menu.scene.frame.h -220)
@@ -1117,13 +1122,13 @@ class StoreScreenSelect(Menu):
         x.container.draggable = True
         x.callback_function = self.click_buy
         self.scene.add_child(x)
-        self.lists.append(x)
+        self.elements.append(x)
         
         # Title for list.
         x = PygameUI.Label('Click to Sell')
         x.frame = pygame.Rect((Menu.scene.frame.w // 2), 100, 400, Menu.scene.frame.h -220)
         self.scene.add_child(x)
-        self.lists.append(x)
+        self.elements.append(x)
         # List of items to sell.
         x = PygameUI.List(game_state.game.character.inventory.item_count_sell(), (200, 224, 200))
         x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400, Menu.scene.frame.h -220)
@@ -1133,7 +1138,7 @@ class StoreScreenSelect(Menu):
         x.container.draggable = True
         x.callback_function = self.click_sell
         self.scene.add_child(x)
-        self.lists.append(x)
+        self.elements.append(x)
         
     def process_events(self,chosen_position):
         '''Reset location.active_store_idx before leaving.
@@ -1153,8 +1158,12 @@ class StoreScreenSelect(Menu):
                 Character cash: game_state.game.character.inventory.sorted_items['cash']
                 Cost of item: item.calculate_purchase_cost()
                 update_or_add function (?)
-                        
+        
+        Oddity: When buying and selling, it is probably necessary for
+                now to reset character's selected housing and transit,
+                at least for simplicity (reset_modes).
         '''
+        game_state.game.character.reset_modes()
         cost = selected_item.calculate_purchase_cost()
         cash = game_state.game.character.inventory.sorted_items['cash'].amount
         print 'cost',cost
@@ -1173,7 +1182,12 @@ class StoreScreenSelect(Menu):
     
     def click_sell(self, selected_index, selected_value, selected_item):
         '''Sell the clicked item.
+        
+        Oddity: When buying and selling, it is probably necessary for
+                now to reset character's selected housing and transit,
+                at least for simplicity (reset_modes).
         '''
+        game_state.game.character.reset_modes()
         cost = selected_item.calculate_resale_cost()
         game_state.game.character.inventory.sorted_items['cash'].amount += cost
         game_state.game.character.inventory.remove_item(selected_item)#.item_type, selected_item.remaining_uses)
