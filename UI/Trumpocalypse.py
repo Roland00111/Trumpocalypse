@@ -477,16 +477,24 @@ class Inventory:
         return storage
     
     def item_count_buy(self):
-        #Iterates throught self.items and returns a list of all items in array with number of uses left
+        '''
+        Do not allow buying of cash.
+        '''
         storage = []
         for item in self.items:
+            if item.item_type == 'Cash':
+                continue
             storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount() + ' $' + str(item.calculate_purchase_cost())})
         return storage
     
     def item_count_sell(self):
-        #Iterates throught self.items and returns a list of all items in array with number of uses left
+        '''
+        Do not allow selling of cash.
+        '''
         storage = []
         for item in self.items:
+            if item.item_type == 'Cash':
+                continue
             storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount() + ' $' + str(item.calculate_resale_cost())})
         return storage
     
@@ -942,25 +950,28 @@ class CharacterHUD:
         )
         x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
-        x.selected_index = 1
+        #~ x.selected_index = 1
         x.border_width = 0
         x.container.draggable = False #Change to True is needs to be draggable 
         self.current_menu.scene.add_child(x)
+        self.elements.append(x)
 
         # Character items
         x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
         x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
-        x.selected_index = 1
+        #~ x.selected_index = 1
         x.border_width = 0
         x.container.draggable = False #Change to True is needs to be draggable 
         self.current_menu.scene.add_child(x)
+        self.elements.append(x)
         
         # Selected mode of housing.
         # Title.
         lbl = PygameUI.Label('Housing:')
         lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -200, 150, 20)
         self.current_menu.scene.add_child(lbl)
+        self.elements.append(lbl)
         # List of available transit types.
         self.select_housing = PygameUI.List(
             [{'item':None,'value':'Staying with Friends'}]+game_state.game.character.inventory.list_housing_types(),
@@ -974,12 +985,14 @@ class CharacterHUD:
         # What to do on change mode? (i.e. click)
         self.select_housing.callback_function = self.click_housing
         self.current_menu.scene.add_child(self.select_housing)
+        self.elements.append(self.select_housing)
         
         # Selected mode of transit.
         # Title.
         lbl = PygameUI.Label('Transit Mode:')
         lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -100, 150, 20)
         self.current_menu.scene.add_child(lbl)
+        self.elements.append(lbl)
         # List of available transit types.
         x = PygameUI.List(
             [{'item':None,'value':'Walking'}]+game_state.game.character.inventory.list_transit_types(),
@@ -993,6 +1006,7 @@ class CharacterHUD:
         # What to do on change mode? (i.e. click)
         x.callback_function = self.click_transit
         self.current_menu.scene.add_child(x)
+        self.elements.append(x)
         
     def click_housing(self, selected_index, selected_value, selected_item):
         '''Update game_state.game.character.selected_house_idx and
@@ -1095,7 +1109,7 @@ class StoreScreenSelect(Menu):
         x = PygameUI.List(self.store.inventory.item_count_buy(), (200, 224, 200))
         x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
-        x.selected_index = 1
+        #~ x.selected_index = 1
         x.border_width = 1
         x.container.draggable = True
         x.callback_function = self.click_buy
@@ -1110,7 +1124,7 @@ class StoreScreenSelect(Menu):
         x = PygameUI.List(game_state.game.character.inventory.item_count_sell(), (200, 224, 200))
         x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
-        x.selected_index = 1
+        #~ x.selected_index = 1
         x.border_width = 1
         x.container.draggable = True
         x.callback_function = self.click_sell
@@ -1457,7 +1471,8 @@ class Game:
 
         def __init__(self):
             self.day_hours = 16
-        
+            self.gen_date()
+            
         def gen_date(self):
             g = game_state.game
             print 'New day'
@@ -1690,6 +1705,8 @@ class DayScreen(Menu):
 
 class ElectionDay(Menu): #Use on 48,96 .... +=48
     def __init__(self):
+        game_state.game.day_counter += 1
+        game_state.game.month_counter += 1
         game_state.game.current_day = game_state.game.Day() #Game.Day()
         self.menu_name = '...'
         
@@ -1716,7 +1733,6 @@ class StoryScreen(Menu):
         game_state.game.day_counter += 1
         game_state.game.month_counter += 1
         game_state.game.current_day = game_state.game.Day() #Game.Day()
-        game_state.game.current_day.gen_date()
         self.menu_name = '...'
         
         self.keypressArray = [
