@@ -1093,7 +1093,6 @@ class StoreScreenSelect(Menu):
              DayScreen
         ]
         self.titlesArray = ['Back to Day'] # Just back to day, no "Back to Store List" 
-        #~ self.process_event = True
         self.body = {
             'text': 'Welcome to '+self.store.name+'!',
             'font_size': 40,
@@ -1211,7 +1210,6 @@ class StoreScreen(Menu):
         location = game_state.game.locations_handler.location
         self.keypressArray = [ StoreScreenSelect for x in range(len(location.stores)) ] + [ DayScreen ]
         self.titlesArray = location.menu_values() + ['Back to Day']
-        #~ self.process_event = True
         
         # HUD
         CharacterHUD(self)
@@ -1431,7 +1429,6 @@ class EventScreen(Menu):
             'top': 60,
             'height': 250
         }
-        #~ self.process_event = True
     
     def process_events(self,chosen_position):
         '''Define this menu's process_events function.
