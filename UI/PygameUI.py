@@ -214,7 +214,11 @@ class Label(Control):
     selected_bgcolor = (200, 224, 200)
     bgcolor = Control.bgcolor
 
-    def __init__(self, text=None, label_bgcolor = (0,0,0)):
+    def __init__(self, text=None, label_bgcolor=(0,0,0), item=None):
+        '''
+        :param item: An object to reference.
+        :type item: object reference or None.
+        '''
         Control.__init__(self)
         self.selected_bgcolor = label_bgcolor
         self.interactive = False
@@ -222,6 +226,7 @@ class Label(Control):
         self.text = text
         self.text_color = Label.text_color
         self.padding = Label.padding
+        self.item = item
 
     def size_of(self, text):
         return self.draw().get_size()
@@ -250,6 +255,12 @@ class Label(Control):
 class List(Control):
     
     def __init__(self, labels, selected_bgcolor, callback_function = False):
+        '''Initialize List().
+        
+        :param list labels: A list of labels, each label is a dictionary {'item':*item reference or None*, 'str':*a string*}.
+        :param tuple selected_bgcolor: Color when selected.
+        :param def callback_function: Callback function when clicked.
+        '''
         Control.__init__(self)
         self.border_width = 1
         self.labels = labels
@@ -262,10 +273,10 @@ class List(Control):
         self.container.on_mouse_up.add(self.container_up)
         self.callback_function = callback_function
         y, w = 0, 0
-        for text in labels:
-            lbl = Label(text,selected_bgcolor)
+        for label in labels:
+            lbl = Label(label['value'], selected_bgcolor, label['item'])
             lbl.frame.topleft = (0, y)
-            size = lbl.size_of(text)
+            size = lbl.size_of(label['value'])
             y += size[1]
             w = max(w, size[0])
             lbl.size_to_fit()
@@ -290,6 +301,8 @@ class List(Control):
         '''
         If there is a callback function, then pass back the selected
         index and child text.
+        
+        :return: In the case of the callback function, returns self.selected_index, self.selected_value, self.selected_item.
         '''
         if self.down_at is None:
             return
@@ -299,8 +312,9 @@ class List(Control):
                     return # No change in index.
                 self.selected_index = i
                 self.selected_value = child.text
+                self.selected_item = child.item
                 if self.callback_function:
-                    self.callback_function(self.selected_index, child.text)
+                    self.callback_function(self.selected_index, self.selected_value, self.selected_item)
                 return
         self.selected_index = None
     

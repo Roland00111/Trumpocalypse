@@ -171,7 +171,7 @@ class Menu:
             # There could be a label passed into CustomField
             # that is added to the left of each list.
             # Is it possible to add this with the Label class?
-            x = PygameUI.List(['Item %s' % str(i) for i in range(20)], (200, 224, 200))
+            x = PygameUI.List([{'item':None,'value':'Item %s' % str(i) } for i in range(20)], (200, 224, 200))
             x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
             x.frame.w = x.container.frame.w
             x.selected_index = 1
@@ -450,18 +450,22 @@ class Character:
       
 class Inventory:
     def __init__(self):
+        '''
+        Common function: How to quickly retrieve character cash?
+        '''
         self.max_items = 999
         self.items = [] # Array of items.
         self.sorted_items = { # Sorted items
             'housing':[],
             'transit':[],
             'other':[],
+            'cash':None # Will be cash item.
         }
         self.all_choices = [
             'Food','Pie','Garden','Lottery Ticket','New Car','Old Car',
             'Urban House','Suburban House','Rural House','Cash',
-            'First Aid Kit','Bicycle','Seeds','Clothing','Transit Pass',
-            'Speed Boat'
+            'First Aid Kit','Bicycle','Racing Bicycle','Seeds','Clothing',
+            'Transit Pass','Speed Boat'
         ]
         self.is_store = False
         
@@ -469,21 +473,21 @@ class Inventory:
         #Iterates throught self.items and returns a list of all items in array with number of uses left
         storage = []
         for item in self.items:
-            storage.append(item.item_type + ': ' + item.show_amount())
+            storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount()})
         return storage
     
     def item_count_buy(self):
         #Iterates throught self.items and returns a list of all items in array with number of uses left
         storage = []
         for item in self.items:
-            storage.append(item.item_type + ': ' + item.show_amount() + ' $' + item.calculate_purchase_cost())
+            storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount() + ' $' + str(item.calculate_purchase_cost())})
         return storage
     
     def item_count_sell(self):
         #Iterates throught self.items and returns a list of all items in array with number of uses left
         storage = []
         for item in self.items:
-            storage.append(item.item_type + ': ' + item.show_amount() + ' $' + item.calculate_resale_cost())
+            storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount() + ' $' + str(item.calculate_resale_cost())})
         return storage
     
     def list_housing_types(self):
@@ -493,7 +497,7 @@ class Inventory:
         storage = []
         for item in self.items:
             if item.item_type in item.housing_types:
-                storage.append(item.item_type + ': ' + item.show_amount())
+                storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount()})
         return storage
     
     def list_transit_types(self):
@@ -503,14 +507,29 @@ class Inventory:
         storage = []
         for item in self.items:
             if item.item_type in item.transit_types:
-                storage.append(item.item_type + ': ' + item.show_amount())
+                storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount()})
         return storage
     
     def num_items(self):
         # Returns the number of items in the inventory
         return len(self.items)
     
-    def add_item(self, item_type = None,remaining_uses = None):
+    def remove_item(self, item):
+        '''Remove an item from this inventory.
+        '''
+        #~ del self.items[ item ]
+        self.items.remove(item)
+        # From sorted items.
+        if item.item_type in item.transit_types:
+            self.sorted_items['transit'].remove(item)
+        elif item.item_type in item.housing_types:
+            self.sorted_items['housing'].remove(item)
+        elif item.item_type == 'Cash':
+            self.sorted_items['cash'].amount -= item.amount
+        else:
+            self.sorted_items['other'].remove(item)
+        
+    def add_item(self, item_type = None, remaining_uses = None):
         '''Add an item to this inventory.
         
         If item_type is None then add a random item.
@@ -543,6 +562,8 @@ class Inventory:
             self.sorted_items['transit'].append(new_item)
         elif new_item.item_type in new_item.housing_types:
             self.sorted_items['housing'].append(new_item)
+        elif new_item.item_type == 'Cash':
+            self.sorted_items['cash'] = new_item
         else:
             self.sorted_items['other'].append(new_item)
             
@@ -550,12 +571,12 @@ class Inventory:
         existing_item = self.contains_item(new_item.item_type)
         if existing_item != False:
             # Add to existing item.
-            if existing_item.grouped_item is False:    # Single item.
+            if existing_item.grouped_item is False:     # Single item.
                 # Always add another single item.
                 self.items.append( new_item )
                 self.sorted_append( new_item )
             else:                                       # Grouped item.
-                if self.is_store:   # Store inventory (unbundle store inventory)
+                if self.is_store:   # Store inventory (unbundle store inventory grouped items)
                     self.items.append( new_item )
                     self.sorted_append( new_item )
                 else:               # Character
@@ -607,17 +628,7 @@ class Item:
         So 4 * 8 = $32.
     
     Each purchase of an item just adds to the total remaining_uses.
-        
-    Inventory quick display (right side bar).
-        How about...
-        Any number of new cars will shows as "NewCar: 100" (for one car)
-            ...or "NewCar: 200" (for two cars)
-            ...or "NewCar: 300" (for three cars)
-            ... and so on
-        One food with 100 uses shows as "Food: 100"
-            ...or "Food: 200" (two purchases of food)
-            ...or "Food: 300" (three purchases of food)
-            ... and so on
+    
     '''
     all_items = {           # Cost, Resale, Amount, Remaining Use (None=Grouped)
         'Food':             [10,0.8,10, None], # 10 food cost $10; while life=9 food per day.
@@ -691,9 +702,9 @@ class Item:
         :rtype: str.
         '''
         if self.grouped_item: # Grouped item (num remaining)
-            return str(math.ceil(self.purchase_cost * (self.amount / self.original_amount)))
+            return math.ceil(self.purchase_cost * (self.amount / self.original_amount))
         else:                 # Single item (% remaining)
-            return str(math.ceil(self.purchase_cost * (self.remaining_uses / self.max_remaining_uses)))
+            return math.ceil(self.purchase_cost * (self.remaining_uses / self.max_remaining_uses))
             
     def calculate_resale_cost(self):
         '''Returns the sell cost of the item or group of items.
@@ -711,9 +722,9 @@ class Item:
         :rtype: str.
         '''
         if self.grouped_item: # Grouped item (num remaining)
-            return str(math.floor(self.purchase_cost * self.resale_cost * (self.amount / self.original_amount)))
+            return math.floor(self.purchase_cost * self.resale_cost * (self.amount / self.original_amount))
         else:                 # Single item (% remaining)
-            return str(math.floor(self.purchase_cost * self.resale_cost * (self.remaining_uses / self.max_remaining_uses)))
+            return math.floor(self.purchase_cost * self.resale_cost * (self.remaining_uses / self.max_remaining_uses))
     
     def show_amount(self):
         '''
@@ -905,17 +916,36 @@ class CharacterHUD:
         self.warning_not_enough_hours = 'Warning: Not enough day hours remaining to change housing!'
         game_state.game.character_hud = self # Add to global.
         
+        # Draw
+        self.elements = []
+        self.draw_elements()
+    
+    def draw_elements(self):
+        '''
+        '''
+        # Remove old (on update)
+        if len(self.elements) > 0:
+            for e in self.elements:
+                self.current_menu.scene.remove_child(e)
+        
         # Character attributes
-        x = PygameUI.List([game_state.game.character.name, 'Hp: ' + str(game_state.game.character.health),'Str: ' + str(game_state.game.character.strength),
-                           'Char: ' + str(game_state.game.character.charisma),'Int: ' + str(game_state.game.character.intelligence),
-                           'Job: ' + game_state.game.character.job, 'Income: $' + str(game_state.game.character.income),
-                           'Sanity: ' + str(game_state.game.character.sanity)], (255,120,71))
+        x = PygameUI.List([
+                {'item':None, 'value':game_state.game.character.name},
+                {'item':None, 'value':'Hp: ' + str(game_state.game.character.health)},
+                {'item':None, 'value':'Str: ' + str(game_state.game.character.strength)},
+                {'item':None, 'value':'Char: ' + str(game_state.game.character.charisma)},
+                {'item':None, 'value':'Int: ' + str(game_state.game.character.intelligence)},
+                {'item':None, 'value':'Job: ' + game_state.game.character.job},
+                {'item':None, 'value':'Income: $' + str(game_state.game.character.income)},
+                {'item':None, 'value':'Sanity: ' + str(game_state.game.character.sanity)}
+            ], (255,120,71)
+        )
         x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
         x.border_width = 0
         x.container.draggable = False #Change to True is needs to be draggable 
-        current_menu.scene.add_child(x)
+        self.current_menu.scene.add_child(x)
 
         # Character items
         x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
@@ -924,15 +954,18 @@ class CharacterHUD:
         x.selected_index = 1
         x.border_width = 0
         x.container.draggable = False #Change to True is needs to be draggable 
-        current_menu.scene.add_child(x)
+        self.current_menu.scene.add_child(x)
         
         # Selected mode of housing.
         # Title.
         lbl = PygameUI.Label('Housing:')
         lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -200, 150, 20)
-        current_menu.scene.add_child(lbl)
+        self.current_menu.scene.add_child(lbl)
         # List of available transit types.
-        self.select_housing = PygameUI.List(['Staying with Friends']+game_state.game.character.inventory.list_housing_types(), (200, 224, 200))
+        self.select_housing = PygameUI.List(
+            [{'item':None,'value':'Staying with Friends'}]+game_state.game.character.inventory.list_housing_types(),
+            (200, 224, 200)
+        )
         self.select_housing.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -180, 150, 80)
         self.select_housing.frame.w = 150
         self.select_housing.selected_index = game_state.game.character.selected_house_idx # selected mode, default = Staying with Friends
@@ -940,15 +973,18 @@ class CharacterHUD:
         self.select_housing.container.draggable = True
         # What to do on change mode? (i.e. click)
         self.select_housing.callback_function = self.click_housing
-        current_menu.scene.add_child(self.select_housing)
+        self.current_menu.scene.add_child(self.select_housing)
         
         # Selected mode of transit.
         # Title.
         lbl = PygameUI.Label('Transit Mode:')
         lbl.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -100, 150, 20)
-        current_menu.scene.add_child(lbl)
+        self.current_menu.scene.add_child(lbl)
         # List of available transit types.
-        x = PygameUI.List(['Walking']+game_state.game.character.inventory.list_transit_types(), (200, 224, 200))
+        x = PygameUI.List(
+            [{'item':None,'value':'Walking'}]+game_state.game.character.inventory.list_transit_types(),
+            (200, 224, 200)
+        )
         x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -80, 150, 80)
         x.frame.w = 150
         x.selected_index = game_state.game.character.transit_mode_idx # selected mode, default = walking
@@ -956,9 +992,9 @@ class CharacterHUD:
         x.container.draggable = True
         # What to do on change mode? (i.e. click)
         x.callback_function = self.click_transit
-        current_menu.scene.add_child(x)
-    
-    def click_housing(self, selected_index, selected_value):
+        self.current_menu.scene.add_child(x)
+        
+    def click_housing(self, selected_index, selected_value, selected_item):
         '''Update game_state.game.character.selected_house_idx and
         game_state.game.character.selected_house.
         
@@ -987,7 +1023,7 @@ class CharacterHUD:
         # Force user to confirm change.
         self.current_menu.alert(self.warning_change_house, 'Yes, change housing.', 'No, stay put.', self.click_alert)
         
-    def click_transit(self, selected_index, selected_value):
+    def click_transit(self, selected_index, selected_value, selected_item):
         '''Update game_state.game.character.transit_mode
         '''
         game_state.game.character.transit_mode_idx = selected_index
@@ -1011,15 +1047,6 @@ class CharacterHUD:
                 game_state.game.character.selected_house = 'Staying with Friends'
             else:
                 game_state.game.character.selected_house = v.split(':')[0]
-                
-            #~ elif 'Urban House' in v: # "Urban House: 88%"
-                #~ game_state.game.character.selected_house = 'Urban House'
-            #~ elif 'Suburban House' in v:
-                #~ game_state.game.character.selected_house = 'Suburban House'
-            #~ elif 'Rural House' in v:
-                #~ game_state.game.character.selected_house = 'Rural House'
-            #~ else: # Raise?
-                #~ pass
             game_state.game.current_day.day_hours -= 1 # Reduce day hours.
             self.current_menu.update_body() # update menu
         elif yes_or_no is False: # "No, stay..."
@@ -1031,21 +1058,49 @@ class CharacterHUD:
 class StoreScreenSelect(Menu):
     def __init__(self):
         self.menu_name = '...'
-        location = game_state.game.locations_handler.location
-        store = location.stores[ location.active_store_idx ]
+        location = game_state.game.locations_handler.location   # Get location,
+        self.store = location.stores[ location.active_store_idx ]    # To get store.
+        self.warning_not_enough_cash = 'Oops... that item costs too much money!'
+        
+        # HUD
+        CharacterHUD(self)
+        
+        # Lists
+        self.lists = []
+        self.draw_store_lists()
+        
+        self.keypressArray = [
+             DayScreen
+        ]
+        self.titlesArray = ['Back to Day'] # Just back to day, no "Back to Store List" 
+        #~ self.process_event = True
+        self.body = {
+            'text': 'Welcome to '+self.store.name+'!',
+            'font_size': 40,
+            'top': 10,
+            'height': 80
+        }
+    
+    def draw_store_lists(self):
+        # Remove old lists, if they exist (on update lists).
+        if len(self.lists) != 0:
+            for l in self.lists:
+                self.scene.remove_child(l)
         
         # Title for list.
         lbl = PygameUI.Label('Click to Buy')
         lbl.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400, Menu.scene.frame.h -220)
         self.scene.add_child(lbl)
         # List of items for sale.
-        x = PygameUI.List(store.inventory.item_count_buy(), (200, 224, 200))
+        x = PygameUI.List(self.store.inventory.item_count_buy(), (200, 224, 200))
         x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
         x.border_width = 1
         x.container.draggable = True
+        x.callback_function = self.click_buy
         self.scene.add_child(x)
+        self.lists.append(x)
         
         # Title for list.
         lbl = PygameUI.Label('Click to Sell')
@@ -1058,23 +1113,10 @@ class StoreScreenSelect(Menu):
         x.selected_index = 1
         x.border_width = 1
         x.container.draggable = True
+        x.callback_function = self.click_sell
         self.scene.add_child(x)
+        self.lists.append(x)
         
-        # HUD
-        CharacterHUD(self)
-        
-        self.keypressArray = [
-             DayScreen
-        ]
-        self.titlesArray = ['Back to Day'] # Just back to day, no "Back to Store List" 
-        #~ self.process_event = True
-        self.body = {
-            'text': 'Welcome to '+store.name+'!',
-            'font_size': 40,
-            'top': 10,
-            'height': 80
-        }
-    
     def process_events(self,chosen_position):
         '''Reset location.active_store_idx before leaving.
         
@@ -1085,7 +1127,49 @@ class StoreScreenSelect(Menu):
         location = game_state.game.locations_handler.location
         location.active_store_idx = None
         return True
-            
+        
+    def click_buy(self, selected_index, selected_value, selected_item):
+        '''Try to buy the clicked item.
+        
+            Variables:
+                Character cash: game_state.game.character.inventory.sorted_items['cash']
+                Cost of item: item.calculate_purchase_cost()
+                update_or_add function (?)
+                        
+        '''
+        cost = selected_item.calculate_purchase_cost()
+        cash = game_state.game.character.inventory.sorted_items['cash'].amount
+        print 'cost',cost
+        print 'cash',cash
+        if cash < cost:
+            self.alert(self.warning_not_enough_cash, 'OK', None, self.click_no_change)
+            return
+        # Enough cash, so...
+        game_state.game.character.inventory.sorted_items['cash'].amount -= cost
+        game_state.game.character.inventory.update_or_add_item(selected_item)#.item_type, selected_item.remaining_uses)
+        self.store.inventory.remove_item(selected_item)
+        # Redraw lists.
+        self.draw_store_lists()
+        # Redraw HUD
+        game_state.game.character_hud.draw_elements()
+    
+    def click_sell(self, selected_index, selected_value, selected_item):
+        '''Sell the clicked item.
+        '''
+        cost = selected_item.calculate_resale_cost()
+        game_state.game.character.inventory.sorted_items['cash'].amount += cost
+        game_state.game.character.inventory.remove_item(selected_item)#.item_type, selected_item.remaining_uses)
+        self.store.inventory.update_or_add_item(selected_item)
+        # Redraw lists.
+        self.draw_store_lists()
+        # Redraw HUD
+        game_state.game.character_hud.draw_elements()
+        
+    def click_no_change(self, yes_or_no):
+        '''Do nothing.
+        '''
+        pass
+    
 class StoreScreen(Menu):
     '''Class StoreScreen. This shows the stores in the character's current
     location. Then the user chooses to go to a specific store.
