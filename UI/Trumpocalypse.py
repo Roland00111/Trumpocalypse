@@ -139,6 +139,13 @@ class Menu:
         mx, my = self.Position
         self.Position = (x+mx, y+my) 
     
+    def alert(self, message, btn1_text, btn2_text=None, callback_function=None):
+        '''Helper function to show alert using PygameUI scene.
+        
+        See class Alert for parameter details.
+        '''
+        self.scene.show_alert(message, btn1_text, btn2_text, callback_function)
+        
     class CustomField:
         def __init__(self, field_type, field_content, field_label, field_event_hooks):
             '''
@@ -359,8 +366,8 @@ class Character:
         self.sanity = 30
         self.inventory = Inventory() # Give character an inventory.
         self.transit_mode = 0 # Default index=0, which is walking.
-        self.selected_house_idx = 0         # House index, default=0
-        self.selected_house = 'Staying with Friends' # House title, default='Staying with Friends'
+        self.selected_house_idx = 0                     # House index, default=0
+        self.selected_house = 'Staying with Friends'    # House title, default="Staying with Friends"
         if create_type == 'random':
             self.randomGenerate()
             pass
@@ -644,7 +651,7 @@ class Item:
         self.remaining_uses = None
         self.max_remaining_uses = None  # To show how much is left.
         self.grouped_item = True        # Default is grouped.
-        self.coordinates = {}         # For mapped items.
+        self.coordinates = {}           # For mapped items.
         self.set_item(item_type)
             
     def use_item(self, item_type):
@@ -793,9 +800,6 @@ class GameState:
         self.game = Game()
         self.events_loop = EventsLoop(testevents) # Starts with opening menu.
 
-def plus_minus():
-    return random.random() * 2 - 1
-    
 class Store:
     '''
     Each store is located in a urban, suburban, or rural location.
@@ -959,15 +963,15 @@ class CharacterHUD:
         # If not DayScreen then do nothing.
         # But show warning.
         if self.current_menu.menu_name != 'DayScreen':
-            self.current_menu.scene.show_alert(self.warning_cannot_change_house, 'OK', None, self.click_no_change)
+            self.current_menu.alert(self.warning_cannot_change_house, 'OK', None, self.click_no_change)
             return
         # If hours remaining = 0 then do nothing.
         # But show warning.
         if game_state.game.current_day.day_hours < 1:
-            self.current_menu.scene.show_alert(self.warning_not_enough_hours, 'OK', None, self.click_no_change)
+            self.current_menu.alert(self.warning_not_enough_hours, 'OK', None, self.click_no_change)
             return
         # Force user to confirm change.
-        self.current_menu.scene.show_alert(self.warning_change_house, 'Yes, change housing.', 'No, stay put.', self.click_alert)
+        self.current_menu.alert(self.warning_change_house, 'Yes, change housing.', 'No, stay put.', self.click_alert)
         
     def click_transit(self, selected_index, selected_value):
         '''Update game_state.game.character.transit_mode
@@ -975,14 +979,14 @@ class CharacterHUD:
         game_state.game.character.transit_mode = selected_index
     
     def click_no_change(self, yes_or_no):
+        '''Reset index of housing list.
         '''
-        '''
-        # Reset index of housing list.
         self.select_housing.selected_index = game_state.game.character.selected_house_idx
         return
         
     def click_alert(self, yes_or_no):
         '''Handle alert button click.
+        
         :param boolean yes_or_no: True if first button clicked, False if second button clicked.
         '''
         if yes_or_no is True: # "Yes, change..."
@@ -1075,15 +1079,23 @@ class StoreScreen(Menu):
         CharacterHUD(self)
     
     def process_events(self,chosen_position):
-        '''Subtract the mileage from the hours.
+        '''Subtract mileage from hours.
+        
+        If user chooses last position the return to DayScreen.
+        
+        Set location.active_store_idx to chosen store.
+        
         Also, validate that character has enough resources to make this
         trip. (Need to implement.)
+        
+            Variables:  Num day hours remaining.
+                        Distance x 2 (round-trip).
+                        Current mode of transit.
         '''
         location = game_state.game.locations_handler.location
         if len(location.stores) -1  < chosen_position:
             return
         location.active_store_idx = chosen_position
-        pass
 
 class Location:
     def __init__(self):
@@ -1635,6 +1647,14 @@ class EndGame(Menu):
             'Test',
         ]
 
+def plus_minus():
+    '''Return a random +1 or -1.
+    
+    :return: Random number, +1 or -1.
+    :rtype: int.
+    '''
+    return random.random()*2 - 1
+    
 # Sample unittest test case.
 #class TestGame(unittest.TestCase):
 #    def test1(self):
