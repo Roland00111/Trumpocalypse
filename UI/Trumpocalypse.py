@@ -1173,7 +1173,7 @@ class StoreScreenSelect(Menu):
             return
         # Enough cash, so...
         game_state.game.character.inventory.sorted_items['cash'].amount -= cost
-        game_state.game.character.inventory.update_or_add_item(selected_item)#.item_type, selected_item.remaining_uses)
+        game_state.game.character.inventory.update_or_add_item(selected_item)
         self.store.inventory.remove_item(selected_item)
         # Redraw lists.
         self.draw_store_lists()
@@ -1190,7 +1190,7 @@ class StoreScreenSelect(Menu):
         game_state.game.character.reset_modes()
         cost = selected_item.calculate_resale_cost()
         game_state.game.character.inventory.sorted_items['cash'].amount += cost
-        game_state.game.character.inventory.remove_item(selected_item)#.item_type, selected_item.remaining_uses)
+        game_state.game.character.inventory.remove_item(selected_item)
         self.store.inventory.update_or_add_item(selected_item)
         # Redraw lists.
         self.draw_store_lists()
