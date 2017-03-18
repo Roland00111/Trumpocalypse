@@ -822,14 +822,15 @@ class Store:
     ]
     
     def __init__(self):
+        '''
+        Give store a shabbiness-gaudiness value:
+         0 is low shabbiness, 0.99 is highly shabby.
+        '''
         self.store_location = self.store_locations[ random.randint(0, 2) ]
         self.coordinates = {} # 0=x, 1=y
         self.distances() # Set distances
         self.inventory = Inventory()
         self.inventory.is_store = True # Set so that inventory is unbundled.
-        # Give store a shabbiness-gaudiness value.
-        #  0 is low shabbiness.
-        #  0.99 is highly shabby.
         self.shabby = random.randint(0, 99) / 100.0
         for i in range(40):
             self.inventory.add_item()
@@ -838,7 +839,7 @@ class Store:
         self.name = names.NAMES_LIST[ random.randint(0, len(names.NAMES_LIST)-1) ] + "'s " + self.grocery_type
     
     def distances(self):
-        '''
+        '''Set store location based on location type.
         Note: Random choice provides random between + and - number:
         https://docs.python.org/2/library/random.html#random.choice
         '''
@@ -853,6 +854,15 @@ class Store:
             self.coordinates['y'] = random.uniform(8.0,20.0) * plus_minus()
     
     def euclidean(self, p1, p2):
+        '''Determine euclidean distance between two points.
+        
+        Pretty straightforward: http://stackoverflow.com/a/4169284/2178774.
+        
+        :param list p1: A list with first element=x, second=y.
+        :param list p2: A list with first element=x, second=y.
+        :return: Euc. distance between points.
+        :rtype: int.
+        '''
         return math.sqrt((p2[0] - p1[0]) ** 2 +
                          (p2[1] - p1[1]) ** 2)
                          
@@ -1381,11 +1391,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
     
     def select_on_mouseup(self, event):
         print 'This is called when selecting a choice from the select field!'
-        #~ print event
-        #~ pos = pygame.mouse.get_pos()
-        #~ (pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()
-        #~ print 'Mouse click: ', pos, pygame.mouse.get_pressed()
-    
+        
 class CreateCharacterAutomatic(Menu):
     def __init__(self):
         self.menu_name = '...'
@@ -1521,6 +1527,8 @@ class DayScreen(Menu):
         }
     
     def update_body(self):
+        '''Call this function to update text in the body.
+        '''
         text = ("Term Number: " + str(game_state.game.term_count) + " \nDay is: " + str(game_state.game.current_day.generated_date)
         + " \n" +" \nHours Left: " + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
         self.body = {
