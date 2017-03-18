@@ -401,7 +401,7 @@ class Alert(Control):
         if btn2_text == None:   # One button.
             self.btn = Button(btn1_text)
             self.btn.size_to_fit()
-            self.btn.on_clicked.add(lambda btn: self.press(True))
+            self.btn.on_clicked.add(lambda btn: self.press(True)) # Send back True, even though there is no difference!
             self.add_child(self.btn)
         else:                   # Two buttons.
             self.btn = Button(btn1_text)

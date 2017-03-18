@@ -22,10 +22,16 @@ game_state = None # A global variable to be accessible by all classes throughout
 down_in = None # A global variable for pygameui (menu custom fields)
 CharacterDictionary = None
 
+def plus_minus():
+    '''Return a random +1 or -1.
+    
+    :return: Random number, +1 or -1.
+    :rtype: int.
+    '''
+    return random.random()*2 - 1
 
 class Menu:
-    '''
-    Original code for the menu class is from:
+    '''Original code for the menu class is from:
         @author: avalanchy (at) google mail dot com
         @version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14; MS Windows XP SP3
         @date: 2012-04-08
@@ -34,7 +40,7 @@ class Menu:
         @font: from http://www.dafont.com/coders-crux.font
               more abuot license you can find in data/coders-crux/license.txt
     '''
-    process_event = False
+    process_events = False # Default=False. Set to a function to process.
     lista = []
     by = []
     FontSize = 32
@@ -54,12 +60,10 @@ class Menu:
     titlesArray = []
     custom_fields = []              # To be filled in by menu classes that need buttons, selects, inputs, and number inputs
     scene = PygameUI.Scene()        # For utilizing pygameui
-    #~ scene2= PygameUI.Scene()        # For utilizing pygameui
     body = False                    # This is for main text area.
-    
+    menu_name = '...' # Default menu name.
      
     def __init__(self):
-        self.menu_name = '...' # Default menu name.
         pass
         
     class Field:
@@ -275,6 +279,8 @@ class EventsLoop:
                         pygame.display.quit()
                         sys.exit()
                 elif cm.scene._has_alert is True:
+                    surface.blit(cm.scene.draw_alert(), (0, 0)) # Make sure to draw alert
+                    pygame.display.update()                     # and update, in the case of cm.process_events()=False and chosen_position=True
                     continue
                 if event.type == KEYDOWN:
                     print(str(event.unicode))
@@ -321,7 +327,13 @@ class EventsLoop:
                     cm.scene.key_down(event.key, event.unicode)
                 elif event.type == pygame.KEYUP:
                     cm.scene.key_up(event.key)
-                surface.blit(cm.scene.draw(), (0, 0))# Draw pygameui.
+                #---------------------------
+                # Drawing stuff starts here.
+                #---------------------------
+                
+                # Draw PygameUI.
+                surface.blit(cm.scene.draw(), (0, 0))
+                
                 if cm.body is False:                 # Draw other menu content
                     cm.init(cm.titlesArray, surface) # Draw non-body menu
                     cm.draw()
@@ -337,21 +349,28 @@ class EventsLoop:
                     rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
                     font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
                     drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
-                if cm.scene._has_alert is True: # Draw scene alert.
+                
+                # Draw scene alert.
+                if cm.scene._has_alert is True:
                     surface.blit(cm.scene.draw_alert(), (0, 0))
                 pygame.display.update()
-            # If there is a chosen position, change to new menu.
-            if chosen_position is not None:
-                while cm.scene.children:
-            # This does work to remove Scene() children.
-                    for child in cm.scene.children:
-                # Grab one child and remove it.
+            
+            #----------------------------
+            # Enter key has been pressed.
+            #----------------------------
+            
+            if chosen_position is not None:         # If there is a chosen position, consider changing to new menu.
+                if cm.process_events != False:      # Run function based on current selected item.
+                    result = cm.process_events(chosen_position)
+                    if result is False:             # If process_events return false, then
+                        continue                    # go to next loop (do not go to next menu!)
+                while cm.scene.children:            # This does work to remove Scene() children.
+                    for child in cm.scene.children: # Grab one child and remove it.
                         cm.scene.remove_child(child)
                         break
-        # Go to the next menu.
-                if cm.process_event == True:
-                    cm.process_events(chosen_position)
-                self.current_menu = cm.keypressArray[chosen_position]()
+                self.current_menu = cm.keypressArray[chosen_position]() # Go to the next menu.
+            
+            # CPU wait.
             pygame.time.wait(0)
 
 class Character:
@@ -365,7 +384,8 @@ class Character:
         self.intelligence = 3
         self.sanity = 30
         self.inventory = Inventory() # Give character an inventory.
-        self.transit_mode = 0 # Default index=0, which is walking.
+        self.transit_mode_idx = 0                       # Transit index, default=0 (walking).
+        self.transit_mode = 'Walking'                   # Transit title, default="Walking"
         self.selected_house_idx = 0                     # House index, default=0
         self.selected_house = 'Staying with Friends'    # House title, default="Staying with Friends"
         if create_type == 'random':
@@ -632,16 +652,6 @@ class Item:
         'Suburban House',
         'Rural House',
     ]
-    transit_attributes = {  # Speed, Karma, Influence, Butterfly, Health Bonus
-                            # KIB based on CO2 emissions.
-        'New Car':          [9,-1,-1,-1,0],
-        'Old Car':          [8,0,-1,-1,0],
-        'Speed Boat':       [5,-1,1,-1,0],
-        'Bicycle':          [5,1,1,1,0.2],
-        'Racing Bicycle':   [7,1,1,1,0.2],
-        'Transit Pass':     [7,1,1,1,0.1],
-        'Walking':          [2,1,1,1,0.2],
-    }
     def __init__(self, item_type = None):
         self.item_type = item_type
         self.purchase_cost = 0
@@ -871,9 +881,13 @@ class Store:
                          (p2[1] - p1[1]) ** 2)
                          
     def distance_from_house(self):
-        '''
-        game_state.game.character.selected_house is a string
-        that is character's current housing.
+        '''Calculate the euclidean distance to the current house.
+        
+        Character's current housing is (string):
+            game_state.game.character.selected_house
+        
+        :return: Distance in miles, rounded to the tenth.
+        :rtype: int.
         '''
         if game_state.game.character.selected_house_idx == 0: # Friend's house
             c1 = {'x':0, 'y':0}
@@ -881,7 +895,7 @@ class Store:
             idx = game_state.game.character.selected_house_idx - 1 # Housing is always -1
             c1 = game_state.game.character.inventory.sorted_items[ 'housing' ][ idx ].coordinates
         c2 = self.coordinates
-        return str(round(self.euclidean([c1['x'], c1['y']], [c2['x'], c2['y']]), 1))
+        return round(self.euclidean([c1['x'], c1['y']], [c2['x'], c2['y']]), 1)
     
 class CharacterHUD:
     def __init__(self, current_menu):
@@ -937,7 +951,7 @@ class CharacterHUD:
         x = PygameUI.List(['Walking']+game_state.game.character.inventory.list_transit_types(), (200, 224, 200))
         x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -80, 150, 80)
         x.frame.w = 150
-        x.selected_index = game_state.game.character.transit_mode # selected mode, default = walking
+        x.selected_index = game_state.game.character.transit_mode_idx # selected mode, default = walking
         x.border_width = 1
         x.container.draggable = True
         # What to do on change mode? (i.e. click)
@@ -976,7 +990,8 @@ class CharacterHUD:
     def click_transit(self, selected_index, selected_value):
         '''Update game_state.game.character.transit_mode
         '''
-        game_state.game.character.transit_mode = selected_index
+        game_state.game.character.transit_mode_idx = selected_index
+        game_state.game.character.transit_mode = selected_value.split(':')[0]
     
     def click_no_change(self, yes_or_no):
         '''Reset index of housing list.
@@ -994,14 +1009,17 @@ class CharacterHUD:
             v = self.select_housing.selected_value
             if v == 'Staying with Friends':
                 game_state.game.character.selected_house = 'Staying with Friends'
-            elif 'Urban House' in v: # "Urban House: 88%"
-                game_state.game.character.selected_house = 'Urban House'
-            elif 'Suburban House' in v:
-                game_state.game.character.selected_house = 'Suburban House'
-            elif 'Rural House' in v:
-                game_state.game.character.selected_house = 'Rural House'
-            else: # Raise?
-                pass
+            else:
+                game_state.game.character.selected_house = v.split(':')[0]
+                
+            #~ elif 'Urban House' in v: # "Urban House: 88%"
+                #~ game_state.game.character.selected_house = 'Urban House'
+            #~ elif 'Suburban House' in v:
+                #~ game_state.game.character.selected_house = 'Suburban House'
+            #~ elif 'Rural House' in v:
+                #~ game_state.game.character.selected_house = 'Rural House'
+            #~ else: # Raise?
+                #~ pass
             game_state.game.current_day.day_hours -= 1 # Reduce day hours.
             self.current_menu.update_body() # update menu
         elif yes_or_no is False: # "No, stay..."
@@ -1049,7 +1067,7 @@ class StoreScreenSelect(Menu):
              DayScreen
         ]
         self.titlesArray = ['Back to Day'] # Just back to day, no "Back to Store List" 
-        self.process_event = True
+        #~ self.process_event = True
         self.body = {
             'text': 'Welcome to '+store.name+'!',
             'font_size': 40,
@@ -1059,10 +1077,14 @@ class StoreScreenSelect(Menu):
     
     def process_events(self,chosen_position):
         '''Reset location.active_store_idx before leaving.
+        
+        :param int chosen_position: The position of the menu selected by user.
+        :return: Return True if it is okay to continue, False if it is not.
+        :rtype: boolean.
         '''
         location = game_state.game.locations_handler.location
         location.active_store_idx = None
-        pass
+        return True
             
 class StoreScreen(Menu):
     '''Class StoreScreen. This shows the stores in the character's current
@@ -1073,29 +1095,60 @@ class StoreScreen(Menu):
         location = game_state.game.locations_handler.location
         self.keypressArray = [ StoreScreenSelect for x in range(len(location.stores)) ] + [ DayScreen ]
         self.titlesArray = location.menu_values() + ['Back to Day']
-        self.process_event = True
+        #~ self.process_event = True
         
         # HUD
         CharacterHUD(self)
     
-    def process_events(self,chosen_position):
-        '''Subtract mileage from hours.
+    def process_events(self, chosen_position):
+        '''Go to the store or back home.
         
-        If user chooses last position the return to DayScreen.
+        If store, validate that travel constraints are met (time).
+        Ceiling the travel time (20 minutes = one hour).
         
         Set location.active_store_idx to chosen store.
         
-        Also, validate that character has enough resources to make this
-        trip. (Need to implement.)
+            Variables:  Num day hours remaining:
+                            game_state.game.current_day.day_hours
+                        Distance x 2 of store (round-trip):
+                            game_state.game.locations_handler.location.stores[ chosen_position ].distance_from_house()
+                        Current mode of transit:
+                            mode = game_state.game.character.transit_mode
+                            speed = game_state.game.transit_attributes[ mode ][0]
+            
+            Time = (2 * Distance) / Speed.
+            E.g.   (2 * 5 miles ) / 30mph = 20 minutes.
         
-            Variables:  Num day hours remaining.
-                        Distance x 2 (round-trip).
-                        Current mode of transit.
+        :param int chosen_position: The position of the menu selected by user.
+        :return: Return True if it is okay to continue, False if it is not.
+        :rtype: boolean.
         '''
         location = game_state.game.locations_handler.location
-        if len(location.stores) -1  < chosen_position:
+        if len(location.stores) -1  < chosen_position: # To DayScreen.
             return
+        
+        #-----------------
+        # Validate travel.
+        #-----------------
+        distance = 2 * game_state.game.locations_handler.location.stores[ chosen_position ].distance_from_house()
+        mode = game_state.game.character.transit_mode
+        speed = game_state.game.transit_attributes[ mode ][0]
+        travel_time = math.ceil(distance / speed)
+        if game_state.game.current_day.day_hours < travel_time: # No store.
+            store_name = game_state.game.locations_handler.location.stores[ chosen_position ].name
+            m = ('Warning: There is not enough time visit '+store_name+'.\nThe trip takes '+
+                str(travel_time)+' hours but only '+str(game_state.game.current_day.day_hours)+' remain!')
+            self.alert(m, 'OK', None, self.click_no_change)
+            return False
+        else: # Subtract
+            game_state.game.current_day.day_hours -= travel_time
+        
+        # To store.
         location.active_store_idx = chosen_position
+        return True
+        
+    def click_no_change(self, yes_or_no):
+        pass
 
 class Location:
     def __init__(self):
@@ -1262,7 +1315,7 @@ class EventScreen(Menu):
             'top': 60,
             'height': 250
         }
-        self.process_event = True
+        #~ self.process_event = True
     
     def process_events(self,chosen_position):
         '''Define this menu's process_events function.
@@ -1277,9 +1330,9 @@ class EventScreen(Menu):
         
         Also, process the event for the first time starting now.
         
-        :param chosen_position: The position of the menu selected by user.
-        :type chosen_position: int
-        :return: Does not return a value.
+        :param int chosen_position: The position of the menu selected by user.
+        :return: Return True if it is okay to continue, False if it is not.
+        :rtype: boolean.
         '''
         if len(self.events_values) -1  < chosen_position:
             return
@@ -1287,6 +1340,7 @@ class EventScreen(Menu):
         event.process()
         # Go from inactive to active.
         game_state.game.events_handler.toggle_event(event)
+        return True
             
 class Game:
     day_counter = 0
@@ -1296,16 +1350,16 @@ class Game:
     term_count = 1
     locations_handler = Locations()
     events_handler = Events()
-    #~ events = []
-    #~ event_dict = {"Tsunami": {"health":-1,"sanity":-1},
-                          #~ "Win Lottery": {"Cash":10000,"sanity":1,},
-                          #~ "Extreme Pollution": {"health":-1,"sanity":-1},
-                          #~ "Nuclear War": {"health":-2,"sanity":-5},
-                          #~ "Curfew": {"hours":-4,"sanity":-1},
-                          #~ "Marshall Law": {"income":-5000,"hours":-4,"sanity":-2,},
-                          #~ "Power Sleep": {"hours":2,"sanity":2},
-                          #~ "Find Good Stuff": {"Food":5,'Cash':1000,"sanity":1},
-                          #~ }
+    transit_attributes = {  # Speed, Karma, Influence, Butterfly, Health Bonus
+                            # KIB based on CO2 emissions.
+        'New Car':          [30,-1,-1,-1,0],
+        'Old Car':          [25,0,-1,-1,0],
+        'Speed Boat':       [10,-1,1,-1,0],
+        'Bicycle':          [15,1,1,1,0.2],
+        'Racing Bicycle':   [20,1,1,1,0.2],
+        'Transit Pass':     [30,1,1,1,0.1],
+        'Walking':          [5,1,1,1,0.2],
+    }
     def __init__(self):
         self.current_day = None #self.Day()
         self.character = None #Character('random') creates charecter on start menu becasue its an error.
@@ -1647,14 +1701,6 @@ class EndGame(Menu):
             'Test',
         ]
 
-def plus_minus():
-    '''Return a random +1 or -1.
-    
-    :return: Random number, +1 or -1.
-    :rtype: int.
-    '''
-    return random.random()*2 - 1
-    
 # Sample unittest test case.
 #class TestGame(unittest.TestCase):
 #    def test1(self):
