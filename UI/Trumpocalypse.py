@@ -562,6 +562,8 @@ class Inventory:
                     amount = random.randint(0,100)
                     new_item.amount = amount
             else: #remaining_uses != None:
+                #need to fix the new_item.amount for cash
+                print("adding inventory",new_item,remaining_uses,new_item.amount)
                 new_item.remaining_uses = remaining_uses
             self.update_or_add_item(new_item)
         else:
@@ -1327,6 +1329,7 @@ class Event:
                 game_state.game.current_day.day_hours += value
             elif key in c.inventory.all_choices:
                 c.inventory.add_item(str(key),int(value))
+                #print("adding inventory",key,str(value))
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
@@ -1346,7 +1349,7 @@ class Events:
     events_array = [
         Event(  'Tsunami', {"health":-1,"sanity":-1},
                 "...story...",
-                2, 0, 1),
+                2, 0, 1), #duration,duration_rand_min, duration_rand_max all in months
         Event(  'Win Lottery', {"Cash":10000,"sanity":1},
                 "...story...",
                 1, 0, 0),
