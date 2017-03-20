@@ -542,7 +542,7 @@ class Inventory:
         else:
             self.sorted_items['other'].remove(item)
         
-    def add_item(self, item_type = None, remaining_uses = None):
+    def add_item(self, item_type = None, item_amount = None):
         '''Add an item to this inventory.
         
         If item_type is None then add a random item.
@@ -551,20 +551,30 @@ class Inventory:
         
         Does the item already exist in the inventory?
         If so, then add the item's stats.
+        
+        item_amount:
+            if new_item.grouped_item is False: # single item
+                new_item.remaining_uses = item_amount 
+            else:                               # grouped item
+                new_item.amount = item_amount 
         '''
         if item_type != None:
             new_item = Item(item_type)
-            if remaining_uses == 'random':
+            if item_amount == 'random':
                 if item_type == 'Cash':
-                    amount = random.randint(0,10000)
-                    new_item.amount = amount
+                    a = random.randint(0,10000)
+                    new_item.amount = a
                 elif item_type == 'Food':
-                    amount = random.randint(0,100)
-                    new_item.amount = amount
-            else: #remaining_uses != None:
+                    a = random.randint(0,100)
+                    new_item.amount = a
+            else: #item_type != None and amount != random
                 #need to fix the new_item.amount for cash
-                print("adding inventory",new_item,remaining_uses,new_item.amount)
-                new_item.remaining_uses = remaining_uses
+                #print("adding inventory",new_item,remaining_uses,new_item.amount)
+                #new_item.remaining_uses = remaining_uses
+                if new_item.grouped_item is False: # single item
+                    new_item.remaining_uses = item_amount 
+                else:                              # grouped item
+                    new_item.amount = item_amount
             self.update_or_add_item(new_item)
         else:
             # A random item.
