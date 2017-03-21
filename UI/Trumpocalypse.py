@@ -527,6 +527,23 @@ class Inventory:
         # Returns the number of items in the inventory
         return len(self.items)
     
+    def use_transit(self, distance):
+        c = game_state.game.character
+        mode = c.transit_mode
+        if mode != 'Walking':
+            idx = c.transit_mode_idx - 1 # Minus one as walking is not in this list...
+            #print idx
+            #print self.sorted_items['transit']
+            t_item = self.sorted_items['transit'][idx]
+            print t_item.remaining_uses
+            print distance
+            t_item.remaining_uses -= distance
+            if t_item.remaining_uses <= 0:
+                self.remove_item(t_item)
+                # Reset transit type.
+                # (This also resets housing type.)
+                c.reset_modes()
+        
     def remove_item(self, item):
         '''Remove an item from this inventory.
         '''
@@ -640,39 +657,28 @@ class Inventory:
         
 class Item:
     '''
-    Example items:
-        There is a NewCar item in the inventory with e.g. 100 uses.
-        There is a Food in the inventory with e.g. 10 uses.
-    
-    Purchase and resale amounts:
-    1) Buy: Remaining Uses * Purchase Cost
-        E.g. Buy Food with 4 uses left and purchase cost=10.
-        So 4 * 10 = $40.
-    2) Sell: Remaining Uses * Resale Cost
-        E.g. Sell Food with 4 uses left and resale cost=8.
-        So 4 * 8 = $32.
-    
-    Each purchase of an item just adds to the total remaining_uses.
-    
+    For transit:
+    Remaining Uses: The number of miles traveled before the item is
+        deleted from character's inventory.
     '''
     all_items = {           # Cost, Resale, Amount, Remaining Use (None=Grouped)
         'Food':             [10,0.8,10, None], # 10 food cost $10; while life=9 food per day.
         'Pie':              [1,0,1, None],
         'Garden':           [200,0.5,10, None],
         'Lottery Ticket':   [10,0.4,1, None],
-        'New Car':          [20000,0.5,1,100],
-        'Old Car':          [10000,0.4,1,60],
-        'Speed Boat':       [20000,0.4,1,40],
+        'New Car':          [20000,0.5,1,1000],
+        'Old Car':          [10000,0.4,1,600],
+        'Speed Boat':       [20000,0.4,1,400],
         'Urban House':      [400000,0.7,1,100],
         'Suburban House':   [200000,0.5,1,90],
         'Rural House':      [100000,0.8,1,80],
         'Cash':             [0,0,1,None], #?
         'First Aid Kit':    [10,0.6,2,None],
-        'Bicycle':          [100,0.8,1,40],
-        'Racing Bicycle':   [400,0.8,1,40],
+        'Bicycle':          [100,0.8,1,400],
+        'Racing Bicycle':   [400,0.8,1,300],
         'Seeds':            [2,0.5,20,None],
         'Clothing':         [200,0.4,20,None], # 20 shirts for $10 per shirt = $200.
-        'Transit Pass':     [100,0.6,1,40],
+        'Transit Pass':     [100,0.6,1,400],
     }
     transit_types = [ # Array of transit modes
         'New Car',
@@ -699,7 +705,7 @@ class Item:
         self.grouped_item = True        # Default is grouped.
         self.coordinates = {}           # For mapped items.
         self.set_item(item_type)
-            
+        
     def use_item(self, item_type):
         '''To implement.
         This will somehow use the item.
@@ -1304,9 +1310,12 @@ class StoreScreen(Menu):
                 str(travel_time)+' hours but only '+str(game_state.game.current_day.day_hours)+' hours remain!')
             self.alert(m, 'OK', None, self.click_no_change)
             return False
-        else: # Subtract
+        else:
+            # Subtract hours.
             game_state.game.current_day.day_hours -= travel_time
-        
+            # Subtract travel cost.
+            game_state.game.character.inventory.use_transit(distance)
+                
         # To store.
         location.active_store_idx = chosen_position
         return True
