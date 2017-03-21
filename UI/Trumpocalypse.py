@@ -976,11 +976,11 @@ class CharacterHUD:
 
         # Character items
         x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h - 230) #Left quite a gap at end so it is easy on the eyes when list is full
         x.frame.w = x.container.frame.w
         #~ x.selected_index = 1
         x.border_width = 0
-        x.container.draggable = False #Change to True is needs to be draggable 
+        x.container.draggable = True #Change to True is needs to be draggable 
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
         
@@ -1086,6 +1086,42 @@ class CharacterHUD:
             self.select_housing.selected_index = game_state.game.character.selected_house_idx
         else: # Pass
             pass
+
+class WorkScreen(Menu):
+    ''' This will knock 8 hours off the day and possibly more or less depending on the work event'''
+    
+    def __init__(self):
+
+        #Dict holding story as key and hours worked as the value?
+        self.work_dict = {"Mauled by Lion": 4, "Easy Day":8,"Call as leaving":9} #Example
+        
+        self.random_dictPos = random.randint(0,len(self.work_dict)-1)
+                    
+        self.menu_name = 'WorkScreen'
+        
+        # Add HUD
+        #CharacterHUD(self)
+        
+            
+        self.keypressArray = [
+                DayScreen, #Need to have work option removed when going back to DayScreen
+            ]
+        self.titlesArray = [
+               'Back to Day',
+            ]
+            
+        text = (self.work_dict.keys()[self.random_dictPos] + " \n" +
+                " \nYou worked "+ str(self.work_dict.values()[self.random_dictPos])+
+                " hours, you made: 20000") # We would need to have the pay differentiate based on hours worked
+        
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 20,
+            'height': 300
+        }
+
+        game_state.game.current_day.day_hours -= 8
         
 class StoreScreenSelect(Menu):
     def __init__(self):
@@ -1212,6 +1248,8 @@ class StoreScreenSelect(Menu):
         '''Do nothing.
         '''
         pass
+
+
     
 class StoreScreen(Menu):
     '''Class StoreScreen. This shows the stores in the character's current
@@ -1688,7 +1726,7 @@ class DayScreen(Menu):
                 EventScreen,
                 StoryScreen, #Reset Game.Day.day_hours back to 16
                 StoreScreen,
-                StoryScreen #Work -> -8 on the Game.Day.day_hours
+                WorkScreen #Work -> -8 on the Game.Day.day_hours
                 
             ]
             self.titlesArray = [
