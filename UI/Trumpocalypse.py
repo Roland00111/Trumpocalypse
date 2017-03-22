@@ -299,11 +299,6 @@ class EventsLoop:
                     pygame.display.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    
-                    #pos = pygame.mouse.get_pos()
-                    #(pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()
-                    #print 'Mouse click: ', pos, pygame.mouse.get_pressed()
-                    #print 'Button',event.button
                     if event.button == 1:
                         global down_in
                         down_in = cm.scene.hit(event.pos)
@@ -317,9 +312,6 @@ class EventsLoop:
                         pos = pygame.mouse.get_pos()
                         (pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()
                         print 'Mouse click: ', pos, pygame.mouse.get_pressed()
-                                # This will check if a Rect was clicked:
-                                # if Rectplace.collidepoint(pos)& pressed1==1:
-                                    # print("You have opened a chest!")
                         # PygameUI
                         up_in = cm.scene.hit(event.pos)
                         if down_in == up_in:
