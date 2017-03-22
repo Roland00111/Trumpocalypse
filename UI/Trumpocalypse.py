@@ -428,8 +428,8 @@ class Character:
             self.inventory.add_item()
             self.inventory.add_item('Food','random')
             self.inventory.add_item('Cash','random')
-            # Location
-            self.location = Location()
+            #~ # Location
+            #~ self.location = Location()
             
         elif num == 1:
             self.name = 'Linda'
@@ -449,8 +449,8 @@ class Character:
             self.inventory.add_item()
             self.inventory.add_item('Food','random')
             self.inventory.add_item('Cash','random')
-            # Location
-            self.location = Location()
+            #~ # Location
+            #~ self.location = Location()
     
     def born(self):
         print self.name, ' is alive!'
@@ -1143,7 +1143,7 @@ class WorkScreen(Menu):
 class StoreScreenSelect(Menu):
     def __init__(self):
         self.menu_name = '...'
-        location = game_state.game.locations_handler.location   # Get location,
+        location = game_state.game.locations.location   # Get location,
         self.store = location.stores[ location.active_store_idx ]    # To get store.
         self.warning_not_enough_cash = 'Oops... that item costs too much money!'
         
@@ -1211,7 +1211,7 @@ class StoreScreenSelect(Menu):
         :return: Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
-        location = game_state.game.locations_handler.location
+        location = game_state.game.locations.location
         location.active_store_idx = None
         return True
         
@@ -1274,7 +1274,7 @@ class StoreScreen(Menu):
     '''
     def __init__(self):
         self.menu_name = '...'
-        location = game_state.game.locations_handler.location
+        location = game_state.game.locations.location
         self.keypressArray = [ StoreScreenSelect for x in range(len(location.stores)) ] + [ DayScreen ]
         self.titlesArray = location.menu_values() + ['Back to Day']
         
@@ -1292,7 +1292,7 @@ class StoreScreen(Menu):
             Variables:  Num day hours remaining:
                             game_state.game.current_day.day_hours
                         Distance x 2 of store (round-trip):
-                            game_state.game.locations_handler.location.stores[ chosen_position ].distance_from_house()
+                            game_state.game.locations.location.stores[ chosen_position ].distance_from_house()
                         Current mode of transit:
                             mode = game_state.game.character.transit_mode
                             speed = game_state.game.transit_attributes[ mode ][0]
@@ -1304,19 +1304,19 @@ class StoreScreen(Menu):
         :return: Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
-        location = game_state.game.locations_handler.location
+        location = game_state.game.locations.location
         if len(location.stores) -1  < chosen_position: # To DayScreen.
             return
         
         #-----------------
         # Validate travel.
         #-----------------
-        distance = 2 * game_state.game.locations_handler.location.stores[ chosen_position ].distance_from_house()
+        distance = 2 * game_state.game.locations.location.stores[ chosen_position ].distance_from_house()
         mode = game_state.game.character.transit_mode
         speed = game_state.game.transit_attributes[ mode ][0]
         travel_time = math.ceil(distance / speed)
         if game_state.game.current_day.day_hours < travel_time: # No store.
-            store_name = game_state.game.locations_handler.location.stores[ chosen_position ].name
+            store_name = game_state.game.locations.location.stores[ chosen_position ].name
             m = ('Warning: There is not enough time visit '+store_name+'.\nThe trip takes '+
                 str(travel_time)+' hours but only '+str(game_state.game.current_day.day_hours)+' hours remain!')
             self.alert(m, 'OK', None, self.click_no_change)
@@ -1366,6 +1366,7 @@ class Locations:
     def __init__(self):
         # Start in random location.
         self.location = self.locations[ random.randint(0, len(self.locations)-1) ]
+        
     def random_location(self):
         '''Not implemented.
         '''
@@ -1487,9 +1488,9 @@ class Events:
 class EventScreen(Menu): 
     def __init__(self):
         self.menu_name = '...'
-        self.events_values = game_state.game.events_handler.events_values()
+        self.events_values = game_state.game.events.events_values()
         self.keypressArray = [
-             DayScreen for x in range(len(game_state.game.events_handler.inactive_events)+1)
+             DayScreen for x in range(len(game_state.game.events.inactive_events)+1)
         ]
         self.titlesArray = self.events_values + ['Back to Day']
         text = ""
@@ -1520,10 +1521,10 @@ class EventScreen(Menu):
         '''
         if len(self.events_values) -1  < chosen_position:
             return
-        event = game_state.game.events_handler.inactive_events[chosen_position]
+        event = game_state.game.events.inactive_events[chosen_position]
         event.process()
         # Go from inactive to active.
-        game_state.game.events_handler.toggle_event(event)
+        game_state.game.events.toggle_event(event)
         return True
             
 class Game:
@@ -1532,8 +1533,8 @@ class Game:
     month_counter = 1
     month_day = 1
     term_count = 1
-    locations_handler = Locations()
-    events_handler = Events()
+    locations = Locations()
+    events = Events()
     transit_attributes = {  # Speed, Karma, Influence, Butterfly, Health Bonus
                             # KIB based on CO2 emissions.
         'New Car':          [30,-1,-1,-1,0],
@@ -1750,7 +1751,7 @@ class DayScreen(Menu):
                 
             ]
             self.titlesArray = [
-                'Events: ' + str(len(game_state.game.events_handler.inactive_events)),
+                'Events: ' + str(len(game_state.game.events.inactive_events)),
                 'Next Day', 
                 'Store', 
                 'Work', 
@@ -1836,7 +1837,7 @@ class StoryScreen(Menu):
             'height': 250
         }
         # Do a random event
-        game_state.game.events_handler.random_event()
+        game_state.game.events.random_event()
 
 class CreateCharacter(Menu):
     """
