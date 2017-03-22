@@ -534,6 +534,23 @@ class Inventory:
         # Returns the number of items in the inventory
         return len(self.items)
     
+    def use_transit(self, distance):
+        c = game_state.game.character
+        mode = c.transit_mode
+        if mode != 'Walking':
+            idx = c.transit_mode_idx - 1 # Minus one as walking is not in this list...
+            #print idx
+            #print self.sorted_items['transit']
+            t_item = self.sorted_items['transit'][idx]
+            print t_item.remaining_uses
+            print distance
+            t_item.remaining_uses -= distance
+            if t_item.remaining_uses <= 0:
+                self.remove_item(t_item)
+                # Reset transit type.
+                # (This also resets housing type.)
+                c.reset_modes()
+        
     def remove_item(self, item):
         '''Remove an item from this inventory.
         '''
@@ -647,39 +664,28 @@ class Inventory:
         
 class Item:
     '''
-    Example items:
-        There is a NewCar item in the inventory with e.g. 100 uses.
-        There is a Food in the inventory with e.g. 10 uses.
-    
-    Purchase and resale amounts:
-    1) Buy: Remaining Uses * Purchase Cost
-        E.g. Buy Food with 4 uses left and purchase cost=10.
-        So 4 * 10 = $40.
-    2) Sell: Remaining Uses * Resale Cost
-        E.g. Sell Food with 4 uses left and resale cost=8.
-        So 4 * 8 = $32.
-    
-    Each purchase of an item just adds to the total remaining_uses.
-    
+    For transit:
+    Remaining Uses: The number of miles traveled before the item is
+        deleted from character's inventory.
     '''
     all_items = {           # Cost, Resale, Amount, Remaining Use (None=Grouped)
         'Food':             [10,0.8,10, None], # 10 food cost $10; while life=9 food per day.
         'Pie':              [1,0,1, None],
         'Garden':           [200,0.5,10, None],
         'Lottery Ticket':   [10,0.4,1, None],
-        'New Car':          [20000,0.5,1,100],
-        'Old Car':          [10000,0.4,1,60],
-        'Speed Boat':       [20000,0.4,1,40],
+        'New Car':          [20000,0.5,1,1000],
+        'Old Car':          [10000,0.4,1,600],
+        'Speed Boat':       [20000,0.4,1,400],
         'Urban House':      [400000,0.7,1,100],
         'Suburban House':   [200000,0.5,1,90],
         'Rural House':      [100000,0.8,1,80],
         'Cash':             [0,0,1,None], #?
         'First Aid Kit':    [10,0.6,2,None],
-        'Bicycle':          [100,0.8,1,40],
-        'Racing Bicycle':   [400,0.8,1,40],
+        'Bicycle':          [100,0.8,1,400],
+        'Racing Bicycle':   [400,0.8,1,300],
         'Seeds':            [2,0.5,20,None],
         'Clothing':         [200,0.4,20,None], # 20 shirts for $10 per shirt = $200.
-        'Transit Pass':     [100,0.6,1,40],
+        'Transit Pass':     [100,0.6,1,400],
     }
     transit_types = [ # Array of transit modes
         'New Car',
@@ -706,7 +712,7 @@ class Item:
         self.grouped_item = True        # Default is grouped.
         self.coordinates = {}           # For mapped items.
         self.set_item(item_type)
-            
+        
     def use_item(self, item_type):
         '''To implement.
         This will somehow use the item.
@@ -983,11 +989,11 @@ class CharacterHUD:
 
         # Character items
         x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h - 230) #Left quite a gap at end so it is easy on the eyes when list is full
         x.frame.w = x.container.frame.w
         #~ x.selected_index = 1
         x.border_width = 0
-        x.container.draggable = False #Change to True is needs to be draggable 
+        x.container.draggable = True #Change to True is needs to be draggable 
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
         
@@ -1093,6 +1099,42 @@ class CharacterHUD:
             self.select_housing.selected_index = game_state.game.character.selected_house_idx
         else: # Pass
             pass
+
+class WorkScreen(Menu):
+    ''' This will knock 8 hours off the day and possibly more or less depending on the work event'''
+    
+    def __init__(self):
+
+        #Dict holding story as key and hours worked as the value?
+        self.work_dict = {"Mauled by Lion": 4, "Easy Day":8,"Call as leaving":9} #Example
+        
+        self.random_dictPos = random.randint(0,len(self.work_dict)-1)
+                    
+        self.menu_name = 'WorkScreen'
+        
+        # Add HUD
+        #CharacterHUD(self)
+        
+            
+        self.keypressArray = [
+                DayScreen, #Need to have work option removed when going back to DayScreen
+            ]
+        self.titlesArray = [
+               'Back to Day',
+            ]
+            
+        text = (self.work_dict.keys()[self.random_dictPos] + " \n" +
+                " \nYou worked "+ str(self.work_dict.values()[self.random_dictPos])+
+                " hours, you made: 20000") # We would need to have the pay differentiate based on hours worked
+        
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 20,
+            'height': 300
+        }
+
+        game_state.game.current_day.day_hours -= 8
         
 class StoreScreenSelect(Menu):
     def __init__(self):
@@ -1219,6 +1261,8 @@ class StoreScreenSelect(Menu):
         '''Do nothing.
         '''
         pass
+
+
     
 class StoreScreen(Menu):
     '''Class StoreScreen. This shows the stores in the character's current
@@ -1273,9 +1317,12 @@ class StoreScreen(Menu):
                 str(travel_time)+' hours but only '+str(game_state.game.current_day.day_hours)+' hours remain!')
             self.alert(m, 'OK', None, self.click_no_change)
             return False
-        else: # Subtract
+        else:
+            # Subtract hours.
             game_state.game.current_day.day_hours -= travel_time
-        
+            # Subtract travel cost.
+            game_state.game.character.inventory.use_transit(distance)
+                
         # To store.
         location.active_store_idx = chosen_position
         return True
@@ -1695,7 +1742,7 @@ class DayScreen(Menu):
                 EventScreen,
                 StoryScreen, #Reset Game.Day.day_hours back to 16
                 StoreScreen,
-                StoryScreen #Work -> -8 on the Game.Day.day_hours
+                WorkScreen #Work -> -8 on the Game.Day.day_hours
                 
             ]
             self.titlesArray = [
