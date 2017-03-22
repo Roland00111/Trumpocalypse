@@ -393,6 +393,11 @@ class Character:
     #~ class Location:
         #~ def __init__(self):
             #~ print 'test'
+
+    def earn_money ( self, num_hours ):
+        amount = self.income * (num_hours / 8)
+        self.inventory.add_item('Cash', amount)
+
     
     def reset_modes(self):
         '''Reset transit and housing type to original values.
@@ -1096,13 +1101,15 @@ class WorkScreen(Menu):
     ''' This will knock 8 hours off the day and possibly more or less depending on the work event'''
     
     def __init__(self):
+        self.menu_name = 'WorkScreen'
 
         #Dict holding story as key and hours worked as the value?
-        self.work_dict = {"Mauled by Lion": 4, "Easy Day":8,"Call as leaving":9} #Example
+        self.work_dict = {"Mauled by Lion": 4.0, "Easy Day":8.0,"Got Call as Leaving":9.0} #Example
         
         self.random_dictPos = random.randint(0,len(self.work_dict)-1)
                     
-        self.menu_name = 'WorkScreen'
+        self.money_made = (game_state.game.character.income *((self.work_dict.values()[self.random_dictPos]) / 8.0)) #Short cut
+        self.hours_worked = self.work_dict.values()[self.random_dictPos]
         
         # Add HUD
         #CharacterHUD(self)
@@ -1116,8 +1123,8 @@ class WorkScreen(Menu):
             ]
             
         text = (self.work_dict.keys()[self.random_dictPos] + " \n" +
-                " \nYou worked "+ str(self.work_dict.values()[self.random_dictPos])+
-                " hours, you made: 20000") # We would need to have the pay differentiate based on hours worked
+                " \nWorked: "+ str(int(self.work_dict.values()[self.random_dictPos]))+" hours" +
+                " \n" + " \nMade: $" + str(int(self.money_made))) # We would need to have the pay differentiate based on hours worked
         
         self.body = {
             'text': text,
@@ -1126,7 +1133,8 @@ class WorkScreen(Menu):
             'height': 300
         }
 
-        game_state.game.current_day.day_hours -= 8
+        game_state.game.current_day.day_hours -= self.hours_worked
+        game_state.game.character.earn_money( self.hours_worked)
         
 class StoreScreenSelect(Menu):
     def __init__(self):
