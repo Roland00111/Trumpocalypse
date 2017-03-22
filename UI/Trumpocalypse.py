@@ -1104,8 +1104,12 @@ class WorkScreen(Menu):
         self.menu_name = 'WorkScreen'
 
         #Dict holding story as key and hours worked as the value?
-        self.work_dict = {"Mauled by Lion": 4.0, "Easy Day":8.0,"Got Call as Leaving":9.0} #Example
-        
+        if game_state.game.character.job == "Plumber":
+            self.work_dict = ({"Slightly Injured from Pipe Explosion": 4.0, "Easy Day":8.0,"Sewage Everywhere!":9.0,
+                               "Done Early":7}) #Example
+        else:
+            self.work_dict = {"Personal Emergency": 4.0, "Easy Day":8.0,"Got Call as Leaving":9.0,"Done Early":7} #Example
+            
         self.random_dictPos = random.randint(0,len(self.work_dict)-1)
                     
         self.money_made = (game_state.game.character.income *((self.work_dict.values()[self.random_dictPos]) / 8.0)) #Short cut
