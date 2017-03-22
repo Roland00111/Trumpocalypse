@@ -299,25 +299,32 @@ class EventsLoop:
                     pygame.display.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    global down_in
-                    down_in = cm.scene.hit(event.pos)
-                    if down_in is not None and not isinstance(down_in, PygameUI.Scene):
-                        down_in.mouse_down(event.button, down_in.from_window_point(event.pos))
+                    
+                    #pos = pygame.mouse.get_pos()
+                    #(pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()
+                    #print 'Mouse click: ', pos, pygame.mouse.get_pressed()
+                    #print 'Button',event.button
+                    if event.button == 1:
+                        global down_in
+                        down_in = cm.scene.hit(event.pos)
+                        if down_in is not None and not isinstance(down_in, PygameUI.Scene):
+                            down_in.mouse_down(event.button, down_in.from_window_point(event.pos))
                 elif event.type == pygame.MOUSEBUTTONUP:
                     '''
                     http://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection
                     '''
-                    pos = pygame.mouse.get_pos()
-                    (pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()
-                    print 'Mouse click: ', pos, pygame.mouse.get_pressed()
-                            # This will check if a Rect was clicked:
-                            # if Rectplace.collidepoint(pos)& pressed1==1:
-                                # print("You have opened a chest!")
-                    # PygameUI
-                    up_in = cm.scene.hit(event.pos)
-                    if down_in == up_in:
-                        down_in.mouse_up(event.button, down_in.from_window_point(event.pos))
-                    down_in = None
+                    if event.button == 1:                    
+                        pos = pygame.mouse.get_pos()
+                        (pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()
+                        print 'Mouse click: ', pos, pygame.mouse.get_pressed()
+                                # This will check if a Rect was clicked:
+                                # if Rectplace.collidepoint(pos)& pressed1==1:
+                                    # print("You have opened a chest!")
+                        # PygameUI
+                        up_in = cm.scene.hit(event.pos)
+                        if down_in == up_in:
+                            down_in.mouse_up(event.button, down_in.from_window_point(event.pos))
+                        down_in = None
                 elif event.type == pygame.MOUSEMOTION:
                     if down_in is not None and down_in.draggable:
                         if down_in.parent is not None:
