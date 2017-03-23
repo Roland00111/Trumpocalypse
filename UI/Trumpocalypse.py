@@ -467,13 +467,15 @@ class Inventory:
             'housing':[],
             'transit':[],
             'other':[],
-            'cash':None # Will be cash item.
+            'cash':None, # Will be cash item.
+            'food':None,
         }
         self.all_choices = [
             'Food','Pie','Garden','Lottery Ticket','New Car','Old Car',
             'Urban House','Suburban House','Rural House','Cash',
             'First Aid Kit','Bicycle','Racing Bicycle','Seeds','Clothing',
-            'Transit Pass','Speed Boat'
+            'Transit Pass','Speed Boat','Helicopter',
+
         ]
         self.is_store = False
         
@@ -559,6 +561,8 @@ class Inventory:
             self.sorted_items['housing'].remove(item)
         elif item.item_type == 'Cash':
             self.sorted_items['cash'].amount -= item.amount
+        elif item.item_type == 'Food':
+            self.sorted_items['food'].amount -= item.amount        
         else:
             self.sorted_items['other'].remove(item)
         
@@ -609,6 +613,8 @@ class Inventory:
             self.sorted_items['housing'].append(new_item)
         elif new_item.item_type == 'Cash':
             self.sorted_items['cash'] = new_item
+        elif new_item.item_type == 'Food':
+            self.sorted_items['food'] = new_item
         else:
             self.sorted_items['other'].append(new_item)
             
@@ -672,6 +678,7 @@ class Item:
         'New Car':          [20000,0.5,1,1000],
         'Old Car':          [10000,0.4,1,600],
         'Speed Boat':       [20000,0.4,1,400],
+        'Helicopter':       [500000,0.5,1,2500],
         'Urban House':      [400000,0.7,1,100],
         'Suburban House':   [200000,0.5,1,90],
         'Rural House':      [100000,0.8,1,80],
@@ -687,6 +694,7 @@ class Item:
         'New Car',
         'Old Car',
         'Speed Boat',
+        'Helicopter',
         'Bicycle',
         'Racing Bicycle',
         'Transit Pass',
@@ -1491,6 +1499,23 @@ class Events:
         for k,v in enumerate(self.inactive_events):
             if v == event:
                 del self.inactive_events[k]
+
+class GameOverScreen(Menu): 
+    def __init__(self):
+        self.menu_name = '...'
+        self.keypressArray = [
+             OpeningMenu,
+             Close
+        ]
+        self.titlesArray = ['Start Over', 'Quit']
+        text = 'Buh-bye!'
+        #For some reason font size 32 looks a lot better than 30 or 34 
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 60,
+            'height': 250
+        }
         
 class EventScreen(Menu): 
     def __init__(self):
@@ -1546,11 +1571,12 @@ class Game:
                             # KIB based on CO2 emissions.
         'New Car':          [30,-1,-1,-1,0],
         'Old Car':          [25,0,-1,-1,0],
-        'Speed Boat':       [10,-1,1,-1,0],
+        'Speed Boat':       [30,-1,1,-1,0],
         'Bicycle':          [15,1,1,1,0.2],
         'Racing Bicycle':   [20,1,1,1,0.2],
         'Transit Pass':     [30,1,1,1,0.1],
         'Walking':          [5,1,1,1,0.2],
+        'Helicopter':       [50,-1,2,-2,0],  
     }
     def __init__(self):
         self.current_day = None #self.Day()
@@ -1565,9 +1591,24 @@ class Game:
 
         def __init__(self):
             self.day_hours = 16
+            self.eod_mods()
             self.gen_date()
-            
+
+        def eod_mods(self):
+            #
+            food = game_state.game.character.inventory.sorted_items['food']
+            if (food.amount >= 3):
+                food.amount -= 3
+            else:
+                food.amount = 0
+                game_state.game.character.health -= 1
+
+            ##
+            ##
+            #game_state.game.character.check_health()
+        
         def gen_date(self):
+            
             g = game_state.game
             print 'New day'
             if g.day_counter == 1:
@@ -1829,6 +1870,7 @@ class StoryScreen(Menu):
         game_state.game.events.random_event()
         game_state.game.day_counter += 1
         game_state.game.month_counter += 1
+        
         game_state.game.current_day = game_state.game.Day() #Game.Day()
         self.menu_name = '...'
         
