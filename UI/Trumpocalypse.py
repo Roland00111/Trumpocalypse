@@ -384,10 +384,10 @@ class Character:
         self.sanity = 30
         self.inventory = Inventory() # Give character an inventory.
         self.reset_modes() # Set transit and housing type.
+        self.location = None # Will be set later.
         if create_type == 'random':
             self.randomGenerate()
             pass
-        #~ self.location = self.Location() # This works...
     #~ # Subclasses of Character? Eg Location...
     #~ # This works...
     #~ class Location:
@@ -428,8 +428,8 @@ class Character:
             self.inventory.add_item()
             self.inventory.add_item('Food','random')
             self.inventory.add_item('Cash','random')
-            #~ # Location
-            #~ self.location = Location()
+            # Location
+            self.location = game_state.game.locations.random_location()
             
         elif num == 1:
             self.name = 'Linda'
@@ -449,8 +449,8 @@ class Character:
             self.inventory.add_item()
             self.inventory.add_item('Food','random')
             self.inventory.add_item('Cash','random')
-            #~ # Location
-            #~ self.location = Location()
+            # Location
+            self.location = game_state.game.locations.random_location()
     
     def born(self):
         print self.name, ' is alive!'
@@ -1143,7 +1143,7 @@ class WorkScreen(Menu):
 class StoreScreenSelect(Menu):
     def __init__(self):
         self.menu_name = '...'
-        location = game_state.game.locations.location   # Get location,
+        location = game_state.game.character.location
         self.store = location.stores[ location.active_store_idx ]    # To get store.
         self.warning_not_enough_cash = 'Oops... that item costs too much money!'
         
@@ -1211,7 +1211,7 @@ class StoreScreenSelect(Menu):
         :return: Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
-        location = game_state.game.locations.location
+        location = game_state.game.character.location
         location.active_store_idx = None
         return True
         
@@ -1274,7 +1274,7 @@ class StoreScreen(Menu):
     '''
     def __init__(self):
         self.menu_name = '...'
-        location = game_state.game.locations.location
+        location = game_state.game.character.location
         self.keypressArray = [ StoreScreenSelect for x in range(len(location.stores)) ] + [ DayScreen ]
         self.titlesArray = location.menu_values() + ['Back to Day']
         
@@ -1292,7 +1292,7 @@ class StoreScreen(Menu):
             Variables:  Num day hours remaining:
                             game_state.game.current_day.day_hours
                         Distance x 2 of store (round-trip):
-                            game_state.game.locations.location.stores[ chosen_position ].distance_from_house()
+                            game_state.game.character.location.stores[ chosen_position ].distance_from_house()
                         Current mode of transit:
                             mode = game_state.game.character.transit_mode
                             speed = game_state.game.transit_attributes[ mode ][0]
@@ -1304,19 +1304,19 @@ class StoreScreen(Menu):
         :return: Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
-        location = game_state.game.locations.location
+        location = game_state.game.character.location
         if len(location.stores) -1  < chosen_position: # To DayScreen.
             return
         
         #-----------------
         # Validate travel.
         #-----------------
-        distance = 2 * game_state.game.locations.location.stores[ chosen_position ].distance_from_house()
+        distance = 2 * location.stores[ chosen_position ].distance_from_house()
         mode = game_state.game.character.transit_mode
         speed = game_state.game.transit_attributes[ mode ][0]
         travel_time = math.ceil(distance / speed)
         if game_state.game.current_day.day_hours < travel_time: # No store.
-            store_name = game_state.game.locations.location.stores[ chosen_position ].name
+            store_name = location.stores[ chosen_position ].name
             m = ('Warning: There is not enough time visit '+store_name+'.\nThe trip takes '+
                 str(travel_time)+' hours but only '+str(game_state.game.current_day.day_hours)+' hours remain!')
             self.alert(m, 'OK', None, self.click_no_change)
@@ -1362,15 +1362,17 @@ class Locations:
         'Mountain',
         'Pacific'
     ]
-    locations = [ Location() for i in range(0,8) ]
     def __init__(self):
-        # Start in random location.
-        self.location = self.locations[ random.randint(0, len(self.locations)-1) ]
+        self.locations = [ Location() for i in range(0,8) ]
+        pass
         
     def random_location(self):
-        '''Not implemented.
+        '''Return a random location instance.
+        
+        :return: A random location instance.
+        :rtype: location.
         '''
-        pass
+        return self.locations[ random.randint(0, len(self.locations)-1) ]
 
 class Event:
     def __init__(self, event_text, bonuses={}, story_text='', base_duration=0,
@@ -1452,10 +1454,10 @@ class Events:
         pass
     
     def events_values(self):
-        '''Returns an array of titles of current inactive events.
+        '''Returns a list of titles of current inactive events.
         
-        :return: Array of titles of current inactive events
-        :rtype: array
+        :return: List of titles of current inactive events
+        :rtype: list.
         '''
         events_temp = []
         for event in self.inactive_events:
