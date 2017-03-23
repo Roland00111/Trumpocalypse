@@ -409,7 +409,6 @@ class Character:
         
     def randomGenerate(self):
         num = random.randint(0,1)
-        global CharacterDictionary
         if num == 0:
             self.name = 'Bill'
             self.health = 3
@@ -1418,10 +1417,12 @@ class Event:
         
 class Events:
     events_array = [
-        Event(  'Tsunami', {"health":-1,"sanity":-1},
+        #"life will never be the same after..."
+        # Max event length ~24 characters bigger breaks the nl character.
+        Event(  'A Tsunami', {"health":-1,"sanity":-1},
                 "...story...",
                 2, 0, 1), #duration,duration_rand_min, duration_rand_max all in months
-        Event(  'Win Lottery', {"Cash":10000,"sanity":1},
+        Event(   'You Won the Lottery!', {"Cash":10000,"sanity":1},
                 "...story...",
                 1, 0, 0),
         Event(  'Extreme Pollution', {"health":-1,"sanity":-1},
@@ -1439,12 +1440,16 @@ class Events:
         Event(  'Zombie Apocalypse', {"hours":-4,"sanity":-2,"income":-5000},
                 "...story...",
                 4, 0, 8),
-        Event(  'Power Sleep', {"hours":2,"sanity":2},
+        Event(  'You Power Sleep', {"hours":2,"sanity":2},
                 "...story...",
                 1, 0, 0),
-        Event(  'Find Good Stuff', {"Food":5,"Cash":1000,"sanity":1},
+        Event(  'Find Supply Cache', {"Food":5,"Cash":1000,"sanity":1},
                 "...story...",
                 1, 0, 0),
+                
+        Event(  'Puppies!!',{"Cash":-1000, "sanity":10},
+                "...story...",
+                1,0,0),
     ]
     #~ events_dict = {}
     
@@ -1571,7 +1576,9 @@ class Game:
                 g.term_count += 1
                 self.story_text = "Today is the Election day, Trump is up for Relection"
             else:
-                self.story_text = 'This is  new Day bros'
+                self.story_text = ('You are sitting on the couch watching the news while eating your breakfast and'
+                                   +' drinking your arbitrary drink, and the news comes on. The reporter is raving about how life will never be the same after...                 '
+                                   +(game_state.game.events.inactive_events[-1].event_text))
             
             if g.month_counter % 12 == 1 and g.day_counter != 1:
                 g.current_year += 1
@@ -1818,7 +1825,8 @@ class ElectionDay(Menu): #Use on 48,96 .... +=48
 
 class StoryScreen(Menu):
     def __init__(self):
-        
+        # Do a random event
+        game_state.game.events.random_event()
         game_state.game.day_counter += 1
         game_state.game.month_counter += 1
         game_state.game.current_day = game_state.game.Day() #Game.Day()
@@ -1838,8 +1846,7 @@ class StoryScreen(Menu):
             'top': 60,
             'height': 250
         }
-        # Do a random event
-        game_state.game.events.random_event()
+        
 
 class CreateCharacter(Menu):
     """
