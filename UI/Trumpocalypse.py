@@ -229,42 +229,19 @@ class EventsLoop:
             cm = self.current_menu # A quick shortcut
             ########################Used for Testing###############################
             if testevents != None:
-                while testevents:
-                    cm = self.current_menu # A quick shortcut
-                    chosen_position = testevents.pop(0)
-                    while cm.scene.children:
-                    # This does work to remove Scene() children.
-                        for child in cm.scene.children:
-                    # Grab one child and remove it.
-                            cm.scene.remove_child(child)
-                            break
-                    surface.blit(cm.scene.draw(), (0, 0))
-                    # Draw other menu content
-                    if cm.body is False:
-                        # Draw non-body menu
-                        cm.init(cm.titlesArray, surface)
-                        cm.draw()
-                    else:
-                        # Draw menu plus body
-                        cm.init(cm.titlesArray, surface, 200)
-                        cm.draw()
-                        x = cm.dest_surface.get_rect().centerx - 150 #300 - self.menu_width / 2  Calculate the x offset
-                        pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, cm.body['top'], 300, cm.body['height']), 10) # Draw a box background.
-                                                   #Box color
-                        # There is a slight offset from the text and the box.
-                        # The box needs to contain the text. So the text is
-                        # going to be slightly smaller. How about 8 pixels?
-                        rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
-                        font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
-                        drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
-                    pygame.display.update()
-                    self.current_menu = cm.keypressArray[chosen_position]()
+                self.test(testevents)
                 return
             #####################################################################
             for event in pygame.event.get():
+                if event.type == QUIT: # Quit.
+                    pygame.display.quit()
+                    sys.exit()
+                
+                #-------------------------------------------------    
                 # If there is an alert then stop everything except
                 # mouse down, mouse up, and quit.
-                # Use continue to jump forward in loop.
+                # Use continue to jump forward in event_loop.
+                #-------------------------------------------------
                 if cm.scene._has_alert is True and (
                     event.type == pygame.MOUSEBUTTONDOWN or
                     event.type == pygame.MOUSEBUTTONUP or
@@ -275,13 +252,14 @@ class EventsLoop:
                         hit = cm.scene.hit(event.pos)
                         if type(hit) != PygameUI.Button:
                             continue
-                    elif event.type == QUIT: # Quit. (Could let this exit further down...)
-                        pygame.display.quit()
-                        sys.exit()
                 elif cm.scene._has_alert is True:
                     surface.blit(cm.scene.draw_alert(), (0, 0)) # Make sure to draw alert
                     pygame.display.update()                     # and update, in the case of cm.process_events()=False and chosen_position=True
                     continue
+                
+                #-----------------------------------
+                # Key press events and mouse events.
+                #-----------------------------------
                 if event.type == KEYDOWN:
                     print(str(event.unicode))
                     if event.key == K_UP:
@@ -295,9 +273,6 @@ class EventsLoop:
                         pass
                         #pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
                         #pygame.display.set_mode((800,600),pygame.FULLSCREEN) #Mess up the screen (at least with my laptop)
-                elif event.type == QUIT:
-                    pygame.display.quit()
-                    sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         global down_in
@@ -326,13 +301,14 @@ class EventsLoop:
                     cm.scene.key_down(event.key, event.unicode)
                 elif event.type == pygame.KEYUP:
                     cm.scene.key_up(event.key)
+                
                 #---------------------------
                 # Drawing stuff starts here.
                 #---------------------------
                 
                 # Draw PygameUI.
                 surface.blit(cm.scene.draw(), (0, 0))
-                
+                # Draw Menu
                 if cm.body is False:                 # Draw other menu content
                     cm.init(cm.titlesArray, surface) # Draw non-body menu
                     cm.draw()
@@ -348,11 +324,23 @@ class EventsLoop:
                     rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
                     font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
                     drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
-                
                 # Draw scene alert.
                 if cm.scene._has_alert is True:
                     surface.blit(cm.scene.draw_alert(), (0, 0))
+                # Update
                 pygame.display.update()
+            
+            #------------------------------------------
+            # If the character's health is 0
+            # then kill the character (is_dead=true).
+            # Then do the game over screen.
+            #------------------------------------------
+            if (game_state.game.character != None and
+                game_state.game.character.health <= 0 and 
+                game_state.game.character.is_dead is False):
+                game_state.game.character.is_dead = True
+                self.current_menu = GameOverScreen()
+                continue
             
             #----------------------------
             # Enter key has been pressed.
@@ -371,7 +359,38 @@ class EventsLoop:
             
             # CPU wait.
             pygame.time.wait(0)
-
+    
+    def test(testevents):
+        '''Run tests.
+        
+        :param list testevents: A list of keypress indexes to auto-"press".
+        '''
+        while testevents:
+            cm = self.current_menu # A quick shortcut.
+            chosen_position = testevents.pop(0)
+            while cm.scene.children: # Clear children.
+                for child in cm.scene.children:
+                    cm.scene.remove_child(child)
+                    break
+            surface.blit(cm.scene.draw(), (0, 0))
+            if cm.body is False:
+                cm.init(cm.titlesArray, surface) # Draw non-body menu
+                cm.draw()
+            else:
+                cm.init(cm.titlesArray, surface, 200) # Draw menu plus body
+                cm.draw()
+                x = cm.dest_surface.get_rect().centerx - 150 #300 - self.menu_width / 2  Calculate the x offset
+                pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, cm.body['top'], 300, cm.body['height']), 10) # Draw a box background.
+                                           #Box color
+                # There is a slight offset from the text and the box.
+                # The box needs to contain the text. So the text is
+                # going to be slightly smaller. How about 8 pixels?
+                rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
+                font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
+                drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
+            pygame.display.update()
+            self.current_menu = cm.keypressArray[chosen_position]()
+            
 class Character:
     def __init__ (self, create_type):
         self.name = 'Default'
@@ -385,6 +404,7 @@ class Character:
         self.inventory = Inventory() # Give character an inventory.
         self.reset_modes() # Set transit and housing type.
         self.location = None # Will be set later.
+        self.is_dead = False
         if create_type == 'random':
             self.randomGenerate()
             pass
@@ -862,7 +882,15 @@ class GameState:
         game_state = self
         self.game = Game()
         self.events_loop = EventsLoop(testevents) # Starts with opening menu.
-
+    
+    def reset(self):
+        Game.day_counter = 0
+        Game.current_year = 2017
+        Game.month_counter = 1
+        Game.month_day = 1
+        Game.term_count = 1
+        self.game = Game()
+    
 class Store:
     '''
     Each store is located in a urban, suburban, or rural location.
@@ -1508,6 +1536,8 @@ class GameOverScreen(Menu):
              Close
         ]
         self.titlesArray = ['Start Over', 'Quit']
+        # Tally score (implement)
+        game_state.game.tally_score()
         text = 'Buh-bye!'
         #For some reason font size 32 looks a lot better than 30 or 34 
         self.body = {
@@ -1516,6 +1546,8 @@ class GameOverScreen(Menu):
             'top': 60,
             'height': 250
         }
+        # Reset game
+        game_state.reset()
         
 class EventScreen(Menu): 
     def __init__(self):
@@ -1565,8 +1597,6 @@ class Game:
     month_counter = 1
     month_day = 1
     term_count = 1
-    locations = Locations()
-    events = Events()
     transit_attributes = {  # Speed, Karma, Influence, Butterfly, Health Bonus
                             # KIB based on CO2 emissions.
         'New Car':          [30,-1,-1,-1,0],
@@ -1579,11 +1609,14 @@ class Game:
         'Helicopter':       [50,-1,2,-2,0],  
     }
     def __init__(self):
-        self.current_day = None #self.Day()
+        self.current_day = None
         self.character = None #Character('random') creates charecter on start menu becasue its an error.
-        #self.character = Character('random')
-        #self.score = ...  # will be calculated on game over
-            
+        self.locations = Locations()
+        self.events = Events()
+    
+    def tally_score(self):
+        print 'Tally the score...'
+        
     class Day:
         day_hours = 16
         generated_date = 0
@@ -1872,6 +1905,11 @@ class StoryScreen(Menu):
         game_state.game.month_counter += 1
         
         game_state.game.current_day = game_state.game.Day() #Game.Day()
+        
+        #~ if game_state.game.character.health == 0:
+            #~ self.do_end_screen()
+            #~ return
+        
         self.menu_name = '...'
         
         self.keypressArray = [
