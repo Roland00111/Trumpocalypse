@@ -337,9 +337,10 @@ class EventsLoop:
             #------------------------------------------
             if (game_state.game.character != None and
                 game_state.game.character.health <= 0 and 
-                game_state.game.character.is_dead is False):
-                game_state.game.character.is_dead = True # Set is_dead=True
-                while cm.scene.children:                 # Remove scene children.
+                game_state.game.character.is_dead is True and
+                game_state.game.character.game_over is False):
+                game_state.game.character.game_over = True  # Set game_over=True
+                while cm.scene.children:                    # Remove scene children.
                     for child in cm.scene.children:
                         cm.scene.remove_child(child)
                         break
@@ -408,7 +409,8 @@ class Character:
         self.inventory = Inventory() # Give character an inventory.
         self.reset_modes() # Set transit and housing type.
         self.location = None # Will be set later.
-        self.is_dead = False
+        self.is_dead = False    # Set to True when health=0 to end game
+        self.game_over = False  # Set by EventsLoop
         if create_type == 'random':
             self.randomGenerate()
             pass
@@ -1376,6 +1378,7 @@ class StoreScreen(Menu):
         # zero actually results in game over... which it does.
         #--------
         # game_state.game.character.health = 0
+        # game_state.game.character.is_dead = True
         #--------
         pass
 
