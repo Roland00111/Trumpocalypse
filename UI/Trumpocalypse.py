@@ -1341,7 +1341,7 @@ class StoreScreen(Menu):
         '''
         location = game_state.game.character.location
         if len(location.stores) -1  < chosen_position: # To DayScreen.
-            return
+            return True
         
         #-----------------
         # Validate travel.
