@@ -338,7 +338,11 @@ class EventsLoop:
             if (game_state.game.character != None and
                 game_state.game.character.health <= 0 and 
                 game_state.game.character.is_dead is False):
-                game_state.game.character.is_dead = True
+                game_state.game.character.is_dead = True # Set is_dead=True
+                while cm.scene.children:                 # Remove scene children.
+                    for child in cm.scene.children:
+                        cm.scene.remove_child(child)
+                        break
                 self.current_menu = GameOverScreen()
                 continue
             
@@ -351,8 +355,8 @@ class EventsLoop:
                     result = cm.process_before_unload(chosen_position)
                     if result is False:             # If process_before_unload return false, then
                         continue                    # go to next loop (do not go to next menu!)
-                while cm.scene.children:            # This does work to remove Scene() children.
-                    for child in cm.scene.children: # Grab one child and remove it.
+                while cm.scene.children:            # Remove scene children.
+                    for child in cm.scene.children:
                         cm.scene.remove_child(child)
                         break
                 self.current_menu = cm.keypressArray[chosen_position]() # Go to the next menu.
@@ -1367,6 +1371,12 @@ class StoreScreen(Menu):
         return True
         
     def click_no_change(self, yes_or_no):
+        #--------
+        # This tests whether setting character health to 
+        # zero actually results in game over... which it does.
+        #--------
+        # game_state.game.character.health = 0
+        #--------
         pass
 
 class Location:
