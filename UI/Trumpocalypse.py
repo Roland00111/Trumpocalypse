@@ -40,7 +40,7 @@ class Menu:
         @font: from http://www.dafont.com/coders-crux.font
               more abuot license you can find in data/coders-crux/license.txt
     '''
-    process_events = False # Default=False. Set to a function to process.
+    process_before_unload = False # Default=False. Set to a function to process.
     lista = []
     by = []
     FontSize = 32
@@ -254,7 +254,7 @@ class EventsLoop:
                             continue
                 elif cm.scene._has_alert is True:
                     surface.blit(cm.scene.draw_alert(), (0, 0)) # Make sure to draw alert
-                    pygame.display.update()                     # and update, in the case of cm.process_events()=False and chosen_position=True
+                    pygame.display.update()                     # and update, in the case of cm.process_before_unload()=False and chosen_position=True
                     continue
                 
                 #-----------------------------------
@@ -347,9 +347,9 @@ class EventsLoop:
             #----------------------------
             
             if chosen_position is not None:         # If there is a chosen position, consider changing to new menu.
-                if cm.process_events != False:      # Run function based on current selected item.
-                    result = cm.process_events(chosen_position)
-                    if result is False:             # If process_events return false, then
+                if cm.process_before_unload != False:      # Run function based on current selected item.
+                    result = cm.process_before_unload(chosen_position)
+                    if result is False:             # If process_before_unload return false, then
                         continue                    # go to next loop (do not go to next menu!)
                 while cm.scene.children:            # This does work to remove Scene() children.
                     for child in cm.scene.children: # Grab one child and remove it.
@@ -1239,7 +1239,7 @@ class StoreScreenSelect(Menu):
         self.scene.add_child(x)
         self.elements.append(x)
         
-    def process_events(self,chosen_position):
+    def process_before_unload(self,chosen_position):
         '''Reset location.active_store_idx before leaving.
         
         :param int chosen_position: The position of the menu selected by user.
@@ -1316,7 +1316,7 @@ class StoreScreen(Menu):
         # HUD
         CharacterHUD(self)
     
-    def process_events(self, chosen_position):
+    def process_before_unload(self, chosen_position):
         '''Go to the store or back home.
         
         If store, validate that travel constraints are met (time).
@@ -1566,8 +1566,8 @@ class EventScreen(Menu):
             'height': 250
         }
     
-    def process_events(self,chosen_position):
-        '''Define this menu's process_events function.
+    def process_before_unload(self,chosen_position):
+        '''Define this menu's process_before_unload function.
 
         This will be called just before changing to the next menu.
         
