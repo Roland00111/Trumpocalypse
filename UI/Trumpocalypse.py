@@ -1013,12 +1013,13 @@ class Store:
         :rtype: int.
         '''
         if game_state.game.character.selected_house_idx == 0: # Friend's house
-            c1 = {'x':0, 'y':0}
+            c1 = [0,0]
         else:
             idx = game_state.game.character.selected_house_idx - 1 # Housing is always -1
-            c1 = game_state.game.character.inventory.sorted_items[ 'housing' ][ idx ].coordinates
+            x = game_state.game.character.inventory.sorted_items[ 'housing' ][ idx ].coordinates
+            c1 = [x['x'], x['y']]
         c2 = self.coordinates
-        return round(euclidean([c1['x'], c1['y']], [c2['x'], c2['y']]), 1)
+        return round(euclidean(c1, [c2['x'], c2['y']]), 1)
     
 class CharacterHUD:
     def __init__(self, current_menu):
