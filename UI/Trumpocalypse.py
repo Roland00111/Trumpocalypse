@@ -571,16 +571,37 @@ class Inventory:
         # Returns the number of items in the inventory
         return len(self.items)
     
+    def use_item(self, item, amount):
+        '''Try to use an item in the inventory.
+        Returns True if the item was used, False otherwise.
+        
+        :param item: An Item instance.
+        :type item: Item.
+        :param amount: The amount to use.
+        :type amount: float or int.
+        '''
+        item = self.contains_item(item.item_type)
+        if !item: # Inventory does not contain item.
+            return False
+        if item.grouped_item is False:  # single item
+            item.remaining_uses -= amount
+            if item.remaining_uses <= 0:
+                self.remove_item(item)
+            return True
+        else:                           # grouped item
+            item.amount -= amount
+            if item.amount <= 0:
+                self.remove_item(item)
+            return True
+        
     def use_transit(self, distance):
         c = game_state.game.character
         mode = c.transit_mode
         if mode != 'Walking':
             idx = c.transit_mode_idx - 1 # Minus one as walking is not in this list...
-            #print idx
-            #print self.sorted_items['transit']
             t_item = self.sorted_items['transit'][idx]
-            print t_item.remaining_uses
-            print distance
+            print 'remaining uses:',t_item.remaining_uses
+            print 'distance:',distance
             t_item.remaining_uses -= distance
             if t_item.remaining_uses <= 0:
                 self.remove_item(t_item)
