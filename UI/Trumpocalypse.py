@@ -1569,13 +1569,17 @@ class Events:
         Assumption: Once an event is activated it stays active until
         it runs out. Then it is removed altogether.
         
+        Fire the event for the first time (event.process).
+        
         :param event: The event to toggle.
-        :type event: Event
+        :type event: Event.
         '''
         self.active_events.append(event)
         for k,v in enumerate(self.inactive_events):
             if v == event:
                 del self.inactive_events[k]
+        # Run the event.
+        event.process()
 
 class GameOverScreen(Menu): 
     def __init__(self):
@@ -1635,7 +1639,6 @@ class EventScreen(Menu):
         if len(self.events_values) -1  < chosen_position:
             return
         event = game_state.game.events.inactive_events[chosen_position]
-        event.process()
         # Go from inactive to active.
         game_state.game.events.toggle_event(event)
         return True
