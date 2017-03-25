@@ -30,6 +30,19 @@ def plus_minus():
     '''
     return random.random()*2 - 1
 
+def euclidean(p1, p2):
+    '''Determine euclidean distance between two points.
+    
+    Pretty straightforward: http://stackoverflow.com/a/4169284/2178774.
+    
+    :param list p1: A list with first element=x, second=y.
+    :param list p2: A list with first element=x, second=y.
+    :return: Euc. distance between points.
+    :rtype: int.
+    '''
+    return math.sqrt((p2[0] - p1[0]) ** 2 +
+                     (p2[1] - p1[1]) ** 2)
+
 class Menu:
     '''Original code for the menu class is from:
         @author: avalanchy (at) google mail dot com
@@ -969,19 +982,6 @@ class Store:
             self.coordinates['x'] = random.uniform(8.0,20.0) * plus_minus()
             self.coordinates['y'] = random.uniform(8.0,20.0) * plus_minus()
     
-    def euclidean(self, p1, p2):
-        '''Determine euclidean distance between two points.
-        
-        Pretty straightforward: http://stackoverflow.com/a/4169284/2178774.
-        
-        :param list p1: A list with first element=x, second=y.
-        :param list p2: A list with first element=x, second=y.
-        :return: Euc. distance between points.
-        :rtype: int.
-        '''
-        return math.sqrt((p2[0] - p1[0]) ** 2 +
-                         (p2[1] - p1[1]) ** 2)
-                         
     def distance_from_house(self):
         '''Calculate the euclidean distance to the current house.
         
@@ -997,7 +997,7 @@ class Store:
             idx = game_state.game.character.selected_house_idx - 1 # Housing is always -1
             c1 = game_state.game.character.inventory.sorted_items[ 'housing' ][ idx ].coordinates
         c2 = self.coordinates
-        return round(self.euclidean([c1['x'], c1['y']], [c2['x'], c2['y']]), 1)
+        return round(euclidean([c1['x'], c1['y']], [c2['x'], c2['y']]), 1)
     
 class CharacterHUD:
     def __init__(self, current_menu):
