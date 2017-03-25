@@ -581,7 +581,7 @@ class Inventory:
         :type amount: float or int.
         '''
         item = self.contains_item(item.item_type)
-        if !item: # Inventory does not contain item.
+        if item is False: # Inventory does not contain item.
             return False
         if item.grouped_item is False:  # single item
             item.remaining_uses -= amount
