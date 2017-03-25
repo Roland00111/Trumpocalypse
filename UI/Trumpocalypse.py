@@ -1578,11 +1578,12 @@ class Events:
     def random_event(self):
         '''Add a random event to inactive_events.'''
         num = random.randint(0,len(Events.events_array)-1) 
-        event = copy.deepcopy(Events.events_array[num])
+        event = copy.deepcopy(Events.events_array[num]) # copy v. deepcopy =same
         # Generate event duration.
         event.generate_duration()
         # Add to inactive events
         # Shallow copy?
+        print 'event in self.inactive_events? ',event in self.inactive_events
         self.inactive_events.append(event)
         
     def toggle_event(self, event):
@@ -1825,14 +1826,15 @@ class CreateCharacterAutomatic(Menu):
         job = game_state.game.character.job
         income = str(game_state.game.character.income)
         sanity = str(game_state.game.character.sanity)
-
-        x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
-        x.frame.w = x.container.frame.w
-        x.selected_index = 1
-        x.border_width = 0
-        x.container.draggable = False #Change to True is needs to be draggable 
-        self.scene.add_child(x)
+        
+        CharacterHUD(self)
+        #~ x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
+        #~ x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        #~ x.frame.w = x.container.frame.w
+        #~ x.selected_index = 1
+        #~ x.border_width = 0
+        #~ x.container.draggable = False #Change to True is needs to be draggable 
+        #~ self.scene.add_child(x)
         
         self.body = {
             'text': ("Name: "+name+" \n"+"Health: "+health+" \n"+"Strength: "+strength+" \n"
