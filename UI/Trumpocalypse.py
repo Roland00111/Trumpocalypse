@@ -577,10 +577,10 @@ class Inventory:
         
     def remove_item(self, item):
         '''Remove an item from this inventory.
+        Item is removed from self.items and self.sorted_items.
         '''
-        #~ del self.items[ item ]
         self.items.remove(item)
-        # From sorted items.
+        # Remove from sorted items.
         if item.item_type in item.transit_types:
             self.sorted_items['transit'].remove(item)
         elif item.item_type in item.housing_types:
@@ -592,6 +592,21 @@ class Inventory:
         else:
             self.sorted_items['other'].remove(item)
         
+    def multiply_item(self, item_type = None, item_multiplier = None):
+        '''Multiply an item by a multiplier.
+        Typically this would be called multiply_item('Food', 0.5).
+        Which, if the character has food, reduces Food by 50%.
+        
+        :param str item_type: The type of item.
+        :param float item_multiplier: The item amount multiplier.
+        '''
+        item = self.contains_item(item_type)
+        if item:
+            if item.grouped_item is False:  # single item
+                item.remaining_uses *= item_multiplier 
+            else:                           # grouped item
+                item.amount *= item_multiplier
+                    
     def add_item(self, item_type = None, item_amount = None):
         '''Add an item to this inventory.
         
@@ -1423,11 +1438,23 @@ class Locations:
         return self.locations[ random.randint(0, len(self.locations)-1) ]
 
 class Event:
-    def __init__(self, event_text, bonuses={}, story_text='', base_duration=0,
+    '''
+    '''
+    def __init__(self, event_text, bonuses={}, bonuses_by_ratio={}, story_text='', base_duration=0,
                  duration_rand_min=0, duration_rand_max=0):
+        '''
+        :param str event_text: Event title.
+        :param dict bonuses: Event bonuses.
+        :param dict bonuses_by_ratio: Event bonuses using a multiplier ('Cash':0.2 means the character is left with 20% of current cash).
+        :param str story_text: A long-worded story for the event.
+        :param int base_duration: Base number of months.
+        :param int duration_rand_min: Random min. added number of months.
+        :param int duration_rand_max: Random max. added number of months.
+        '''
         self.event_text = event_text
         self.story_text = story_text
         self.bonuses = bonuses
+        self.bonuses_by_ratio = bonuses_by_ratio
         self.base_duration = base_duration
         self.duration = None # Dynamic
         self.months_remaining = None # Dynamic
@@ -1444,14 +1471,21 @@ class Event:
         '''
         c = game_state.game.character
         for key, value in self.bonuses.iteritems():
-            if key == "hours":
+            if key == "hours":                      # Hours
                 game_state.game.current_day.day_hours += value
-            elif key in c.inventory.all_choices:
+            elif key in c.inventory.all_choices:    # Inventory
                 c.inventory.add_item(str(key),int(value))
-                #print("adding inventory",key,str(value))
-            else:
+            else:                                   # Character attribute
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
+        for key, value in self.bonuses_by_ratio.iteritems():
+            if key == "hours":
+                game_state.game.current_day.day_hours *= value
+            elif key in c.inventory.all_choices:
+                c.inventory.multiply_item(str(key),float(value))
+            else:
+                n = getattr(c,str(key))
+                setattr(c,str(key),n*value)
         self.months_remaining -= 1
         # If self.months_remaining <= 0 ...
         # Then ...
@@ -1468,37 +1502,39 @@ class Events:
     events_array = [
         #"life will never be the same after..."
         # Max event length ~24 characters bigger breaks the nl character.
-        Event(  'A Tsunami', {"health":-1,"sanity":-1},
+        Event(  'A Tsunami', {"health":-1,"sanity":-1}, {},
                 "...story...",
-                2, 0, 1), #duration,duration_rand_min, duration_rand_max all in months
-        Event(   'You Won the Lottery!', {"Cash":10000,"sanity":1},
-                "...story...",
-                1, 0, 0),
-        Event(  'Extreme Pollution', {"health":-1,"sanity":-1},
-                "...story...",
-                4, 0, 4),
-        Event(  'Nuclear War', {"health":-2,"sanity":-5},
-                "...story...",
-                6, 0, 6),
-        Event(  'Curfew', {"hours":-4,"sanity":-1},
-                "...story...",
-                2, 0, 1),
-        Event(  'Marshall Law', {"hours":-4,"sanity":-2,"income":-5000},
-                "...story...",
-                4, 0, 8),
-        Event(  'Zombie Apocalypse', {"hours":-4,"sanity":-2,"income":-5000},
-                "...story...",
-                4, 0, 8),
-        Event(  'You Power Sleep', {"hours":2,"sanity":2},
-                "...story...",
-                1, 0, 0),
-        Event(  'Find Supply Cache', {"Food":5,"Cash":1000,"sanity":1},
-                "...story...",
-                1, 0, 0),
-                
-        Event(  'Puppies!!',{"Cash":-1000, "sanity":10},
+                2,0,1), #duration,duration_rand_min, duration_rand_max all in months
+        Event(   'You Won the Lottery!', {"Cash":10000,"sanity":1}, {},
                 "...story...",
                 1,0,0),
+        Event(  'Extreme Pollution', {"health":-1,"sanity":-1}, {},
+                "...story...",
+                4,0,4),
+        Event(  'Nuclear War', {"health":-2,"sanity":-5}, {},
+                "...story...",
+                6,0,6),
+        Event(  'Curfew', {"hours":-4,"sanity":-1}, {},
+                "...story...",
+                2,0,1),
+        Event(  'Marshall Law', {"hours":-4,"sanity":-2,"income":-5000}, {},
+                "...story...",
+                4,0,8),
+        Event(  'Zombie Apocalypse', {"hours":-4,"sanity":-2,"income":-5000}, {},
+                "...story...",
+                4,0,8),
+        Event(  'You Power Sleep', {"hours":2,"sanity":2}, {},
+                "...story...",
+                1,0,0),
+        Event(  'Find Supply Cache', {"Food":5,"Cash":1000,"sanity":1}, {},
+                "...story...",
+                1,0,0),
+        Event(  'Puppies!!',{"Cash":-1000, "sanity":10}, {},
+                "...story...",
+                1,0,0),
+        Event(  'Tax Collector',{"Cash":100, "sanity":10}, {"Cash":0.90}, # Removes $100, then sets cash to 90%.
+                "...story...",
+                1,0,1),
     ]
     #~ events_dict = {}
     
