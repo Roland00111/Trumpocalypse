@@ -1482,6 +1482,7 @@ class Event:
         self.months_remaining = None # Dynamic
         self.duration_rand_min = duration_rand_min
         self.duration_rand_max = duration_rand_max
+        self.activated = False # Will be changed to True at some point.
         
     def process(self):
         '''Process event. Each time the event happens months_remaining -= 1.
@@ -1508,7 +1509,10 @@ class Event:
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n*value)
+        # Decrement months.
         self.months_remaining -= 1
+        # Make sure it is presently active.
+        self.activated = True
         # If self.months_remaining <= 0 ...
         # Then ...
     
