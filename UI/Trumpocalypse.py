@@ -8,6 +8,7 @@ import PygameUI
 import math
 import copy
 import names # People's names.
+import items # Items dictionary.
 
 from pygame.locals import *
 
@@ -179,6 +180,7 @@ class Menu:
             self.select()
             
         def select(self):
+            # Testing.....
             # This is named select because Python already has a list() function.
             # There is probably a callback function here for events.
             # There could be a label passed into CustomField
@@ -195,11 +197,7 @@ class Menu:
             x = PygameUI.TextField()
             x.frame = pygame.Rect(10, 50, 150, 30)
             Menu.scene.add_child(x)
- 
-            ###
-            # Here is where a label for the select() element would go.
-            ###
-        
+         
         def button(self):
             pass
          
@@ -209,9 +207,6 @@ class Menu:
         def number(self):
             # What if the number field is instead just a list() field?
             pass
-    
-    #def __del__(self):
-    #    print "__del__", self
 
 class EventsLoop:
     '''
@@ -427,11 +422,6 @@ class Character:
         if create_type == 'random':
             self.randomGenerate()
             pass
-    #~ # Subclasses of Character? Eg Location...
-    #~ # This works...
-    #~ class Location:
-        #~ def __init__(self):
-            #~ print 'test'
 
     def earn_money ( self, num_hours ):
         '''Earn money.
@@ -506,7 +496,8 @@ class Character:
 class Inventory:
     def __init__(self):
         '''
-        Common function: How to quickly retrieve character cash?
+        Sample common function: How to quickly retrieve character's cash
+        amount?
         '''
         self.max_items = 999
         self.items = [] # Array of items.
@@ -515,15 +506,8 @@ class Inventory:
             'transit':[],
             'other':[],
             'cash':None, # Will be cash item.
-            'food':None,
+            'food':None, # Will be food item.
         }
-        self.all_choices = [
-            'Food','Pie','Garden','Lottery Ticket','New Car','Old Car',
-            'Urban House','Suburban House','Rural House','Cash',
-            'First Aid Kit','Bicycle','Racing Bicycle','Seeds','Clothing',
-            'Transit Pass','Speed Boat','Helicopter',
-
-        ]
         self.is_store = False
         
     def item_count(self):
@@ -561,7 +545,7 @@ class Inventory:
         '''
         storage = []
         for item in self.items:
-            if item.item_type in item.housing_types:
+            if item.item_type in items.n['housing_types']:
                 storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount()})
         return storage
     
@@ -571,7 +555,7 @@ class Inventory:
         '''
         storage = []
         for item in self.items:
-            if item.item_type in item.transit_types:
+            if item.item_type in items.n['transit_types']:
                 storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount()})
         return storage
     
@@ -623,9 +607,9 @@ class Inventory:
         '''
         self.items.remove(item)
         # Remove from sorted items.
-        if item.item_type in item.transit_types:
+        if item.item_type in items.n['transit_types']:
             self.sorted_items['transit'].remove(item)
-        elif item.item_type in item.housing_types:
+        elif item.item_type in items.n['housing_types']:
             self.sorted_items['housing'].remove(item)
         elif item.item_type == 'Cash':
             self.sorted_items['cash'].amount -= item.amount
@@ -674,10 +658,7 @@ class Inventory:
                 elif item_type == 'Food':
                     a = random.randint(0,100)
                     new_item.amount = a
-            else: #item_type != None and amount != random
-                #need to fix the new_item.amount for cash
-                #print("adding inventory",new_item,remaining_uses,new_item.amount)
-                #new_item.remaining_uses = remaining_uses
+            else:
                 if new_item.grouped_item is False: # single item
                     new_item.remaining_uses = item_amount 
                 else:                              # grouped item
@@ -685,14 +666,14 @@ class Inventory:
             self.update_or_add_item(new_item)
         else:
             # A random item.
-            n = random.randint(0, len(self.all_choices)-1)
-            rand_item = Item( self.all_choices[n] )
+            n = random.randint(0, items.n['num_items']-1)
+            rand_item = Item( items.n['all_choices'][n] )
             self.update_or_add_item(rand_item)
     
     def sorted_append(self, new_item):
-        if new_item.item_type in new_item.transit_types:
+        if new_item.item_type in items.n['transit_types']:
             self.sorted_items['transit'].append(new_item)
-        elif new_item.item_type in new_item.housing_types:
+        elif new_item.item_type in items.n['housing_types']:
             self.sorted_items['housing'].append(new_item)
         elif new_item.item_type == 'Cash':
             self.sorted_items['cash'] = new_item
@@ -753,41 +734,6 @@ class Item:
     Remaining Uses: The number of miles traveled before the item is
         deleted from character's inventory.
     '''
-    all_items = {           # Cost, Resale, Amount, Remaining Use (None=Grouped)
-        'Food':             [10,0.8,10, None], # 10 food cost $10; while life=9 food per day.
-        'Pie':              [1,0,1, None],
-        'Garden':           [200,0.5,10, None],
-        'Lottery Ticket':   [10,0.4,1, None],
-        'New Car':          [20000,0.5,1,1000],
-        'Old Car':          [10000,0.4,1,600],
-        'Speed Boat':       [20000,0.4,1,400],
-        'Helicopter':       [500000,0.5,1,2500],
-        'Urban House':      [400000,0.7,1,100],
-        'Suburban House':   [200000,0.5,1,90],
-        'Rural House':      [100000,0.8,1,80],
-        'Cash':             [0,0,1,None], #?
-        'First Aid Kit':    [10,0.6,2,None],
-        'Bicycle':          [100,0.8,1,400],
-        'Racing Bicycle':   [400,0.8,1,300],
-        'Seeds':            [2,0.5,20,None],
-        'Clothing':         [200,0.4,20,None], # 20 shirts for $10 per shirt = $200.
-        'Transit Pass':     [100,0.6,1,400],
-    }
-    transit_types = [ # Array of transit modes
-        'New Car',
-        'Old Car',
-        'Speed Boat',
-        'Helicopter',
-        'Bicycle',
-        'Racing Bicycle',
-        'Transit Pass',
-    ]
-    housing_types = [ # Array of transit modes
-        'Staying with Friends',
-        'Urban House',
-        'Suburban House',
-        'Rural House',
-    ]
     def __init__(self, item_type = None):
         self.item_type = item_type
         self.purchase_cost = 0
@@ -868,7 +814,7 @@ class Item:
         
         Food: Basic amount=10 uses, 3 uses/day;
             If Food=0: HP-=1/day
-            If 0, alert_user( red "...need to find food! ...so hon-gry!" )
+            If 0, alert_user( red "...need to find food!" )
         
         Garden: Basic amount=10 uses, -1garden/use, -2hours/use, +6 Food/use, Strength+=0.1/use, (+K,+I,+B)
         
@@ -889,31 +835,16 @@ class Item:
             If 0, alert_user( no_color "...sure would be nice to have a roof to sleep under!" )
         
         ================================================================
-            
-        How about "single items" versus "grouped items".
-        So house, car, bike ... are single items.
-        Food, garden, lottery tickets, cash, first aid kit ... are grouped.
-        
+       
         Single use items have remaining_use that declines.
         
         Grouped use items have num_in_group that declines.
         
-        So 1000 food:
-            food.amount = 1000
-            food.amount -= 3 per day
-            food.remaining_use = None
-            
-        So two bikes:
-            one bike:       bike.remaining_use = 20
-                            bike.amount = 1
-            another bike:   bike.remaining_use = 20
-                            bike.amount = 1
-        
         :rtype: None
-        :raises TypeError: If item_type is not in self.all_items
+        :raises TypeError: If item_type is not in items.n['stats'].
         '''
         try:
-            n = self.all_items[item_type]
+            n = items.n['stats'][item_type]
             self.purchase_cost = n[0]
             self.resale_cost = n[1]
             self.amount = n[2]
@@ -926,7 +857,7 @@ class Item:
                 self.grouped_item = False
             # If transit item...
             # If housing item...
-            if item_type in self.housing_types:
+            if item_type in items.n['housing_types']:
                 if item_type == 'Urban House':
                     self.coordinates['x'] = random.uniform(0.0,2.0) * plus_minus()
                     self.coordinates['y'] = random.uniform(0.0,2.0) * plus_minus()
@@ -1266,7 +1197,6 @@ class StoreScreenSelect(Menu):
         x = PygameUI.List(self.store.inventory.item_count_buy(), (200, 224, 200))
         x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
-        #~ x.selected_index = 1
         x.border_width = 1
         x.container.draggable = True
         x.callback_function = self.click_buy
@@ -1282,7 +1212,6 @@ class StoreScreenSelect(Menu):
         x = PygameUI.List(game_state.game.character.inventory.item_count_sell(), (200, 224, 200))
         x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
-        #~ x.selected_index = 1
         x.border_width = 1
         x.container.draggable = True
         x.callback_function = self.click_sell
@@ -1308,7 +1237,7 @@ class StoreScreenSelect(Menu):
                 Cost of item: item.calculate_purchase_cost()
                 update_or_add function (?)
         
-        Oddity: When buying and selling, it is probably necessary for
+        It is probably necessary for
                 now to reset character's selected housing and transit,
                 at least for simplicity (reset_modes).
         '''
@@ -1332,7 +1261,7 @@ class StoreScreenSelect(Menu):
     def click_sell(self, selected_index, selected_value, selected_item):
         '''Sell the clicked item.
         
-        Oddity: When buying and selling, it is probably necessary for
+        It is probably necessary for
                 now to reset character's selected housing and transit,
                 at least for simplicity (reset_modes).
         '''
@@ -1380,7 +1309,7 @@ class StoreScreen(Menu):
                             game_state.game.character.location.stores[ chosen_position ].distance_from_house()
                         Current mode of transit:
                             mode = game_state.game.character.transit_mode
-                            speed = game_state.game.transit_attributes[ mode ][0]
+                            speed = items.n['transit_attributes'][ mode ][0]
             
             Time = (2 * Distance) / Speed.
             E.g.   (2 * 5 miles ) / 30mph = 20 minutes.
@@ -1398,7 +1327,7 @@ class StoreScreen(Menu):
         #-----------------
         distance = 2 * location.stores[ chosen_position ].distance_from_house()
         mode = game_state.game.character.transit_mode
-        speed = game_state.game.transit_attributes[ mode ][0]
+        speed = items.n['transit_attributes'][ mode ][0]
         travel_time = math.ceil(distance / speed)
         if game_state.game.current_day.day_hours < travel_time: # No store.
             store_name = location.stores[ chosen_position ].name
@@ -1503,7 +1432,7 @@ class Event:
         for key, value in self.bonuses.iteritems():
             if key == "hours":                      # Hours
                 game_state.game.current_day.day_hours += value
-            elif key in c.inventory.all_choices:    # Inventory
+            elif key in items.n['all_choices']:    # Inventory
                 c.inventory.add_item(str(key),int(value))
             else:                                   # Character attribute
                 n = getattr(c,str(key))
@@ -1511,7 +1440,7 @@ class Event:
         for key, value in self.bonuses_by_ratio.iteritems():
             if key == "hours":
                 game_state.game.current_day.day_hours *= value
-            elif key in c.inventory.all_choices:
+            elif key in items.n['all_choices']:
                 c.inventory.multiply_item(str(key),float(value))
             else:
                 n = getattr(c,str(key))
@@ -1569,7 +1498,6 @@ class Events:
                 "...story...",
                 1,0,1),
     ]
-    #~ events_dict = {}
     
     def __init__(self):
         self.inactive_events = []
@@ -1683,17 +1611,6 @@ class Game:
     month_counter = 1
     month_day = 1
     term_count = 1
-    transit_attributes = {  # Speed, Karma, Influence, Butterfly, Health Bonus
-                            # KIB based on CO2 emissions.
-        'New Car':          [30,-1,-1,-1,0],
-        'Old Car':          [25,0,-1,-1,0],
-        'Speed Boat':       [30,-1,1,-1,0],
-        'Bicycle':          [15,1,1,1,0.2],
-        'Racing Bicycle':   [20,1,1,1,0.2],
-        'Transit Pass':     [30,1,1,1,0.1],
-        'Walking':          [5,1,1,1,0.2],
-        'Helicopter':       [50,-1,2,-2,0],  
-    }
     def __init__(self):
         self.current_day = None
         self.character = None #Character('random') creates charecter on start menu becasue its an error.
