@@ -434,9 +434,17 @@ class Character:
             #~ print 'test'
 
     def earn_money ( self, num_hours ):
-        amount = self.income * (num_hours / 8)
+        '''Earn money.
+        Round amount to the nearest tenth.
+        
+        :param num_hours: The number of hours worked.
+        :type num_hours: int or float.
+        :return: Amount of money earned.
+        :rtype: float.
+        '''
+        amount = round(self.income * (num_hours / 8), 1)
         self.inventory.add_item('Cash', amount)
-
+        return amount
     
     def reset_modes(self):
         '''Reset transit and housing type to original values.
@@ -1190,8 +1198,8 @@ class WorkScreen(Menu):
             
         self.random_dictPos = random.randint(0,len(self.work_dict)-1)
                     
-        self.money_made = (game_state.game.character.income *((self.work_dict.values()[self.random_dictPos]) / 8.0)) #Short cut
         self.hours_worked = self.work_dict.values()[self.random_dictPos]
+        self.money_made = game_state.game.character.earn_money( self.hours_worked)
         
         # Add HUD
         #CharacterHUD(self)
@@ -1216,7 +1224,6 @@ class WorkScreen(Menu):
         }
 
         game_state.game.current_day.day_hours -= self.hours_worked
-        game_state.game.character.earn_money( self.hours_worked)
         
 class StoreScreenSelect(Menu):
     def __init__(self):
