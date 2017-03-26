@@ -1149,18 +1149,18 @@ class CharacterHUD:
         game_state.game.character.transit_mode_idx = selected_index
         game_state.game.character.transit_mode = selected_value.split(':')[0]
     
-    def click_no_change(self, yes_or_no):
+    def click_no_change(self, confirm):
         '''Reset index of housing list.
         '''
         self.select_housing.selected_index = game_state.game.character.selected_house_idx
         return
         
-    def click_alert(self, yes_or_no):
+    def click_alert(self, confirm):
         '''Handle alert button click.
         
-        :param boolean yes_or_no: True if first button clicked, False if second button clicked.
+        :param boolean confirm: True if first button clicked, False if second button clicked.
         '''
-        if yes_or_no is True: # "Yes, change..."
+        if confirm is True: # "Yes, change..."
             game_state.game.character.selected_house_idx = self.select_housing.selected_index
             v = self.select_housing.selected_value
             if v == 'Staying with Friends':
@@ -1169,7 +1169,7 @@ class CharacterHUD:
                 game_state.game.character.selected_house = v.split(':')[0]
             game_state.game.current_day.day_hours -= 1 # Reduce day hours.
             self.current_menu.update_body() # update menu
-        elif yes_or_no is False: # "No, stay..."
+        elif confirm is False: # "No, stay..."
             # Reset index of housing list.
             self.select_housing.selected_index = game_state.game.character.selected_house_idx
         else: # Pass
@@ -1339,7 +1339,7 @@ class StoreScreenSelect(Menu):
         # Redraw HUD
         game_state.game.character_hud.draw_elements()
         
-    def click_no_change(self, yes_or_no):
+    def click_no_change(self, confirm):
         '''Do nothing.
         '''
         pass
@@ -1409,7 +1409,7 @@ class StoreScreen(Menu):
         location.active_store_idx = chosen_position
         return True
         
-    def click_no_change(self, yes_or_no):
+    def click_no_change(self, confirm):
         #--------
         # This tests whether setting character health to 
         # zero actually results in game over... which it does.
