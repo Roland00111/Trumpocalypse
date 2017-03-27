@@ -19,3 +19,13 @@ End of Semester Goals: To add images to illustrate the story line and locations/
 
 Requirements to play Trumpocalypse: You have to have downloaded python 2.7 and pygame 1.9.1
 
+
+Presentation feedback:
+"
+The only real data structures feedback is related to the ability to save and restore game state. There was also some feedback on the user interface and overall design.
+
+Save feature: You should plan how you are going to save game progress rather than waiting until that is awkward because there is so much to save. You suggested saving the user input and replaying it, but that will not work given random events unless you also save the random seed. A lazy approach would be to put all of your game state into an object and pickle it. A more satisfying approach would be to write the game state in JSON format, which can be easily extended if you have new state to save.
+
+UI: The text color is unreadable. Suggest making a lighter colored box for the text, and choose a text color that is distinguishable when you squint.
+
+Fun factor: want the choices that a user makes to make a bigger impact on how the game progresses."
