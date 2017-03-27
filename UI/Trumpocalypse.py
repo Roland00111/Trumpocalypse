@@ -9,6 +9,7 @@ import math
 import copy
 import names # People's names.
 import items as ITEMS # Items dictionary.
+import jobs #Potential jobs
 
 
 from pygame.locals import *
@@ -966,7 +967,37 @@ class Store:
             c1 = [x['x'], x['y']]
         c2 = self.coordinates
         return round(euclidean(c1, [c2['x'], c2['y']]), 1)
-    
+
+
+class Jobs:
+    def __init__(self):
+        self.none = None
+
+    def random_job(self):
+        r = random.randint(0,len(jobs.j.keys())-1)
+        x = jobs.j.values()[r]
+        return Job(x['title'], x['income'], x['company'], x['area'], x['events'])
+
+class Job:
+    def __init__(self,title=None,income=None,company=None,area=None,work_events=None):
+        self.title = title
+        self.income = income
+        self.company = company
+        self.area = area
+        self.work_events = work_events
+
+    def work(self):
+        self.random_dictPos = random.randint(0,len(self.work_events)-1)      
+        self.hours_worked = self.work_events.values()[self.random_dictPos]
+        self.money_made = game_state.game.character.earn_money( self.hours_worked)
+        return (self.work_events.keys()[self.random_dictPos] + " \n" +
+                + " \nWorked: " + str(self.hours_worked)
+                + " \nYou made: " + str(int(self.money_made)))
+        
+
+
+        
+
 class CharacterHUD:
     def __init__(self, current_menu):
         self.current_menu = current_menu
@@ -1139,22 +1170,6 @@ class WorkScreen(Menu):
     
     def __init__(self):
         self.menu_name = 'WorkScreen'
-
-        #Dict holding story as key and hours worked as the value?
-        if game_state.game.character.job == "Plumber":
-            self.work_dict = ({"Slightly Injured from Pipe Explosion": 4.0, "Easy Day":8.0,"Sewage Everywhere!":9.0,
-                               "Done Early":7}) #Example
-        else:
-            self.work_dict = {"Personal Emergency": 4.0, "Easy Day":8.0,"Got Call as Leaving":9.0,"Done Early":7} #Example
-            
-        self.random_dictPos = random.randint(0,len(self.work_dict)-1)
-                    
-        self.hours_worked = self.work_dict.values()[self.random_dictPos]
-        self.money_made = game_state.game.character.earn_money( self.hours_worked)
-        
-        # Add HUD
-        #CharacterHUD(self)
-        
             
         self.keypressArray = [
                 DayScreen, #Need to have work option removed when going back to DayScreen
@@ -1163,12 +1178,11 @@ class WorkScreen(Menu):
                'Back to Day',
             ]
             
-        text = (self.work_dict.keys()[self.random_dictPos] + " \n" +
-                " \nWorked: "+ str(int(self.work_dict.values()[self.random_dictPos]))+" hours" +
-                " \n" + " \nMade: $" + str(int(self.money_made))) # We would need to have the pay differentiate based on hours worked
+        work_text = Job().work() #This points to job name which is a str
+                                                         #Then tries to do .work()  
         
         self.body = {
-            'text': text,
+            'text': work_text,
             'font_size': 32,
             'top': 20,
             'height': 300
@@ -1634,6 +1648,7 @@ class Game:
     month_day = 1
     term_count = 1
     def __init__(self):
+        self.jobs = Jobs()
         self.current_day = None
         self.character = None #Character('random') creates charecter on start menu becasue its an error.
         self.locations = Locations()
