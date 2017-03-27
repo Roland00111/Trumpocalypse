@@ -8,7 +8,7 @@ import PygameUI
 import math
 import copy
 import names # People's names.
-import items # Items dictionary.
+import items as ITEMS # Items dictionary.
 
 from pygame.locals import *
 
@@ -545,7 +545,7 @@ class Inventory:
         '''
         storage = []
         for item in self.items:
-            if item.item_type in items.n['housing_types']:
+            if item.item_type in ITEMS.n['housing_types']:
                 storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount()})
         return storage
     
@@ -555,7 +555,7 @@ class Inventory:
         '''
         storage = []
         for item in self.items:
-            if item.item_type in items.n['transit_types']:
+            if item.item_type in ITEMS.n['transit_types']:
                 storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount()})
         return storage
     
@@ -607,9 +607,9 @@ class Inventory:
         '''
         self.items.remove(item)
         # Remove from sorted items.
-        if item.item_type in items.n['transit_types']:
+        if item.item_type in ITEMS.n['transit_types']:
             self.sorted_items['transit'].remove(item)
-        elif item.item_type in items.n['housing_types']:
+        elif item.item_type in ITEMS.n['housing_types']:
             self.sorted_items['housing'].remove(item)
         elif item.item_type == 'Cash':
             self.sorted_items['cash'].amount -= item.amount
@@ -666,14 +666,14 @@ class Inventory:
             self.update_or_add_item(new_item)
         else:
             # A random item.
-            n = random.randint(0, items.n['num_items']-1)
-            rand_item = Item( items.n['all_choices'][n] )
+            n = random.randint(0, ITEMS.n['num_items']-1)
+            rand_item = Item( ITEMS.n['all_choices'][n] )
             self.update_or_add_item(rand_item)
     
     def sorted_append(self, new_item):
-        if new_item.item_type in items.n['transit_types']:
+        if new_item.item_type in ITEMS.n['transit_types']:
             self.sorted_items['transit'].append(new_item)
-        elif new_item.item_type in items.n['housing_types']:
+        elif new_item.item_type in ITEMS.n['housing_types']:
             self.sorted_items['housing'].append(new_item)
         elif new_item.item_type == 'Cash':
             self.sorted_items['cash'] = new_item
@@ -841,10 +841,10 @@ class Item:
         Grouped use items have num_in_group that declines.
         
         :rtype: None
-        :raises TypeError: If item_type is not in items.n['stats'].
+        :raises TypeError: If item_type is not in ITEMS.n['stats'].
         '''
         try:
-            n = items.n['stats'][item_type]
+            n = ITEMS.n['stats'][item_type]
             self.purchase_cost = n[0]
             self.resale_cost = n[1]
             self.amount = n[2]
@@ -857,7 +857,7 @@ class Item:
                 self.grouped_item = False
             # If transit item...
             # If housing item...
-            if item_type in items.n['housing_types']:
+            if item_type in ITEMS.n['housing_types']:
                 if item_type == 'Urban House':
                     self.coordinates['x'] = random.uniform(0.0,2.0) * plus_minus()
                     self.coordinates['y'] = random.uniform(0.0,2.0) * plus_minus()
@@ -1322,7 +1322,7 @@ class StoreScreen(Menu):
                             game_state.game.character.location.stores[ chosen_position ].distance_from_house()
                         Current mode of transit:
                             mode = game_state.game.character.transit_mode
-                            speed = items.n['transit_attributes'][ mode ][0]
+                            speed = ITEMS.n['transit_attributes'][ mode ][0]
             
             Time = (2 * Distance) / Speed.
             E.g.   (2 * 5 miles ) / 30mph = 20 minutes.
@@ -1340,7 +1340,7 @@ class StoreScreen(Menu):
         #-----------------
         distance = 2 * location.stores[ chosen_position ].distance_from_house()
         mode = game_state.game.character.transit_mode
-        speed = items.n['transit_attributes'][ mode ][0]
+        speed = ITEMS.n['transit_attributes'][ mode ][0]
         travel_time = math.ceil(distance / speed)
         if game_state.game.current_day.day_hours < travel_time: # No store.
             store_name = location.stores[ chosen_position ].name
@@ -1445,7 +1445,7 @@ class Event:
         for key, value in self.bonuses.iteritems():
             if key == "hours":                      # Hours
                 game_state.game.current_day.day_hours += value
-            elif key in items.n['all_choices']:    # Inventory
+            elif key in ITEMS.n['all_choices']:    # Inventory
                 c.inventory.add_item(str(key),int(value))
             else:                                   # Character attribute
                 n = getattr(c,str(key))
@@ -1453,7 +1453,7 @@ class Event:
         for key, value in self.bonuses_by_ratio.iteritems():
             if key == "hours":
                 game_state.game.current_day.day_hours *= value
-            elif key in items.n['all_choices']:
+            elif key in ITEMS.n['all_choices']:
                 c.inventory.multiply_item(str(key),float(value))
             else:
                 n = getattr(c,str(key))
