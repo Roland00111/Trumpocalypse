@@ -194,10 +194,10 @@ class Scene(Control):
             self._focus = new_focus
             self._focus.became_focused()
 
-    def show_alert(self, message, btn1_text, btn2_text, btn_action):
+    def show_alert(self, message, buttons, btn_action, choice_list, choice_list_callback):
         if self._has_alert is True: # Do not do two alerts at once (for now)
             return
-        alert = Alert(message, btn1_text, btn2_text, btn_action)
+        alert = Alert(message, buttons, btn_action, choice_list, choice_list_callback)
         alert.frame = pygame.Rect(0, 0, self.frame.w, max(120, self.frame.h // 3))
         self._has_alert = True   # :)
         self._alert = alert      # :)
@@ -385,18 +385,18 @@ class TextField(Control):
 class Alert(Control):
     bgcolor = (240, 240, 200)
 
-    def __init__(self, message, btn1_text, btn2_text=None, callback_function=None):
+    def __init__(self, message, buttons, callback_function=None, choice_list=None, choice_list_callback=None):
         '''Create an alert box.
-        
-        If no value is passed to btn2_text then only one button is
-        created.
+        Creates either one or two buttons plus buttons callback.
+        Creates an additional list plus list callback.
         
         :param str message: The message on the alert.
-        :param str btn1_text: The message on the first button.
-        :param btn2_text: The message on the second button.
-        :param callback_function: The function called for button clicks (with return arguments: True or False).
-        :type btn2_text: str or None
-        :type callback_function: def or None
+        :param str buttons: List of strings for buttons.
+        :param callback_function: The callback function for button clicks (with return arguments: True or False).
+        :type callback_function: def.
+        :param list choice_list: List of dictionaries for a PygameUI.List().
+        :param choice_list_callback: The callback function for list clicks, in the format (selected_index, selected_value, selected_item).
+        :type choice_list_callback: def.
         '''
         Control.__init__(self)
 
@@ -413,35 +413,40 @@ class Alert(Control):
             l.bgcolor = self.bgcolor
             self.add_child(l)
             self.messages.append(l)
-            
-        #~ self.message = Label(message)
-        #~ large_font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 16*2)
-        #~ self.message.font = large_font
-        #~ self.message.size_to_fit()
-        #~ self.message.bgcolor = self.bgcolor
-        #~ self.add_child(self.message)
-        self.btn1_text = btn1_text
-        self.btn2_text = btn2_text
+        
         self.callback_function = callback_function
+        self.buttons = buttons
 
-        if btn2_text == None:   # One button.
-            self.btn = Button(btn1_text)
+        if len(self.buttons) == 1:   # One button.
+            self.btn = Button(buttons[0])
             self.btn.size_to_fit()
             self.btn.on_clicked.add(lambda btn: self.press(True)) # Send back True, even though there is no difference!
             self.add_child(self.btn)
         else:                   # Two buttons.
-            self.btn = Button(btn1_text)
+            self.btn = Button(buttons[0])
             self.btn.size_to_fit()
             self.btn.on_clicked.add(lambda btn: self.press(True))
             self.add_child(self.btn)
             
-            self.btn2 = Button(btn2_text)
+            self.btn2 = Button(buttons[1])
             self.btn2.size_to_fit()
             self.btn2.on_clicked.add(lambda btn: self.press(False))
             self.add_child(self.btn2)
+        
+        self.clist = False
+        if choice_list != None:
+            if choice_list_callback is None: # This must be defined.
+                raise ValueError
+            self.clist_callback = choice_list_callback
+            self.clist = List(choice_list, (200, 224, 200))
+            self.clist.border_width = 1
+            self.clist.container.draggable = True
+            self.clist.callback_function = self.press_list
+            self.add_child(self.clist)
 
     def layout(self):
-        if self.btn2_text == None:  # One button.
+        
+        if len(self.buttons) == 1:  # One button.
             self.btn.frame.centerx = self.frame.w // 2
             self.btn.frame.bottom = self.frame.h - 10
         else:                       # Two buttons. Offset them 2+2=4px.
@@ -449,6 +454,7 @@ class Alert(Control):
             self.btn.frame.bottom = self.frame.h - 10
             self.btn2.frame.left = self.frame.w // 2 + 2
             self.btn2.frame.bottom = self.frame.h - 10
+        
         if len(self.messages) == 1:     # Zero \n.
             self.messages[0].frame.centerx = self.frame.w // 2
             self.messages[0].frame.centery = (self.btn.frame.top // 2)
@@ -464,6 +470,19 @@ class Alert(Control):
             self.messages[1].frame.centery = (self.btn.frame.top // 2) - self.messages[0].frame.h
             self.messages[2].frame.centerx = self.frame.w // 2
             self.messages[2].frame.centery = (self.btn.frame.top // 2)
+        
+        if self.clist != False:
+            self.clist.frame = pygame.Rect(self.frame.w // 2, self.btn.frame.top, 150, 100)
+            self.clist.frame.w = self.clist.container.frame.w
+            self.clist.frame.centerx = self.frame.w // 2 # Actually center it.
+            # Move buttons down.
+            if len(self.buttons) == 1:
+                self.btn.frame.bottom += 110
+            else:
+                self.btn.frame.bottom  += 110
+                self.btn2.frame.bottom += 110
+            # Make frame taller.
+            self.frame.h += 110
 
     def dismiss(self):
         self.scene._has_alert = False
@@ -472,6 +491,10 @@ class Alert(Control):
     def press(self, yes_or_no):
         if self.callback_function != None:
             self.callback_function(yes_or_no) # Call action
+        self.dismiss()
+    
+    def press_list(self, selected_index, selected_value, selected_item):
+        self.clist_callback(selected_index, selected_value, selected_item)
         self.dismiss()
     
     def draw(self):

@@ -157,12 +157,12 @@ class Menu:
         mx, my = self.Position
         self.Position = (x+mx, y+my) 
     
-    def alert(self, message, btn1_text, btn2_text=None, callback_function=None):
+    def alert(self, message, buttons, callback_function=None, choice_list=None, choice_list_callback=None):
         '''Helper function to show alert using PygameUI scene.
         
         See class Alert for parameter details.
         '''
-        self.scene.show_alert(message, btn1_text, btn2_text, callback_function)
+        self.scene.show_alert(message, buttons, callback_function, choice_list, choice_list_callback)
         
     class CustomField:
         def __init__(self, field_type, field_content, field_label, field_event_hooks):
@@ -252,13 +252,13 @@ class EventsLoop:
                 #-------------------------------------------------
                 if cm.scene._has_alert is True and (
                     event.type == pygame.MOUSEBUTTONDOWN or
-                    event.type == pygame.MOUSEBUTTONUP or
-                    event.type == QUIT):
+                    event.type == pygame.MOUSEBUTTONUP):
                     # Allow only cm.scene.hit(event.pos) = <PygameUI.Button object at ...>
                     # That is, only allow button presses.
                     if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
-                        hit = cm.scene.hit(event.pos)
-                        if type(hit) != PygameUI.Button:
+                        # Only allow elements in the alert element to
+                        # receive mouse events.
+                        if cm.scene._alert.hit(event.pos) == None:
                             continue
                 elif cm.scene._has_alert is True:
                     surface.blit(cm.scene.draw_alert(), (0, 0)) # Make sure to draw alert
@@ -1072,15 +1072,28 @@ class CharacterHUD:
         # If not DayScreen then do nothing.
         # But show warning.
         if self.current_menu.menu_name != 'DayScreen':
-            self.current_menu.alert(self.warning_cannot_change_house, 'OK', None, self.click_no_change)
+            self.current_menu.alert(self.warning_cannot_change_house, ['OK'], self.click_no_change)
             return
         # If hours remaining = 0 then do nothing.
         # But show warning.
         if game_state.game.current_day.day_hours < 1:
-            self.current_menu.alert(self.warning_not_enough_hours, 'OK', None, self.click_no_change)
+            self.current_menu.alert(self.warning_not_enough_hours, ['OK'], self.click_no_change)
             return
         # Force user to confirm change.
-        self.current_menu.alert(self.warning_change_house, 'Yes, change housing.', 'No, stay put.', self.click_alert)
+        self.current_menu.alert(self.warning_change_house, ['Yes, change housing.', 'No, stay put.'], self.click_alert)
+        
+    def test_list(self, selected_index, selected_value, selected_item):
+        '''This tests adding a list element to an alert box.
+        
+        self.current_menu.alert('Test alert.', ['OK'], self.click_ok_button, [{'item':self,'value':'meh'}], self.test_list)
+        
+        Either the OK button or the List is clickable.
+        Clicking either one dismisses the alert, calling the relevent
+        callback function (click_ok_button or test_list)
+        '''
+        print selected_index
+        print selected_value
+        print selected_item
         
     def click_transit(self, selected_index, selected_value, selected_item):
         '''Update game_state.game.character.transit_mode
@@ -1247,7 +1260,7 @@ class StoreScreenSelect(Menu):
         print 'cost',cost
         print 'cash',cash
         if cash < cost:
-            self.alert(self.warning_not_enough_cash, 'OK', None, self.click_no_change)
+            self.alert(self.warning_not_enough_cash, ['OK'], self.click_no_change)
             return
         # Enough cash, so...
         game_state.game.character.inventory.sorted_items['cash'].amount -= cost
@@ -1333,7 +1346,7 @@ class StoreScreen(Menu):
             store_name = location.stores[ chosen_position ].name
             m = ('Warning: There is not enough time visit '+store_name+'.\nThe trip takes '+
                 str(travel_time)+' hours but only '+str(game_state.game.current_day.day_hours)+' hours remain!')
-            self.alert(m, 'OK', None, self.click_no_change)
+            self.alert(m, ['OK'], self.click_no_change)
             return False
         else:
             # Subtract hours.
