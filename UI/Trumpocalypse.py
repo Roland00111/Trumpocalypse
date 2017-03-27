@@ -10,6 +10,7 @@ import copy
 import names # People's names.
 import items as ITEMS # Items dictionary.
 
+
 from pygame.locals import *
 
 
@@ -232,6 +233,7 @@ class EventsLoop:
         self.current_menu = OpeningMenu() # Starts on opening menu. Then changes.
         event_loop = True
         recurse_test = 0
+        game_state.first_game_event=False
         while event_loop:
             chosen_position = None # Reset on each loop
             cm = self.current_menu # A quick shortcut
@@ -241,6 +243,27 @@ class EventsLoop:
                 return
             #####################################################################
             for event in pygame.event.get():
+                if game_state.first_game_event==False:
+                    game_state.first_game_event=event
+
+                #------------------------------------------
+                # If the character's health is 0
+                # then kill the character (is_dead=true).
+                # Then do the game over screen.
+                #------------------------------------------
+                if (game_state.game.character != None and
+                    game_state.game.character.health <= 0 and 
+                    game_state.game.character.is_dead is True and
+                    game_state.game.character.game_over is False):
+                    game_state.game.character.game_over = True# Set game_over=True
+                    print "why we broke"
+                    while cm.scene.children:                    # Remove scene children.
+                        for child in cm.scene.children:
+                            cm.scene.remove_child(child)
+                            break
+                    self.current_menu = GameOverScreen()
+                    continue
+                
                 if event.type == QUIT: # Quit.
                     pygame.display.quit()
                     sys.exit()
@@ -338,23 +361,7 @@ class EventsLoop:
                 # Update
                 pygame.display.update()
             
-            #------------------------------------------
-            # If the character's health is 0
-            # then kill the character (is_dead=true).
-            # Then do the game over screen.
-            #------------------------------------------
-            if (game_state.game.character != None and
-                game_state.game.character.health <= 0 and 
-                game_state.game.character.is_dead is True and
-                game_state.game.character.game_over is False):
-                game_state.game.character.game_over = True  # Set game_over=True
-                while cm.scene.children:                    # Remove scene children.
-                    for child in cm.scene.children:
-                        cm.scene.remove_child(child)
-                        break
-                self.current_menu = GameOverScreen()
-                continue
-            
+       
             #----------------------------
             # Enter key has been pressed.
             #----------------------------
@@ -1363,8 +1370,10 @@ class StoreScreen(Menu):
         # This tests whether setting character health to 
         # zero actually results in game over... which it does.
         #--------
-        # game_state.game.character.health = 0
-        # game_state.game.character.is_dead = True
+        game_state.game.character.health = 0
+        game_state.game.character.is_dead = True
+        pygame.event.post(game_state.event)
+        
         #--------
         pass
 
