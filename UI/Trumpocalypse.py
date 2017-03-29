@@ -990,6 +990,7 @@ class Job:
     def work(self):
         self.random_dictPos = random.randint(0,len(self.work_events)-1)      
         self.hours_worked = self.work_events.values()[self.random_dictPos]
+        game_state.game.current_day.day_hours -= self.hours_worked
         print self.hours_worked
         self.money_made = game_state.game.character.earn_money( self.hours_worked)
         print self.money_made
@@ -1192,7 +1193,7 @@ class WorkScreen(Menu):
             'height': 300
         }
 
-        game_state.game.current_day.day_hours -= self.hours_worked
+        
         
 class StoreScreenSelect(Menu):
     def __init__(self):
