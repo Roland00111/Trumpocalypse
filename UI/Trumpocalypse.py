@@ -961,7 +961,7 @@ class Store:
         :rtype: int.
         '''
         if game_state.game.character.selected_house_idx == 0: # Friend's house
-            c1 = [0,0]
+            game_state.game.locations.friend_location
         else:
             idx = game_state.game.character.selected_house_idx - 1 # Housing is always -1
             x = game_state.game.character.inventory.sorted_items[ 'housing' ][ idx ].coordinates
@@ -1398,6 +1398,7 @@ class StoreScreen(Menu):
 
 class Location:
     def __init__(self):
+        
         self.location_name = 'Town of Anywhere'
         self.connected_regions = []
         self.stores = [
@@ -1409,6 +1410,7 @@ class Location:
         #print game_state.game
         #self.jobs = [ game_state.game.jobs.random_job() for i in range(0, 10+r) ]
 
+    
     def random_job(self):
         r = random.randint(0, 10)
         print game_state
@@ -1439,7 +1441,22 @@ class Locations:
     ]
     def __init__(self):
         self.locations = [ Location() for i in range(0,8) ]
+        self.friend_location = { 'coordinates': [ 0, 0 ] }
         pass
+    
+    def update_friend_location(self):
+        '''This function sets the 0th and 1st element of self.friend_location
+        to a random float, -20.0 to 20.0.
+        '''
+        self.random_coords = random.uniform(0.0, 20.0) * plus_minus()
+        self.friend_location['coordinates'][0][0] = self.random_coords
+        self.friend_location['coordinates'][0][1] = self.random_coords
+        
+##        self.friend_location.coordinates = [
+##            random.uniform(0.0, 20.0) * plus_minus(),
+##            random.uniform(0.0, 20.0) * plus_minus()
+##         ]
+##        print self.friend_location['coordinates']
         
     def random_location(self):
         '''Return a random location instance.
@@ -1959,6 +1976,7 @@ class ElectionDay(Menu): #Use on 48,96 .... +=48
 class StoryScreen(Menu):
     def __init__(self):
         # Do a random event
+        game_state.game.locations.update_friend_location()
         game_state.game.events.random_event()
         game_state.game.day_counter += 1
         game_state.game.month_counter += 1
