@@ -60,5 +60,17 @@ j = {
                 'Parents gave up on me getting a job':7.0,
                 }
         },
+        'Twitch Streamer': {
+            'title':'Twitch Streamer',
+            'income':8000,
+            'company': "Twitch",
+            'area':"urban",
+            'events': {
+                'Played all day':14.0,
+                'Played 9-5':8.0,
+                'You got banned from Twitch':2.0,
+                'Carpal Tunnel':6.0,
+                }
+        },
             
 }
