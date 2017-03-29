@@ -440,7 +440,7 @@ class Character:
         :return: Amount of money earned.
         :rtype: float.
         '''
-        amount = round(self.income * (num_hours / 8), 1)
+        amount = round(self.job.income * (num_hours / 8), 1)
         self.inventory.add_item('Cash', amount)
         return amount
     
@@ -462,8 +462,7 @@ class Character:
             self.age = 69
             self.charisma = 3
             self.intelligence = 1
-            self.job = 'Plumber'
-            self.income = 10000
+            #self.income = 10000
             self.sanity = 30
             # Add some random items.
             self.inventory.add_item() #To add item insert string of item (item_type) see Item class, else it's random
@@ -474,6 +473,7 @@ class Character:
             self.inventory.add_item('Cash','random')
             # Location
             self.location = game_state.game.locations.random_location()
+            self.job = self.location.random_job()
             
         elif num == 1:
             self.name = 'Linda'
@@ -483,8 +483,8 @@ class Character:
             self.age = 40
             self.charisma = 4
             self.intelligence = 5
-            self.job = 'CEO'
-            self.income = 20000
+            
+            #self.income = 20000
             self.sanity = 30
             # Add some random items.
             self.inventory.add_item()
@@ -495,6 +495,7 @@ class Character:
             self.inventory.add_item('Cash','random')
             # Location
             self.location = game_state.game.locations.random_location()
+            self.job = self.location.random_job()
     
     def born(self):
         print self.name, ' is alive!'
@@ -989,10 +990,12 @@ class Job:
     def work(self):
         self.random_dictPos = random.randint(0,len(self.work_events)-1)      
         self.hours_worked = self.work_events.values()[self.random_dictPos]
+        print self.hours_worked
         self.money_made = game_state.game.character.earn_money( self.hours_worked)
+        print self.money_made
         return (self.work_events.keys()[self.random_dictPos] + " \n" +
                 + " \nWorked: " + str(self.hours_worked)
-                + " \nYou made: " + str(int(self.money_made)))
+                + " \nYou made: " + str(self.money_made))
         
 
 
@@ -1026,8 +1029,8 @@ class CharacterHUD:
                 {'item':None, 'value':'Str: ' + str(game_state.game.character.strength)},
                 {'item':None, 'value':'Char: ' + str(game_state.game.character.charisma)},
                 {'item':None, 'value':'Int: ' + str(game_state.game.character.intelligence)},
-                {'item':None, 'value':'Job: ' + game_state.game.character.job},
-                {'item':None, 'value':'Income: $' + str(game_state.game.character.income)},
+                {'item':None, 'value':'Job: ' + game_state.game.character.job.title},
+                {'item':None, 'value':'Income: $' + str(game_state.game.character.job.income)},
                 {'item':None, 'value':'Sanity: ' + str(game_state.game.character.sanity)}
             ], (255,120,71)
         )
@@ -1178,7 +1181,7 @@ class WorkScreen(Menu):
                'Back to Day',
             ]
             
-        work_text = Job().work() #This points to job name which is a str
+        work_text = game_state.game.character.job.work() #This points to job name which is a str
                                                          #Then tries to do .work()  
         
         self.body = {
@@ -1399,6 +1402,19 @@ class Location:
             Store() for i in range(random.randint(1,4))
         ]
         self.active_store_idx = None # Index of store being visited.
+        #r = random.randint(0, 10)
+        #print game_state
+        #print game_state.game
+        #self.jobs = [ game_state.game.jobs.random_job() for i in range(0, 10+r) ]
+
+    def random_job(self):
+        r = random.randint(0, 10)
+        print game_state
+        print game_state.game
+        self.jobs = [ game_state.game.jobs.random_job() for i in range(0, 10+r) ]
+        
+        r = random.randint(0, len(self.jobs)-1)
+        return self.jobs[ r ]
 
     def menu_values(self):
         temp_array = []
@@ -1789,8 +1805,8 @@ class CreateCharacterAutomatic(Menu):
         age=str(game_state.game.character.age)
         charisma=str(game_state.game.character.charisma)
         intelligence=str(game_state.game.character.intelligence)
-        job = game_state.game.character.job
-        income = str(game_state.game.character.income)
+        job = game_state.game.character.job.title
+        income = str(game_state.game.character.job.income)
         sanity = str(game_state.game.character.sanity)
         
         CharacterHUD(self)
