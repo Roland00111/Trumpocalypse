@@ -993,9 +993,10 @@ class Job:
         print self.hours_worked
         self.money_made = game_state.game.character.earn_money( self.hours_worked)
         print self.money_made
-        return (self.work_events.keys()[self.random_dictPos] + " \n" +
+
+        return (self.work_events.keys()[self.random_dictPos] + " \n"
                 + " \nWorked: " + str(self.hours_worked)
-                + " \nYou made: " + str(self.money_made))
+                + " \nYou made: "+ str(self.money_made))
         
 
 
