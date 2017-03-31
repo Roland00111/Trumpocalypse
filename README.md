@@ -29,3 +29,5 @@ Save feature: You should plan how you are going to save game progress rather tha
 UI: The text color is unreadable. Suggest making a lighter colored box for the text, and choose a text color that is distinguishable when you squint.
 
 Fun factor: want the choices that a user makes to make a bigger impact on how the game progresses."
+
+Presentation for code review: 04/14/17
