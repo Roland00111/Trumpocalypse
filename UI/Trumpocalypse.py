@@ -14,7 +14,6 @@ import jobs #Potential jobs
 
 from pygame.locals import *
 
-
 if not pygame.display.get_init():
     pygame.display.init()
 
@@ -54,7 +53,7 @@ class Menu:
         @license: This document is under GNU GPL v3
         README on the bottom of document.
         @font: from http://www.dafont.com/coders-crux.font
-              more abuot license you can find in data/coders-crux/license.txt
+              more about license you can find in data/coders-crux/license.txt
     '''
     process_before_unload = False # Default=False. Set to a function to process.
     lista = []
@@ -65,8 +64,8 @@ class Menu:
     dest_surface = pygame.Surface #how surface game is on is generated
     QuanityOfLista = 0 #initalizer
     #BackgroundColor = (51,51,51)
-    BackgroundColor = (255,120,71)#color of background of menu itself (currently Trumps skin color :))
-    TextColor =  (255, 255, 153)
+    BackgroundColor = (255,120,71)#color of background of menu itself)
+    TextColor =  (0, 0, 0)#changed to white for readability
     SelectionColor = (153,102,255)
     PositionSelection = 0 #initalizer
     Position = (0,0) #set as initalizer
@@ -355,7 +354,7 @@ class EventsLoop:
                     # going to be slightly smaller. How about 8 pixels?
                     rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
                     font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
-                    drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
+                    drawText(surface, cm.body['text'], (0,0,0), rect, font, aa=False, bkg=None)
                 # Draw scene alert.
                 if cm.scene._has_alert is True:
                     surface.blit(cm.scene.draw_alert(), (0, 0))
@@ -408,7 +407,7 @@ class EventsLoop:
                 # going to be slightly smaller. How about 8 pixels?
                 rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
                 font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
-                drawText(surface, cm.body['text'], (130,130,130), rect, font, aa=False, bkg=None)
+                drawText(surface, cm.body['text'], (0,0,0), rect, font, aa=False, bkg=None)
             pygame.display.update()
             self.current_menu = cm.keypressArray[chosen_position]()
             
