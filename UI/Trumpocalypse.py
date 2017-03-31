@@ -1448,14 +1448,8 @@ class Locations:
         '''This function sets the 0th and 1st element of self.friend_location
         to a random float, -20.0 to 20.0.
         '''
-        self.random_coords = random.uniform(0.0, 20.0) * plus_minus()
-        self.friend_location['coordinates'][0]= self.random_coords
-        
-##        self.friend_location.coordinates = [
-##            random.uniform(0.0, 20.0) * plus_minus(),
-##            random.uniform(0.0, 20.0) * plus_minus()
-##         ]
-##        print self.friend_location['coordinates']
+        self.friend_location['coordinates'][0] = random.uniform(0.0, 20.0) * plus_minus()
+        self.friend_location['coordinates'][1] = random.uniform(0.0, 20.0) * plus_minus()
         
     def random_location(self):
         '''Return a random location instance.
