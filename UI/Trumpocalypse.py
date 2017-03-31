@@ -961,7 +961,7 @@ class Store:
         :rtype: int.
         '''
         if game_state.game.character.selected_house_idx == 0: # Friend's house
-            c1 = game_state.game.locations.friend_location
+            c1 = game_state.game.locations.friend_location['coordinates']
         else:
             idx = game_state.game.character.selected_house_idx - 1 # Housing is always -1
             x = game_state.game.character.inventory.sorted_items[ 'housing' ][ idx ].coordinates
@@ -1449,8 +1449,7 @@ class Locations:
         to a random float, -20.0 to 20.0.
         '''
         self.random_coords = random.uniform(0.0, 20.0) * plus_minus()
-        self.friend_location['coordinates'][0] = [self.random_coords,self.random_coords]
-        #self.friend_location['coordinates'][0] = self.random_coords
+        self.friend_location['coordinates'][0]= self.random_coords
         
 ##        self.friend_location.coordinates = [
 ##            random.uniform(0.0, 20.0) * plus_minus(),
