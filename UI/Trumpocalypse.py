@@ -65,7 +65,7 @@ class Menu:
     QuanityOfLista = 0 #initalizer
     #BackgroundColor = (51,51,51)
     BackgroundColor = (255,120,71)#color of background of menu itself)
-    TextColor =  (0, 0, 0)#changed to white for readability
+    TextColor =  (0, 0, 0)#changed to black for readability
     SelectionColor = (153,102,255)
     PositionSelection = 0 #initalizer
     Position = (0,0) #set as initalizer
