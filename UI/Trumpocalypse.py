@@ -64,7 +64,8 @@ class Menu:
     dest_surface = pygame.Surface #how surface game is on is generated
     QuanityOfLista = 0 #initalizer
     #BackgroundColor = (51,51,51)
-    BackgroundColor = (255,120,71)#color of background of menu itself)
+    #~ BackgroundColor = (255,120,71)#color of background of menu itself)
+    BackgroundColor = (255,215,194)#color of background of menu itself)
     TextColor =  (0, 0, 0)#changed to black for readability
     SelectionColor = (153,102,255)
     PositionSelection = 0 #initalizer
@@ -2065,14 +2066,13 @@ def run_tests():
     '''
     import sys
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
-    surface.fill((255,120,71)) #Color of the background of window
+    #~ surface.fill((255,120,71)) #Color of the background of window
     GameState([0,1] + [ x*0 for x in range(1000)])
 
 if __name__ == "__main__":
     import sys
     
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
-    surface.fill((255,120,71)) #Color of the background of window
 #    pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
     '''First you have to make an object of a *Menu class.
     *init take 2 arguments. list of fields and destination surface.

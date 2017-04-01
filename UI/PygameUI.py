@@ -17,7 +17,8 @@ class Signal(object):
             slot(*args, **kwargs)
 
 class Control(object):
-    bgcolor = (255,120,71) #(255, 255, 255)
+    #~ bgcolor = (255,120,71)
+    bgcolor = (255,215,194) #(255, 255, 255)
     border_color = (200, 200, 200)
 
     def __init__(self):
@@ -338,7 +339,8 @@ class TextField(Control):
 
     def __init__(self):
         Control.__init__(self)
-        self.label = Label('',(255,120,71))
+        self.label = Label('',(255,215,194))
+        #~ self.label = Label('',(255,120,71))
         self.label.padding = TextField.padding
         self.add_child(self.label)
         self.text = ''
