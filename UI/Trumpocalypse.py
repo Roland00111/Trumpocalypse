@@ -67,7 +67,7 @@ class Menu:
     #~ BackgroundColor = (255,120,71)#color of background of menu itself)
     BackgroundColor = (255,215,194)#color of background of menu itself)
     TextColor =  (0, 0, 0)#changed to black for readability
-    SelectionColor = (153,102,255)
+    SelectionColor = (255,120,71) #(153,102,255)
     PositionSelection = 0 #initalizer
     Position = (0,0) #set as initalizer
     menu_width = 0 
