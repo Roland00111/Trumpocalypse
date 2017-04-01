@@ -188,7 +188,7 @@ class Menu:
             # There could be a label passed into CustomField
             # that is added to the left of each list.
             # Is it possible to add this with the Label class?
-            x = PygameUI.List([{'item':None,'value':'Item %s' % str(i) } for i in range(20)], (200, 224, 200))
+            x = PygameUI.List([{'item':None,'value':'Item %s' % str(i) } for i in range(20)])
             x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
             x.frame.w = x.container.frame.w
             x.selected_index = 1
@@ -1062,8 +1062,7 @@ class CharacterHUD:
         self.elements.append(x)
         # List of available transit types.
         self.select_housing = PygameUI.List(
-            [{'item':None,'value':'Staying with Friends'}]+game_state.game.character.inventory.list_housing_types(),
-            (200, 224, 200)
+            [{'item':None,'value':'Staying with Friends'}]+game_state.game.character.inventory.list_housing_types()
         )
         self.select_housing.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -180, 150, 80)
         self.select_housing.frame.w = 150
@@ -1083,8 +1082,7 @@ class CharacterHUD:
         self.elements.append(x)
         # List of available transit types.
         x = PygameUI.List(
-            [{'item':None,'value':'Walking'}]+game_state.game.character.inventory.list_transit_types(),
-            (200, 224, 200)
+            [{'item':None,'value':'Walking'}]+game_state.game.character.inventory.list_transit_types()
         )
         x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -80, 150, 80)
         x.frame.w = 150
@@ -1233,7 +1231,7 @@ class StoreScreenSelect(Menu):
         self.scene.add_child(x)
         self.elements.append(x)
         # List of items for sale.
-        x = PygameUI.List(self.store.inventory.item_count_buy(), (200, 224, 200))
+        x = PygameUI.List(self.store.inventory.item_count_buy())
         x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
         x.border_width = 1
@@ -1248,7 +1246,7 @@ class StoreScreenSelect(Menu):
         self.scene.add_child(x)
         self.elements.append(x)
         # List of items to sell.
-        x = PygameUI.List(game_state.game.character.inventory.item_count_sell(), (200, 224, 200))
+        x = PygameUI.List(game_state.game.character.inventory.item_count_sell())
         x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400, Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
         x.border_width = 1
