@@ -2064,7 +2064,6 @@ def run_tests():
     '''
     import sys
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
-    #~ surface.fill((255,120,71)) #Color of the background of window
     GameState([0,1] + [ x*0 for x in range(1000)])
 
 if __name__ == "__main__":
