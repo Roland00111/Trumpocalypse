@@ -1497,12 +1497,12 @@ class Event:
             elif key in ITEMS.n['all_choices']:    # Inventory
                 c.inventory.add_item(str(key),int(value))
             else:                                   # Character attribute
-                #Throwing in an if to catch the error from income no longer being in character
-                if key == 'income':
-                    game_state.game.character.job.income += value
-                else:
-                    n = getattr(c,str(key))
-                    setattr(c,str(key),n+value)
+            #Throwing in an if to catch the error from income no longer being in character
+            elif key == 'income':
+                game_state.game.character.job.income += value
+            else:
+                n = getattr(c,str(key))
+                setattr(c,str(key),n+value)
         for key, value in self.bonuses_by_ratio.iteritems():
             if key == "hours":
                 game_state.game.current_day.day_hours *= value
