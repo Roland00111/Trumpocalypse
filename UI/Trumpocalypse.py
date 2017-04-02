@@ -1538,9 +1538,6 @@ class Events:
         Event(  'Nuclear War', {"health":-2,"sanity":-5}, {},
                 "...story...",
                 6,0,6),
-        Event(  'Curfew', {"hours":-4,"sanity":-1}, {},
-                "...story...",
-                2,0,1),
         Event(  'Marshall Law', {"hours":-4,"sanity":-2,"income":-5000}, {},
                 "...story...",
                 4,0,8),
@@ -1559,11 +1556,16 @@ class Events:
         Event(  'Tax Collector',{"Cash":100, "sanity":10}, {"Cash":0.90}, # Removes $100, then sets cash to 90%.
                 "...story...",
                 1,0,1),
+        Event(  'Curfew', {"hours":-4,"sanity":-1}, {},
+                "...story...",
+                2,0,1),
     ]
     
     def __init__(self):
         self.inactive_events = []
         self.active_events = []
+        #Last event will store, event name, and buffed in a boolean.
+        self.last_random_event = ['placeholder',1]
         pass
     
     def events_values(self):
@@ -1591,9 +1593,13 @@ class Events:
         #Otherwise, would have issues using the [-1] for last added later. 
         for item in self.inactive_events:
             if (item.event_text == event.event_text):
-                event.months_remaining += item.months_remaining
-                event.event_text = "{0} again!".format(event.event_text)
-                
+                item.months_remaining += event.months_remaining
+                self.last_random_event[1] = 1
+                self.last_random_event[0] = item.event_text
+                break
+        else:
+            self.last_random_event[0] = event.event_text
+            self.last_random_event[1] = 0
         
         self.inactive_events.append(event)
         
@@ -1725,10 +1731,18 @@ class Game:
                 g.term_count += 1
                 self.story_text = "Today is the Election day, Trump is up for Relection"
             else:
-                self.story_text = ('You are sitting on the couch watching the news while eating your breakfast and'
-                                   +' drinking your arbitrary drink, and the news comes on. The reporter is raving about how life will never be the same after...                 '
-                                   +(game_state.game.events.inactive_events[-1].event_text))
-            
+                #If latest random event is a repeat, add again to the text.
+                if (game_state.game.events.last_random_event[1] == 1):
+                    self.story_text = ('You are sitting on the couch watching the news while eating your breakfast and'
+                                       +' drinking your arbitrary drink, and the news comes on. The reporter is raving about how life will never be the same after...                 '
+                                       +(game_state.game.events.last_random_event[0])
+                                       + ' again!')
+                else:
+                    self.story_text = ('You are sitting on the couch watching the news while eating your breakfast and'
+                                       +' drinking your arbitrary drink, and the news comes on. The reporter is raving about how life will never be the same after...                 '
+                                       +(game_state.game.events.last_random_event[0]))
+
+                    
             if g.month_counter % 12 == 1 and g.day_counter != 1:
                 g.current_year += 1
             if g.month_counter + 1 == 13:
