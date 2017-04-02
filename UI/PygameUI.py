@@ -17,7 +17,8 @@ class Signal(object):
             slot(*args, **kwargs)
 
 class Control(object):
-    bgcolor = (255,120,71) #(255, 255, 255)
+    #~ bgcolor = (255,120,71)
+    bgcolor = (255,215,194) #(255, 255, 255)
     border_color = (200, 200, 200)
 
     def __init__(self):
@@ -209,12 +210,12 @@ class Scene(Control):
         return self._alert.draw()
 
 class Label(Control):
-    text_color = (90, 95, 90)
+    text_color = (41, 51, 42)
     padding = (8, 8)
-    selected_bgcolor = (200, 224, 200)
+    selected_bgcolor = (255,120,71) #(200, 224, 200)
     bgcolor = Control.bgcolor
 
-    def __init__(self, text=None, label_bgcolor=(0,0,0), item=None):
+    def __init__(self, text=None, label_bgcolor=(255,120,71), item=None):
         '''
         :param item: An object to reference.
         :type item: object reference or None.
@@ -254,7 +255,7 @@ class Label(Control):
 
 class List(Control):
     
-    def __init__(self, labels, selected_bgcolor, callback_function = False):
+    def __init__(self, labels, selected_bgcolor=(255,120,71), callback_function = False):
         '''Initialize List().
         
         :param list labels: A list of labels, each label is a dictionary {'item':*item reference or None*, 'str':*a string*}.
@@ -338,7 +339,8 @@ class TextField(Control):
 
     def __init__(self):
         Control.__init__(self)
-        self.label = Label('',(255,120,71))
+        self.label = Label('',(255,215,194))
+        #~ self.label = Label('',(255,120,71))
         self.label.padding = TextField.padding
         self.add_child(self.label)
         self.text = ''
