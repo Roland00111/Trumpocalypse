@@ -1590,13 +1590,19 @@ class Events:
         print 'event in self.inactive_events? ',event in self.inactive_events
 
         #Buffing the event if already in queue. Removing the original event and adding a longer new event,
-        #Otherwise, would have issues using the [-1] for last added later. 
+        #Otherwise, would have issues using the [-1] for last added later.
+        count = 0
         for item in self.inactive_events:
+            
             if (item.event_text == event.event_text):
                 item.months_remaining += event.months_remaining
                 self.last_random_event[1] = 1
                 self.last_random_event[0] = item.event_text
+                #this is to remove the event that we increased the new events duration with.
+                del self.inactive_events[count]
                 break
+            
+            count +=1
         else:
             self.last_random_event[0] = event.event_text
             self.last_random_event[1] = 0
