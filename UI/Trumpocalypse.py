@@ -1496,7 +1496,7 @@ class Event:
                 game_state.game.current_day.day_hours += value
             elif key in ITEMS.n['all_choices']:    # Inventory
                 c.inventory.add_item(str(key),int(value))
-            else:                                   # Character attribute
+                                     # Character attribute
             #Throwing in an if to catch the error from income no longer being in character
             elif key == 'income':
                 game_state.game.character.job.income += value
