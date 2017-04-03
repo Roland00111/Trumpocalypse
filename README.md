@@ -31,3 +31,5 @@ UI: The text color is unreadable. Suggest making a lighter colored box for the t
 Fun factor: want the choices that a user makes to make a bigger impact on how the game progresses."
 
 Presentation for code review: 04/14/17
+
+Read the docs automated documentation: http://trumpocalypse.readthedocs.io/en/latest/
