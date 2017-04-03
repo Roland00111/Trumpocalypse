@@ -2086,7 +2086,8 @@ class CreateCharacterManual(Menu): #Not in effect yet
         #~ )
     
     def select_on_mouseup(self, event):
-        print 'This is called when selecting a choice from the select field!' # line length check start here
+        print ('This is called when selecting a choice from the '+
+               'select field!') 
         
 class CreateCharacterAutomatic(Menu):
     def __init__(self):
@@ -2115,20 +2116,24 @@ class CreateCharacterAutomatic(Menu):
         sanity = str(game_state.game.character.sanity)
         
         CharacterHUD(self)
-        #~ x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
-        #~ x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        #~ x = PygameUI.List(game_state.game.character.inventory.
+        #item_count(), (255,120,71))
+        #~ x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150,
+        #Menu.scene.frame.h -8)
         #~ x.frame.w = x.container.frame.w
         #~ x.selected_index = 1
         #~ x.border_width = 0
-        #~ x.container.draggable = False #Change to True is needs to be draggable 
+        #~ x.container.draggable = False #Change to True is needs to
+        #be draggable 
         #~ self.scene.add_child(x)
         
         self.body = {
-            'text': ('Name: '+name+' \n'+'Health: '+health+' \n'+'Strength: '+strength+' \n'
-              +'Gender: '+gender+' \n'+'Age: '+age+' \n'+'Charisma: '+charisma+' \n'+'Intelligence: '
-              +intelligence + ' \n' + 'Job: ' +job+ ' \n' + 'Income: $'+income+' \n'+'Sanity: ' +sanity),
-            'font_size': 32,
-            'top': 40,
+            'text': ('Name: '+name+' \n'+'Health: '+health+' \n'+
+                     'Strength: '+strength+' \n'+'Gender: '+gender+
+                     ' \n'+'Age: '+age+' \n'+'Charisma: '+charisma+
+                     ' \n'+'Intelligence: '+intelligence + ' \n' +
+                     'Job: ' +job+ ' \n' + 'Income: $'+income+' \n'+
+                     'Sanity: ' +sanity),'font_size': 32,'top': 40,
             'height': 300
         }
         
@@ -2196,7 +2201,8 @@ class DayScreen(Menu):
                 
             ]
             self.titlesArray = [
-                'Events: ' + str(len(game_state.game.events.inactive_events)),
+                'Events: ' + str(len(game_state.game.events.
+                                     inactive_events)),
                 'Next Day', 
                 'Store', 
                 'Work', 
@@ -2213,8 +2219,12 @@ class DayScreen(Menu):
                 'Store', 
                 'Work', 
             ]
-        text = ('Term Number: ' + str(game_state.game.term_count) + ' \nDay is: ' + str(game_state.game.current_day.generated_date)
-        + ' \n' +' \nHours Left: ' + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
+        #This displays a text box showing how many hours left in your
+        #day to spend
+        text = ('Term Number: ' + str(game_state.game.term_count) +
+                ' \nDay is: ' + str(game_state.game.current_day.
+                generated_date)+ ' \n' +' \nHours Left: ' +
+                str(game_state.game.current_day.day_hours)) 
         #For some reason font size 32 looks a lot better than 30 or 34
         self.body = {
             'text': text,
