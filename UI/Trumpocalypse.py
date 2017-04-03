@@ -533,14 +533,17 @@ class Character:
             #self.income = 10000
             self.sanity = 30
             # Add some random items.
-            self.inventory.add_item() #To add item insert string of item (item_type) see Item class, else it's random
+            #To add item insert string of item (item_type) see Item
+            #class, else it's random.
+            self.inventory.add_item() 
             self.inventory.add_item()
             self.inventory.add_item()
             self.inventory.add_item()
             self.inventory.add_item('Food','random')
             self.inventory.add_item('Cash','random')
             # Location
-            self.location = game_state.game.locations.random_location()
+            self.location = (game_state.game.locations.
+                             random_location())
             self.job = self.location.random_job()
             
         elif num == 1:
@@ -562,7 +565,7 @@ class Character:
             self.inventory.add_item('Food','random')
             self.inventory.add_item('Cash','random')
             # Location
-            self.location = game_state.game.locations.random_location()
+            self.location=game_state.game.locations.random_location()
             self.job = self.location.random_job()
     
     def born(self):
@@ -573,8 +576,7 @@ class Character:
 class Inventory:
     def __init__(self):
         '''
-        Sample common function: How to quickly retrieve character's cash
-        amount?
+        
         '''
         self.max_items = 999
         self.items = [] # Array of items.
@@ -588,10 +590,12 @@ class Inventory:
         self.is_store = False
         
     def item_count(self):
-        #Iterates throught self.items and returns a list of all items in array with number of uses left
+        #Iterates throught self.items and returns a list of all items
+        #in array with number of uses left.
         storage = []
         for item in self.items:
-            storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount()})
+            storage.append({'item':item, 'value': item.item_type +
+                            ': ' + item.show_amount()})
         return storage
     
     def item_count_buy(self):
@@ -602,7 +606,9 @@ class Inventory:
         for item in self.items:
             if item.item_type == 'Cash':
                 continue
-            storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount() + ' $' + str(item.calculate_purchase_cost())})
+            storage.append({'item':item, 'value': item.item_type +
+                            ': ' + item.show_amount() + ' $' +
+                            str(item.calculate_purchase_cost())})
         return storage
     
     def item_count_sell(self):
@@ -613,7 +619,9 @@ class Inventory:
         for item in self.items:
             if item.item_type == 'Cash':
                 continue
-            storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount() + ' $' + str(item.calculate_resale_cost())})
+            storage.append({'item':item, 'value': item.item_type +
+                            ': ' + item.show_amount() + ' $' +
+                            str(item.calculate_resale_cost())})
         return storage
     
     def list_housing_types(self):
@@ -623,7 +631,8 @@ class Inventory:
         storage = []
         for item in self.items:
             if item.item_type in ITEMS.n['housing_types']:
-                storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount()})
+                storage.append({'item':item, 'value': item.item_type +
+                                ': ' + item.show_amount()})
         return storage
     
     def list_transit_types(self):
@@ -633,7 +642,8 @@ class Inventory:
         storage = []
         for item in self.items:
             if item.item_type in ITEMS.n['transit_types']:
-                storage.append({'item':item, 'value': item.item_type + ': ' + item.show_amount()})
+                storage.append({'item':item, 'value': item.item_type +
+                                ': ' + item.show_amount()})
         return storage
     
     def num_items(self):
@@ -667,7 +677,8 @@ class Inventory:
         c = game_state.game.character
         mode = c.transit_mode
         if mode != 'Walking':
-            idx = c.transit_mode_idx - 1 # Minus one as walking is not in this list...
+            # Minus one as walking is not in this list...
+            idx = c.transit_mode_idx - 1 
             t_item = self.sorted_items['transit'][idx]
             print 'remaining uses:',t_item.remaining_uses
             print 'distance:',distance
@@ -767,8 +778,10 @@ class Inventory:
                 # Always add another single item.
                 self.items.append( new_item )
                 self.sorted_append( new_item )
-            else:                                       # Grouped item.
-                if self.is_store:   # Store inventory (unbundle store inventory grouped items)
+            else:                        # Grouped item.
+                # Store inventory (unbundle store inventory grouped
+                # items).
+                if self.is_store:   
                     self.items.append( new_item )
                     self.sorted_append( new_item )
                 else:               # Character
@@ -790,20 +803,26 @@ class Inventory:
     def shabbitize(self, shabbiness):
         '''Make this inventory shabby.
         
-        Always floor the shabbiness. So that 1 pie never become 0 pies.
+        Always floor the shabbiness. So that 1 pie never become 0
+        pies.
         
         So Food=110; Food-=ceil(110*.99)=[110-109]=1.
         
-        :param shabbiness: The shabbiness ratio, expressed between 0 and 0.99.
+        :param shabbiness: The shabbiness ratio, expressed
+        between 0 and 0.99.
         :type shabbiness: float.
         '''
         if shabbiness > 0:
             for item in self.items:
-                rand_shabby = random.randint(20, 100) / 100.0 # Make the shabbiness vary some, between 20%-100% of current shabbiness.
+                # Make the shabbiness vary some,
+                # between 20%-100% of current shabbiness.
+                rand_shabby = random.randint(20, 100) / 100.0 
                 if item.grouped_item is True:   # Grouped
-                    item.amount -= math.floor(item.amount * shabbiness * rand_shabby)
+                    item.amount -= math.floor(item.amount *
+                                             shabbiness * rand_shabby)
                 else:                           # Single
-                    item.remaining_uses -= math.floor(item.remaining_uses * shabbiness * rand_shabby)
+                    item.remaining_uses -= math.floor(item.
+                    remaining_uses * shabbiness * rand_shabby)
         
 class Item:
     '''
@@ -814,7 +833,8 @@ class Item:
     def __init__(self, item_type = None):
         self.item_type = item_type
         self.purchase_cost = 0
-        self.resale_cost = 0 # A ratio of original cost, between zero to one.
+        # A ratio of original cost, between zero to one.
+        self.resale_cost = 0 
         self.amount = 0
         self.original_amount = 0
         self.remaining_uses = None
@@ -826,13 +846,15 @@ class Item:
     def use_item(self, item_type):
         '''To implement.
         This will somehow use the item.
-        Deincroment remaining_uses, along with in game effect.'''
+        Deincroment remaining_uses, along with in game effect.
+        '''
         
         pass
     
     def sell_item(self):
         '''To implement.
-        Sells the item based on either its remaining uses or amount remaining.
+        Sells the item based on either its remaining uses or amount
+        remaining.
         '''
         pass
     
@@ -850,9 +872,11 @@ class Item:
         :rtype: str.
         '''
         if self.grouped_item: # Grouped item (num remaining)
-            return math.ceil(self.purchase_cost * (self.amount / self.original_amount))
+            return math.ceil(self.purchase_cost * (self.amount /
+                                                self.original_amount))
         else:                 # Single item (% remaining)
-            return math.ceil(self.purchase_cost * (self.remaining_uses / self.max_remaining_uses))
+            return math.ceil(self.purchase_cost * (self.
+                        remaining_uses / self.max_remaining_uses))
             
     def calculate_resale_cost(self):
         '''Returns the sell cost of the item or group of items.
@@ -861,18 +885,22 @@ class Item:
         worth $0.80 then it is really worth $0.
         
         In the case of grouped items this is:
-            floor: [ self.resale_cost * (self.amount / self.original_amount) ]
+            floor: [ self.resale_cost * (self.amount /
+            self.original_amount) ]
         
         In the case of single items this is:
-            floor: [ self.resale_cost * (self.remaining_uses / self.max_remaining_uses) ]
+            floor: [ self.resale_cost * (self.remaining_uses /
+            self.max_remaining_uses) ]
             
         :return: The sell cost of this item.
         :rtype: str.
         '''
         if self.grouped_item: # Grouped item (num remaining)
-            return math.floor(self.purchase_cost * self.resale_cost * (self.amount / self.original_amount))
+            return math.floor(self.purchase_cost * self.resale_cost *
+                              (self.amount / self.original_amount))
         else:                 # Single item (% remaining)
-            return math.floor(self.purchase_cost * self.resale_cost * (self.remaining_uses / self.max_remaining_uses))
+            return math.floor(self.purchase_cost * self.resale_cost *
+                     (self.remaining_uses / self.max_remaining_uses))
     
     def show_amount(self):
         '''
@@ -882,7 +910,8 @@ class Item:
         if self.grouped_item: # Grouped item (num remaining)
             return str(self.amount)
         else:                 # Single item (% remaining)
-            return str(math.ceil(100*(self.remaining_uses / self.max_remaining_uses)))+'%'
+            return str(math.ceil(100*(self.remaining_uses /
+                                self.max_remaining_uses)))+'%'
         
     def set_item(self, item_type):
         '''K=1 Karma, I=1 Influence, B=1 Butterfly
@@ -893,9 +922,11 @@ class Item:
             If Food=0: HP-=1/day
             If 0, alert_user( red '...need to find food!' )
         
-        Garden: Basic amount=10 uses, -1garden/use, -2hours/use, +6 Food/use, Strength+=0.1/use, (+K,+I,+B)
+        Garden: Basic amount=10 uses, -1garden/use, -2hours/use,
+        +6 Food/use, Strength+=0.1/use, (+K,+I,+B)
         
-        Bicycle: 0.5x time travel, -1 use/mile travel, Strength+=0.1, (+K+I+B)
+        Bicycle: 0.5x time travel, -1 use/mile travel, Strength+=0.1,
+        (+K+I+B)
         
         Walking(?): 0.25x time travel, Strength+=0.1, (+K+I+B)
         
@@ -909,9 +940,10 @@ class Item:
         
         House: -1 use/day;
             If Houses=0: -1Charisma, (-1I)
-            If 0, alert_user( no_color '...sure would be nice to have a roof to sleep under!' )
+            If 0, alert_user( no_color '...sure would be nice to have
+            a roof to sleep under!' )
         
-        ================================================================
+        ==============================================================
        
         Single use items have remaining_use that declines.
         
@@ -936,23 +968,31 @@ class Item:
             # If housing item...
             if item_type in ITEMS.n['housing_types']:
                 if item_type == 'Urban House':
-                    self.coordinates['x'] = random.uniform(0.0,2.0) * plus_minus()
-                    self.coordinates['y'] = random.uniform(0.0,2.0) * plus_minus()
+                    self.coordinates['x'] = (random.uniform(0.0,2.0) *
+                                             plus_minus())
+                    self.coordinates['y'] = (random.uniform(0.0,2.0) *
+                                             plus_minus())
                 elif item_type == 'Suburban House':
-                    self.coordinates['x'] = random.uniform(2.0,8.0) * plus_minus()
-                    self.coordinates['y'] = random.uniform(2.0,8.0) * plus_minus()
+                    self.coordinates['x'] = (random.uniform(2.0,8.0) *
+                                             plus_minus())
+                    self.coordinates['y'] = (random.uniform(2.0,8.0) *
+                                             plus_minus())
                 elif item_type == 'Rural House':
-                    self.coordinates['x'] = random.uniform(8.0,20.0) * plus_minus()
-                    self.coordinates['y'] = random.uniform(8.0,20.0) * plus_minus()
+                    self.coordinates['x'] = (random.uniform(8.0,20.0)*
+                                             plus_minus())
+                    self.coordinates['y'] = (random.uniform(8.0,20.0)*
+                                             plus_minus())
         except:
             raise TypeError
             
 class GameState:
     def __init__(self,testevents = None):
-        global game_state # Reference the global game state variable to this object.
+        # Reference the global game state variable to this object.
+        global game_state 
         game_state = self
         self.game = Game()
-        self.events_loop = EventsLoop(testevents) # Starts with opening menu.
+        # Starts with opening menu.
+        self.events_loop = EventsLoop(testevents) 
     
     def reset(self):
         Game.day_counter = 0
@@ -992,17 +1032,21 @@ class Store:
         Give store a shabbiness-gaudiness value:
          0 is low shabbiness, 0.99 is highly shabby.
         '''
-        self.store_location = self.store_locations[ random.randint(0, 2) ]
+        self.store_location = self.store_locations[ random.randint
+                                                    (0, 2) ]
         self.coordinates = {} # 0=x, 1=y
         self.distances() # Set distances
         self.inventory = Inventory()
-        self.inventory.is_store = True # Set so that inventory is unbundled.
+        # Set so that inventory is unbundled.
+        self.inventory.is_store = True 
         self.shabby = random.randint(0, 99) / 100.0
         for i in range(40):
             self.inventory.add_item()
         self.inventory.shabbitize(self.shabby)
-        self.grocery_type = self.grocery_types[ random.randint(0, len(self.grocery_types)-1) ]
-        self.name = names.NAMES_LIST[ random.randint(0, len(names.NAMES_LIST)-1) ] + "'s " + self.grocery_type
+        self.grocery_type = self.grocery_types[ random.randint(0,
+                                        len(self.grocery_types)-1) ]
+        self.name = names.NAMES_LIST[ random.randint(0,
+            len(names.NAMES_LIST)-1) ] + "'s " + self.grocery_type
     
     def distances(self):
         '''Set store location based on location type.
@@ -1010,14 +1054,20 @@ class Store:
         https://docs.python.org/2/library/random.html#random.choice
         '''
         if self.store_location == 'urban':
-            self.coordinates['x'] = random.uniform(0.0,2.0) * plus_minus()
-            self.coordinates['y'] = random.uniform(0.0,2.0) * plus_minus()
+            self.coordinates['x'] = (random.uniform(0.0,2.0) *
+                                     plus_minus())
+            self.coordinates['y'] = (random.uniform(0.0,2.0) *
+                                     plus_minus())
         elif self.store_location == 'suburban':
-            self.coordinates['x'] = random.uniform(2.0,8.0) * plus_minus()
-            self.coordinates['y'] = random.uniform(2.0,8.0) * plus_minus()
+            self.coordinates['x'] = (random.uniform(2.0,8.0) *
+                                     plus_minus())
+            self.coordinates['y'] = (random.uniform(2.0,8.0) *
+                                     plus_minus())
         else: # Assume rural
-            self.coordinates['x'] = random.uniform(8.0,20.0) * plus_minus()
-            self.coordinates['y'] = random.uniform(8.0,20.0) * plus_minus()
+            self.coordinates['x'] = (random.uniform(8.0,20.0) *
+                                     plus_minus())
+            self.coordinates['y'] = (random.uniform(8.0,20.0) *
+                                     plus_minus())
     
     def distance_from_house(self):
         '''Calculate the euclidean distance to the current house.
@@ -1028,11 +1078,15 @@ class Store:
         :return: Distance in miles, rounded to the tenth.
         :rtype: int.
         '''
-        if game_state.game.character.selected_house_idx == 0: # Friend's house
-            c1 = game_state.game.locations.friend_location['coordinates']
+        # Friend's house
+        if game_state.game.character.selected_house_idx == 0: 
+            c1 = (game_state.game.locations.
+                  friend_location['coordinates'])
         else:
-            idx = game_state.game.character.selected_house_idx - 1 # Housing is always -1
-            x = game_state.game.character.inventory.sorted_items['housing'][ idx ].coordinates
+            # Housing is always -1
+            idx = game_state.game.character.selected_house_idx - 1 
+            x = (game_state.game.character.inventory.
+                 sorted_items['housing'][ idx ].coordinates)
             c1 = [x['x'], x['y']]
         c2 = self.coordinates
         return round(euclidean(c1, [c2['x'], c2['y']]), 1)
@@ -1045,10 +1099,12 @@ class Jobs:
     def random_job(self):
         r = random.randint(0,len(jobs.j.keys())-1)
         x = jobs.j.values()[r]
-        return Job(x['title'], x['income'], x['company'], x['area'], x['events'])
+        return Job(x['title'], x['income'], x['company'], x['area'],
+                   x['events'])
 
 class Job:
-    def __init__(self,title=None,income=None,company=None,area=None,work_events=None):
+    def __init__(self,title=None,income=None,company=None,area=None,
+                 work_events=None):
         self.title = title
         self.income = income
         self.company = company
@@ -1056,11 +1112,14 @@ class Job:
         self.work_events = work_events
 
     def work(self):
-        self.random_dictPos = random.randint(0,len(self.work_events)-1)      
-        self.hours_worked = self.work_events.values()[self.random_dictPos]
+        self.random_dictPos = random.randint(0,
+                                            len(self.work_events)-1)
+        self.hours_worked = (self.work_events.values()
+                             [self.random_dictPos])
         game_state.game.current_day.day_hours -= self.hours_worked
         print self.hours_worked
-        self.money_made = game_state.game.character.earn_money( self.hours_worked)
+        self.money_made = (game_state.game.character.
+                           earn_money( self.hours_worked))
         print self.money_made
 
         return (self.work_events.keys()[self.random_dictPos] + ' \n'
@@ -1074,9 +1133,12 @@ class Job:
 class CharacterHUD:
     def __init__(self, current_menu):
         self.current_menu = current_menu
-        self.warning_change_house = 'Warning: Changing housing takes one hour to complete!'
-        self.warning_cannot_change_house = 'Warning: Changing housing is only allowed at home (home screen)!'
-        self.warning_not_enough_hours = 'Warning: Not enough day hours remaining to change housing!'
+        self.warning_change_house = ('Warning: Changing housing '+
+                                     'takes one hour to complete!')
+        self.warning_cannot_change_house = ('Warning: Changing '+
+                'housing is only allowed at home (home screen)!')
+        self.warning_not_enough_hours = ('Warning: Not enough day '+
+                                'hours remaining to change housing!')
         game_state.game.character_hud = self # Add to global.
         
         # Draw
@@ -1095,46 +1157,64 @@ class CharacterHUD:
         # Character attributes
         x = PygameUI.List([
                 {'item':None, 'value':game_state.game.character.name},
-                {'item':None, 'value':'Hp: ' + str(game_state.game.character.health)},
-                {'item':None, 'value':'Str: ' + str(game_state.game.character.strength)},
-                {'item':None, 'value':'Char: ' + str(game_state.game.character.charisma)},
-                {'item':None, 'value':'Int: ' + str(game_state.game.character.intelligence)},
-                {'item':None, 'value':'Job: ' + game_state.game.character.job.title},
-                {'item':None, 'value':'Income: $' + str(game_state.game.character.job.income)},
-                {'item':None, 'value':'Sanity: ' + str(game_state.game.character.sanity)}
+                {'item':None, 'value':'Hp: ' +
+                 str(game_state.game.character.health)},
+                {'item':None, 'value':'Str: ' +
+                 str(game_state.game.character.strength)},
+                {'item':None, 'value':'Char: ' +
+                 str(game_state.game.character.charisma)},
+                {'item':None, 'value':'Int: ' +
+                 str(game_state.game.character.intelligence)},
+                {'item':None, 'value':'Job: ' +
+                 game_state.game.character.job.title},
+                {'item':None, 'value':'Income: $' +
+                 str(game_state.game.character.job.income)},
+                {'item':None, 'value':'Sanity: ' +
+                 str(game_state.game.character.sanity)}
             ], (255,120,71)
         )
         x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
         #~ x.selected_index = 1
         x.border_width = 0
-        x.container.draggable = False #Change to True is needs to be draggable 
+        #Change to True is needs to be draggable 
+        x.container.draggable = False 
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
 
         # Character items
-        x = PygameUI.List(game_state.game.character.inventory.item_count(), (255,120,71))
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h - 230) #Left quite a gap at end so it is easy on the eyes when list is full
+        x = PygameUI.List(game_state.game.character.inventory.
+                          item_count(), (255,120,71))
+        #Left quite a gap at end so it is easy on the eyes when list
+        #is full
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150,
+                              Menu.scene.frame.h - 230) 
         x.frame.w = x.container.frame.w
         #~ x.selected_index = 1
         x.border_width = 0
-        x.container.draggable = True #Change to True is needs to be draggable 
+        #Change to True is needs to be draggable 
+        x.container.draggable = True 
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
         
         # Selected mode of housing.
         # Title.
         x = PygameUI.Label('Housing:')
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -200, 150, 20)
+        x.frame = pygame.Rect(Menu.scene.frame.w -154,
+                              Menu.scene.frame.h -200, 150, 20)
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
         # List of available transit types.
         self.select_housing = PygameUI.List(
-            [{'item':None,'value':'Staying with Friends'}]+game_state.game.character.inventory.list_housing_types()
+            [{'item':None,'value':'Staying with Friends'}]+
+            game_state.game.character.inventory.list_housing_types()
         )
-        self.select_housing.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -180, 150, 80)
+        self.select_housing.frame = (pygame.
+        Rect(Menu.scene.frame.w-154,Menu.scene.frame.h -180, 150, 80))
         self.select_housing.frame.w = 150
-        self.select_housing.selected_index = game_state.game.character.selected_house_idx # selected mode, default = Staying with Friends
+        # selected mode, default = Staying with Friends
+        self.select_housing.selected_index = (game_state.game.
+                                        character.selected_house_idx)
         self.select_housing.border_width = 1
         self.select_housing.container.draggable = True
         # What to do on change mode? (i.e. click)
@@ -1145,16 +1225,20 @@ class CharacterHUD:
         # Selected mode of transit.
         # Title.
         x = PygameUI.Label('Transit Mode:')
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -100, 150, 20)
+        x.frame = pygame.Rect(Menu.scene.frame.w -154,
+                              Menu.scene.frame.h -100, 150, 20)
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
         # List of available transit types.
         x = PygameUI.List(
-            [{'item':None,'value':'Walking'}]+game_state.game.character.inventory.list_transit_types()
+            [{'item':None,'value':'Walking'}]+game_state.game.
+            character.inventory.list_transit_types()
         )
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, Menu.scene.frame.h -80, 150, 80)
+        x.frame = pygame.Rect(Menu.scene.frame.w -154,
+                              Menu.scene.frame.h -80, 150, 80)
         x.frame.w = 150
-        x.selected_index = game_state.game.character.transit_mode_idx # selected mode, default = walking
+        # selected mode, default = walking
+        x.selected_index = game_state.game.character.transit_mode_idx
         x.border_width = 1
         x.container.draggable = True
         # What to do on change mode? (i.e. click)
@@ -1162,7 +1246,8 @@ class CharacterHUD:
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
         
-    def click_housing(self, selected_index, selected_value, selected_item):
+    def click_housing(self, selected_index, selected_value,
+                      selected_item):
         '''Update game_state.game.character.selected_house_idx and
         game_state.game.character.selected_house.
         
@@ -1175,26 +1260,34 @@ class CharacterHUD:
         '''
         # If the selected house is the same as current house,
         # then do nothing.
-        if (selected_index == game_state.game.character.selected_house_idx and
-            selected_value == game_state.game.character.selected_house):
+        if (selected_index == game_state.game.character.
+            selected_house_idx and
+            selected_value == game_state.game.character.
+            selected_house):
             return
         # If not DayScreen then do nothing.
         # But show warning.
         if self.current_menu.menu_name != 'DayScreen':
-            self.current_menu.alert(self.warning_cannot_change_house, ['OK'], self.click_no_change)
+            self.current_menu.alert(self.warning_cannot_change_house,
+                                    ['OK'], self.click_no_change)
             return
         # If hours remaining = 0 then do nothing.
         # But show warning.
         if game_state.game.current_day.day_hours < 1:
-            self.current_menu.alert(self.warning_not_enough_hours, ['OK'], self.click_no_change)
+            self.current_menu.alert(self.warning_not_enough_hours,
+                                    ['OK'], self.click_no_change)
             return
         # Force user to confirm change.
-        self.current_menu.alert(self.warning_change_house, ['Yes, change housing.', 'No, stay put.'], self.click_alert)
+        self.current_menu.alert(self.warning_change_house,
+        ['Yes, change housing.', 'No, stay put.'], self.click_alert)
         
-    def test_list(self, selected_index, selected_value, selected_item):
+    def test_list(self, selected_index, selected_value,
+                  selected_item):
         '''This tests adding a list element to an alert box.
         
-        self.current_menu.alert('Test alert.', ['OK'], self.click_ok_button, [{'item':self,'value':'meh'}], self.test_list)
+        self.current_menu.alert('Test alert.', ['OK'],
+        self.click_ok_button, [{'item':self,'value':'meh'}],
+        self.test_list)
         
         Either the OK button or the List is clickable.
         Clicking either one dismisses the alert, calling the relevent
@@ -1204,53 +1297,65 @@ class CharacterHUD:
         print selected_value
         print selected_item
         
-    def click_transit(self, selected_index, selected_value, selected_item):
+    def click_transit(self, selected_index, selected_value,
+                      selected_item):
         '''Update game_state.game.character.transit_mode
         '''
         game_state.game.character.transit_mode_idx = selected_index
-        game_state.game.character.transit_mode = selected_value.split(':')[0]
+        game_state.game.character.transit_mode = (selected_value.
+                                                  split(':')[0])
     
     def click_no_change(self, confirm):
         '''Reset index of housing list.
         '''
-        self.select_housing.selected_index = game_state.game.character.selected_house_idx
+        self.select_housing.selected_index = (game_state.game.
+                                        character.selected_house_idx)
         return
         
     def click_alert(self, confirm):
         '''Handle alert button click.
         
-        :param boolean confirm: True if first button clicked, False if second button clicked.
+        :param boolean confirm: True if first button clicked,
+        False if second button clicked.
         '''
         if confirm is True: # 'Yes, change...'
-            game_state.game.character.selected_house_idx = self.select_housing.selected_index
+            game_state.game.character.selected_house_idx = (self.
+                                        select_housing.selected_index)
             v = self.select_housing.selected_value
             if v == 'Staying with Friends':
-                game_state.game.character.selected_house = 'Staying with Friends'
+                game_state.game.character.selected_house = ('Staying'+
+                                                    ' with Friends')
             else:
-                game_state.game.character.selected_house = v.split(':')[0]
-            game_state.game.current_day.day_hours -= 1 # Reduce day hours.
+                game_state.game.character.selected_house = (v.
+                                                        split(':')[0])
+            # Reduce day hours.
+            game_state.game.current_day.day_hours -= 1 
             self.current_menu.update_body() # update menu
         elif confirm is False: # 'No, stay...'
             # Reset index of housing list.
-            self.select_housing.selected_index = game_state.game.character.selected_house_idx
+            self.select_housing.selected_index = (game_state.game.
+                                        character.selected_house_idx)
         else: # Pass
             pass
 
 class WorkScreen(Menu):
-    ''' This will knock 8 hours off the day and possibly more or less depending on the work event'''
+    ''' This will knock 8 hours off the day and possibly more or less
+    depending on the work event
+    '''
     
     def __init__(self):
         self.menu_name = 'WorkScreen'
-            
+
+        #Need to have work option removed when going back to DayScreen
         self.keypressArray = [
-                DayScreen, #Need to have work option removed when going back to DayScreen
+                DayScreen, 
             ]
         self.titlesArray = [
                'Back to Day',
             ]
-            
-        work_text = game_state.game.character.job.work() #This points to job name which is a str
-                                                         #Then tries to do .work()  
+        #This points to job name which is a str.
+        #Then tries to do .work()
+        work_text = game_state.game.character.job.work() 
         
         self.body = {
             'text': work_text,
