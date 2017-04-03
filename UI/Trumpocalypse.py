@@ -1370,8 +1370,10 @@ class StoreScreenSelect(Menu):
     def __init__(self):
         self.menu_name = '...'
         location = game_state.game.character.location
-        self.store = location.stores[ location.active_store_idx ]    # To get store.
-        self.warning_not_enough_cash = 'Oops... that item costs too much money!'
+        # To get store.
+        self.store = location.stores[ location.active_store_idx ]
+        self.warning_not_enough_cash = ('Oops... that item costs '+
+                                        'too much money!')
         
         # HUD
         CharacterHUD(self)
@@ -1383,7 +1385,8 @@ class StoreScreenSelect(Menu):
         self.keypressArray = [
              DayScreen
         ]
-        self.titlesArray = ['Back to Day'] # Just back to day, no 'Back to Store List' 
+        # Just back to day, no 'Back to Store List' 
+        self.titlesArray = ['Back to Day'] 
         self.body = {
             'text': 'Welcome to '+self.store.name+'!',
             'font_size': 40,
@@ -1400,12 +1403,14 @@ class StoreScreenSelect(Menu):
         
         # Title for list.
         x = PygameUI.Label('Click to Buy')
-        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400, Menu.scene.frame.h -220)
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400,
+                              Menu.scene.frame.h -220)
         self.scene.add_child(x)
         self.elements.append(x)
         # List of items for sale.
         x = PygameUI.List(self.store.inventory.item_count_buy())
-        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400, Menu.scene.frame.h -220)
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400,
+                              Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
         x.border_width = 1
         x.container.draggable = True
@@ -1415,12 +1420,15 @@ class StoreScreenSelect(Menu):
         
         # Title for list.
         x = PygameUI.Label('Click to Sell')
-        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 100, 400, Menu.scene.frame.h -220)
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 100, 400,
+                              Menu.scene.frame.h -220)
         self.scene.add_child(x)
         self.elements.append(x)
         # List of items to sell.
-        x = PygameUI.List(game_state.game.character.inventory.item_count_sell())
-        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400, Menu.scene.frame.h -220)
+        x = PygameUI.List(game_state.game.character.inventory.
+                          item_count_sell())
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400,
+                              Menu.scene.frame.h -220)
         x.frame.w = x.container.frame.w
         x.border_width = 1
         x.container.draggable = True
@@ -1431,19 +1439,23 @@ class StoreScreenSelect(Menu):
     def process_before_unload(self,chosen_position):
         '''Reset location.active_store_idx before leaving.
         
-        :param int chosen_position: The position of the menu selected by user.
-        :return: Return True if it is okay to continue, False if it is not.
+        :param int chosen_position: The position of the menu selected
+        by user.
+        :return: Return True if it is okay to continue, False if it is
+        not.
         :rtype: boolean.
         '''
         location = game_state.game.character.location
         location.active_store_idx = None
         return True
         
-    def click_buy(self, selected_index, selected_value, selected_item):
+    def click_buy(self, selected_index, selected_value,
+                  selected_item):
         '''Try to buy the clicked item.
         
             Variables:
-                Character cash: game_state.game.character.inventory.sorted_items['cash']
+                Character cash: (game_state.game.character.inventory.
+                sorted_items['cash'])
                 Cost of item: item.calculate_purchase_cost()
                 update_or_add function (?)
         
@@ -1453,22 +1465,27 @@ class StoreScreenSelect(Menu):
         '''
         game_state.game.character.reset_modes()
         cost = selected_item.calculate_purchase_cost()
-        cash = game_state.game.character.inventory.sorted_items['cash'].amount
+        cash = (game_state.game.character.inventory.
+                sorted_items['cash'].amount)
         print 'cost',cost
         print 'cash',cash
         if cash < cost:
-            self.alert(self.warning_not_enough_cash, ['OK'], self.click_no_change)
+            self.alert(self.warning_not_enough_cash, ['OK'],
+                       self.click_no_change)
             return
         # Enough cash, so...
-        game_state.game.character.inventory.sorted_items['cash'].amount -= cost
-        game_state.game.character.inventory.update_or_add_item(selected_item)
+        (game_state.game.character.inventory.sorted_items['cash'].
+         amount) -= cost
+        (game_state.game.character.inventory.
+         update_or_add_item(selected_item))
         self.store.inventory.remove_item(selected_item)
         # Redraw lists.
         self.draw_store_lists()
         # Redraw HUD
         game_state.game.character_hud.draw_elements()
     
-    def click_sell(self, selected_index, selected_value, selected_item):
+    def click_sell(self, selected_index, selected_value,
+                   selected_item):
         '''Sell the clicked item.
         
         It is probably necessary for
@@ -1477,7 +1494,8 @@ class StoreScreenSelect(Menu):
         '''
         game_state.game.character.reset_modes()
         cost = selected_item.calculate_resale_cost()
-        game_state.game.character.inventory.sorted_items['cash'].amount += cost
+        (game_state.game.character.inventory.sorted_items['cash'].
+         amount) += cost
         game_state.game.character.inventory.remove_item(selected_item)
         self.store.inventory.update_or_add_item(selected_item)
         # Redraw lists.
@@ -1493,13 +1511,15 @@ class StoreScreenSelect(Menu):
 
     
 class StoreScreen(Menu):
-    '''Class StoreScreen. This shows the stores in the character's current
-    location. Then the user chooses to go to a specific store.
+    '''
+    Class StoreScreen. This shows the stores in the character's
+    current location. Then the user chooses to go to a specific store.
     '''
     def __init__(self):
         self.menu_name = '...'
         location = game_state.game.character.location
-        self.keypressArray = [ StoreScreenSelect for x in range(len(location.stores)) ] + [ DayScreen ]
+        self.keypressArray = [ StoreScreenSelect
+            for x in range(len(location.stores)) ] + [ DayScreen ]
         self.titlesArray = location.menu_values() + ['Back to Day']
         
         # HUD
@@ -1516,16 +1536,21 @@ class StoreScreen(Menu):
             Variables:  Num day hours remaining:
                             game_state.game.current_day.day_hours
                         Distance x 2 of store (round-trip):
-                            game_state.game.character.location.stores[ chosen_position ].distance_from_house()
+                            (game_state.game.character.location.
+                            stores[ chosen_position ].
+                            distance_from_house())
                         Current mode of transit:
                             mode = game_state.game.character.transit_mode
-                            speed = ITEMS.n['transit_attributes'][ mode ][0]
+                            speed = (ITEMS.n['transit_attributes']
+                            [ mode ][0])
             
             Time = (2 * Distance) / Speed.
             E.g.   (2 * 5 miles ) / 30mph = 20 minutes.
         
-        :param int chosen_position: The position of the menu selected by user.
-        :return: Return True if it is okay to continue, False if it is not.
+        :param int chosen_position: The position of the menu
+        selected by user.
+        :return: Return True if it is okay to continue,
+        False if it is not.
         :rtype: boolean.
         '''
         location = game_state.game.character.location
@@ -1535,14 +1560,18 @@ class StoreScreen(Menu):
         #-----------------
         # Validate travel.
         #-----------------
-        distance = 2 * location.stores[ chosen_position ].distance_from_house()
+        distance = 2 * (location.stores[ chosen_position ].
+                        distance_from_house())
         mode = game_state.game.character.transit_mode
         speed = ITEMS.n['transit_attributes'][ mode ][0]
         travel_time = math.ceil(distance / speed)
-        if game_state.game.current_day.day_hours < travel_time: # No store.
+        # No store.
+        if game_state.game.current_day.day_hours < travel_time: 
             store_name = location.stores[ chosen_position ].name
-            m = ('Warning: There is not enough time visit '+store_name+'.\nThe trip takes '+
-                str(travel_time)+' hours but only '+str(game_state.game.current_day.day_hours)+' hours remain!')
+            m = ('Warning: There is not enough time visit '+
+                 store_name+'.\nThe trip takes '+str(travel_time)+
+                 ' hours but only '+str(game_state.game.current_day.
+                                        day_hours)+' hours remain!')
             self.alert(m, ['OK'], self.click_no_change)
             return False
         else:
@@ -1579,14 +1608,16 @@ class Location:
         #r = random.randint(0, 10)
         #print game_state
         #print game_state.game
-        #self.jobs = [ game_state.game.jobs.random_job() for i in range(0, 10+r) ]
+        #self.jobs = [ game_state.game.jobs.random_job()
+        #for i in range(0, 10+r) ]
 
     
     def random_job(self):
         r = random.randint(0, 10)
         print game_state
         print game_state.game
-        self.jobs = [ game_state.game.jobs.random_job() for i in range(0, 10+r) ]
+        self.jobs = [ game_state.game.jobs.random_job()
+                      for i in range(0, 10+r) ]
         
         r = random.randint(0, len(self.jobs)-1)
         return self.jobs[ r ]
@@ -1594,11 +1625,14 @@ class Location:
     def menu_values(self):
         temp_array = []
         for store in self.stores:
-            temp_array.append(store.name + ': ' + str(store.distance_from_house()) + ' miles')
+            temp_array.append(store.name + ': ' +
+                        str(store.distance_from_house()) + ' miles')
         return temp_array
     
 class Locations:
-    '''https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States'''
+    '''
+    https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States
+    '''
     all_locations = [ #prototype
         'Middle Atlantic',
         'New England',
@@ -1616,11 +1650,13 @@ class Locations:
         pass
     
     def update_friend_location(self):
-        '''This function sets the 0th and 1st element of self.friend_location
-        to a random float, -20.0 to 20.0.
+        '''This function sets the 0th and 1st element of
+        self.friend_location to a random float, -20.0 to 20.0.
         '''
-        self.friend_location['coordinates'][0] = random.uniform(0.0, 20.0) * plus_minus()
-        self.friend_location['coordinates'][1] = random.uniform(0.0, 20.0) * plus_minus()
+        self.friend_location['coordinates'][0] = (random.
+                                    uniform(0.0, 20.0) * plus_minus())
+        self.friend_location['coordinates'][1] = (random.
+                                    uniform(0.0, 20.0) * plus_minus())
         
     def random_location(self):
         '''Return a random location instance.
@@ -1628,21 +1664,26 @@ class Locations:
         :return: A random location instance.
         :rtype: location.
         '''
-        return self.locations[ random.randint(0, len(self.locations)-1) ]
+        return self.locations[random.randint(0,len(self.locations)-1)]
 
 class Event:
     '''
     '''
-    def __init__(self, event_text, bonuses={}, bonuses_by_ratio={}, story_text='', base_duration=0,
-                 duration_rand_min=0, duration_rand_max=0):
+    def __init__(self, event_text, bonuses={}, bonuses_by_ratio={},
+                 story_text='', base_duration=0, duration_rand_min=0,
+                 duration_rand_max=0):
         '''
         :param str event_text: Event title.
         :param dict bonuses: Event bonuses.
-        :param dict bonuses_by_ratio: Event bonuses using a multiplier ('Cash':0.2 means the character is left with 20% of current cash).
+        :param dict bonuses_by_ratio: Event bonuses using a multiplier
+        ('Cash':0.2 means the character is left with 20% of
+        current cash).
         :param str story_text: A long-worded story for the event.
         :param int base_duration: Base number of months.
-        :param int duration_rand_min: Random min. added number of months.
-        :param int duration_rand_max: Random max. added number of months.
+        :param int duration_rand_min: Random min. added number of
+        months.
+        :param int duration_rand_max: Random max. added number of
+        months.
         '''
         self.event_text = event_text
         self.story_text = story_text
@@ -1653,15 +1694,18 @@ class Event:
         self.months_remaining = None # Dynamic
         self.duration_rand_min = duration_rand_min
         self.duration_rand_max = duration_rand_max
-        self.activated = False # Will be changed to True at some point.
+        # Will be changed to True at some point.
+        self.activated = False 
         
     def process(self):
-        '''Process event. Each time the event happens months_remaining -= 1.
+        '''Process event. Each time the event happens
+            months_remaining -= 1.
         
         Each bonus of the event does one of the following:
             1) update day hours remaining;
             2) update or add an inventory item;
-            3) or, change one of the character's attributes, such as hp.
+            3) or, change one of the character's attributes,
+            such as hp.
         '''
         c = game_state.game.character
         for key, value in self.bonuses.iteritems():
@@ -1670,7 +1714,8 @@ class Event:
             elif key in ITEMS.n['all_choices']:    # Inventory
                 c.inventory.add_item(str(key),int(value))
                                      # Character attribute
-            #Throwing in an if to catch the error from income no longer being in character
+            #Throwing in an if to catch the error from income no
+            #longer being in character
             elif key == 'income':
                 game_state.game.character.job.income += value
             else:
@@ -1693,20 +1738,24 @@ class Event:
     
     def generate_duration(self):
         '''Generate the duration of this event. It is between
-        [base_duration + duration_rand_min] and [base_duration + duration_rand_max].
+        [base_duration + duration_rand_min] and [base_duration +
+        duration_rand_max].
         Then set months_remaining to be duration.
         '''
-        self.duration = self.base_duration + random.randint(self.duration_rand_min, self.duration_rand_max)
+        self.duration = self.base_duration + random.randint(self.
+                            duration_rand_min, self.duration_rand_max)
         self.months_remaining = self.duration
         
 class Events:
     events_array = [
         #'life will never be the same after...'
-        # Max event length ~24 characters bigger breaks the nl character.
+        # Max event length ~24 characters bigger breaks the nl
+        # character.
         Event(  'A Tsunami', {'health':-1,'sanity':-1}, {},
                 '...story...',
                 2,0,1), #duration,duration_rand_min, duration_rand_max all in months
-        Event(   'You Won the Lottery!', {'Cash':10000,'sanity':1}, {},
+        Event(   'You Won the Lottery!', {'Cash':10000,'sanity':1},
+                 {},
                 '...story...',
                 1,0,0),
         Event(  'Extreme Pollution', {'health':-1,'sanity':-1}, {},
@@ -1715,22 +1764,26 @@ class Events:
         Event(  'Nuclear War', {'health':-2,'sanity':-5}, {},
                 '...story...',
                 6,0,6),
-        Event(  'Marshall Law', {'hours':-4,'sanity':-2,'income':-5000}, {},
+        Event(  'Marshall Law', {'hours':-4,'sanity':-2,
+                                 'income':-5000}, {},
                 '...story...',
                 4,0,8),
-        Event(  'Zombie Apocalypse', {'hours':-4,'sanity':-2,'income':-5000}, {},
+        Event(  'Zombie Apocalypse', {'hours':-4,'sanity':-2,
+                                      'income':-5000}, {},
                 '...story...',
                 4,0,8),
         Event(  'You Power Sleep', {'hours':2,'sanity':2}, {},
                 '...story...',
                 1,0,0),
-        Event(  'Find Supply Cache', {'Food':5,'Cash':1000,'sanity':1}, {},
+        Event(  'Find Supply Cache', {'Food':5,'Cash':1000,
+                                      'sanity':1}, {},
                 '...story...',
                 1,0,0),
         Event(  'Puppies!!',{'Cash':-1000, 'sanity':10}, {},
                 '...story...',
                 1,0,0),
-        Event(  'Tax Collector',{'Cash':100, 'sanity':10}, {'Cash':0.90}, # Removes $100, then sets cash to 90%.
+        Event(  'Tax Collector',{'Cash':100, 'sanity':10},
+                {'Cash':0.90}, # Removes $100, then sets cash to 90%.
                 '...story...',
                 1,0,1),
         Event(  'Curfew', {'hours':-4,'sanity':-1}, {},
@@ -1758,16 +1811,19 @@ class Events:
         
     def random_event(self):
         '''Add a random event to inactive_events.'''
-        num = random.randint(0,len(Events.events_array)-1) 
-        event = copy.deepcopy(Events.events_array[num]) # copy v. deepcopy =same
+        num = random.randint(0,len(Events.events_array)-1)
+        # copy v. deepcopy =same
+        event = copy.deepcopy(Events.events_array[num]) 
         # Generate event duration.
         event.generate_duration()
         # Add to inactive events
         # Shallow copy?
-        print 'event in self.inactive_events? ',event in self.inactive_events
+        print ('event in self.inactive_events? ',
+               event in self.inactive_events)
 
-        #Buffing the event if already in queue. Removing the original event and adding a longer new event,
-        #Otherwise, would have issues using the [-1] for last added later.
+        #Buffing the event if already in queue. Removing the original
+        #event and adding a longer new event. Otherwise, would have
+        #issues using the [-1] for last added later.
         count = 0
         for item in self.inactive_events:
             
@@ -1775,7 +1831,8 @@ class Events:
                 item.months_remaining += event.months_remaining
                 self.last_random_event[1] = 1
                 self.last_random_event[0] = item.event_text
-                #this is to remove the event that we increased the new events duration with.
+                #this is to remove the event that we increased the new
+                #events duration with.
                 del self.inactive_events[count]
                 break
             
@@ -1787,7 +1844,8 @@ class Events:
         self.inactive_events.append(event)
         
     def toggle_event(self, event):
-        '''Move an event from self.inactive_event to self.active_event.
+        '''
+        Move an event from self.inactive_event to self.active_event.
         Assumption: Once an event is activated it stays active until
         it runs out. Then it is removed altogether.
         
@@ -1814,7 +1872,7 @@ class GameOverScreen(Menu):
         # Tally score (implement)
         game_state.game.tally_score()
         text = 'Buh-bye!'
-        #For some reason font size 32 looks a lot better than 30 or 34 
+        #For some reason font size 32 looks a lot better than 30 or 34
         self.body = {
             'text': text,
             'font_size': 32,
@@ -1829,11 +1887,12 @@ class EventScreen(Menu):
         self.menu_name = '...'
         self.events_values = game_state.game.events.events_values()
         self.keypressArray = [
-             DayScreen for x in range(len(game_state.game.events.inactive_events)+1)
+             DayScreen for x in range(len(game_state.game.events.
+                                          inactive_events)+1)
         ]
         self.titlesArray = self.events_values + ['Back to Day']
         text = ''
-        #For some reason font size 32 looks a lot better than 30 or 34 
+        #For some reason font size 32 looks a lot better than 30 or 34
         self.body = {
             'text': text,
             'font_size': 32,
@@ -1848,19 +1907,21 @@ class EventScreen(Menu):
         
         Updates the game based on the event chosen by the user.
         
-        If the user does not choose an event then return immediately to the
-        DayScreen. Otherwise, mark the event as active so that it processes
-        from now on during StoryScreen (new month).
+        If the user does not choose an event then return immediately
+        to the DayScreen. Otherwise, mark the event as active so that
+        it processes from now on during StoryScreen (new month).
         
         Also, process the event for the first time starting now.
         
-        :param int chosen_position: The position of the menu selected by user.
-        :return: Return True if it is okay to continue, False if it is not.
+        :param int chosen_position: The position of the menu selected
+        by user.
+        :return: Return True if it is okay to continue, False if it is
+        not.
         :rtype: boolean.
         '''
         if len(self.events_values) -1  < chosen_position:
             return
-        event = game_state.game.events.inactive_events[chosen_position]
+        event=game_state.game.events.inactive_events[chosen_position]
         # Go from inactive to active.
         game_state.game.events.toggle_event(event)
         return True
@@ -1874,7 +1935,9 @@ class Game:
     def __init__(self):
         self.jobs = Jobs()
         self.current_day = None
-        self.character = None #Character('random') creates charecter on start menu becasue its an error.
+        #Character('random') creates charecter on start menu becasue
+        #its an error.
+        self.character = None 
         self.locations = Locations()
         self.events = Events()
     
@@ -1884,7 +1947,9 @@ class Game:
     class Day:
         day_hours = 16
         generated_date = 0
-        inauguration_day = 'January 20th' #Only needed to be used once, every other time you can use generated_date find it at the bottom of this class
+        #Only needed to be used once, every other time you can use
+        #generated_date find it at the bottom of this class
+        inauguration_day = 'January 20th' 
 
         def __init__(self):
             self.day_hours = 16
@@ -1893,7 +1958,8 @@ class Game:
 
         def eod_mods(self):
             #
-            food = game_state.game.character.inventory.sorted_items['food']
+            food = (game_state.game.character.inventory.
+                    sorted_items['food'])
             if (food.amount >= 3):
                 food.amount -= 3
             else:
@@ -1909,21 +1975,35 @@ class Game:
             g = game_state.game
             print 'New day'
             if g.day_counter == 1:
-                self.story_text = 'Today is ' + Game.Day.inauguration_day + ' \ninauguration day, Trump is being sworn into office by Chief Justice John Roberts'         
+                self.story_text = ('Today is ' +
+                Game.Day.inauguration_day + ' \ninauguration day, '+
+                'Trump is being sworn into office by Chief Justice '+
+                'John Roberts')
             elif g.day_counter % 48 == 0:
                 g.term_count += 1
-                self.story_text = 'Today is the Election day, Trump is up for Relection'
+                self.story_text = ('Today is the Election day, '+
+                                   'Trump is up for Relection')
             else:
-                #If latest random event is a repeat, add again to the text.
+                #If latest random event is a repeat, add again to the
+                #text.
                 if (game_state.game.events.last_random_event[1] == 1):
-                    self.story_text = ('You are sitting on the couch watching the news while eating your breakfast and'
-                                       +' drinking your arbitrary drink, and the news comes on. The reporter is raving about how life will never be the same after...                 '
-                                       +(game_state.game.events.last_random_event[0])
-                                       + ' again!')
+                    self.story_text = ('You are sitting on the couch'+
+                        ' watching the news while eating your '+
+                        'breakfast and drinking your arbitrary drink'+
+                        ', and the news comes on. The reporter is '+
+                        'raving about how life will never be the '+
+                        'same after...                 '
+                        +(game_state.game.events.last_random_event[0])
+                        + ' again!')
                 else:
-                    self.story_text = ('You are sitting on the couch watching the news while eating your breakfast and'
-                                       +' drinking your arbitrary drink, and the news comes on. The reporter is raving about how life will never be the same after...                 '
-                                       +(game_state.game.events.last_random_event[0]))
+                    self.story_text = ('You are sitting on the couch'+
+                        ' watching the news while eating your '+
+                        'breakfast and drinking your arbitrary drink'+
+                        ', and the news comes on. The reporter is '+
+                        'raving about how life will never be the '+
+                        'same after...                 '
+                        +(game_state.game.events.
+                          last_random_event[0]))
 
                     
             if g.month_counter % 12 == 1 and g.day_counter != 1:
@@ -1933,11 +2013,13 @@ class Game:
                 month_day = 31
             else:
                 x=g.month_counter + 1
-                month_day = 1 #Needed because when Game.month_counter == 12 it would go back a year, because it would be 12/?/2017 to 1/?/2017 and get confused
-                              # This implementation of month_day works as I tested it   
-            self.generated_date = self.randomDate(str(g.month_counter) + '/1/' + str(g.current_year),
-                                                   str((x)) + '/' + str(month_day) +'/' + str(g.current_year),
-                                                   random.random())
+                month_day = 1 #Needed because when Game.month_counter
+                #== 12 it would go back a year, because it would be
+                #12/?/2017 to 1/?/2017 and get confused 
+            self.generated_date = self.randomDate(str(g.
+            month_counter) + '/1/' + str(g.current_year),str((x)) +
+            '/' + str(month_day) +'/' + str(g.current_year),
+            random.random())
             
             #Fix game day counter incromentation 
             if g.month_counter == 12:
@@ -1947,14 +2029,18 @@ class Game:
             
             
         def strTimeProp(self,start, end, format, prop):
-            # Taken From : http://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
+            # Taken From : http://stackoverflow.com/questions/553303/
+            #generate-a-random-date-between-two-other-dates
             # By: Tom Alsberg
-            '''Get a time at a proportion of a range of two formatted times.
+            '''
+            Get a time at a proportion of a range of two formatted
+            times.
 
-            start and end should be strings specifying times formated in the
-            given format (strftime-style), giving an interval [start, end].
-            prop specifies how a proportion of the interval to be taken after
-            start.  The returned time will be in the specified format.
+            start and end should be strings specifying times formated
+            in thegiven format (strftime-style), giving an interval
+            [start, end].prop specifies how a proportion of the
+            interval to be taken afterstart.  The returned time will
+            be in the specified format.
             '''
 
             stime = time.mktime(time.strptime(start, format))
@@ -1997,7 +2083,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
         #~ )
     
     def select_on_mouseup(self, event):
-        print 'This is called when selecting a choice from the select field!'
+        print 'This is called when selecting a choice from the select field!' # line length check start here
         
 class CreateCharacterAutomatic(Menu):
     def __init__(self):
