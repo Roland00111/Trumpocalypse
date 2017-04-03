@@ -78,42 +78,43 @@ class Menu:
     menu_name = '...' # Default menu name.
 
     class Field:
-        ''' Saves some variables for the ????.
-        '''
+        ''' Saves some variables for the ????.'''
+        
         test = ''
         Field = pygame.Surface
         Field_rect = pygame.Rect
         Selection_rect = pygame.Rect
 
     def move_menu(self, top, left):
-        ''' Starting point for pygame window.
-        '''
+        ''' Starting point for pygame window.'''
+        
         self.Position = (top,left) 
 
     def set_colors(self, text, selection, background):
-        ''' Sets the color for everything when called.
-        '''
+        ''' Sets the color for everything when called.'''
+        
         self.BackgroundColor = background
         self.TextColor =  text
         self.SelectionColor = selection
         
     def set_fontsize(self,font_size):
-        ''' Sets the font size.
-        '''
+        ''' Sets the font size.'''
+        
         self.FontSize = font_size
         
     def set_font(self, path):
-        ''' Sets font type.
-        '''
+        '''Sets font type.'''
+        
         self.font_path = path
         
     def get_position(self):
-        ''' Gets the position of the selecter????.
-        '''
+        '''Gets the position of the selecter????.'''
+        
         return self.PositionSelection
     
     def init(self, lista, dest_surface, height_top=0):
-        ''' This super fake init function is called to generate the
+        '''
+        This super fake init function is called to generate the
         different items you can select.
         '''
         self.Position = (0,0) # Must be 0,0 each time Menu is redrawn
@@ -364,7 +365,8 @@ class EventsLoop:
                 elif event.type == pygame.MOUSEMOTION:
                     if down_in is not None and down_in.draggable:
                         if down_in.parent is not None:
-                            down_in.parent.child_dragged(down_in, event.rel) #???? needs to be shortened
+                            (down_in.parent.
+                            child_dragged(down_in, event.rel))
                         down_in.dragged(event.rel)
                 elif event.type == pygame.KEYDOWN:
                     cm.scene.key_down(event.key, event.unicode)
@@ -437,8 +439,8 @@ class EventsLoop:
     
     def test(testevents):
         '''Run tests.
-        :param list testevents: A list of keypress indexes to
-        auto-"press".
+        :param list testevents:
+        A list of keypress indexes to auto-"press".
         '''
         while testevents:
             cm = self.current_menu # A quick shortcut.
@@ -808,8 +810,8 @@ class Inventory:
         
         So Food=110; Food-=ceil(110*.99)=[110-109]=1.
         
-        :param shabbiness: The shabbiness ratio, expressed
-        between 0 and 0.99.
+        :param shabbiness:
+        The shabbiness ratio, expressed between 0 and 0.99.
         :type shabbiness: float.
         '''
         if shabbiness > 0:
@@ -1315,8 +1317,8 @@ class CharacterHUD:
     def click_alert(self, confirm):
         '''Handle alert button click.
         
-        :param boolean confirm: True if first button clicked,
-        False if second button clicked.
+        :param boolean confirm:
+        True if first button clicked, False if second button clicked.
         '''
         if confirm is True: # 'Yes, change...'
             game_state.game.character.selected_house_idx = (self.
@@ -1439,10 +1441,10 @@ class StoreScreenSelect(Menu):
     def process_before_unload(self,chosen_position):
         '''Reset location.active_store_idx before leaving.
         
-        :param int chosen_position: The position of the menu selected
-        by user.
-        :return: Return True if it is okay to continue, False if it is
-        not.
+        :param int chosen_position:
+        The position of the menu selected by user.
+        :return:
+        Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
         location = game_state.game.character.location
@@ -1547,10 +1549,10 @@ class StoreScreen(Menu):
             Time = (2 * Distance) / Speed.
             E.g.   (2 * 5 miles ) / 30mph = 20 minutes.
         
-        :param int chosen_position: The position of the menu
-        selected by user.
-        :return: Return True if it is okay to continue,
-        False if it is not.
+        :param int chosen_position:
+            The position of the menu selected by user.
+        :return:
+            Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
         location = game_state.game.character.location
