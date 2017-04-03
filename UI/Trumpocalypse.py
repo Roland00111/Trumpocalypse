@@ -78,7 +78,7 @@ class Menu:
     menu_name = '...' # Default menu name.
 
     class Field:
-        ''' Saves some variables for the ????
+        ''' Saves some variables for the ????.
         '''
         test = ''
         Field = pygame.Surface
@@ -86,27 +86,36 @@ class Menu:
         Selection_rect = pygame.Rect
 
     def move_menu(self, top, left):
-        ''' Starting point for pygame window
+        ''' Starting point for pygame window.
         '''
         self.Position = (top,left) 
 
     def set_colors(self, text, selection, background):
-        ''' Sets the color for everything when called
+        ''' Sets the color for everything when called.
         '''
         self.BackgroundColor = background
         self.TextColor =  text
         self.SelectionColor = selection
         
     def set_fontsize(self,font_size):
+        ''' Sets the font size.
+        '''
         self.FontSize = font_size
         
     def set_font(self, path):
+        ''' Sets font type.
+        '''
         self.font_path = path
         
     def get_position(self):
+        ''' Gets the position of the selecter????.
+        '''
         return self.PositionSelection
     
     def init(self, lista, dest_surface, height_top=0):
+        ''' This super fake init function is called to generate the
+        different items you can select.
+        '''
         self.Position = (0,0) # Must be 0,0 each time Menu is redrawn
         self.lista = lista
         self.dest_surface = dest_surface
@@ -114,7 +123,7 @@ class Menu:
         self.CreateStructure(height_top)        
         
     def draw(self,move=0):
-        ''' Draw function for every menu that gets called anytime a menu changes
+        ''' Draw function for every menu that gets called anytime a menu changes.
         '''
         if move:
             self.PositionSelection += move 
@@ -132,13 +141,17 @@ class Menu:
         return self.PositionSelection
 
     def CreateStructure(self, height_top):
+        ''' Creates the structure for where all the items that can be
+            selected are placed.
+        '''
         shift = 0
         self.menu_height = 0
         self.font = pygame.font.Font(self.font_path, self.FontSize)
         for i in xrange(self.Quanity):
             self.by.append(self.Field())
             self.by[i].text = self.lista[i]
-            self.by[i].Field = self.font.render(self.by[i].text, 1, self.TextColor)
+            self.by[i].Field = self.font.render(self.by[i].text, 1,
+                                                self.TextColor)
 
             self.by[i].Field_rect = self.by[i].Field.get_rect()
             shift = int(self.FontSize * 0.2)
@@ -156,23 +169,26 @@ class Menu:
             if width > self.menu_width:
                     self.menu_width = width
             self.menu_height += height
-        x = self.dest_surface.get_rect().centerx - self.menu_width / 2
-        y = self.dest_surface.get_rect().centery - self.menu_height / 2
+        x = self.dest_surface.get_rect().centerx-self.menu_width/2
+        y = self.dest_surface.get_rect().centery-self.menu_height/2
         y = y + height_top # Add top offset
         mx, my = self.Position
         self.Position = (x+mx, y+my) 
     
-    def alert(self, message, buttons, callback_function=None, choice_list=None, choice_list_callback=None):
+    def alert(self, message, buttons, callback_function=None,
+              choice_list=None, choice_list_callback=None):
         '''Helper function to show alert using PygameUI scene.
         
         See class Alert for parameter details.
         '''
-        self.scene.show_alert(message, buttons, callback_function, choice_list, choice_list_callback)
+        self.scene.show_alert(message, buttons, callback_function,
+                              choice_list, choice_list_callback)
         
-    class CustomField:
-        def __init__(self, field_type, field_content, field_label, field_event_hooks):
+    class CustomField: #????
+        def __init__(self, field_type, field_content, field_label,
+                     field_event_hooks):
             '''
-            field_type = string: 'list', 'button', 'input', 'number' (also input but limited to #s)
+            field_type = string: 'list', 'button', 'input', 'number' (also input but limited to #s)????
             field_content = array of strings: for list; string: button text, input default value, number default value
             field_label = string, a label to put beside the field
             field_event_hooks = array, an array of dict events, each dict event has a `type` and `callback_function`
@@ -191,7 +207,8 @@ class Menu:
             # There could be a label passed into CustomField
             # that is added to the left of each list.
             # Is it possible to add this with the Label class?
-            x = PygameUI.List([{'item':None,'value':'Item %s' % str(i) } for i in range(20)])
+            x = PygameUI.List([{'item':None,'value':'Item %s'%str(i) }
+                               for i in range(20)])
             x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
             x.frame.w = x.container.frame.w
             x.selected_index = 1
@@ -215,6 +232,9 @@ class Menu:
 
 class EventsLoop:
     '''
+    This loop is running continuously to check for anytime a key on
+    the keyboard is pressed or a mouse button is pressed. Aswell as
+    drawing the next menu when you click an item.
     Note the pygame.time.wait(0) call. This reduces CPU
     usage from 100% to negligible!
     This is noted at this URL:
@@ -224,7 +244,7 @@ class EventsLoop:
     lowering CPU usage, which is done by sleeping - or,
     in the case of PyGame, calling time.wait()."
             
-    Sample body text: menu.body = {
+    Sample body text: menu.body = { ????
         text: 'Some Main Text',
         font_size: 32,
         top: 40,
@@ -234,18 +254,21 @@ class EventsLoop:
     current_menu = None
     
     def __init__(self,testevents = None):
-        self.current_menu = OpeningMenu() # Starts on opening menu. Then changes.
+        ''' This starts the continuosly running loop.
+        '''
+        # Starts on opening menu. Then changes.
+        self.current_menu = OpeningMenu() 
         event_loop = True
         recurse_test = 0
         game_state.first_game_event=False
         while event_loop:
             chosen_position = None # Reset on each loop
             cm = self.current_menu # A quick shortcut
-            ########################Used for Testing###############################
+            ########################Used for Testing##################
             if testevents != None:
                 self.test(testevents)
                 return
-            #####################################################################
+            ##########################################################
             for event in pygame.event.get():
                 if game_state.first_game_event==False:
                     game_state.first_game_event=event
@@ -259,9 +282,10 @@ class EventsLoop:
                     game_state.game.character.health <= 0 and 
                     game_state.game.character.is_dead is True and
                     game_state.game.character.game_over is False):
-                    game_state.game.character.game_over = True# Set game_over=True
+                    # Set game_over=True
+                    game_state.game.character.game_over = True
                     print 'why we broke'
-                    while cm.scene.children:                    # Remove scene children.
+                    while cm.scene.children:# Remove scene children.
                         for child in cm.scene.children:
                             cm.scene.remove_child(child)
                             break
@@ -272,7 +296,7 @@ class EventsLoop:
                     pygame.display.quit()
                     sys.exit()
                 
-                #-------------------------------------------------    
+                #-------------------------------------------------
                 # If there is an alert then stop everything except
                 # mouse down, mouse up, and quit.
                 # Use continue to jump forward in event_loop.
@@ -280,16 +304,21 @@ class EventsLoop:
                 if cm.scene._has_alert is True and (
                     event.type == pygame.MOUSEBUTTONDOWN or
                     event.type == pygame.MOUSEBUTTONUP):
-                    # Allow only cm.scene.hit(event.pos) = <PygameUI.Button object at ...>
+                    # Allow only cm.scene.hit(event.pos) =
+                    #<PygameUI.Button object at ...>
                     # That is, only allow button presses.
-                    if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
+                    if event.type == (pygame.MOUSEBUTTONDOWN or
+                                      event.type == pygame.MOUSEBUTTONUP):
                         # Only allow elements in the alert element to
                         # receive mouse events.
                         if cm.scene._alert.hit(event.pos) == None:
                             continue
                 elif cm.scene._has_alert is True:
-                    surface.blit(cm.scene.draw_alert(), (0, 0)) # Make sure to draw alert
-                    pygame.display.update()                     # and update, in the case of cm.process_before_unload()=False and chosen_position=True
+                    # Make sure to draw alert
+                    surface.blit(cm.scene.draw_alert(), (0, 0))
+                    # and update, in the case of
+                    #cm.process_before_unload()=False and chosen_position=True
+                    pygame.display.update()
                     continue
                 
                 #-----------------------------------
@@ -306,31 +335,36 @@ class EventsLoop:
                         break
                     elif event.key == K_ESCAPE:
                         pass
-                        #pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
-                        #pygame.display.set_mode((800,600),pygame.FULLSCREEN) #Mess up the screen (at least with my laptop)
+                        
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         global down_in
                         down_in = cm.scene.hit(event.pos)
-                        if down_in is not None and not isinstance(down_in, PygameUI.Scene):
-                            down_in.mouse_down(event.button, down_in.from_window_point(event.pos))
+                        if (down_in is not None and
+                            not isinstance(down_in, PygameUI.Scene)):
+                            down_in.mouse_down(event.button,
+                                down_in.from_window_point(event.pos))
                 elif event.type == pygame.MOUSEBUTTONUP:
                     '''
-                    http://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection
+                    http://stackoverflow.com/questions/10990137/
+                    pygame-mouse-clicking-detection
                     '''
                     if event.button == 1:                    
                         pos = pygame.mouse.get_pos()
-                        (pressed1,pressed2,pressed3) = pygame.mouse.get_pressed()
-                        print 'Mouse click: ', pos, pygame.mouse.get_pressed()
+                        (pressed1,pressed2,pressed3) = (pygame.mouse.
+                                                        get_pressed())
+                        print ('Mouse click: ', pos,
+                               pygame.mouse.get_pressed())
                         # PygameUI
                         up_in = cm.scene.hit(event.pos)
                         if down_in == up_in:
-                            down_in.mouse_up(event.button, down_in.from_window_point(event.pos))
+                            down_in.mouse_up(event.button,
+                                down_in.from_window_point(event.pos))
                         down_in = None
                 elif event.type == pygame.MOUSEMOTION:
                     if down_in is not None and down_in.draggable:
                         if down_in.parent is not None:
-                            down_in.parent.child_dragged(down_in, event.rel)
+                            down_in.parent.child_dragged(down_in, event.rel) #???? needs to be shortened
                         down_in.dragged(event.rel)
                 elif event.type == pygame.KEYDOWN:
                     cm.scene.key_down(event.key, event.unicode)
@@ -344,21 +378,31 @@ class EventsLoop:
                 # Draw PygameUI.
                 surface.blit(cm.scene.draw(), (0, 0))
                 # Draw Menu
-                if cm.body is False:                 # Draw other menu content
-                    cm.init(cm.titlesArray, surface) # Draw non-body menu
+                if cm.body is False:# Draw other menu content
+                    # Draw non-body menu
+                    cm.init(cm.titlesArray, surface) 
                     cm.draw()
                 else:
-                    cm.init(cm.titlesArray, surface, 200) # Draw menu plus body
+                    # Draw menu plus body
+                    cm.init(cm.titlesArray, surface, 200) 
                     cm.draw()
-                    x = cm.dest_surface.get_rect().centerx - 150 # Calculate x offset
-                    pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, cm.body['top'], 300, cm.body['height']), 10) # Draw a box background.
+                    # Calculate x offset
+                    x = cm.dest_surface.get_rect().centerx - 150 
+                    pygame.draw.rect(surface, (255,60,71),
+                    pygame.Rect(x, cm.body['top'], 300,
+                    cm.body['height']), 10) # Draw a box background.
                                                #Box color
-                    # There is a slight offset from the text and the box.
-                    # The box needs to contain the text. So the text is
-                    # going to be slightly smaller. How about 8 pixels?
-                    rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
-                    font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
-                    drawText(surface, cm.body['text'], (0,0,0), rect, font, aa=False, bkg=None)
+                    # There is a slight offset from the text
+                    # and the box. The box needs to contain the text.
+                    # So the text is going to be slightly smaller.
+                    # How about 8 pixels???? nescasary?
+                    rect = pygame.Rect((x+8,cm.body['top']+8,
+                            300-8,300-8)) # left,top,width,height
+                    font = (pygame.font.Font
+                    ('data/coders_crux/coders_crux.ttf',
+                     cm.body['font_size']))
+                    drawText(surface, cm.body['text'], (0,0,0), rect,
+                             font, aa=False, bkg=None)
                 # Draw scene alert.
                 if cm.scene._has_alert is True:
                     surface.blit(cm.scene.draw_alert(), (0, 0))
@@ -370,24 +414,31 @@ class EventsLoop:
             # Enter key has been pressed.
             #----------------------------
             
-            if chosen_position is not None:         # If there is a chosen position, consider changing to new menu.
-                if cm.process_before_unload != False:      # Run function based on current selected item.
+            if chosen_position is not None:
+                # If there is a chosen position, consider changing
+                #to new menu.
+                # Run function based on current selected item.
+                if cm.process_before_unload != False:
                     result = cm.process_before_unload(chosen_position)
-                    if result is False:             # If process_before_unload return false, then
-                        continue                    # go to next loop (do not go to next menu!)
-                while cm.scene.children:            # Remove scene children.
+                    if result is False:
+                        # If process_before_unload return false, then
+                        # go to next loop (do not go to next menu!)
+                        continue                    
+                while cm.scene.children:# Remove scene children.
                     for child in cm.scene.children:
                         cm.scene.remove_child(child)
                         break
-                self.current_menu = cm.keypressArray[chosen_position]() # Go to the next menu.
+                # Go to the next menu.
+                self.current_menu = (cm.keypressArray
+                                     [chosen_position]()) 
             
             # CPU wait.
             pygame.time.wait(0)
     
     def test(testevents):
         '''Run tests.
-        
-        :param list testevents: A list of keypress indexes to auto-"press".
+        :param list testevents: A list of keypress indexes to
+        auto-"press".
         '''
         while testevents:
             cm = self.current_menu # A quick shortcut.
@@ -401,21 +452,31 @@ class EventsLoop:
                 cm.init(cm.titlesArray, surface) # Draw non-body menu
                 cm.draw()
             else:
-                cm.init(cm.titlesArray, surface, 200) # Draw menu plus body
+                # Draw menu plus body
+                cm.init(cm.titlesArray, surface, 200) 
                 cm.draw()
-                x = cm.dest_surface.get_rect().centerx - 150 #300 - self.menu_width / 2  Calculate the x offset
-                pygame.draw.rect(surface, (255,60,71), pygame.Rect(x, cm.body['top'], 300, cm.body['height']), 10) # Draw a box background.
+                #300 - self.menu_width / 2  Calculate the x offset
+                x = cm.dest_surface.get_rect().centerx - 150
+                # Draw a box background.
+                pygame.draw.rect(surface, (255,60,71), pygame.Rect(x,
+                cm.body['top'], 300, cm.body['height']), 10) 
                                            #Box color
                 # There is a slight offset from the text and the box.
                 # The box needs to contain the text. So the text is
                 # going to be slightly smaller. How about 8 pixels?
-                rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8)) # left,top,width,height
-                font = pygame.font.Font('data/coders_crux/coders_crux.ttf',cm.body['font_size'])
-                drawText(surface, cm.body['text'], (0,0,0), rect, font, aa=False, bkg=None)
+                                             # left,top,width,height
+                rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8))
+                font = (pygame.font.Font
+                ('data/coders_crux/coders_crux.ttf',
+                 cm.body['font_size']))
+                drawText(surface, cm.body['text'], (0,0,0), rect,
+                         font, aa=False, bkg=None)
             pygame.display.update()
             self.current_menu = cm.keypressArray[chosen_position]()
             
 class Character:
+    '''
+    '''
     def __init__ (self, create_type):
         self.name = 'Default'
         self.health = 3
@@ -428,7 +489,7 @@ class Character:
         self.inventory = Inventory() # Give character an inventory.
         self.reset_modes() # Set transit and housing type.
         self.location = None # Will be set later.
-        self.is_dead = False    # Set to True when health=0 to end game
+        self.is_dead = False# Set to True when health=0 to end game
         self.game_over = False  # Set by EventsLoop
         if create_type == 'random':
             self.randomGenerate()
@@ -450,10 +511,14 @@ class Character:
     def reset_modes(self):
         '''Reset transit and housing type to original values.
         '''
-        self.transit_mode_idx = 0                       # Transit index, default=0 (walking).
-        self.transit_mode = 'Walking'                   # Transit title, default='Walking'
-        self.selected_house_idx = 0                     # House index, default=0
-        self.selected_house = 'Staying with Friends'    # House title, default='Staying with Friends'
+        # Transit index, default=0 (walking).
+        self.transit_mode_idx = 0
+        # Transit title, default='Walking'
+        self.transit_mode = 'Walking'
+        # House index, default=0
+        self.selected_house_idx = 0
+        # House title, default='Staying with Friends'
+        self.selected_house = 'Staying with Friends'    
         
     def randomGenerate(self):
         num = random.randint(0,1)
