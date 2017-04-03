@@ -19,27 +19,25 @@ if not pygame.display.get_init():
 
 if not pygame.font.get_init():
     pygame.font.init()
-
-game_state = None # A global variable to be accessible by all classes throughout the game.
-down_in = None # A global variable for pygameui (menu custom fields)
+    
+# A global variable to be accessible by all classes throughout the game.
+game_state = None
+# A global variable for pygameui (menu custom fields)
+down_in = None 
 CharacterDictionary = None
 
 def plus_minus():
     '''Return a random +1 or -1.
-    
-    :return: Random number, +1 or -1.
-    :rtype: int.
+    type: int.
     '''
     return random.random()*2 - 1
 
 def euclidean(p1, p2):
     '''Determine euclidean distance between two points.
-    
     Pretty straightforward: http://stackoverflow.com/a/4169284/2178774.
-    
     :param list p1: A list with first element=x, second=y.
     :param list p2: A list with first element=x, second=y.
-    :return: Euc. distance between points.
+    :return: Euclidean distance between points.
     :rtype: int.
     '''
     return math.sqrt((p2[0] - p1[0]) ** 2 +
@@ -55,7 +53,8 @@ class Menu:
         @font: from http://www.dafont.com/coders-crux.font
               more about license you can find in data/coders-crux/license.txt
     '''
-    process_before_unload = False # Default=False. Set to a function to process.
+    # Default=False. Set to a function to process.
+    process_before_unload = False 
     lista = []
     by = []
     FontSize = 32
@@ -63,8 +62,6 @@ class Menu:
     font = pygame.font.Font
     dest_surface = pygame.Surface #how surface game is on is generated
     QuanityOfLista = 0 #initalizer
-    #BackgroundColor = (51,51,51)
-    #~ BackgroundColor = (255,120,71)#color of background of menu itself)
     BackgroundColor = (255,215,194)#color of background of menu itself)
     TextColor =  (0, 0, 0)#changed to black for readability
     SelectionColor = (255,120,71) #(153,102,255)
@@ -74,24 +71,28 @@ class Menu:
     menu_height = 0
     keypressArray = []
     titlesArray = []
-    custom_fields = []              # To be filled in by menu classes that need buttons, selects, inputs, and number inputs
+    # To be filled in by menu classes that need buttons, selects, inputs, and number inputs
+    custom_fields = []
     scene = PygameUI.Scene()        # For utilizing pygameui
     body = False                    # This is for main text area.
     menu_name = '...' # Default menu name.
-     
-    def __init__(self):
-        pass
-        
+
     class Field:
+        ''' Saves some variables for the ????
+        '''
         test = ''
         Field = pygame.Surface
         Field_rect = pygame.Rect
         Selection_rect = pygame.Rect
 
     def move_menu(self, top, left):
+        ''' Starting point for pygame window
+        '''
         self.Position = (top,left) 
 
     def set_colors(self, text, selection, background):
+        ''' Sets the color for everything when called
+        '''
         self.BackgroundColor = background
         self.TextColor =  text
         self.SelectionColor = selection
@@ -113,6 +114,8 @@ class Menu:
         self.CreateStructure(height_top)        
         
     def draw(self,move=0):
+        ''' Draw function for every menu that gets called anytime a menu changes
+        '''
         if move:
             self.PositionSelection += move 
             if self.PositionSelection == -1:
@@ -257,7 +260,7 @@ class EventsLoop:
                     game_state.game.character.is_dead is True and
                     game_state.game.character.game_over is False):
                     game_state.game.character.game_over = True# Set game_over=True
-                    print "why we broke"
+                    print 'why we broke'
                     while cm.scene.children:                    # Remove scene children.
                         for child in cm.scene.children:
                             cm.scene.remove_child(child)
@@ -448,9 +451,9 @@ class Character:
         '''Reset transit and housing type to original values.
         '''
         self.transit_mode_idx = 0                       # Transit index, default=0 (walking).
-        self.transit_mode = 'Walking'                   # Transit title, default="Walking"
+        self.transit_mode = 'Walking'                   # Transit title, default='Walking'
         self.selected_house_idx = 0                     # House index, default=0
-        self.selected_house = 'Staying with Friends'    # House title, default="Staying with Friends"
+        self.selected_house = 'Staying with Friends'    # House title, default='Staying with Friends'
         
     def randomGenerate(self):
         num = random.randint(0,1)
@@ -823,7 +826,7 @@ class Item:
         
         Food: Basic amount=10 uses, 3 uses/day;
             If Food=0: HP-=1/day
-            If 0, alert_user( red "...need to find food!" )
+            If 0, alert_user( red '...need to find food!' )
         
         Garden: Basic amount=10 uses, -1garden/use, -2hours/use, +6 Food/use, Strength+=0.1/use, (+K,+I,+B)
         
@@ -833,7 +836,7 @@ class Item:
         
         Clothing: -1 use/day;
             If Clothing=0: -1Charisma/day, (-I)
-            If 0, alert_user( yellow "...need to find clothes!" )
+            If 0, alert_user( yellow '...need to find clothes!' )
         
         Transit Pass: 1x time travel, -1 use/mile travel, (+K+I+B)
         
@@ -841,7 +844,7 @@ class Item:
         
         House: -1 use/day;
             If Houses=0: -1Charisma, (-1I)
-            If 0, alert_user( no_color "...sure would be nice to have a roof to sleep under!" )
+            If 0, alert_user( no_color '...sure would be nice to have a roof to sleep under!' )
         
         ================================================================
        
@@ -964,7 +967,7 @@ class Store:
             c1 = game_state.game.locations.friend_location['coordinates']
         else:
             idx = game_state.game.character.selected_house_idx - 1 # Housing is always -1
-            x = game_state.game.character.inventory.sorted_items[ 'housing' ][ idx ].coordinates
+            x = game_state.game.character.inventory.sorted_items['housing'][ idx ].coordinates
             c1 = [x['x'], x['y']]
         c2 = self.coordinates
         return round(euclidean(c1, [c2['x'], c2['y']]), 1)
@@ -995,9 +998,9 @@ class Job:
         self.money_made = game_state.game.character.earn_money( self.hours_worked)
         print self.money_made
 
-        return (self.work_events.keys()[self.random_dictPos] + " \n"
-                + " \nWorked: " + str(self.hours_worked)
-                + " \nYou made: "+ str(self.money_made))
+        return (self.work_events.keys()[self.random_dictPos] + ' \n'
+                + ' \nWorked: ' + str(self.hours_worked)
+                + ' \nYou made: '+ str(self.money_made))
         
 
 
@@ -1153,7 +1156,7 @@ class CharacterHUD:
         
         :param boolean confirm: True if first button clicked, False if second button clicked.
         '''
-        if confirm is True: # "Yes, change..."
+        if confirm is True: # 'Yes, change...'
             game_state.game.character.selected_house_idx = self.select_housing.selected_index
             v = self.select_housing.selected_value
             if v == 'Staying with Friends':
@@ -1162,7 +1165,7 @@ class CharacterHUD:
                 game_state.game.character.selected_house = v.split(':')[0]
             game_state.game.current_day.day_hours -= 1 # Reduce day hours.
             self.current_menu.update_body() # update menu
-        elif confirm is False: # "No, stay..."
+        elif confirm is False: # 'No, stay...'
             # Reset index of housing list.
             self.select_housing.selected_index = game_state.game.character.selected_house_idx
         else: # Pass
@@ -1210,7 +1213,7 @@ class StoreScreenSelect(Menu):
         self.keypressArray = [
              DayScreen
         ]
-        self.titlesArray = ['Back to Day'] # Just back to day, no "Back to Store List" 
+        self.titlesArray = ['Back to Day'] # Just back to day, no 'Back to Store List' 
         self.body = {
             'text': 'Welcome to '+self.store.name+'!',
             'font_size': 40,
@@ -1492,7 +1495,7 @@ class Event:
         '''
         c = game_state.game.character
         for key, value in self.bonuses.iteritems():
-            if key == "hours":                      # Hours
+            if key == 'hours':                      # Hours
                 game_state.game.current_day.day_hours += value
             elif key in ITEMS.n['all_choices']:    # Inventory
                 c.inventory.add_item(str(key),int(value))
@@ -1504,7 +1507,7 @@ class Event:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
         for key, value in self.bonuses_by_ratio.iteritems():
-            if key == "hours":
+            if key == 'hours':
                 game_state.game.current_day.day_hours *= value
             elif key in ITEMS.n['all_choices']:
                 c.inventory.multiply_item(str(key),float(value))
@@ -1528,40 +1531,40 @@ class Event:
         
 class Events:
     events_array = [
-        #"life will never be the same after..."
+        #'life will never be the same after...'
         # Max event length ~24 characters bigger breaks the nl character.
-        Event(  'A Tsunami', {"health":-1,"sanity":-1}, {},
-                "...story...",
+        Event(  'A Tsunami', {'health':-1,'sanity':-1}, {},
+                '...story...',
                 2,0,1), #duration,duration_rand_min, duration_rand_max all in months
-        Event(   'You Won the Lottery!', {"Cash":10000,"sanity":1}, {},
-                "...story...",
+        Event(   'You Won the Lottery!', {'Cash':10000,'sanity':1}, {},
+                '...story...',
                 1,0,0),
-        Event(  'Extreme Pollution', {"health":-1,"sanity":-1}, {},
-                "...story...",
+        Event(  'Extreme Pollution', {'health':-1,'sanity':-1}, {},
+                '...story...',
                 4,0,4),
-        Event(  'Nuclear War', {"health":-2,"sanity":-5}, {},
-                "...story...",
+        Event(  'Nuclear War', {'health':-2,'sanity':-5}, {},
+                '...story...',
                 6,0,6),
-        Event(  'Marshall Law', {"hours":-4,"sanity":-2,"income":-5000}, {},
-                "...story...",
+        Event(  'Marshall Law', {'hours':-4,'sanity':-2,'income':-5000}, {},
+                '...story...',
                 4,0,8),
-        Event(  'Zombie Apocalypse', {"hours":-4,"sanity":-2,"income":-5000}, {},
-                "...story...",
+        Event(  'Zombie Apocalypse', {'hours':-4,'sanity':-2,'income':-5000}, {},
+                '...story...',
                 4,0,8),
-        Event(  'You Power Sleep', {"hours":2,"sanity":2}, {},
-                "...story...",
+        Event(  'You Power Sleep', {'hours':2,'sanity':2}, {},
+                '...story...',
                 1,0,0),
-        Event(  'Find Supply Cache', {"Food":5,"Cash":1000,"sanity":1}, {},
-                "...story...",
+        Event(  'Find Supply Cache', {'Food':5,'Cash':1000,'sanity':1}, {},
+                '...story...',
                 1,0,0),
-        Event(  'Puppies!!',{"Cash":-1000, "sanity":10}, {},
-                "...story...",
+        Event(  'Puppies!!',{'Cash':-1000, 'sanity':10}, {},
+                '...story...',
                 1,0,0),
-        Event(  'Tax Collector',{"Cash":100, "sanity":10}, {"Cash":0.90}, # Removes $100, then sets cash to 90%.
-                "...story...",
+        Event(  'Tax Collector',{'Cash':100, 'sanity':10}, {'Cash':0.90}, # Removes $100, then sets cash to 90%.
+                '...story...',
                 1,0,1),
-        Event(  'Curfew', {"hours":-4,"sanity":-1}, {},
-                "...story...",
+        Event(  'Curfew', {'hours':-4,'sanity':-1}, {},
+                '...story...',
                 2,0,1),
     ]
     
@@ -1659,7 +1662,7 @@ class EventScreen(Menu):
              DayScreen for x in range(len(game_state.game.events.inactive_events)+1)
         ]
         self.titlesArray = self.events_values + ['Back to Day']
-        text = ""
+        text = ''
         #For some reason font size 32 looks a lot better than 30 or 34 
         self.body = {
             'text': text,
@@ -1711,7 +1714,7 @@ class Game:
     class Day:
         day_hours = 16
         generated_date = 0
-        inauguration_day = "January 20th" #Only needed to be used once, every other time you can use generated_date find it at the bottom of this class
+        inauguration_day = 'January 20th' #Only needed to be used once, every other time you can use generated_date find it at the bottom of this class
 
         def __init__(self):
             self.day_hours = 16
@@ -1736,10 +1739,10 @@ class Game:
             g = game_state.game
             print 'New day'
             if g.day_counter == 1:
-                self.story_text = "Today is " + Game.Day.inauguration_day + " \ninauguration day, Trump is being sworn into office by Chief Justice John Roberts"         
+                self.story_text = 'Today is ' + Game.Day.inauguration_day + ' \ninauguration day, Trump is being sworn into office by Chief Justice John Roberts'         
             elif g.day_counter % 48 == 0:
                 g.term_count += 1
-                self.story_text = "Today is the Election day, Trump is up for Relection"
+                self.story_text = 'Today is the Election day, Trump is up for Relection'
             else:
                 #If latest random event is a repeat, add again to the text.
                 if (game_state.game.events.last_random_event[1] == 1):
@@ -1762,8 +1765,8 @@ class Game:
                 x=g.month_counter + 1
                 month_day = 1 #Needed because when Game.month_counter == 12 it would go back a year, because it would be 12/?/2017 to 1/?/2017 and get confused
                               # This implementation of month_day works as I tested it   
-            self.generated_date = self.randomDate(str(g.month_counter) + "/1/" + str(g.current_year),
-                                                   str((x)) + "/" + str(month_day) +"/" + str(g.current_year),
+            self.generated_date = self.randomDate(str(g.month_counter) + '/1/' + str(g.current_year),
+                                                   str((x)) + '/' + str(month_day) +'/' + str(g.current_year),
                                                    random.random())
             
             #Fix game day counter incromentation 
@@ -1776,13 +1779,13 @@ class Game:
         def strTimeProp(self,start, end, format, prop):
             # Taken From : http://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
             # By: Tom Alsberg
-            """Get a time at a proportion of a range of two formatted times.
+            '''Get a time at a proportion of a range of two formatted times.
 
             start and end should be strings specifying times formated in the
             given format (strftime-style), giving an interval [start, end].
             prop specifies how a proportion of the interval to be taken after
             start.  The returned time will be in the specified format.
-            """
+            '''
 
             stime = time.mktime(time.strptime(start, format))
             etime = time.mktime(time.strptime(end, format)) - 1
@@ -1862,9 +1865,9 @@ class CreateCharacterAutomatic(Menu):
         #~ self.scene.add_child(x)
         
         self.body = {
-            'text': ("Name: "+name+" \n"+"Health: "+health+" \n"+"Strength: "+strength+" \n"
-              +"Gender: "+gender+" \n"+"Age: "+age+" \n"+"Charisma: "+charisma+" \n"+"Intelligence: "
-              +intelligence + " \n" + "Job: " +job+ " \n" + "Income: $"+income+" \n"+"Sanity: " +sanity),
+            'text': ('Name: '+name+' \n'+'Health: '+health+' \n'+'Strength: '+strength+' \n'
+              +'Gender: '+gender+' \n'+'Age: '+age+' \n'+'Charisma: '+charisma+' \n'+'Intelligence: '
+              +intelligence + ' \n' + 'Job: ' +job+ ' \n' + 'Income: $'+income+' \n'+'Sanity: ' +sanity),
             'font_size': 32,
             'top': 40,
             'height': 300
@@ -1879,7 +1882,7 @@ class HighScores(Menu):
             Close,
         ]
 
-        high_score_file = open("high_score.txt", "r+")
+        high_score_file = open('high_score.txt', 'r+')
         high_score = high_score_file.read().replace('\n', '')
         high_score_file.close()
 
@@ -1892,7 +1895,7 @@ class HighScores(Menu):
         ]
         a=str(high_score)
  
-        Text="Highscore:"+a
+        Text='Highscore:'+a
         self.body = {
             'text': Text,
             'font_size': 44,
@@ -1901,7 +1904,7 @@ class HighScores(Menu):
         }
     
     def get_high_score():
-        high_score_file = open("high_score.txt", "r+")
+        high_score_file = open('high_score.txt', 'r+')
         high_score = high_score_file.read().replace('\n', '')
         high_score_file.close()
     
@@ -1910,7 +1913,7 @@ class HighScores(Menu):
 
 class ResetHighScore(Menu):
     def __init__(self):
-        high_score_file = open("high_score.txt", "w")
+        high_score_file = open('high_score.txt', 'w')
         high_score_file.write(str(0))
         high_score_file.close()
         HighScores()
@@ -1951,8 +1954,8 @@ class DayScreen(Menu):
                 'Store', 
                 'Work', 
             ]
-        text = ("Term Number: " + str(game_state.game.term_count) + " \nDay is: " + str(game_state.game.current_day.generated_date)
-        + " \n" +" \nHours Left: " + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
+        text = ('Term Number: ' + str(game_state.game.term_count) + ' \nDay is: ' + str(game_state.game.current_day.generated_date)
+        + ' \n' +' \nHours Left: ' + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
         #For some reason font size 32 looks a lot better than 30 or 34
         self.body = {
             'text': text,
@@ -1964,8 +1967,8 @@ class DayScreen(Menu):
     def update_body(self):
         '''Call this function to update text in the body.
         '''
-        text = ("Term Number: " + str(game_state.game.term_count) + " \nDay is: " + str(game_state.game.current_day.generated_date)
-        + " \n" +" \nHours Left: " + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
+        text = ('Term Number: ' + str(game_state.game.term_count) + ' \nDay is: ' + str(game_state.game.current_day.generated_date)
+        + ' \n' +' \nHours Left: ' + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
         self.body = {
             'text': text,
             'font_size': 32,
@@ -2030,9 +2033,9 @@ class StoryScreen(Menu):
         
 
 class CreateCharacter(Menu):
-    """
+    '''
     ...
-    """
+    '''
     def __init__(self):
         # some things in self are in the parent class.
         self.menu_name = '...'
@@ -2046,9 +2049,9 @@ class CreateCharacter(Menu):
         ]
 
 class OpeningMenu(Menu):
-    """
+    '''
     ...
-    """
+    '''
     def __init__(self):
     # What does this do?: Menu.__init__(self)
         self.menu_name = '...'
@@ -2099,7 +2102,7 @@ def run_tests():
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
     GameState([0,1] + [ x*0 for x in range(1000)])
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import sys
     
     surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
