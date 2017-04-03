@@ -811,7 +811,7 @@ class Inventory:
         So Food=110; Food-=ceil(110*.99)=[110-109]=1.
         
         :param shabbiness:
-        The shabbiness ratio, expressed between 0 and 0.99.
+            The shabbiness ratio, expressed between 0 and 0.99.
         :type shabbiness: float.
         '''
         if shabbiness > 0:
@@ -1442,9 +1442,9 @@ class StoreScreenSelect(Menu):
         '''Reset location.active_store_idx before leaving.
         
         :param int chosen_position:
-        The position of the menu selected by user.
+            The position of the menu selected by user.
         :return:
-        Return True if it is okay to continue, False if it is not.
+            Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
         location = game_state.game.character.location
@@ -1677,15 +1677,16 @@ class Event:
         '''
         :param str event_text: Event title.
         :param dict bonuses: Event bonuses.
-        :param dict bonuses_by_ratio: Event bonuses using a multiplier
-        ('Cash':0.2 means the character is left with 20% of
-        current cash).
+        :param dict bonuses_by_ratio:
+            Event bonuses using a multiplier
+            ('Cash':0.2 means the character is
+            left with 20% of current cash).
         :param str story_text: A long-worded story for the event.
         :param int base_duration: Base number of months.
-        :param int duration_rand_min: Random min. added number of
-        months.
-        :param int duration_rand_max: Random max. added number of
-        months.
+        :param int duration_rand_min:
+            Random min. added number of months.
+        :param int duration_rand_max:
+            Random max. added number of months.
         '''
         self.event_text = event_text
         self.story_text = story_text
@@ -1915,10 +1916,10 @@ class EventScreen(Menu):
         
         Also, process the event for the first time starting now.
         
-        :param int chosen_position: The position of the menu selected
-        by user.
-        :return: Return True if it is okay to continue, False if it is
-        not.
+        :param int chosen_position:
+            The position of the menu selected by user.
+        :return:
+            Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
         if len(self.events_values) -1  < chosen_position:
