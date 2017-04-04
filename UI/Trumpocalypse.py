@@ -1097,7 +1097,7 @@ class Store:
 class Jobs:
     def __init__(self):
         self.none = None
-
+        job = Job()
     def random_job(self):
         r = random.randint(0,len(jobs.j.keys())-1)
         x = jobs.j.values()[r]
@@ -1112,6 +1112,8 @@ class Job:
         self.company = company
         self.area = area
         self.work_events = work_events
+        self.coordinates = {}
+        self.distances_call = self.distances()
 
     def work(self):
         self.random_dictPos = random.randint(0,
@@ -1127,6 +1129,49 @@ class Job:
         return (self.work_events.keys()[self.random_dictPos] + ' \n'
                 + ' \nWorked: ' + str(self.hours_worked)
                 + ' \nYou made: '+ str(self.money_made))
+
+    def distances(self):
+        '''Set store location based on location type.
+        Note: Random choice provides random between + and - number:
+        https://docs.python.org/2/library/random.html#random.choice
+        '''
+        if self.area == 'urban':
+            self.coordinates['x'] = (random.uniform(0.0,2.0) *
+                                     plus_minus())
+            self.coordinates['y'] = (random.uniform(0.0,2.0) *
+                                     plus_minus())
+        elif self.area == 'suburban':
+            self.coordinates['x'] = (random.uniform(2.0,8.0) *
+                                     plus_minus())
+            self.coordinates['y'] = (random.uniform(2.0,8.0) *
+                                     plus_minus())
+        else: # Assume rural
+            self.coordinates['x'] = (random.uniform(8.0,20.0) *
+                                     plus_minus())
+            self.coordinates['y'] = (random.uniform(8.0,20.0) *
+                                     plus_minus())
+    
+    def distance_from_house(self):
+        '''Calculate the euclidean distance to the current house.
+        
+        Character's current housing is (string):
+            game_state.game.character.selected_house
+        
+        :return: Distance in miles, rounded to the tenth.
+        :rtype: int.
+        '''
+        # Friend's house
+        if game_state.game.character.selected_house_idx == 0: 
+            c1 = (game_state.game.locations.
+                  friend_location['coordinates'])
+        else:
+            # Housing is always -1
+            idx = game_state.game.character.selected_house_idx - 1 
+            x = (game_state.game.character.inventory.
+                 sorted_items['housing'][ idx ].coordinates)
+            c1 = [x['x'], x['y']]
+        c2 = self.coordinates
+        return round(euclidean(c1, [c2['x'], c2['y']]), 1)
         
 
 
@@ -2244,6 +2289,82 @@ class DayScreen(Menu):
             'top': 20,
             'height': 300
         }
+    def process_before_unload(self, chosen_position):
+        '''Go to the store or back home.
+        
+        If store, validate that travel constraints are met (time).
+        Ceiling the travel time (20 minutes = one hour).
+        
+        Set location.active_store_idx to chosen store.
+        
+            Variables:  Num day hours remaining:
+                            game_state.game.current_day.day_hours
+                        Distance x 2 of store (round-trip):
+                            (game_state.game.character.location.
+                            stores[ chosen_position ].
+                            distance_from_house())
+                        Current mode of transit:
+                            mode = game_state.game.character.transit_mode
+                            speed = (ITEMS.n['transit_attributes']
+                            [ mode ][0])
+            
+            Time = (2 * Distance) / Speed.
+            E.g.   (2 * 5 miles ) / 30mph = 20 minutes.
+        
+        :param int chosen_position:
+            The position of the menu selected by user.
+        :return:
+            Return True if it is okay to continue, False if it is not.
+        :rtype: boolean.
+        '''
+        location = game_state.game.character.location
+        if len(location.stores) -1  < chosen_position: # To DayScreen.
+            return True
+        elif chosen_position == 3:
+            game_state.game.jobs.job.distance_from_house()
+        
+        #-----------------
+        # Validate travel.
+        #-----------------
+        distance = 2 * (location.stores[ chosen_position ].
+                        distance_from_house())
+        mode = game_state.game.character.transit_mode
+        speed = ITEMS.n['transit_attributes'][ mode ][0]
+        travel_time = math.ceil(distance / speed)
+        # No store.
+        if game_state.game.current_day.day_hours < travel_time: 
+            store_name = location.stores[ chosen_position ].name
+            m = ('Warning: There are not enought hours left to make it to work!'+
+                 ' \nThe trip takes '+str(travel_time)+
+                 ' hours but only '+str(game_state.game.current_day.
+                                        day_hours)+' hours remain!')
+            self.alert(m, ['OK'], self.click_no_change)
+            return False
+        else:
+            # Subtract hours.
+            game_state.game.current_day.day_hours -= travel_time
+            # Subtract travel cost.
+            game_state.game.character.inventory.use_transit(distance)
+            #Add money
+            game_state.game.character.earn_money(game_state.game.jobs.job.hours_worked)
+            return True
+                
+        # To store.
+        location.active_store_idx = chosen_position
+        return True
+        
+    def click_no_change(self, confirm):
+        #--------
+        # This tests whether setting character health to 
+        # zero actually results in game over... which it does.
+        #--------
+        game_state.game.character.health = 0
+        game_state.game.character.is_dead = True
+        pygame.event.post(game_state.event)
+        
+        #--------
+        pass
+
 
 class ElectionDay(Menu): #Use on 48,96 .... +=48
     def __init__(self):
