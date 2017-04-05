@@ -1640,7 +1640,7 @@ class StoreScreen(Menu):
         #--------
         game_state.game.character.health = 0
         game_state.game.character.is_dead = True
-        pygame.event.post(game_state.first_game_event)
+        
         
         #--------
         pass
