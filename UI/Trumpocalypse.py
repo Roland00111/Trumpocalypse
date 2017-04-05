@@ -1096,8 +1096,9 @@ class Store:
 
 class Jobs:
     def __init__(self):
-        self.none = None
-        job = Job()
+        pass
+        #self.none = None
+        #job = Job()
     def random_job(self):
         r = random.randint(0,len(jobs.j.keys())-1)
         x = jobs.j.values()[r]
@@ -1113,7 +1114,8 @@ class Job:
         self.area = area
         self.work_events = work_events
         self.coordinates = {}
-        self.distances_call = self.distances()
+        #self.distances_call = 
+        self.distances()
 
     def work(self):
         self.random_dictPos = random.randint(0,
@@ -1634,11 +1636,11 @@ class StoreScreen(Menu):
     def click_no_change(self, confirm):
         #--------
         # This tests whether setting character health to 
-        # zero actually results in game over... which it does.
+        # zero actually results in game over.
         #--------
         game_state.game.character.health = 0
         game_state.game.character.is_dead = True
-        pygame.event.post(game_state.event)
+        pygame.event.post(game_state.first_game_event)
         
         #--------
         pass
@@ -2290,26 +2292,7 @@ class DayScreen(Menu):
             'height': 300
         }
     def process_before_unload(self, chosen_position):
-        '''Go to the store or back home.
-        
-        If store, validate that travel constraints are met (time).
-        Ceiling the travel time (20 minutes = one hour).
-        
-        Set location.active_store_idx to chosen store.
-        
-            Variables:  Num day hours remaining:
-                            game_state.game.current_day.day_hours
-                        Distance x 2 of store (round-trip):
-                            (game_state.game.character.location.
-                            stores[ chosen_position ].
-                            distance_from_house())
-                        Current mode of transit:
-                            mode = game_state.game.character.transit_mode
-                            speed = (ITEMS.n['transit_attributes']
-                            [ mode ][0])
-            
-            Time = (2 * Distance) / Speed.
-            E.g.   (2 * 5 miles ) / 30mph = 20 minutes.
+        '''Leave the DayScreen after user presses EnterKey.
         
         :param int chosen_position:
             The position of the menu selected by user.
@@ -2317,55 +2300,33 @@ class DayScreen(Menu):
             Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
-        location = game_state.game.character.location
-        if len(location.stores) -1  < chosen_position: # To DayScreen.
+        if chosen_position != 3: # Anything but work
             return True
-        elif chosen_position == 3:
-            game_state.game.jobs.job.distance_from_house()
         
-        #-----------------
-        # Validate travel.
-        #-----------------
-        distance = 2 * (location.stores[ chosen_position ].
-                        distance_from_house())
+        #----------------------
+        # Validate work travel.
+        #----------------------
+        job = game_state.game.character.job
+        distance = 2 * (job.distance_from_house())
         mode = game_state.game.character.transit_mode
         speed = ITEMS.n['transit_attributes'][ mode ][0]
         travel_time = math.ceil(distance / speed)
         # No store.
         if game_state.game.current_day.day_hours < travel_time: 
-            store_name = location.stores[ chosen_position ].name
-            m = ('Warning: There are not enought hours left to make it to work!'+
-                 ' \nThe trip takes '+str(travel_time)+
+            m = ('Warning: There are not enough hours left to make it '+
+                 'to work!'+
+                 '\nThe trip takes '+str(travel_time)+
                  ' hours but only '+str(game_state.game.current_day.
                                         day_hours)+' hours remain!')
-            self.alert(m, ['OK'], self.click_no_change)
+            self.alert(m, ['OK'])
             return False
         else:
             # Subtract hours.
             game_state.game.current_day.day_hours -= travel_time
             # Subtract travel cost.
             game_state.game.character.inventory.use_transit(distance)
-            #Add money
-            game_state.game.character.earn_money(game_state.game.jobs.job.hours_worked)
             return True
-                
-        # To store.
-        location.active_store_idx = chosen_position
-        return True
         
-    def click_no_change(self, confirm):
-        #--------
-        # This tests whether setting character health to 
-        # zero actually results in game over... which it does.
-        #--------
-        game_state.game.character.health = 0
-        game_state.game.character.is_dead = True
-        pygame.event.post(game_state.event)
-        
-        #--------
-        pass
-
-
 class ElectionDay(Menu): #Use on 48,96 .... +=48
     def __init__(self):
         game_state.game.day_counter += 1
