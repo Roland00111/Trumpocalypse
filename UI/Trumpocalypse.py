@@ -185,7 +185,7 @@ class Menu:
         self.scene.show_alert(message, buttons, callback_function,
                               choice_list, choice_list_callback)
         
-    class CustomField: #????
+    class CustomField:
         def __init__(self, field_type, field_content, field_label,
                      field_event_hooks):
             '''
@@ -272,6 +272,7 @@ class EventsLoop:
             ##########################################################
             for event in pygame.event.get():
                 if game_state.first_game_event==False:
+                    print("setting first game event")
                     game_state.first_game_event=event
 
                 #------------------------------------------
@@ -1120,8 +1121,11 @@ class Job:
     def work(self):
         self.random_dictPos = random.randint(0,
                                             len(self.work_events)-1)
+        
         self.hours_worked = (self.work_events.values()
-                             [self.random_dictPos])
+                              [self.random_dictPos])
+        if self.hours_worked > game_state.game.current_day.day_hours:
+            self.hours_worked = game_state.game.current_day.day_hours
         game_state.game.current_day.day_hours -= self.hours_worked
         print self.hours_worked
         self.money_made = (game_state.game.character.
@@ -1785,7 +1789,7 @@ class Event:
         self.activated = True
         # If self.months_remaining <= 0 ...
         # Then ...
-    
+
     def generate_duration(self):
         '''Generate the duration of this event. It is between
         [base_duration + duration_rand_min] and [base_duration +
@@ -1993,6 +1997,15 @@ class Game:
     
     def tally_score(self):
         print 'Tally the score...'
+
+    def mod_hours(self,hours,operation='+'):
+        ''' Modifies hours. Ensures that hours is greater than or equal
+            to 0.
+        '''
+        
+        if game_state.game.day.day_hours < hours:
+            game_state.game.day.day_hours=0
+            
         
     class Day:
         day_hours = 16
@@ -2283,6 +2296,7 @@ class DayScreen(Menu):
     def update_body(self):
         '''Call this function to update text in the body.
         '''
+        #start here DDDDDDDDDDD
         text = ('Term Number: ' + str(game_state.game.term_count) + ' \nDay is: ' + str(game_state.game.current_day.generated_date)
         + ' \n' +' \nHours Left: ' + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
         self.body = {
