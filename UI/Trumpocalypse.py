@@ -1998,14 +1998,16 @@ class Game:
     def tally_score(self):
         print 'Tally the score...'
 
-    def mod_hours(self,hours,operation='+'):
+    def mod_hours(self,hours,operation=False):
         ''' Modifies hours. Ensures that hours is greater than or equal
             to 0.
         '''
-        
-        if game_state.game.day.day_hours < hours:
-            game_state.game.day.day_hours=0
-            
+        if operation==False:
+            game_state.game.day_hours += hours
+        if operation==True:
+            game_state.game.day_hours *= hours
+        if game_state.game.day_hours < 0:
+            game_state.game.day_hours=0
         
     class Day:
         day_hours = 16
@@ -2336,7 +2338,7 @@ class DayScreen(Menu):
             return False
         else:
             # Subtract hours.
-            game_state.game.current_day.day_hours -= travel_time
+            game_state.game.mod_hours(-travel_time)
             # Subtract travel cost.
             game_state.game.character.inventory.use_transit(distance)
             return True
