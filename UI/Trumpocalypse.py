@@ -1752,14 +1752,14 @@ class Event:
         self.activated = False
         self.selected_event = None
         self.warn_no_event = (
-    "Warning: No event selected!\n"+
-    "You must select an event to activate!")
+        "Warning: No event selected!\n"+
+        "You must select an event to activate!")
         self.warn_ask_health_pack = (
-    "Warning: You are about to die!\n"+
-    "Would you like to use some health packs?")
+        "Warning: You are about to die!\n"+
+        "Would you like to use some health packs?")
         self.warn_ignore_health_pack = (
-    "Warning: Why did you choose not to use a health pack!?\n"+
-    "Now you died!")
+        "Warning: Why did you choose not to use a health pack!?\n"+
+        "Now you died!")
         self.warn_no_health_pack = "Warning: No more health packs!\nYou died!"
         self.warn_event_active = "Warning: The event is already activated!"
 
@@ -2052,6 +2052,7 @@ class EventScreen(Menu):
         '''
         if chosen_position == 0:
             # Has the user clicked on a list yet?
+            #selected_event is in Event Class, how do I ref it?
             if self.selected_event is None:
                 self.alert(self.warn_no_event, ["OK"])
                 return False # Stay on EventScreen
