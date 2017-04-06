@@ -1749,7 +1749,21 @@ class Event:
         self.duration_rand_min = duration_rand_min
         self.duration_rand_max = duration_rand_max
         # Will be changed to True at some point.
-        self.activated = False 
+        self.activated = False
+        self.selected_event = None
+        self.warn_no_event = (
+    "Warning: No event selected!\n"+
+    "You must select an event to activate!")
+        self.warn_ask_health_pack = (
+    "Warning: You are about to die!\n"+
+    "Would you like to use some health packs?")
+        self.warn_ignore_health_pack = (
+    "Warning: Why did you choose not to use a health pack!?\n"+
+    "Now you died!")
+        self.warn_no_health_pack = "Warning: No more health packs!\nYou died!"
+        self.warn_event_active = "Warning: The event is already activated!"
+
+        
         
     def process(self):
         '''Process event. Each time the event happens
@@ -1852,6 +1866,23 @@ class Events:
         self.last_random_event = ['placeholder',1]
         pass
     
+    def show_inactive_events(self):
+        ''' Appends inactive events to inactive_events
+        '''
+        temp = [ ]
+        for event in self.inactive_events:
+            temp.append( {'item':event,'value':event.event_text} )
+        return temp
+
+    def show_active_events(self):
+        ''' Appends active events to active_events
+        '''
+        temp = [ ]
+        for event in self.active_events:
+            temp.append( {'item':event,'value':event.event_text} )
+        return temp
+
+    
     def events_values(self):
         '''Returns a list of titles of current inactive events.
         
@@ -1941,11 +1972,13 @@ class EventScreen(Menu):
         self.menu_name = '...'
         self.events_values = game_state.game.events.events_values()
         self.keypressArray = [
-             DayScreen for x in range(len(game_state.game.events.
-                                          inactive_events)+1)
+            DayScreen,
+            DayScreen,
+             #DayScreen for x in range(len(game_state.game.events.
+                                          #inactive_events)+1)
         ]
-        self.titlesArray = self.events_values + ['Back to Day']
-        text = ''
+        self.titlesArray = ['Active Event','Go Back To Day'] #self.events_values + ['Back to Day']
+        text = 'Select an event to continue...'
         #For some reason font size 32 looks a lot better than 30 or 34
         self.body = {
             'text': text,
@@ -1953,32 +1986,99 @@ class EventScreen(Menu):
             'top': 60,
             'height': 250
         }
+        
+        g = game_state.game.events
+
+        x = PygameUI.List(g.show_inactive_events(), (200, 224, 200))
+        x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.border_width = 1
+        x.container.draggable = True
+        x.callback_function = self.click_event_list
+        self.scene.add_child(x)
+
+        x = PygameUI.List(g.show_active_events(), (200, 224, 200))
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.border_width = 1
+        x.container.draggable = True
+        x.callback_function = self.click_event_list
+        self.scene.add_child(x)
+
+    def click_died(self, confirm):
+        '''User clicked "OK". So end the game.
+        In EventsLoop this will immediately jump
+        to GameOverScreen, assuming also of course
+        that health <= 0.
+        :param boolean confirm: Confirm is always true in this case.
+        '''
+        character.is_dead = True
+
+
+    def click_use_first_aid(self, confirm):
+        '''User clicked "Use first aid packs" or "Do not use first aid packs".
+    If "Do not use" end the game. Else try using first aid packs
+    until there are no more remaining or until the character's health > 0.
+        :param boolean confirm: True if "Use" is pressed, False if "Do not" is pressed.
+        '''
+        c = game_state.game.character
+        if confirm is False:
+            self.alert(self.warn_ignore_health_pack, ['OK'], None, self.click_died)
+        else:
+            n = 0
+            while c.health <= 0 and c.inventory.use_item(Item('First Aid Kit'), 1) is True:
+                c.health += 1
+                n += 1
+            if c.health is still <= 0:
+                self.alert(self.warn_no_health_pack, ['OK'], None, self.click_died)
+            else:
+                if n == 1:
+                    m = "You're still alive thanks to a health pack!" 
+                else:
+                    m = "You're still alive thanks to those "+str(n)+" health packs!"
+            self.alert(m, ['OK'])
+
+    
+    def click_event_list(self, selected_index,
+        selected_value, selected_item):
+        ''' This will show the events text after you click the event
+        '''
+        self.selected_event = selected_item
+        self.body['text'] = "Oh, wtf!? \n" +selected_item.story_text
+
     
     def process_before_unload(self,chosen_position):
-        '''Define this menu's process_before_unload function.
-
-        This will be called just before changing to the next menu.
-        
-        Updates the game based on the event chosen by the user.
-        
-        If the user does not choose an event then return immediately
-        to the DayScreen. Otherwise, mark the event as active so that
-        it processes from now on during StoryScreen (new month).
-        
-        Also, process the event for the first time starting now.
-        
-        :param int chosen_position:
-            The position of the menu selected by user.
-        :return:
-            Return True if it is okay to continue, False if it is not.
-        :rtype: boolean.
+        '''The user pressed "Activate Event".
         '''
-        if len(self.events_values) -1  < chosen_position:
-            return
-        event=game_state.game.events.inactive_events[chosen_position]
-        # Go from inactive to active.
-        game_state.game.events.toggle_event(event)
-        return True
+        if chosen_position == 0:
+            # Has the user clicked on a list yet?
+            if self.selected_event is None:
+                self.alert(self.warn_no_event, ["OK"])
+                return False # Stay on EventScreen
+            # Clicked on something.
+            # Is it active?
+            if event.activated is True:
+                self.alert(self.warn_event_active, ["OK"])
+                return False # Stay on EventScreen
+            # The event is not activated.
+            # Activate event.
+            game_state.game.events.toggle_event(event)
+            # Check character.health.
+            c = game_state.game.character
+            if c.health >= 1:
+                return True # Back to DayScreen
+            elif c.health <= 0:
+                self.alert(self.ask_health_packs,
+                        [ "Use some health packs.",
+                        "Do not use any health packs." ],
+                        self.click_use_first_aid)
+                return False # Stay on EventScreen
+        elif chosen_position == 1:
+            # User pressed Go Back to Day.
+            # In this case simply return True.
+            # This will go back to DayScreen.
+            return True
+
             
 class Game:
     day_counter = 0
