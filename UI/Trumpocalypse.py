@@ -1644,7 +1644,7 @@ class StoreScreen(Menu):
         #--------
         game_state.game.character.health = 0
         game_state.game.character.is_dead = True
-        
+        pygame.event.post(game_state.first_game_event)
         
         #--------
         pass
@@ -2012,8 +2012,9 @@ class EventScreen(Menu):
         that health <= 0.
         :param boolean confirm: Confirm is always true in this case.
         '''
-        character.is_dead = True
-
+        game_state.game.character.is_dead = True
+        print 'x',game_state.first_game_event
+        print pygame.event.post(game_state.first_game_event)
 
     def click_use_first_aid(self, confirm):
         '''User clicked "Use first aid packs" or "Do not use first aid packs".
@@ -2029,14 +2030,14 @@ class EventScreen(Menu):
             while c.health <= 0 and c.inventory.use_item(Item('First Aid Kit'), 1) is True:
                 c.health += 1
                 n += 1
-            if c.health is still <= 0:
+            if c.health <= 0:
                 self.alert(self.warn_no_health_pack, ['OK'], None, self.click_died)
             else:
                 if n == 1:
                     m = "You're still alive thanks to a health pack!" 
                 else:
                     m = "You're still alive thanks to those "+str(n)+" health packs!"
-            self.alert(m, ['OK'])
+                self.alert(m, ['OK'])
 
     
     def click_event_list(self, selected_index,
@@ -2069,7 +2070,7 @@ class EventScreen(Menu):
             if c.health >= 1:
                 return True # Back to DayScreen
             elif c.health <= 0:
-                self.alert(self.ask_health_packs,
+                self.alert(self.warn_ask_health_pack,
                         [ "Use some health packs.",
                         "Do not use any health packs." ],
                         self.click_use_first_aid)
