@@ -2105,11 +2105,11 @@ class Game:
             to 0.
         '''
         if operation==False:
-            game_state.game.day_hours += hours
+            game_state.game.current_day.day_hours += hours
         if operation==True:
-            game_state.game.day_hours *= hours
-        if game_state.game.day_hours < 0:
-            game_state.game.day_hours=0
+            game_state.game.current_day.day_hours *= hours
+        if game_state.game.current_day.day_hours < 0:
+            game_state.game.current_day.day_hours=0
         
     class Day:
         day_hours = 16
