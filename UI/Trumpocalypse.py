@@ -296,7 +296,7 @@ class EventsLoop:
                             cm.scene.remove_child(child)
                             break
                     self.current_menu = GameOverScreen()
-                    continue
+                    cm = self.current_menu # Update the cm variable.
                 
                 if event.type == QUIT: # Quit.
                     pygame.display.quit()
