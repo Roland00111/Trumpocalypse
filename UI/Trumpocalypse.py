@@ -1126,7 +1126,7 @@ class Job:
                               [self.random_dictPos])
         if self.hours_worked > game_state.game.current_day.day_hours:
             self.hours_worked = game_state.game.current_day.day_hours
-        game_state.game.current_day.day_hours -= self.hours_worked
+        game_state.game.mod_hours(-self.hours_worked)
         print self.hours_worked
         self.money_made = (game_state.game.character.
                            earn_money( self.hours_worked))
@@ -1382,7 +1382,7 @@ class CharacterHUD:
                 game_state.game.character.selected_house = (v.
                                                         split(':')[0])
             # Reduce day hours.
-            game_state.game.current_day.day_hours -= 1 
+            game_state.game.mod_hours(-1) 
             self.current_menu.update_body() # update menu
         elif confirm is False: # 'No, stay...'
             # Reset index of housing list.
@@ -1629,7 +1629,7 @@ class StoreScreen(Menu):
             return False
         else:
             # Subtract hours.
-            game_state.game.current_day.day_hours -= travel_time
+            game_state.game.mod_hours(-travel_time)
             # Subtract travel cost.
             game_state.game.character.inventory.use_transit(distance)
                 
@@ -1765,7 +1765,7 @@ class Event:
         c = game_state.game.character
         for key, value in self.bonuses.iteritems():
             if key == 'hours':                      # Hours
-                game_state.game.current_day.day_hours += value
+                game_state.game.mod_hours(value)
             elif key in ITEMS.n['all_choices']:    # Inventory
                 c.inventory.add_item(str(key),int(value))
                                      # Character attribute
@@ -1778,7 +1778,7 @@ class Event:
                 setattr(c,str(key),n+value)
         for key, value in self.bonuses_by_ratio.iteritems():
             if key == 'hours':
-                game_state.game.current_day.day_hours *= value
+                game_state.game.mod_hours(value,True)
             elif key in ITEMS.n['all_choices']:
                 c.inventory.multiply_item(str(key),float(value))
             else:
@@ -2045,7 +2045,7 @@ class EventScreen(Menu):
         ''' This will show the events text after you click the event
         '''
         self.selected_event = selected_item
-        self.body['text'] = "Oh, wtf!? \n" +selected_item.story_text
+        self.body['text'] =selected_item.story_text
 
     
     def process_before_unload(self,chosen_position):
