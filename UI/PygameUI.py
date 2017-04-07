@@ -197,6 +197,7 @@ class Scene(Control):
 
     def show_alert(self, message, buttons, btn_action, choice_list, choice_list_callback):
         if self._has_alert is True: # Do not do two alerts at once (for now)
+            print 'show_alert:has alert'
             return
         alert = Alert(message, buttons, btn_action, choice_list, choice_list_callback)
         alert.frame = pygame.Rect(0, 0, self.frame.w, max(120, self.frame.h // 3))
@@ -487,10 +488,11 @@ class Alert(Control):
             self.frame.h += 110
 
     def dismiss(self):
-        self.scene._has_alert = False
+        #~ self.scene._has_alert = False # Moved into press function.
         self.scene.remove_child(self)
         
     def press(self, yes_or_no):
+        self.scene._has_alert = False # Reset alert state.
         if self.callback_function != None:
             self.callback_function(yes_or_no) # Call action
         self.dismiss()

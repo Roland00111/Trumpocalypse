@@ -179,9 +179,13 @@ class Menu:
     def alert(self, message, buttons, callback_function=None,
               choice_list=None, choice_list_callback=None):
         '''Helper function to show alert using PygameUI scene.
+        There is only one alert allowed at a time.
         
         See class Alert for parameter details.
         '''
+        #~ if self.scene._has_alert:
+            #~ self.scene._has_alert = False
+        
         self.scene.show_alert(message, buttons, callback_function,
                               choice_list, choice_list_callback)
         
@@ -2012,6 +2016,7 @@ class EventScreen(Menu):
         that health <= 0.
         :param boolean confirm: Confirm is always true in this case.
         '''
+        print 'x',game_state.first_game_event
         game_state.game.character.is_dead = True
         print 'x',game_state.first_game_event
         print pygame.event.post(game_state.first_game_event)
@@ -2023,15 +2028,18 @@ class EventScreen(Menu):
         :param boolean confirm: True if "Use" is pressed, False if "Do not" is pressed.
         '''
         c = game_state.game.character
+        print 'confirm:',confirm
         if confirm is False:
-            self.alert(self.warn_ignore_health_pack, ['OK'], None, self.click_died)
+            #~ print 'alert self.warn_ignore_health_pack'
+            self.alert(self.warn_ignore_health_pack, ['OK'], self.click_died)
+            print 'after self.warn_ignore_health_pack...'
         else:
             n = 0
             while c.health <= 0 and c.inventory.use_item(Item('First Aid Kit'), 1) is True:
                 c.health += 1
                 n += 1
             if c.health <= 0:
-                self.alert(self.warn_no_health_pack, ['OK'], None, self.click_died)
+                self.alert(self.warn_no_health_pack, ['OK'], self.click_died)
             else:
                 if n == 1:
                     m = "You're still alive thanks to a health pack!" 
