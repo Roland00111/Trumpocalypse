@@ -1750,19 +1750,6 @@ class Event:
         self.duration_rand_max = duration_rand_max
         # Will be changed to True at some point.
         self.activated = False
-        self.selected_event = None
-        self.warn_no_event = (
-        "Warning: No event selected!\n"+
-        "You must select an event to activate!")
-        self.warn_ask_health_pack = (
-        "Warning: You are about to die!\n"+
-        "Would you like to use some health packs?")
-        self.warn_ignore_health_pack = (
-        "Warning: Why did you choose not to use a health pack!?\n"+
-        "Now you died!")
-        self.warn_no_health_pack = "Warning: No more health packs!\nYou died!"
-        self.warn_event_active = "Warning: The event is already activated!"
-
         
         
     def process(self):
@@ -1986,6 +1973,19 @@ class EventScreen(Menu):
             'top': 60,
             'height': 250
         }
+        # Some variables specific to this screen.
+        self.selected_event = None
+        self.warn_no_event = (
+        "Warning: No event selected!\n"+
+        "You must select an event to activate!")
+        self.warn_ask_health_pack = (
+        "Warning: You are about to die!\n"+
+        "Would you like to use some health packs?")
+        self.warn_ignore_health_pack = (
+        "Warning: Why did you choose not to use a health pack!?\n"+
+        "Now you died!")
+        self.warn_no_health_pack = "Warning: No more health packs!\nYou died!"
+        self.warn_event_active = "Warning: The event is already activated!"
         
         g = game_state.game.events
 
@@ -2058,12 +2058,12 @@ class EventScreen(Menu):
                 return False # Stay on EventScreen
             # Clicked on something.
             # Is it active?
-            if event.activated is True:
+            if self.selected_event.activated is True:
                 self.alert(self.warn_event_active, ["OK"])
                 return False # Stay on EventScreen
             # The event is not activated.
             # Activate event.
-            game_state.game.events.toggle_event(event)
+            game_state.game.events.toggle_event(self.selected_event)
             # Check character.health.
             c = game_state.game.character
             if c.health >= 1:
