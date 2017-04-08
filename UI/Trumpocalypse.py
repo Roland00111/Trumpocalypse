@@ -1785,6 +1785,8 @@ class Event:
                 game_state.game.mod_hours(value,True)
             elif key in ITEMS.n['all_choices']:
                 c.inventory.multiply_item(str(key),float(value))
+            elif key == 'income':
+                game_state.game.character.job.income *= value
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n*value)
@@ -1842,7 +1844,7 @@ class Events:
                 '...story...',
                 1,0,0),
         Event(  'Tax Collector',{'Cash':100, 'sanity':10},
-                {'Cash':0.90}, # Removes $100, then sets cash to 90%.
+                {'Cash':0.10}, # Removes $100, then sets cash to 10%.
                 '...story...',
                 1,0,1),
         Event(  'Curfew', {'hours':-4,'sanity':-1}, {},
