@@ -1843,8 +1843,8 @@ class Events:
         Event(  'Puppies!!',{'Cash':-1000, 'sanity':10}, {},
                 '...story...',
                 1,0,0),
-        Event(  'Tax Collector',{'Cash':100, 'sanity':10},
-                {'Cash':0.10}, # Removes $100, then sets cash to 10%.
+        Event(  'Tax Collector',{'Cash':-1000, 'sanity':10},
+                {'Cash':0.60}, # Removes $1000, then sets cash to 60%.
                 '...story...',
                 1,0,1),
         Event(  'Curfew', {'hours':-4,'sanity':-1}, {},
