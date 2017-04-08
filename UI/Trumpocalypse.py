@@ -35,6 +35,7 @@ def plus_minus():
 def euclidean(p1, p2):
     '''Determine euclidean distance between two points.
     Pretty straightforward: http://stackoverflow.com/a/4169284/2178774.
+    
     :param list p1: A list with first element=x, second=y.
     :param list p2: A list with first element=x, second=y.
     :return: Euclidean distance between points.
@@ -192,11 +193,24 @@ class Menu:
     class CustomField:
         def __init__(self, field_type, field_content, field_label,
                      field_event_hooks):
-            '''
-            field_type = string: 'list', 'button', 'input', 'number' (also input but limited to #s)????
-            field_content = array of strings: for list; string: button text, input default value, number default value
-            field_label = string, a label to put beside the field
-            field_event_hooks = array, an array of dict events, each dict event has a `type` and `callback_function`
+            '''Testing. Not fully implemented.
+            
+            :param str field_type: 'list', 'button', 'input', or
+                'number' (also input but limits to numbers)
+            :param list field_content:
+                Based on parameter field_type.
+                If field == 'list':
+                    A list of strings for list.
+                If field == 'button':
+                    One element, string for button text.
+                If field == 'input':
+                    One element, string for input's current value.
+                If field == 'number':
+                    One element, int for number field current value.
+            :param str field_label: A label to put beside the field.
+            :param list field_event_hooks:
+                List of dict events, where each dict event has a `type`
+                and `callback_function`.
             '''
             self.field_type         = field_type
             self.field_content      = field_content
@@ -206,12 +220,14 @@ class Menu:
             self.select()
             
         def select(self):
-            # Testing.....
-            # This is named select because Python already has a list() function.
-            # There is probably a callback function here for events.
-            # There could be a label passed into CustomField
-            # that is added to the left of each list.
-            # Is it possible to add this with the Label class?
+            '''Testing.
+            This is named select because Python already has a list()
+            function.
+            There is probably a callback function here for events.
+            There could be a label passed into CustomField
+            that is added to the left of each list.
+            Is it possible to add this with the Label class?
+            '''
             x = PygameUI.List([{'item':None,'value':'Item %s'%str(i) }
                                for i in range(20)])
             x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
@@ -232,36 +248,30 @@ class Menu:
             pass
         
         def number(self):
-            # What if the number field is instead just a list() field?
+            # What if number is a list() instead of text field?
             pass
 
 class EventsLoop:
     '''
     This loop is running continuously to check for anytime a key on
-    the keyboard is pressed or a mouse button is pressed. Aswell as
+    the keyboard is pressed or a mouse button is pressed. As well as
     drawing the next menu when you click an item.
     Note the pygame.time.wait(0) call. This reduces CPU
     usage from 100% to negligible!
     This is noted at this URL:
-    https://www.gamedev.net/topic/518494-pygame-eating-up-my-cpu/#entry4368408
+    https://www.gamedev.net/topic/
+        518494-pygame-eating-up-my-cpu/#entry4368408
     The author states:
     "Giving up any remainder of the timeslice is the key to
     lowering CPU usage, which is done by sleeping - or,
     in the case of PyGame, calling time.wait()."
-            
-    Sample body text: menu.body = { ????
-        text: 'Some Main Text',
-        font_size: 32,
-        top: 40,
-        height: 300
-    }
     '''
     current_menu = None
     
     def __init__(self,testevents = None):
         ''' This starts the continuosly running loop.
         '''
-        # Starts on opening menu. Then changes.
+        # Start on opening menu. Then changes.
         self.current_menu = OpeningMenu() 
         event_loop = True
         recurse_test = 0
@@ -921,42 +931,10 @@ class Item:
                                 self.max_remaining_uses)))+'%'
         
     def set_item(self, item_type):
-        '''K=1 Karma, I=1 Influence, B=1 Butterfly
-        
-        Alert levels: red, yellow, no_color
-        
-        Food: Basic amount=10 uses, 3 uses/day;
-            If Food=0: HP-=1/day
-            If 0, alert_user( red '...need to find food!' )
-        
-        Garden: Basic amount=10 uses, -1garden/use, -2hours/use,
-        +6 Food/use, Strength+=0.1/use, (+K,+I,+B)
-        
-        Bicycle: 0.5x time travel, -1 use/mile travel, Strength+=0.1,
-        (+K+I+B)
-        
-        Walking(?): 0.25x time travel, Strength+=0.1, (+K+I+B)
-        
-        Clothing: -1 use/day;
-            If Clothing=0: -1Charisma/day, (-I)
-            If 0, alert_user( yellow '...need to find clothes!' )
-        
-        Transit Pass: 1x time travel, -1 use/mile travel, (+K+I+B)
-        
-        Car: 1x time travel, -1 use/mile travel, (-1K-1B)
-        
-        House: -1 use/day;
-            If Houses=0: -1Charisma, (-1I)
-            If 0, alert_user( no_color '...sure would be nice to have
-            a roof to sleep under!' )
-        
-        ==============================================================
-       
-        Single use items have remaining_use that declines.
+        '''Single use items have remaining_use that declines.
         
         Grouped use items have num_in_group that declines.
         
-        :rtype: None
         :raises TypeError: If item_type is not in ITEMS.n['stats'].
         '''
         try:
@@ -2290,16 +2268,6 @@ class CreateCharacterAutomatic(Menu):
         sanity = str(game_state.game.character.sanity)
         
         CharacterHUD(self)
-        #~ x = PygameUI.List(game_state.game.character.inventory.
-        #item_count(), (255,120,71))
-        #~ x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150,
-        #Menu.scene.frame.h -8)
-        #~ x.frame.w = x.container.frame.w
-        #~ x.selected_index = 1
-        #~ x.border_width = 0
-        #~ x.container.draggable = False #Change to True is needs to
-        #be draggable 
-        #~ self.scene.add_child(x)
         
         self.body = {
             'text': ('Name: '+name+' \n'+'Health: '+health+' \n'+
