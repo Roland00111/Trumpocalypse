@@ -13,6 +13,14 @@ Code Documentation
    :members:
    :undoc-members:
 
+.. automodule:: jobs
+   :members:
+   :undoc-members:
+
+.. automodule:: items
+   :members:
+   :undoc-members:
+
 .. automodule:: colors
    :members:
    :undoc-members:
