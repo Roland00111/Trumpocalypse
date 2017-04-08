@@ -454,8 +454,9 @@ class EventsLoop:
     
     def test(testevents):
         '''Run tests.
+        
         :param list testevents:
-        A list of keypress indexes to auto-"press".
+            A list of keypress indexes to auto-"press".
         '''
         while testevents:
             cm = self.current_menu # A quick shortcut.
@@ -1994,6 +1995,7 @@ class EventScreen(Menu):
         In EventsLoop this will immediately jump
         to GameOverScreen, assuming also of course
         that health <= 0.
+        
         :param boolean confirm: Confirm is always true in this case.
         '''
         print 'x',game_state.first_game_event
@@ -2002,10 +2004,14 @@ class EventScreen(Menu):
         print pygame.event.post(game_state.first_game_event)
 
     def click_use_first_aid(self, confirm):
-        '''User clicked "Use first aid packs" or "Do not use first aid packs".
-    If "Do not use" end the game. Else try using first aid packs
-    until there are no more remaining or until the character's health > 0.
-        :param boolean confirm: True if "Use" is pressed, False if "Do not" is pressed.
+        '''User clicked "Use first aid packs" or
+        "Do not use first aid packs".
+        If "Do not use" end the game. Else try using first aid packs
+        until there are no more remaining or until the character's
+        health > 0.
+        
+        :param boolean confirm: True if "Use" is pressed,
+            False if "Do not" is pressed.
         '''
         c = game_state.game.character
         print 'confirm:',confirm
