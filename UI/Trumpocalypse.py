@@ -2123,10 +2123,22 @@ class Game:
                     sorted_items['food'])
             if (food.amount >= 3):
                 food.amount -= 3
-            else:
+                
+            elif (food.amount <3 ):
                 food.amount = 0
                 game_state.game.character.health -= 1
+                game_state.game.character.sanity -= 1
+                
+            if (game_state.game.character.selected_house == ('Staying with Friends')):
+                game_state.game.character.sanity -= 1
+                
 
+                #if sanity dips under zero at the end of the day it hurts
+                #your health
+            elif (game_state.game.character.sanity <=0):
+                game_state.game.character.sanity = 5
+                game_state.game.character.health -=1
+            
             ##
             ##
             #game_state.game.character.check_health()
