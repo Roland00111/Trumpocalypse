@@ -1795,8 +1795,8 @@ class Events:
                 'You were strolling along the beach, when you began to notice'
                 +'the waves drawing back from the coast. You began to run for'
                 +'higher ground and shouted that you thought a Tsunami was coming'
-                +'. Many people did not believe you, and it was their last action.'
-                +' /n You lost 1 Health, and 5 Sanity' ,
+                +'. Many people did not believe you, and it was their last action'
+                +' :-1 Health, -5 Sanity' ,
                 
                 2,0,1), #duration,duration_rand_min, duration_rand_max all in months
         Event(   'You Won the Lottery!', {'Cash':10000,'sanity':1},
@@ -1805,7 +1805,7 @@ class Events:
                  +'. You forgot about it, but after watching the daily news, you'
                  +'found out that the winning ticket, was bought from the store'
                  +'Which you bought yours! After some searching you find the ticket'
-                 +'and bring it in, it was the winner! You Gain $10,000!!',
+                 +'and bring it in, it was the winner!: You Gain $10,000!',
                 1,0,0),
         Event(  'Extreme Pollution', {'health':-1,'sanity':-1}, {},
                 'Since the new President was elected there have been,'
@@ -1814,23 +1814,40 @@ class Events:
                 +'us. The country is in a state of panic, due to dangerous'
                 +'levels of CO2 in the atmosphere:  -1 Health, -1 Sanity',
                 4,0,4),
-        Event(  'Nuclear War', {'health':-2,'sanity':-5}, {},
-                '...story...',
+        Event(  'Nuclear War', {'health':-2,'sanity':-5,'hours':-4}, {},
+                'It was deemed necessary to send an attack on Syria today.'
+                +'Russia did not take it kindly, and has decided to retaliate'
+                +'by attacking your home soil. A nuke has been launched and'
+                +'your life will drastically change: -2 health -5 sanity -4 hours',
                 6,0,6),
-        Event(  'Marshall Law', {'hours':-4,'sanity':-2,
-                                 'income':-5000}, {},
-                '...story...',
+        Event(  'Martial Law', {'hours':-4,'sanity':-2,
+                                 'income':-2500}, {},
+                'A state of emergency has been declared, and Marshall Law put'
+                +'into effect. Please remain calm and listen to all army officials.'
+                +'You will help the efforts of the country for free as it is your'
+                +'duty as a citizen! : -4 hours, -2 sanity, -2500 income',
                 4,0,8),
         Event(  'Zombie Apocalypse', {'hours':-4,'sanity':-2,
                                       'income':-5000}, {},
-                '...story...',
+                'Some people think it was voodoo, others think a government finally'
+                +'made it work. What I think, is I am going to keep my brains to myself.'
+                +'Zombies have made it to the United States and you must survive until'
+                +'the government can regain control: -4 hours -2 sanity -5000 income',
                 4,0,8),
+        
         Event(  'You Power Sleep', {'hours':2,'sanity':2}, {},
-                '...story...',
+                'You had the nicest dream last night and although you cannot'
+                +'remember the specifics, you know there were puppies involved'
+                +'. You have not slept this well since you had no worries in the'
+                +'world and were living with your parents : +2 hours +2 sanity',
                 1,0,0),
-        Event(  'Find Supply Cache', {'Food':5,'Cash':1000,
+        Event(  'Find Supply Cache', {'Food':15,'Cash':1000,
                                       'sanity':1}, {},
-                '...story...',
+                'You were playing with your metal detector for fun and'
+                +'it began to beep signifying a large metal object about'
+                +' 4 feet under the ground, against your better instincts'
+                +'you decided to dig it up and found a hiddent supply cache!'
+                +'Thanks doomsday prepper! +15 food +$1000 +1 sanity' ,
                 1,0,0),
         Event(  'Puppies!!',{'Cash':-1000, 'sanity':10}, {},
                 '...story...',
