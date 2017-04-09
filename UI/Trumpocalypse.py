@@ -1797,8 +1797,8 @@ class Events:
                 +'higher ground and shouted that you thought a Tsunami was coming'
                 +'. Many people did not believe you, and it was their last action'
                 +' :-1 Health, -5 Sanity' ,
-                
                 2,0,1), #duration,duration_rand_min, duration_rand_max all in months
+        
         Event(   'You Won the Lottery!', {'Cash':10000,'sanity':1},
                  {},
                 'Yesterday, on a whim you bought your first and only lottery ticket.'
@@ -1807,6 +1807,7 @@ class Events:
                  +'Which you bought yours! After some searching you find the ticket'
                  +'and bring it in, it was the winner!: You Gain $10,000!',
                 1,0,0),
+        
         Event(  'Extreme Pollution', {'health':-1,'sanity':-1}, {},
                 'Since the new President was elected there have been,'
                 'developments which increased our industrial power and'
@@ -1814,12 +1815,14 @@ class Events:
                 +'us. The country is in a state of panic, due to dangerous'
                 +'levels of CO2 in the atmosphere:  -1 Health, -1 Sanity',
                 4,0,4),
+        
         Event(  'Nuclear War', {'health':-2,'sanity':-5,'hours':-4}, {},
                 'It was deemed necessary to send an attack on Syria today.'
                 +'Russia did not take it kindly, and has decided to retaliate'
                 +'by attacking your home soil. A nuke has been launched and'
                 +'your life will drastically change: -2 health -5 sanity -4 hours',
                 6,0,6),
+        
         Event(  'Martial Law', {'hours':-4,'sanity':-2,
                                  'income':-2500}, {},
                 'A state of emergency has been declared, and Marshall Law put'
@@ -1827,6 +1830,7 @@ class Events:
                 +'You will help the efforts of the country for free as it is your'
                 +'duty as a citizen! : -4 hours, -2 sanity, -2500 income',
                 4,0,8),
+        
         Event(  'Zombie Apocalypse', {'hours':-4,'sanity':-2,
                                       'income':-5000}, {},
                 'Some people think it was voodoo, others think a government finally'
@@ -1841,6 +1845,7 @@ class Events:
                 +'. You have not slept this well since you had no worries in the'
                 +'world and were living with your parents : +2 hours +2 sanity',
                 1,0,0),
+        
         Event(  'Find Supply Cache', {'Food':15,'Cash':1000,
                                       'sanity':1}, {},
                 'You were playing with your metal detector for fun and'
@@ -1849,15 +1854,32 @@ class Events:
                 +'you decided to dig it up and found a hiddent supply cache!'
                 +'Thanks doomsday prepper! +15 food +$1000 +1 sanity' ,
                 1,0,0),
+        
         Event(  'Puppies!!',{'Cash':-1000, 'sanity':10}, {},
-                '...story...',
+                'Today it was rainy and you saw a little girl walking her dog'
+                +'. For some reason, this made you think back of your first pet.'
+                +'As you began missing your first dog Spot you decide to give the'
+                +'Humane Society a visit, to see their pets available for adoption.'
+                +'You play with some puppies and end up taking one home: +10 sanity -1000 Cash',
                 1,0,0),
-        Event(  'Tax Collector',{'Cash':-1000, 'sanity':10},
+        
+        Event(  'Tax Collector',{'Cash':-1000, 'sanity':-1},
                 {'Cash':0.60}, # Removes $1000, then sets cash to 60%.
-                '...story...',
+                'As you were cooking dinner, you heard a knock on your door.'
+                +'The government had sent a tax collector because you were'
+                +'overdue on your taxes. At first you thought it was a scam'
+                +'but the man who answered your 911 call validated his badge'
+                +'number. You wrote him a check for your overdue taxes, and '
+                +'the late fees: -1000$ -1 sanity Cash 60%',
                 1,0,1),
-        Event(  'Curfew', {'hours':-4,'sanity':-1}, {},
-                '...story...',
+        
+        Event(  'Curfew', {'hours':-4,'sanity':-2}, {},
+                'Due to government request, everyone must be in their homes'
+                +'for their own safety 4 hours early every night. Some people'
+                +' believe it was an effort to save electricity, others think '
+                +'it is because of dissidents. No one knows the real reason '
+                +'behind the curfew, just anyone who does not abide by it
+                +'go missing, or turn up dead: -4 hours -2 sanity',
                 2,0,1),
     ]
     
