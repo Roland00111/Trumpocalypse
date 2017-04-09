@@ -16,12 +16,25 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
         # determine if the row of text will be outside our area
         if y + fontHeight > rect.bottom:
             break
- 
+        
+        #~ print '======='
         # determine maximum width of line
         while font.size(text[:i])[0] < rect.width and i < len(text) and text[i] != "\n":
+                            #~ print 'text[:i]:','"'+text[:i]+'"'
+                            #~ print 'text[:i][0]:','"'+text[:i][0]+'"'
+                            #~ print 'font.size(text[:i])[0]:',font.size(text[:i])[0]
+                            #~ print 'rect.width:',rect.width
+                            #~ print 'i:',i
+                            #~ print 'len(text):',len(text)
+                            #~ print 'text[i]:','"'+str(text[i])+'"'
+            
             i += 1
-
-        temp = text[:i].replace("\n","")
+        #~ print '------'
+        #~ print 'i',i
+        
+        temp = text[:i].strip()#replace("\n","")
+        
+        #~ print 'temp','"'+temp+'"'
         #Becuase we are relpacing it with "" we are essentially repacling a
         #space with no space moving just that line off by one
         #but if I replace "" with " " it makes the beginning of a line
@@ -49,7 +62,7 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
  
         # remove the text we just blitted
 
-        text = text[i:]
+        text = text[i:].strip() # Remove newline and spaces.
         
 ##        if text[i+1] == '\n':
 ##            text = text[i+1:]
