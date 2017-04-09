@@ -1791,15 +1791,28 @@ class Events:
         #'life will never be the same after...'
         # Max event length ~24 characters bigger breaks the nl
         # character.
-        Event(  'A Tsunami', {'health':-1,'sanity':-1}, {},
-                '...story...',
+        Event(  'A Tsunami', {'health':-1,'sanity':-5}, {},
+                'You were strolling along the beach, when you began to notice'
+                +'the waves drawing back from the coast. You began to run for'
+                +'higher ground and shouted that you thought a Tsunami was coming'
+                +'. Many people did not believe you, and it was their last action.'
+                +' /n You lost 1 Health, and 5 Sanity' ,
+                
                 2,0,1), #duration,duration_rand_min, duration_rand_max all in months
         Event(   'You Won the Lottery!', {'Cash':10000,'sanity':1},
                  {},
-                '...story...',
+                'Yesterday, on a whim you bought your first and only lottery ticket.'
+                 +'. You forgot about it, but after watching the daily news, you'
+                 +'found out that the winning ticket, was bought from the store'
+                 +'Which you bought yours! After some searching you find the ticket'
+                 +'and bring it in, it was the winner! You Gain $10,000!!',
                 1,0,0),
         Event(  'Extreme Pollution', {'health':-1,'sanity':-1}, {},
-                '...story...',
+                'Since the new President was elected there have been,'
+                'developments which increased our industrial power and'
+                'availability of work, but now it is coming back to haunt'
+                +'us. The country is in a state of panic, due to dangerous'
+                +'levels of CO2 in the atmosphere:  -1 Health, -1 Sanity',
                 4,0,4),
         Event(  'Nuclear War', {'health':-2,'sanity':-5}, {},
                 '...story...',
@@ -2121,15 +2134,19 @@ class Game:
             #
             food = (game_state.game.character.inventory.
                     sorted_items['food'])
+
+            
+            
             if (food.amount >= 3):
                 food.amount -= 3
-                
+            
             elif (food.amount <3 ):
                 food.amount = 0
                 game_state.game.character.health -= 1
                 game_state.game.character.sanity -= 1
-                
-            if (game_state.game.character.selected_house == ('Staying with Friends')):
+
+            
+            elif (game_state.game.character.selected_house == ('Staying with Friends')):
                 game_state.game.character.sanity -= 1
                 
 
@@ -2138,6 +2155,10 @@ class Game:
             elif (game_state.game.character.sanity <=0):
                 game_state.game.character.sanity = 5
                 game_state.game.character.health -=1
+
+            else:
+                #Continue the events whose durations have not run out.
+                pass
             
             ##
             ##
