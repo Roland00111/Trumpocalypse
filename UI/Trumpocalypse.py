@@ -2207,7 +2207,7 @@ class Game:
             print 'New day'
             if g.day_counter == 1:
                 self.story_text = ('Today is ' +
-                Game.Day.inauguration_day + ' \ninauguration day, '+
+                Game.Day.inauguration_day + '\ninauguration day, '+
                 'Trump is being sworn into office by Chief Justice '+
                 'John Roberts')
             elif g.day_counter % 48 == 0:
