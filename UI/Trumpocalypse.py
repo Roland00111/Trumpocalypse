@@ -404,17 +404,18 @@ class EventsLoop:
                     cm.init(cm.titlesArray, surface, 200) 
                     cm.draw()
                     # Calculate x offset
-                    x = cm.dest_surface.get_rect().centerx - 150 
+                    w = cm.scene.frame.w - 160 - 160
+                    xoff = cm.dest_surface.get_rect().centerx - w/2 
                     pygame.draw.rect(surface, (255,60,71),
-                    pygame.Rect(x, cm.body['top'], 300,
+                    pygame.Rect(xoff, cm.body['top'], w,
                     cm.body['height']), 10) # Draw a box background.
                                                #Box color
                     # There is a slight offset from the text
                     # and the box. The box needs to contain the text.
                     # So the text is going to be slightly smaller.
                     # How about 8 pixels???? nescasary?
-                    rect = pygame.Rect((x+8,cm.body['top']+8,
-                            300-8,300-8)) # left,top,width,height
+                    rect = pygame.Rect((xoff+8,cm.body['top']+8,
+                            w-8,300-8)) # left,top,width,height
                     font = (pygame.font.Font
                     ('data/coders_crux/coders_crux.ttf',
                      cm.body['font_size']))
