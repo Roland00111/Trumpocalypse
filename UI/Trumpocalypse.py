@@ -1859,18 +1859,16 @@ class Events:
                 'Today it was rainy and you saw a little girl walking her dog'
                 +'. For some reason, this made you think back of your first pet.'
                 +'As you began missing your first dog Spot you decide to give the'
-                +'Humane Society a visit, to see their pets available for adoption.'
-                +'You play with some puppies and end up taking one home: +10 sanity -1000 Cash',
+                +'Humane Society a visit. You play with some puppies '
+                +'and end up taking one home: +10 sanity -1000 Cash',
                 1,0,0),
         
         Event(  'Tax Collector',{'Cash':-1000, 'sanity':-1},
                 {'Cash':0.60}, # Removes $1000, then sets cash to 60%.
                 'As you were cooking dinner, you heard a knock on your door.'
                 +'The government had sent a tax collector because you were'
-                +'overdue on your taxes. At first you thought it was a scam'
-                +'but the man who answered your 911 call validated his badge'
-                +'number. You wrote him a check for your overdue taxes, and '
-                +'the late fees: -1000$ -1 sanity Cash 60%',
+                +'overdue on your taxes. You wrote him a check for your overdue'
+                +' taxes, and the late fees: -1000$ -1 sanity Cash 60%',
                 1,0,1),
         
         Event(  'Curfew', {'hours':-4,'sanity':-2}, {},
@@ -1878,8 +1876,7 @@ class Events:
                 +'for their own safety 4 hours early every night. Some people'
                 +' believe it was an effort to save electricity, others think '
                 +'it is because of dissidents. No one knows the real reason '
-                +'behind the curfew, just anyone who does not abide by it
-                +'go missing, or turn up dead: -4 hours -2 sanity',
+                +'behind the curfew... : -4 hours -2 sanity',
                 2,0,1),
     ]
     
