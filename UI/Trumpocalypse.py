@@ -47,7 +47,8 @@ def euclidean(p1, p2):
 class Menu:
     '''Original code for the menu class is from:
         @author: avalanchy (at) google mail dot com
-        @version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14; MS Windows XP SP3
+        @version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14;
+            MS Windows XP SP3
         @date: 2012-04-08
         @license: This document is under GNU GPL v3
         README on the bottom of document.
@@ -72,7 +73,8 @@ class Menu:
     menu_height = 0
     keypressArray = []
     titlesArray = []
-    # To be filled in by menu classes that need buttons, selects, inputs, and number inputs
+    # To be filled in by menu classes that need buttons, selects,
+    #inputs, and number inputs
     custom_fields = []
     scene = PygameUI.Scene()        # For utilizing pygameui
     body = False                    # This is for main text area.
@@ -125,7 +127,8 @@ class Menu:
         self.CreateStructure(height_top)        
         
     def draw(self,move=0):
-        ''' Draw function for every menu that gets called anytime a menu changes.
+        ''' Draw function for every menu that gets called anytime a
+            menu changes.
         '''
         if move:
             self.PositionSelection += move 
@@ -333,7 +336,8 @@ class EventsLoop:
                     # Make sure to draw alert
                     surface.blit(cm.scene.draw_alert(), (0, 0))
                     # and update, in the case of
-                    #cm.process_before_unload()=False and chosen_position=True
+                    #cm.process_before_unload()=False and
+                    #chosen_position=True
                     pygame.display.update()
                     continue
                 
@@ -1793,11 +1797,12 @@ class Events:
         # Max event length ~24 characters bigger breaks the nl
         # character.
         Event(  'A Tsunami', {'health':-1,'sanity':-5}, {},
-                'You were strolling along the beach, when you began to notice'
-                +'the waves drawing back from the coast. You began to run for'
-                +'higher ground and shouted that you thought a Tsunami was coming'
-                +'. Many people did not believe you, and it was their last action'
-                +' :-1 Health, -5 Sanity' ,
+                'You were strolling along the beach, when you began'
+                +'to notice the waves drawing back from the coast. '
+                +'You began to run for higher ground and shouted that'
+                +' you thought a Tsunami was coming. Many people did '
+                +'not believe you, and it was their last action  :-1 '
+                +'Health, -5 Sanity' ,
                 2,0,1), #duration,duration_rand_min, duration_rand_max all in months
         
         Event(   'You Won the Lottery!', {'Cash':10000,'sanity':1},
