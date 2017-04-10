@@ -611,7 +611,10 @@ class Inventory:
             'food':None, # Will be food item.
         }
         self.is_store = False
-        
+    def house_degrade(self,ratio):
+        for house in self.sorted_items['housing']:
+            house.remaining_uses *= ratio
+            
     def item_count(self):
         #Iterates throught self.items and returns a list of all items
         #in array with number of uses left.
@@ -1774,6 +1777,8 @@ class Event:
                 c.inventory.multiply_item(str(key),float(value))
             elif key == 'income':
                 game_state.game.character.job.income *= value
+            elif key == 'housing':
+                game_state.game.character.inventory.house_degrade(value)
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n*value)
@@ -1829,7 +1834,7 @@ class Events:
                 '-1 Sanity',
                 4,0,4),
         
-        Event(  'Nuclear War', {'health':-2,'sanity':-5,'hours':-4}, {},
+        Event(  'Nuclear War', {'health':-2,'sanity':-5,'hours':-4}, {'housing':0.8},
                 'It was deemed necessary to send an attack on Syria '
                 'today. Russia did not take it kindly, and has '
                 'decided to retaliate by attacking your home soil. A'
