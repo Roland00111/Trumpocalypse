@@ -4,7 +4,7 @@ from pygame.locals import *
 def drawText(surface, text, color, rect, font, aa=False, bkg=None):
     rect = Rect(rect)
     y = rect.top
-    lineSpacing = -2
+    lineSpacing = 0
     # get the height of the font
     fontHeight = font.size("Tg")[1]
     # Split by newline.
