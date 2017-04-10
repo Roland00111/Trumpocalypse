@@ -568,7 +568,7 @@ class Character:
             self.location = (game_state.game.locations.
                              random_location())
             self.job = self.location.random_job()
-            
+            print(self.location.location_name) #DDDDDDDDDD
         elif num == 1:
             self.name = 'Linda'
             self.health = 3
@@ -1208,6 +1208,8 @@ class CharacterHUD:
                  str(game_state.game.character.intelligence)},
                 {'item':None, 'value':'Job: ' +
                  game_state.game.character.job.title},
+                {'item':None, 'value':'Loc: ' + (game_state.game.
+                character.location.location_name)},
                 {'item':None, 'value':'Income: $' +
                  str(game_state.game.character.job.income)},
                 {'item':None, 'value':'Sanity: ' +
@@ -1581,7 +1583,8 @@ class StoreScreen(Menu):
                             stores[ chosen_position ].
                             distance_from_house())
                         Current mode of transit:
-                            mode = game_state.game.character.transit_mode
+                            mode = (game_state.game.character.
+                                    transit_mode)
                             speed = (ITEMS.n['transit_attributes']
                             [ mode ][0])
             
@@ -1638,9 +1641,9 @@ class StoreScreen(Menu):
         pass
 
 class Location:
-    def __init__(self):
+    def __init__(self,location_name):
         
-        self.location_name = 'Town of Anywhere'
+        self.location_name = location_name
         self.connected_regions = []
         self.stores = [
             Store() for i in range(random.randint(1,4))
@@ -1686,7 +1689,7 @@ class Locations:
         'Pacific'
     ]
     def __init__(self):
-        self.locations = [ Location() for i in range(0,8) ]
+        self.locations = [ Location(name) for name in self.all_locations ]
         self.friend_location = { 'coordinates': [ 0, 0 ] }
         pass
     
@@ -2353,15 +2356,16 @@ class CreateCharacterAutomatic(Menu):
         job = game_state.game.character.job.title
         income = str(game_state.game.character.job.income)
         sanity = str(game_state.game.character.sanity)
+        location = game_state.game.character.location.location_name
         
         CharacterHUD(self)
         
         self.body = {
-            'text': ('Name: '+name+' \n'+'Health: '+health+' \n'+
-                     'Strength: '+strength+' \n'+'Gender: '+gender+
-                     ' \n'+'Age: '+age+' \n'+'Charisma: '+charisma+
-                     ' \n'+'Intelligence: '+intelligence + ' \n' +
-                     'Job: ' +job+ ' \n' + 'Income: $'+income+' \n'+
+            'text': ('Name: '+name+'\nLocation: '+location+'\n'+'Health: '+health+'\n'+
+                     'Strength: '+strength+'\n'+'Gender: '+gender+
+                     '\n'+'Age: '+age+'\n'+'Charisma: '+charisma+
+                     '\n'+'Intelligence: '+intelligence + '\n' +
+                     'Job: ' +job+ '\n' + 'Income: $'+income+'\n'+
                      'Sanity: ' +sanity),'font_size': 32,'top': 40,
             'height': 300
         }
