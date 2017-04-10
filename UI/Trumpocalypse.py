@@ -1798,43 +1798,49 @@ class Events:
         # character.
         Event(  'A Tsunami', {'health':-1,'sanity':-5}, {},
                 'You were strolling along the beach, when you began'
-                +'to notice the waves drawing back from the coast. '
-                +'You began to run for higher ground and shouted that'
-                +' you thought a Tsunami was coming. Many people did '
-                +'not believe you, and it was their last action  :-1 '
-                +'Health, -5 Sanity' ,
-                2,0,1), #duration,duration_rand_min, duration_rand_max all in months
+                'to notice the waves drawing back from the coast. '
+                'You began to run for higher ground and shouted that'
+                ' you thought a Tsunami was coming. Many people did '
+                'not believe you, and it was their last action  :-1 '
+                'Health, -5 Sanity' ,
+                2,0,1), #duration,duration_rand_min,
+                        #duration_rand_max all in months
         
         Event(   'You Won the Lottery!', {'Cash':10000,'sanity':1},
                  {},
-                'Yesterday, on a whim you bought your first and only lottery ticket.'
-                 +'. You forgot about it, but after watching the daily news, you'
-                 +'found out that the winning ticket, was bought from the store'
-                 +'Which you bought yours! After some searching you find the ticket'
-                 +'and bring it in, it was the winner!: You Gain $10,000!',
+                'Yesterday, on a whim you bought your first and only '
+                 'lottery ticket. You forgot about it, but after '
+                 'watching the daily news, you found out that the '
+                 'winning ticket, was bought from the store Which '
+                 'you bought yours! After some searching you find '
+                 'the ticket and bring it in, it was the winner!: '
+                 'You Gain $10,000!',
                 1,0,0),
         
         Event(  'Extreme Pollution', {'health':-1,'sanity':-1}, {},
                 'Since the new President was elected there have been,'
                 'developments which increased our industrial power and'
-                'availability of work, but now it is coming back to haunt'
-                +'us. The country is in a state of panic, due to dangerous'
-                +'levels of CO2 in the atmosphere:  -1 Health, -1 Sanity',
+                'availability of work, but now it is coming back to '
+                'haunt us. The country is in a state of panic, due to'
+                'dangerous levels of CO2 in the atmosphere:  -1 Health,'
+                '-1 Sanity',
                 4,0,4),
         
         Event(  'Nuclear War', {'health':-2,'sanity':-5,'hours':-4}, {},
-                'It was deemed necessary to send an attack on Syria today.'
-                +'Russia did not take it kindly, and has decided to retaliate'
-                +'by attacking your home soil. A nuke has been launched and'
-                +'your life will drastically change: -2 health -5 sanity -4 hours',
+                'It was deemed necessary to send an attack on Syria '
+                'today. Russia did not take it kindly, and has '
+                'decided to retaliate by attacking your home soil. A'
+                ' nuke has been launched and your life will '
+                'drastically change: -2 health -5 sanity -4 hours',
                 6,0,6),
         
         Event(  'Martial Law', {'hours':-4,'sanity':-2,
                                  'income':-2500}, {},
-                'A state of emergency has been declared, and Marshall Law put'
-                +'into effect. Please remain calm and listen to all army officials.'
-                +'You will help the efforts of the country for free as it is your'
-                +'duty as a citizen! : -4 hours, -2 sanity, -2500 income',
+                'A state of emergency has been declared, and Marshall'
+                ' Law put into effect. Please remain calm and listen '
+                'to all army officials. You will help the efforts of '
+                'the country for free as it is your duty as a citizen!'
+                ': -4 hours, -2 sanity, -2500 income',
                 4,0,8),
         
         Event(  'Zombie Apocalypse', {'hours':-4,'sanity':-2,
@@ -1884,7 +1890,7 @@ class Events:
                 +'it is because of dissidents. No one knows the real reason '
                 +'behind the curfew... : -4 hours -2 sanity',
                 2,0,1),
-    ]
+        ]
     
     def __init__(self):
         self.inactive_events = []
