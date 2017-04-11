@@ -2319,12 +2319,41 @@ class CreateCharacterManual(Menu): #Not in effect yet
             'Continue To Location',
             'Back To Previous Page'
         ]
-        self.CustomField( # Something along the lines of.........
-            'list',
-            ['Choice 1', 'Choice 2', 'Choice 3'],
-            'Make a "good" choice:',
-            { MOUSEBUTTONUP: self.select_on_mouseup }
-        )
+        x = PygameUI.List([{'item':None,'value':'Item %s'%str(i) }
+                               for i in range(20)])
+        x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 1
+        x.container.draggable = True
+        Menu.scene.add_child(x)
+
+        x = PygameUI.TextField()
+        x.frame = pygame.Rect(10, 50, 150, 30)
+        Menu.scene.add_child(x)
+
+        #Beg Incroment/Decroment attribute box
+        x = PygameUI.Button("+")
+        x.frame = pygame.Rect(100, 200, 27, 30)
+        Menu.scene.add_child(x)
+
+        x = PygameUI.TextField()
+        x.frame = pygame.Rect(100, 250, 27, 30)
+        x.label.text = "0"
+        Menu.scene.add_child(x)
+
+        x = PygameUI.Button("-")
+        x.frame = pygame.Rect(100, 300,27, 30)
+        Menu.scene.add_child(x)
+        #End Incroment/Decroment attribute box
+        
+        
+##        self.CustomField( # Something along the lines of.........
+##            'list',
+##            ['Choice 1', 'Choice 2', 'Choice 3'],
+##            'Make a "good" choice:',
+##            { MOUSEBUTTONUP: self.select_on_mouseup }
+##        )
         #~ self.CustomField( # Something along the lines of.........
             #~ 'button',
             #~ 'Some Button',
