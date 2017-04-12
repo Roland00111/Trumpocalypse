@@ -399,8 +399,7 @@ class EventsLoop:
                 # Draw PygameUI.
                 surface.blit(cm.scene.draw(), (0, 0))
                 # Draw Menu
-                if cm.body is False:# Draw other menu content
-                    # Draw non-body menu
+                if cm.body is False:
                     cm.init(cm.titlesArray, surface) 
                     cm.draw()
                 else:
@@ -2319,8 +2318,17 @@ class CreateCharacterManual(Menu): #Not in effect yet
             'Continue To Location',
             'Back To Previous Page'
         ]
+        text = ""
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 20,
+            'height': 300
+        }
+        
 
-        self.select_value(100,200)
+        self.select_value(100,200,0) #button creation
+        self.select_value(200,200,0)
         
         x = PygameUI.List([{'item':None,'value':'Item %s'%str(i) }
                                for i in range(20)])
@@ -2334,10 +2342,6 @@ class CreateCharacterManual(Menu): #Not in effect yet
         x = PygameUI.TextField()
         x.frame = pygame.Rect(10, 50, 150, 30)
         Menu.scene.add_child(x)
-        
-    
-        #End Incroment/Decroment attribute box
-        
         
 ##        self.CustomField( # Something along the lines of.........
 ##            'list',
@@ -2356,20 +2360,19 @@ class CreateCharacterManual(Menu): #Not in effect yet
         print ('This is called when selecting a choice from the '+
                'select field!')
         
-    def select_value(self,left,top):
-        #Beg Incroment/Decroment attribute box
-        x = PygameUI.Button("+")
-        x.frame = pygame.Rect(left, top, 27, 30)
-        Menu.scene.add_child(x)
+    def select_value(self,left,top,attrib_value):
+        plus = PygameUI.Button("+")
+        plus.frame = pygame.Rect(left, top, 27, 30)
+        Menu.scene.add_child(plus)
 
-        x = PygameUI.TextField()
-        x.frame = pygame.Rect(left, top+50, 27, 30)
-        x.label.text = "0"
-        Menu.scene.add_child(x)
+        value = PygameUI.Label()
+        value.frame = pygame.Rect(left, top+50, 27, 30)
+        value.text = str(attrib_value)
+        Menu.scene.add_child(value)
 
-        x = PygameUI.Button("-")
-        x.frame = pygame.Rect(100, top+100 ,27, 30)
-        Menu.scene.add_child(x)
+        minus = PygameUI.Button("-")
+        minus.frame = pygame.Rect(left, top+100 ,27, 30)
+        Menu.scene.add_child(minus)
         
 class CreateCharacterAutomatic(Menu):
     def __init__(self):
