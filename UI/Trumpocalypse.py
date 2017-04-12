@@ -2327,7 +2327,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
         }
         
 
-        self.select_value(100,200,0) #button creation
+        self.select_value(100,200,0) #button creation click does not work yet though
         self.select_value(200,200,0)
         
         x = PygameUI.List([{'item':None,'value':'Item %s'%str(i) }
