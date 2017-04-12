@@ -2322,8 +2322,8 @@ class CreateCharacterManual(Menu): #Not in effect yet
         self.body = {
             'text': text,
             'font_size': 32,
-            'top': 20,
-            'height': 300
+            'top': -100,
+            'height': 0
         }
         
 
