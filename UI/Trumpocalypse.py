@@ -1188,7 +1188,7 @@ class CharacterHUD:
         # Draw
         self.elements = []
         self.draw_elements()
-    
+        
     def draw_elements(self):
         '''
         '''
@@ -2319,6 +2319,9 @@ class CreateCharacterManual(Menu): #Not in effect yet
             'Continue To Location',
             'Back To Previous Page'
         ]
+
+        self.select_value(100,200)
+        
         x = PygameUI.List([{'item':None,'value':'Item %s'%str(i) }
                                for i in range(20)])
         x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
@@ -2331,20 +2334,8 @@ class CreateCharacterManual(Menu): #Not in effect yet
         x = PygameUI.TextField()
         x.frame = pygame.Rect(10, 50, 150, 30)
         Menu.scene.add_child(x)
-
-        #Beg Incroment/Decroment attribute box
-        x = PygameUI.Button("+")
-        x.frame = pygame.Rect(100, 200, 27, 30)
-        Menu.scene.add_child(x)
-
-        x = PygameUI.TextField()
-        x.frame = pygame.Rect(100, 250, 27, 30)
-        x.label.text = "0"
-        Menu.scene.add_child(x)
-
-        x = PygameUI.Button("-")
-        x.frame = pygame.Rect(100, 300,27, 30)
-        Menu.scene.add_child(x)
+        
+    
         #End Incroment/Decroment attribute box
         
         
@@ -2363,7 +2354,22 @@ class CreateCharacterManual(Menu): #Not in effect yet
     
     def select_on_mouseup(self, event):
         print ('This is called when selecting a choice from the '+
-               'select field!') 
+               'select field!')
+        
+    def select_value(self,left,top):
+        #Beg Incroment/Decroment attribute box
+        x = PygameUI.Button("+")
+        x.frame = pygame.Rect(left, top, 27, 30)
+        Menu.scene.add_child(x)
+
+        x = PygameUI.TextField()
+        x.frame = pygame.Rect(left, top+50, 27, 30)
+        x.label.text = "0"
+        Menu.scene.add_child(x)
+
+        x = PygameUI.Button("-")
+        x.frame = pygame.Rect(100, top+100 ,27, 30)
+        Menu.scene.add_child(x)
         
 class CreateCharacterAutomatic(Menu):
     def __init__(self):
