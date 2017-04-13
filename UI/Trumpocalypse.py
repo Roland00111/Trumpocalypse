@@ -253,7 +253,36 @@ class Menu:
         def number(self):
             # What if number is a list() instead of text field?
             pass
-
+    
+    def remove_pui_children(self):
+        '''Remove scene children one at a time.
+        For each iteration of while loop remove one child from the
+        scene.
+        '''
+        while self.scene.children:
+            for child in self.scene.children:
+                self.scene.remove_child(child)
+                break
+    def draw_menu_body(self):
+        # Calculate x offset
+        w = self.scene.frame.w - 160 - 160
+        xoff = self.dest_surface.get_rect().centerx - w/2 
+        # Draw a box background.
+        pygame.draw.rect(surface, (255,60,71),
+            pygame.Rect(xoff, self.body['top'], w,
+            self.body['height']), 10) 
+        # There is a slight offset from the text
+        # and the box. The box needs to contain the text.
+        # So the text is going to be slightly smaller.
+        # How about 8 pixels???? nescasary?
+        rect = pygame.Rect((xoff+8,self.body['top']+8,
+                w-8,300-8)) # left,top,width,height
+        font = (pygame.font.Font
+            ('data/coders_crux/coders_crux.ttf',
+            self.body['font_size']))
+        drawText(surface, self.body['text'], (0,0,0), rect,
+                 font, aa=False, bkg=None)
+    
 class EventsLoop:
     '''
     This loop is running continuously to check for any time a key on
@@ -274,232 +303,221 @@ class EventsLoop:
     that inherit from the Menu class.
     '''
     current_menu = None
+    test_events = None
     
-    def __init__(self,testevents = None):
-        ''' This starts the continuosly running loop.
+    def __init__(self,test_events = None):
+        '''This starts the continuosly running loop.
+                
+        :param list test_events:
+            A list of keypress indexes to auto-"press".
         '''
         # Start on opening menu. Then changes.
-        self.current_menu = OpeningMenu() 
+        self.cm = OpeningMenu() # Current menu reference
+        self.test_events = test_events
         event_loop = True
         recurse_test = 0
         game_state.first_game_event=False
         while event_loop:
-            chosen_position = None # Reset on each loop
-            cm = self.current_menu # A quick shortcut
-            ########################Used for Testing##################
-            if testevents != None:
-                self.test(testevents)
-                return
-            ##########################################################
-            for event in pygame.event.get():
-                if game_state.first_game_event==False:
-                    print("setting first game event")
-                    game_state.first_game_event=event
-
-                #------------------------------------------
-                # If the character's health is 0
-                # then kill the character (is_dead=true).
-                # Then do the game over screen.
-                #------------------------------------------
-                if (game_state.game.character != None and
-                    game_state.game.character.health <= 0 and 
-                    game_state.game.character.is_dead is True and
-                    game_state.game.character.game_over is False):
-                    # Set game_over=True
-                    game_state.game.character.game_over = True
-                    print 'why we broke'
-                    while cm.scene.children:# Remove scene children.
-                        for child in cm.scene.children:
-                            cm.scene.remove_child(child)
-                            break
-                    self.current_menu = GameOverScreen()
-                    cm = self.current_menu # Update the cm variable.
-                
-                if event.type == QUIT: # Quit.
-                    pygame.display.quit()
-                    sys.exit()
-                
-                #-------------------------------------------------
-                # If there is an alert then stop everything except
-                # mouse down, mouse up, and quit.
-                # Use continue to jump forward in event_loop.
-                #-------------------------------------------------
-                if cm.scene._has_alert is True and (
-                    event.type == pygame.MOUSEBUTTONDOWN or
-                    event.type == pygame.MOUSEBUTTONUP):
-                    # Allow only
-                    #   cm.scene.hit(event.pos) =
-                    #   <PygameUI.Button object at ...>
-                    #   That is, only allow button presses.
-                    if event.type == (pygame.MOUSEBUTTONDOWN or
-                                      event.type == pygame.MOUSEBUTTONUP):
-                        # Only allow elements in the alert element to
-                        # receive mouse events.
-                        if cm.scene._alert.hit(event.pos) == None:
-                            continue
-                elif cm.scene._has_alert is True:
-                    # Make sure to draw alert
-                    surface.blit(cm.scene.draw_alert(), (0, 0))
-                    # and update, in the case of
-                    #cm.process_before_unload()=False and
-                    #chosen_position=True
-                    pygame.display.update()
-                    continue
-                
-                #-----------------------------------
-                # Key press events and mouse events.
-                #-----------------------------------
-                if event.type == KEYDOWN:
-                    print(str(event.unicode))
-                    if event.key == K_UP:
-                        cm.draw(-1) #here is the Menu class function
-                    elif event.key == K_DOWN:
-                        cm.draw(1) #here is the Menu class function
-                    elif event.key == K_RETURN:
-                        chosen_position = cm.get_position()
-                        break
-                    elif event.key == K_ESCAPE:
-                        pass
-                        
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        global down_in
-                        down_in = cm.scene.hit(event.pos)
-                        if (down_in is not None and
-                            not isinstance(down_in, PygameUI.Scene)):
-                            down_in.mouse_down(event.button,
-                                down_in.from_window_point(event.pos))
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    '''
-                    http://stackoverflow.com/questions/10990137/
-                    pygame-mouse-clicking-detection
-                    '''
-                    if event.button == 1:                    
-                        pos = pygame.mouse.get_pos()
-                        (pressed1,pressed2,pressed3) = (pygame.mouse.
-                                                        get_pressed())
-                        print ('Mouse click: ', pos,
-                               pygame.mouse.get_pressed())
-                        # PygameUI
-                        up_in = cm.scene.hit(event.pos)
-                        if down_in == up_in:
-                            down_in.mouse_up(event.button,
-                                down_in.from_window_point(event.pos))
-                        down_in = None
-                elif event.type == pygame.MOUSEMOTION:
-                    if down_in is not None and down_in.draggable:
-                        if down_in.parent is not None:
-                            (down_in.parent.
-                            child_dragged(down_in, event.rel))
-                        down_in.dragged(event.rel)
-                elif event.type == pygame.KEYDOWN:
-                    cm.scene.key_down(event.key, event.unicode)
-                elif event.type == pygame.KEYUP:
-                    cm.scene.key_up(event.key)
-                
-                #---------------------------
-                # Drawing stuff starts here.
-                #---------------------------
-                
-                # Draw PygameUI.
-                surface.blit(cm.scene.draw(), (0, 0))
-                # Draw Menu
-                if cm.body is False:
-                    cm.init(cm.titlesArray, surface) 
-                    cm.draw()
-                else:
-                    # Draw menu plus body
-                    cm.init(cm.titlesArray, surface, 200) 
-                    cm.draw()
-                    # Calculate x offset
-                    w = cm.scene.frame.w - 160 - 160
-                    xoff = cm.dest_surface.get_rect().centerx - w/2 
-                    # Draw a box background.
-                    pygame.draw.rect(surface, (255,60,71),
-                        pygame.Rect(xoff, cm.body['top'], w,
-                        cm.body['height']), 10) 
-                    # There is a slight offset from the text
-                    # and the box. The box needs to contain the text.
-                    # So the text is going to be slightly smaller.
-                    # How about 8 pixels???? nescasary?
-                    rect = pygame.Rect((xoff+8,cm.body['top']+8,
-                            w-8,300-8)) # left,top,width,height
-                    font = (pygame.font.Font
-                        ('data/coders_crux/coders_crux.ttf',
-                        cm.body['font_size']))
-                    drawText(surface, cm.body['text'], (0,0,0), rect,
-                             font, aa=False, bkg=None)
-                # Draw scene alert.
-                if cm.scene._has_alert is True:
-                    surface.blit(cm.scene.draw_alert(), (0, 0))
-                # Update
-                pygame.display.update()
-            
-       
-            #----------------------------
-            # Enter key has been pressed.
-            #----------------------------
-            
-            if chosen_position is not None:
-                # If there is a chosen position, consider changing
-                #to new menu.
-                # Run function based on current selected item.
-                if cm.process_before_unload != False:
-                    result = cm.process_before_unload(chosen_position)
-                    if result is False:
-                        # If process_before_unload return false, then
-                        # go to next loop (do not go to next menu!)
-                        continue                    
-                while cm.scene.children:# Remove scene children.
-                    for child in cm.scene.children:
-                        cm.scene.remove_child(child)
-                        break
-                # Go to the next menu.
-                self.current_menu = (cm.keypressArray
-                                     [chosen_position]()) 
-            
+            self.process_pygame_events()
             # CPU wait.
             pygame.time.wait(0)
     
-    def test(testevents):
-        '''Run tests.
+    def check_character_alive(self):
+        #------------------------------------------
+        # If the character's health is 0
+        # then kill the character (is_dead=true).
+        # Then do the game over screen.
+        #------------------------------------------
+        if (game_state.game.character != None and
+            game_state.game.character.health <= 0 and 
+            game_state.game.character.is_dead is True and
+            game_state.game.character.game_over is False):
+            # Set game_over=True
+            game_state.game.character.game_over = True
+            self.cm.remove_pui_children()
+            self.cm = GameOverScreen()
+    
+    def set_first_game_event(self, event):
+        if game_state.first_game_event==False:
+            print("setting first game event")
+            game_state.first_game_event=event
+    
+    def pui_has_alert(self, event):
+        #-------------------------------------------------
+        # If there is an alert then stop everything except
+        # mouse down, mouse up, and quit.
+        # Use continue to jump forward in event_loop.
+        #-------------------------------------------------
+        if self.cm.scene._has_alert is True and (
+            event.type == pygame.MOUSEBUTTONDOWN or
+            event.type == pygame.MOUSEBUTTONUP):
+            # Allow only
+            #   self.cm.scene.hit(event.pos) =
+            #   <PygameUI.Button object at ...>
+            #   That is, only allow button presses.
+            if event.type == (pygame.MOUSEBUTTONDOWN or
+                              event.type == pygame.MOUSEBUTTONUP):
+                # Only allow elements in the alert element to
+                # receive mouse events.
+                if self.cm.scene._alert.hit(event.pos) == None:
+                    return True
+        elif self.cm.scene._has_alert is True:
+            # Make sure to draw alert
+            surface.blit(self.cm.scene.draw_alert(), (0, 0))
+            # and update, in the case of
+            #self.cm.process_before_unload()=False and
+            #chosen_position=True
+            pygame.display.update()
+            return True
+        # If the code is down here then there is no alert.
+        # Allow the event to be processed.
+        return False
         
-        :param list testevents:
-            A list of keypress indexes to auto-"press".
-        '''
-        while testevents:
-            cm = self.current_menu # A quick shortcut.
-            chosen_position = testevents.pop(0)
-            while cm.scene.children: # Clear children.
-                for child in cm.scene.children:
-                    cm.scene.remove_child(child)
+    def process_pygame_events(self):
+        chosen_position = None # Reset on each loop
+        ########################Used for Testing##################
+        if self.test_events != None:
+            self.test()
+            return
+        ##########################################################
+        for event in pygame.event.get():
+            # Set first game event
+            self.set_first_game_event(event)
+            # Check character is alive
+            self.check_character_alive()
+            # Check quit event
+            if event.type == QUIT:
+                pygame.display.quit()
+                sys.exit()
+            # Check alert status
+            if self.pui_has_alert(event):
+                continue
+            
+            #-----------------------------------
+            # Key press events and mouse events.
+            #-----------------------------------
+            if event.type == KEYDOWN:
+                print(str(event.unicode))
+                if event.key == K_UP:
+                    self.cm.draw(-1)
+                elif event.key == K_DOWN:
+                    self.cm.draw(1)
+                elif event.key == K_RETURN:
+                    chosen_position = self.cm.get_position()
                     break
-            surface.blit(cm.scene.draw(), (0, 0))
-            if cm.body is False:
-                cm.init(cm.titlesArray, surface) # Draw non-body menu
-                cm.draw()
+                elif event.key == K_ESCAPE:
+                    pass
+                    
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    global down_in
+                    down_in = self.cm.scene.hit(event.pos)
+                    if (down_in is not None and
+                        not isinstance(down_in, PygameUI.Scene)):
+                        down_in.mouse_down(event.button,
+                            down_in.from_window_point(event.pos))
+            elif event.type == pygame.MOUSEBUTTONUP:
+                '''
+                http://stackoverflow.com/questions/10990137/
+                pygame-mouse-clicking-detection
+                '''
+                if event.button == 1:                    
+                    pos = pygame.mouse.get_pos()
+                    (pressed1,pressed2,pressed3) = (pygame.mouse.
+                                                    get_pressed())
+                    print ('Mouse click: ', pos,
+                           pygame.mouse.get_pressed())
+                    # PygameUI
+                    up_in = self.cm.scene.hit(event.pos)
+                    if down_in == up_in:
+                        down_in.mouse_up(event.button,
+                            down_in.from_window_point(event.pos))
+                    down_in = None
+            elif event.type == pygame.MOUSEMOTION:
+                if down_in is not None and down_in.draggable:
+                    if down_in.parent is not None:
+                        (down_in.parent.
+                        child_dragged(down_in, event.rel))
+                    down_in.dragged(event.rel)
+            elif event.type == pygame.KEYDOWN:
+                self.cm.scene.key_down(
+                    event.key, event.unicode)
+            elif event.type == pygame.KEYUP:
+                self.cm.scene.key_up(event.key)
+            
+            #---------------------------
+            # Drawing stuff starts here.
+            #---------------------------
+            
+            # Draw PygameUI.
+            surface.blit(self.cm.scene.draw(), (0, 0))
+            # Draw Menu
+            if self.cm.body is False:
+                self.cm.init(self.cm.titlesArray, surface) 
+                self.cm.draw()
             else:
                 # Draw menu plus body
-                cm.init(cm.titlesArray, surface, 200) 
-                cm.draw()
+                self.cm.init(self.cm.titlesArray, surface, 200) 
+                self.cm.draw()
+                self.cm.draw_menu_body()
+            # Draw scene alert.
+            if self.cm.scene._has_alert is True:
+                surface.blit(self.cm.scene.draw_alert(), (0, 0))
+            # Update
+            pygame.display.update()
+        
+   
+        #----------------------------
+        # Enter key has been pressed.
+        #----------------------------
+        if chosen_position is not None:
+            # If there is a chosen position, consider changing
+            #to new menu.
+            # Run function based on current selected item.
+            if self.cm.process_before_unload != False:
+                result = self.cm.process_before_unload(chosen_position)
+                if result is False:
+                    # If process_before_unload returns false, then
+                    # stop processing now (do not go to next menu!)
+                    return        
+            # Remove scene children
+            self.cm.remove_pui_children()
+            # Go to the next menu.
+            self.cm = (self.cm.keypressArray
+                                 [chosen_position]()) 
+
+    def test():
+        '''Run tests.
+        '''
+        while self.test_events:
+            chosen_position = self.test_events.pop(0)
+            self.cm.remove_pui_children()
+            surface.blit(self.cm.scene.draw(), (0, 0))
+            if self.cm.body is False:
+                self.cm.init(self.cm.titlesArray, surface) # Draw non-body menu
+                self.cm.draw()
+            else:
+                # Draw menu plus body
+                self.cm.init(self.cm.titlesArray, surface, 200) 
+                self.cm.draw()
                 #300 - self.menu_width / 2  Calculate the x offset
-                x = cm.dest_surface.get_rect().centerx - 150
+                x = self.cm.dest_surface.get_rect().centerx - 150
                 # Draw a box background.
                 pygame.draw.rect(surface, (255,60,71), pygame.Rect(x,
-                cm.body['top'], 300, cm.body['height']), 10) 
+                self.cm.body['top'], 300, self.cm.body['height']), 10) 
                                            #Box color
                 # There is a slight offset from the text and the box.
                 # The box needs to contain the text. So the text is
                 # going to be slightly smaller. How about 8 pixels?
                                              # left,top,width,height
-                rect = pygame.Rect((x+8,cm.body['top']+8,300-8,300-8))
+                rect = pygame.Rect((x+8,self.cm.body['top']+8,300-8,300-8))
                 font = (pygame.font.Font
                 ('data/coders_crux/coders_crux.ttf',
-                 cm.body['font_size']))
-                drawText(surface, cm.body['text'], (0,0,0), rect,
+                 self.cm.body['font_size']))
+                drawText(surface, self.cm.body['text'], (0,0,0), rect,
                          font, aa=False, bkg=None)
             pygame.display.update()
-            self.current_menu = cm.keypressArray[chosen_position]()
+            self.cm = self.cm.keypressArray[chosen_position]()
             
 class Character:
     '''
