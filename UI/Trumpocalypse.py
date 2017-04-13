@@ -1682,8 +1682,16 @@ class StoreScreen(Menu):
         pass
 
 class Location:
+    '''Provide the player with a location. Each location has 1-4
+    Store instance. Each location has a region name (passed in).
+    Each location has 10-20 associated Job instances.
+    Each location has an active_store_idx which specifies which
+    store the player is current visiting (None if no store).
+    '''
     def __init__(self,location_name):
-        
+        '''
+        :param str location_name: A location name.
+        '''
         self.location_name = location_name
         self.connected_regions = []
         self.stores = [
@@ -1693,8 +1701,6 @@ class Location:
    
     def random_job(self):
         r = random.randint(0, 10)
-        print game_state
-        print game_state.game
         self.jobs = [ game_state.game.jobs.random_job()
                       for i in range(0, 10+r) ]
         
