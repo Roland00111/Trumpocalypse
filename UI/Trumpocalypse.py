@@ -1902,49 +1902,49 @@ class Events:
         Event(  'Zombie Apocalypse', {'hours':-4,'sanity':-2,
                                       'income':-5000}, {},
                 'Some people think it was voodoo, others think a government finally'
-                +'made it work. What I think, is I am going to keep my brains to myself.'
-                +'Zombies have made it to the United States and you must survive until'
-                +'the government can regain control: -4 hours -2 sanity -5000 income',
+                'made it work. What I think, is I am going to keep my brains to myself.'
+                'Zombies have made it to the United States and you must survive until'
+                'the government can regain control: -4 hours -2 sanity -5000 income',
                 4,0,8),
         
         Event(  'You Power Sleep', {'hours':2,'sanity':2}, {},
                 'You had the nicest dream last night and although you cannot'
-                +'remember the specifics, you know there were puppies involved'
-                +'. You have not slept this well since you had no worries in the'
-                +'world and were living with your parents : +2 hours +2 sanity',
+                'remember the specifics, you know there were puppies involved'
+                '. You have not slept this well since you had no worries in the'
+                'world and were living with your parents : +2 hours +2 sanity',
                 1,0,0),
         
         Event(  'Find Supply Cache', {'Food':15,'Cash':1000,
                                       'sanity':1}, {},
                 'You were playing with your metal detector for fun and'
-                +'it began to beep signifying a large metal object about'
-                +' 4 feet under the ground, against your better instincts'
-                +'you decided to dig it up and found a hiddent supply cache!'
-                +'Thanks doomsday prepper! +15 food +$1000 +1 sanity' ,
+                'it began to beep signifying a large metal object about'
+                ' 4 feet under the ground, against your better instincts'
+                'you decided to dig it up and found a hiddent supply cache!'
+                'Thanks doomsday prepper! +15 food +$1000 +1 sanity' ,
                 1,0,0),
         
         Event(  'Puppies!!',{'Cash':-1000, 'sanity':10}, {},
                 'Today it was rainy and you saw a little girl walking her dog'
-                +'. For some reason, this made you think back of your first pet.'
-                +'As you began missing your first dog Spot you decide to give the'
-                +'Humane Society a visit. You play with some puppies '
-                +'and end up taking one home: +10 sanity -1000 Cash',
+                '. For some reason, this made you think back of your first pet.'
+                'As you began missing your first dog Spot you decide to give the'
+                'Humane Society a visit. You play with some puppies '
+                'and end up taking one home: +10 sanity -1000 Cash',
                 1,0,0),
         
         Event(  'Tax Collector',{'Cash':-1000, 'sanity':-1},
                 {'Cash':0.60}, # Removes $1000, then sets cash to 60%.
                 'As you were cooking dinner, you heard a knock on your door.'
-                +'The government had sent a tax collector because you were'
-                +'overdue on your taxes. You wrote him a check for your overdue'
-                +' taxes, and the late fees: -1000$ -1 sanity Cash 60%',
+                'The government had sent a tax collector because you were'
+                'overdue on your taxes. You wrote him a check for your overdue'
+                ' taxes, and the late fees: -1000$ -1 sanity Cash 60%',
                 1,0,1),
         
         Event(  'Curfew', {'hours':-4,'sanity':-2}, {},
                 'Due to government request, everyone must be in their homes'
-                +'for their own safety 4 hours early every night. Some people'
-                +' believe it was an effort to save electricity, others think '
-                +'it is because of dissidents. No one knows the real reason '
-                +'behind the curfew... : -4 hours -2 sanity',
+                'for their own safety 4 hours early every night. Some people'
+                ' believe it was an effort to save electricity, others think '
+                'it is because of dissidents. No one knows the real reason '
+                'behind the curfew... : -4 hours -2 sanity',
                 2,0,1),
         ]
     
@@ -1956,7 +1956,7 @@ class Events:
         pass
     
     def show_inactive_events(self):
-        ''' Appends inactive events to inactive_events
+        '''Return a list of inactive events.
         '''
         temp = [ ]
         for event in self.inactive_events:
@@ -1964,7 +1964,7 @@ class Events:
         return temp
 
     def show_active_events(self):
-        ''' Appends active events to active_events
+        '''Return a list of active events.
         '''
         temp = [ ]
         for event in self.active_events:
@@ -2133,7 +2133,6 @@ class EventScreen(Menu):
         c = game_state.game.character
         print 'confirm:',confirm
         if confirm is False:
-            #~ print 'alert self.warn_ignore_health_pack'
             self.alert(self.warn_ignore_health_pack, ['OK'], self.click_died)
             print 'after self.warn_ignore_health_pack...'
         else:
@@ -2268,10 +2267,8 @@ class Game:
             ##
             #game_state.game.character.check_health()
         
-        def gen_date(self):
-            
-            g = game_state.game
-            print 'New day'
+        def gen_story_text(self):
+            g = game_state.game # A shortcut
             if g.day_counter == 1:
                 self.story_text = ('Today is ' +
                 Game.Day.inauguration_day + '\ninauguration day, '+
@@ -2284,26 +2281,28 @@ class Game:
             else:
                 #If latest random event is a repeat, add again to the
                 #text.
+                event = game_state.game.events.last_random_event[0]
                 if (game_state.game.events.last_random_event[1] == 1):
-                    self.story_text = ('You are sitting on the couch'+
-                        ' watching the news while eating your '+
-                        'breakfast and drinking your arbitrary drink'+
-                        ', and the news comes on. The reporter is '+
-                        'raving about how life will never be the '+
+                    self.story_text = ('You are sitting on the couch'
+                        ' watching the news while eating your '
+                        'breakfast and drinking your arbitrary drink'
+                        ', and the news comes on. The reporter is '
+                        'raving about how life will never be the '
                         'same after...                 '
-                        +(game_state.game.events.last_random_event[0])
+                        +event
                         + ' again!')
                 else:
-                    self.story_text = ('You are sitting on the couch'+
-                        ' watching the news while eating your '+
-                        'breakfast and drinking your arbitrary drink'+
-                        ', and the news comes on. The reporter is '+
-                        'raving about how life will never be the '+
-                        'same after...                 '
-                        +(game_state.game.events.
-                          last_random_event[0]))
-
-                    
+                    self.story_text = ('You are sitting on the couch'
+                        ' watching the news while eating your '
+                        'breakfast and drinking your arbitrary drink'
+                        ', and the news comes on. The reporter is '
+                        'raving about how life will never be the '
+                        'same after...\n'
+                        +event)
+                          
+        def gen_date(self):
+            g = game_state.game # A shortcut
+            self.gen_story_text() # Generate today's story text
             if g.month_counter % 12 == 1 and g.day_counter != 1:
                 g.current_year += 1
             if g.month_counter + 1 == 13:
@@ -2322,9 +2321,6 @@ class Game:
             #Fix game day counter incromentation 
             if g.month_counter == 12:
                 g.month_counter = 0
-            print g.day_counter
-           
-            
             
         def strTimeProp(self,start, end, format, prop):
             # Taken From : http://stackoverflow.com/questions/553303/
