@@ -2046,7 +2046,7 @@ class GameOverScreen(Menu):
         # Tally score (implement)
         game_state.game.tally_score()
         text = 'Buh-bye!'
-        #For some reason font size 32 looks a lot better than 30 or 34
+        
         self.body = {
             'text': text,
             'font_size': 32,
@@ -2063,12 +2063,10 @@ class EventScreen(Menu):
         self.keypressArray = [
             DayScreen,
             DayScreen,
-             #DayScreen for x in range(len(game_state.game.events.
-                                          #inactive_events)+1)
         ]
-        self.titlesArray = ['Active Event','Go Back To Day'] #self.events_values + ['Back to Day']
+        self.titlesArray = ['Active Event','Go Back To Day']
         text = 'Select an event to continue...'
-        #For some reason font size 32 looks a lot better than 30 or 34
+        
         self.body = {
             'text': text,
             'font_size': 32,
@@ -2130,11 +2128,9 @@ class EventScreen(Menu):
         c = game_state.game.character
         if confirm is False:
             self.alert(self.warn_ignore_health_pack, ['OK'], self.click_died)
-            print 'after self.warn_ignore_health_pack...'
         else:
             n = 0
-            while (
-                c.health <= 0 and
+            while (c.health <= 0 and
                 c.inventory.use_item(Item('First Aid Kit'), 1) is True
             ):
                 c.health += 1
@@ -2522,10 +2518,7 @@ class ResetHighScore(Menu):
 
 class DayScreen(Menu):
     def __init__(self):
-        print game_state.game.current_day
-        print game_state.game.current_day.generated_date
         self.menu_name = 'DayScreen'
-        
         # Add HUD
         CharacterHUD(self)
         
@@ -2561,7 +2554,6 @@ class DayScreen(Menu):
                 ' \nDay is: ' + str(game_state.game.current_day.
                 generated_date)+ ' \n' +' \nHours Left: ' +
                 str(game_state.game.current_day.day_hours)) 
-        #For some reason font size 32 looks a lot better than 30 or 34
         self.body = {
             'text': text,
             'font_size': 32,
