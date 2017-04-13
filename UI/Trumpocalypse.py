@@ -2193,6 +2193,13 @@ class EventScreen(Menu):
 
             
 class Game:
+    '''Each game starts in January of 2017, in the first term
+    of Donald Trump's presidency. Each game has a Jobs() instance,
+    a Locations() instance, and an Events() instance.
+    Each game starts without an instance of a Character().
+    The user adds a Character() instance during Automatic or 
+    Manual character creation.
+    '''
     day_counter = 0
     current_year = 2017
     month_counter = 1
@@ -2208,11 +2215,14 @@ class Game:
         self.events = Events()
     
     def tally_score(self):
+        '''This function is called when the game is over.
+        It will tally the score of the game.
+        '''
         print 'Tally the score...'
 
     def mod_hours(self,hours,operation=False):
-        ''' Modifies hours. Ensures that hours is greater than or equal
-            to 0.
+        '''Modifies hours. Ensures that hours is greater than or equal
+        to 0.
         '''
         if operation==False:
             game_state.game.current_day.day_hours += hours
@@ -2229,6 +2239,10 @@ class Game:
         inauguration_day = 'January 20th' 
 
         def __init__(self):
+            '''Set day hours to 16. Run end of day modifications.
+            Run generate date to generate today's "date" and
+            accompanying story text.
+            '''
             self.day_hours = 16
             self.eod_mods()
             self.gen_date()
@@ -2266,6 +2280,29 @@ class Game:
             ##
             ##
             #game_state.game.character.check_health()
+                          
+        def gen_date(self):
+            g = game_state.game # A shortcut
+            self.gen_story_text() # Generate today's story text
+            if g.month_counter % 12 == 1 and g.day_counter != 1:
+                g.current_year += 1
+            if g.month_counter + 1 == 13:
+                x=12
+                month_day = 31
+            else:
+                x=g.month_counter + 1
+                month_day = 1 #Needed because when Game.month_counter
+                #== 12 it would go back a year, because it would be
+                #12/?/2017 to 1/?/2017 and get confused 
+            self.generated_date = self.randomDate(
+                str(g.month_counter)+'/1/'+str(g.current_year),
+                str(x)+'/'+str(month_day)+'/'+str(g.current_year),
+                random.random()
+            )
+            
+            # Reset game day counter incromentation 
+            if g.month_counter == 12:
+                g.month_counter = 0
         
         def gen_story_text(self):
             g = game_state.game # A shortcut
@@ -2299,28 +2336,6 @@ class Game:
                         'raving about how life will never be the '
                         'same after...\n'
                         +event)
-                          
-        def gen_date(self):
-            g = game_state.game # A shortcut
-            self.gen_story_text() # Generate today's story text
-            if g.month_counter % 12 == 1 and g.day_counter != 1:
-                g.current_year += 1
-            if g.month_counter + 1 == 13:
-                x=12
-                month_day = 31
-            else:
-                x=g.month_counter + 1
-                month_day = 1 #Needed because when Game.month_counter
-                #== 12 it would go back a year, because it would be
-                #12/?/2017 to 1/?/2017 and get confused 
-            self.generated_date = self.randomDate(str(g.
-            month_counter) + '/1/' + str(g.current_year),str((x)) +
-            '/' + str(month_day) +'/' + str(g.current_year),
-            random.random())
-            
-            #Fix game day counter incromentation 
-            if g.month_counter == 12:
-                g.month_counter = 0
             
         def strTimeProp(self,start, end, format, prop):
             # Taken From : http://stackoverflow.com/questions/553303/
