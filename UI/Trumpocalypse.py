@@ -664,7 +664,7 @@ class Inventory:
         return storage
     
     def item_count_buy(self):
-        '''
+        '''Return a list of items available to buy and their buy price.
         Do not allow buying of cash.
         '''
         storage = []
@@ -677,7 +677,8 @@ class Inventory:
         return storage
     
     def item_count_sell(self):
-        '''
+        '''Return a lits of items available to sell and their
+        sell price.
         Do not allow selling of cash.
         '''
         storage = []
