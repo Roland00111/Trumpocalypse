@@ -839,7 +839,7 @@ class Inventory:
             self.sorted_items['other'].append(new_item)
             
     def update_or_add_item(self, new_item):
-        ''' 
+        ''' Updates or adds an item to the inventory.
         '''
         existing_item = self.contains_item(new_item.item_type)
         if existing_item != False:
@@ -861,9 +861,10 @@ class Inventory:
             self.sorted_append( new_item )
     
     def contains_item(self, item_type):
-        # Returns the item in the inventory if it exists.
-        # Otherwise returns False.
-        # This takes O(n) time as it searches entire list.
+        '''Returns the item in the inventory if it exists.
+        Otherwise returns False.
+        This takes O(n) time as it searches entire list.
+        '''
         for existing_item in self.items:
             if existing_item.item_type == item_type:
                 return existing_item
@@ -872,12 +873,9 @@ class Inventory:
     
     def shabbitize(self, shabbiness):
         '''Make this inventory shabby.
-        
         Always floor the shabbiness. So that 1 pie never become 0
         pies.
-        
         So Food=110; Food-=ceil(110*.99)=[110-109]=1.
-        
         :param shabbiness:
             The shabbiness ratio, expressed between 0 and 0.99.
         :type shabbiness: float.
@@ -930,9 +928,7 @@ class Item:
     
     def calculate_purchase_cost(self):
         '''Returns the purchase cost of the item or group of items.
-        
         The cost is always rounded up.
-        
         This is the same as self.calculate_resale_cost except
         the seller never pays the resale ratio.
         That is, the seller always sells as though the item were
@@ -950,14 +946,11 @@ class Item:
             
     def calculate_resale_cost(self):
         '''Returns the sell cost of the item or group of items.
-        
         The cost is always rounded down. So if an item is only
         worth $0.80 then it is really worth $0.
-        
         In the case of grouped items this is:
             floor: [ self.resale_cost * (self.amount /
             self.original_amount) ]
-        
         In the case of single items this is:
             floor: [ self.resale_cost * (self.remaining_uses /
             self.max_remaining_uses) ]
@@ -985,9 +978,8 @@ class Item:
         
     def set_item(self, item_type):
         '''Single use items have remaining_use that declines.
-        
         Grouped use items have num_in_group that declines.
-        
+    
         :raises TypeError: If item_type is not in ITEMS.n['stats'].
         '''
         try:
@@ -1056,10 +1048,8 @@ class GameState:
 class Store:
     '''
     Each store is located in a urban, suburban, or rural location.
-    
     Then based on this, each store has a distance to park, to urban
     house, to suburban house, and to rural house.
-    
     If urban,       distance=rand_float(0,2.0),
                     sub=dist+rand_float(0,4.0),
                     rur=dist+rand_float(0,8.0)
@@ -1079,9 +1069,8 @@ class Store:
     ]
     
     def __init__(self):
-        '''
-        Give store a shabbiness-gaudiness value:
-         0 is low shabbiness, 0.99 is highly shabby.
+        ''' Give store a shabbiness-gaudiness value:
+        0 is low shabbiness, 0.99 is highly shabby.
         '''
         self.store_location = self.store_locations[ random.randint
                                                     (0, 2) ]
@@ -1122,10 +1111,8 @@ class Store:
     
     def distance_from_house(self):
         '''Calculate the euclidean distance to the current house.
-        
         Character's current housing is (string):
             game_state.game.character.selected_house
-        
         :return: Distance in miles, rounded to the tenth.
         :rtype: int.
         '''
@@ -1158,8 +1145,10 @@ class Jobs:
                    x['events'])
 
 class Job:
+    ''' Deals with anythinng that deals with the characters job'''
     def __init__(self,title=None,income=None,company=None,area=None,
                  work_events=None):
+        ''' Sets default things related to the characters job '''
         self.title = title
         self.income = income
         self.company = company
@@ -1170,6 +1159,9 @@ class Job:
         self.distances()
 
     def work(self):
+        ''' this is called when the character goes to work so it
+        decrements time and increases there cash.
+        '''
         self.random_dictPos = random.randint(0,
                                             len(self.work_events)-1)
         
@@ -1210,7 +1202,6 @@ class Job:
     
     def distance_from_house(self):
         '''Calculate the euclidean distance to the current house.
-        
         Character's current housing is (string):
             game_state.game.character.selected_house
         
@@ -1229,12 +1220,11 @@ class Job:
             c1 = [x['x'], x['y']]
         c2 = self.coordinates
         return round(euclidean(c1, [c2['x'], c2['y']]), 1)
-        
-
-
-        
 
 class CharacterHUD:
+    ''' This class takes care of everything you see on the main day
+    screen.
+    '''
     def __init__(self, current_menu):
         self.current_menu = current_menu
         self.warning_change_house = ('Warning: Changing housing '+
@@ -1250,7 +1240,7 @@ class CharacterHUD:
         self.draw_elements()
         
     def draw_elements(self):
-        '''
+        ''' This displays everything on the main day screen.
         '''
         # Remove old (on update)
         if len(self.elements) > 0:
@@ -1356,10 +1346,8 @@ class CharacterHUD:
                       selected_item):
         '''Update game_state.game.character.selected_house_idx and
         game_state.game.character.selected_house.
-        
         Make an alert here saying that it will take X hours to move.
         Default=1. Based on transit?
-        
         Or just automatically subtract 1 always.
         And then if 0 hours remain change back to previous
         selected index.
@@ -1390,11 +1378,9 @@ class CharacterHUD:
     def test_list(self, selected_index, selected_value,
                   selected_item):
         '''This tests adding a list element to an alert box.
-        
         self.current_menu.alert('Test alert.', ['OK'],
         self.click_ok_button, [{'item':self,'value':'meh'}],
         self.test_list)
-        
         Either the OK button or the List is clickable.
         Clicking either one dismisses the alert, calling the relevent
         callback function (click_ok_button or test_list)
@@ -1420,7 +1406,6 @@ class CharacterHUD:
         
     def click_alert(self, confirm):
         '''Handle alert button click.
-        
         :param boolean confirm:
         True if first button clicked, False if second button clicked.
         '''
@@ -1448,7 +1433,6 @@ class WorkScreen(Menu):
     ''' This will knock 8 hours off the day and possibly more or less
     depending on the work event
     '''
-    
     def __init__(self):
         self.menu_name = 'WorkScreen'
 
@@ -1470,10 +1454,12 @@ class WorkScreen(Menu):
             'height': 300
         }
 
-        
-        
 class StoreScreenSelect(Menu):
+    ''' This class deals with everything about the store '''
     def __init__(self):
+        ''' This is a menu class so the init function sets up the
+        buttons and what they will look like.
+        '''
         self.menu_name = '...'
         location = game_state.game.character.location
         # To get store.
@@ -1501,6 +1487,8 @@ class StoreScreenSelect(Menu):
         }
     
     def draw_store_lists(self):
+        ''' This displays the items that are for sale in the store.
+        '''
         # Remove old elements, if they exist (on update lists).
         if len(self.elements) != 0:
             for l in self.elements:
@@ -1544,7 +1532,6 @@ class StoreScreenSelect(Menu):
         
     def process_before_unload(self,chosen_position):
         '''Reset location.active_store_idx before leaving.
-        
         :param int chosen_position:
             The position of the menu selected by user.
         :return:
@@ -1558,13 +1545,11 @@ class StoreScreenSelect(Menu):
     def click_buy(self, selected_index, selected_value,
                   selected_item):
         '''Try to buy the clicked item.
-        
             Variables:
                 Character cash: (game_state.game.character.inventory.
                 sorted_items['cash'])
                 Cost of item: item.calculate_purchase_cost()
                 update_or_add function (?)
-        
         It is probably necessary for
                 now to reset character's selected housing and transit,
                 at least for simplicity (reset_modes).
@@ -1593,7 +1578,6 @@ class StoreScreenSelect(Menu):
     def click_sell(self, selected_index, selected_value,
                    selected_item):
         '''Sell the clicked item.
-        
         It is probably necessary for
                 now to reset character's selected housing and transit,
                 at least for simplicity (reset_modes).
@@ -1633,12 +1617,9 @@ class StoreScreen(Menu):
     
     def process_before_unload(self, chosen_position):
         '''Go to the store or back home.
-        
         If store, validate that travel constraints are met (time).
         Ceiling the travel time (20 minutes = one hour).
-        
         Set location.active_store_idx to chosen store.
-        
             Variables:  Num day hours remaining:
                             game_state.game.current_day.day_hours
                         Distance x 2 of store (round-trip):
@@ -1650,10 +1631,8 @@ class StoreScreen(Menu):
                                     transit_mode)
                             speed = (ITEMS.n['transit_attributes']
                             [ mode ][0])
-            
             Time = (2 * Distance) / Speed.
             E.g.   (2 * 5 miles ) / 30mph = 20 minutes.
-        
         :param int chosen_position:
             The position of the menu selected by user.
         :return:
@@ -1686,21 +1665,17 @@ class StoreScreen(Menu):
             game_state.game.mod_hours(-travel_time)
             # Subtract travel cost.
             game_state.game.character.inventory.use_transit(distance)
-                
         # To store.
         location.active_store_idx = chosen_position
         return True
         
     def click_no_change(self, confirm):
-        #--------
-        # This tests whether setting character health to 
-        # zero actually results in game over.
-        #--------
+        '''This tests whether setting character health to 
+        zero actually results in game over.
+        '''
         game_state.game.character.health = 0
         game_state.game.character.is_dead = True
         pygame.event.post(game_state.first_game_event)
-        
-        #--------
         pass
 
 class Location:
@@ -1722,6 +1697,7 @@ class Location:
         self.active_store_idx = None # Index of store being visited.
    
     def random_job(self):
+        ''' Assigns a random job '''
         r = random.randint(0, 10)
         self.jobs = [ game_state.game.jobs.random_job()
                       for i in range(0, 10+r) ]
@@ -1746,7 +1722,6 @@ class Locations:
     The friend_location attribute changes daily so that when 
     "staying with a friend" each day the player is starting from
     a new location (see StoryScreen).
-    
     The list of regions is from:
     https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States
     '''
@@ -1776,8 +1751,7 @@ class Locations:
                                     uniform(0.0, 20.0) * plus_minus())
         
     def random_location(self):
-        '''Return a random location instance.
-        
+        '''
         :return: A random location instance.
         :rtype: location.
         '''
