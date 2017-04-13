@@ -2133,7 +2133,10 @@ class EventScreen(Menu):
             print 'after self.warn_ignore_health_pack...'
         else:
             n = 0
-            while c.health <= 0 and c.inventory.use_item(Item('First Aid Kit'), 1) is True:
+            while (
+                c.health <= 0 and
+                c.inventory.use_item(Item('First Aid Kit'), 1) is True
+            ):
                 c.health += 1
                 n += 1
             if c.health <= 0:
@@ -2142,8 +2145,8 @@ class EventScreen(Menu):
                 if n == 1:
                     m = "You're still alive thanks to a health pack!" 
                 else:
-                    m = "You're still alive thanks to those "
-                        str(n) " health packs!"
+                    m = ("You're still alive thanks to those "
+                        +str(n)+" health packs!")
                 self.alert(m, ['OK'])
 
     
