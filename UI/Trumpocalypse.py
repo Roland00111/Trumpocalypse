@@ -256,18 +256,22 @@ class Menu:
 
 class EventsLoop:
     '''
-    This loop is running continuously to check for anytime a key on
-    the keyboard is pressed or a mouse button is pressed. As well as
-    drawing the next menu when you click an item.
-    Note the pygame.time.wait(0) call. This reduces CPU
-    usage from 100% to negligible!
+    This loop is running continuously to check for any time a key on
+    the keyboard is pressed or a mouse button is pressed.
+    As well as drawing the next menu by creating a new Menu() class
+    for the specified keypress index when a menu item is selected.
+    To reduce CPU usage from 100% the loop utilizes a 
+    call to pygame.time.wait(0).
     This is noted at this URL:
-    https://www.gamedev.net/topic/
+        https://www.gamedev.net/topic/
         518494-pygame-eating-up-my-cpu/#entry4368408
     The author states:
-    "Giving up any remainder of the timeslice is the key to
-    lowering CPU usage, which is done by sleeping - or,
-    in the case of PyGame, calling time.wait()."
+        "Giving up any remainder of the timeslice is the key to
+        lowering CPU usage, which is done by sleeping - or,
+        in the case of PyGame, calling time.wait()."
+    When the game is first started an initial Menu instance is started
+    using OpeningMenu(). OpeningMenu is just one of the many classes
+    that inherit from the Menu class.
     '''
     current_menu = None
     
@@ -323,9 +327,10 @@ class EventsLoop:
                 if cm.scene._has_alert is True and (
                     event.type == pygame.MOUSEBUTTONDOWN or
                     event.type == pygame.MOUSEBUTTONUP):
-                    # Allow only cm.scene.hit(event.pos) =
-                    #<PygameUI.Button object at ...>
-                    # That is, only allow button presses.
+                    # Allow only
+                    #   cm.scene.hit(event.pos) =
+                    #   <PygameUI.Button object at ...>
+                    #   That is, only allow button presses.
                     if event.type == (pygame.MOUSEBUTTONDOWN or
                                       event.type == pygame.MOUSEBUTTONUP):
                         # Only allow elements in the alert element to
@@ -979,6 +984,19 @@ class Item:
             raise TypeError
             
 class GameState:
+    '''There is only one GameState instance. This is created when the
+    program is first started. A global variable game_state is 
+    made to reference this instance. Thus throughout the program
+    it is possible to reference this instance.
+    The GameState instance creates an instance of the Game class
+    and then it creates an instance of the EventsLoop class.
+    Passing in a list of keypress indexes (integers) allows the
+    program to simulate a game by hitting the "Enter Key" on specified
+    menu items.
+    There is a reset function that is called when the character dies.
+    This resets a number of important variables in the Game class
+    and then creates a new Game class instance.
+    '''
     def __init__(self,testevents = None):
         # Reference the global game state variable to this object.
         global game_state 
@@ -1086,6 +1104,11 @@ class Store:
 
 
 class Jobs:
+    '''Handler for jobs in the game. Each game has one instance
+    of the Jobs class. The Jobs class currently has one function,
+    which is to provide a random Job class instance when appropriate.
+    The jobs list is stored in jobs.py.
+    '''
     def __init__(self):
         pass
     def random_job(self):
@@ -1669,6 +1692,16 @@ class Location:
     
 class Locations:
     '''
+    Handler for locations in the game. Each game has one instance
+    of the Locations class. The Locations class instance has a list of
+    Location class instances for each of the eight locations.
+    The Locations class also has a friend_location attribute which
+    specifies the X,Y coordinates of the friend's location.
+    The friend_location attribute changes daily so that when 
+    "staying with a friend" each day the player is starting from
+    a new location (see StoryScreen).
+    
+    The list of regions is from:
     https://en.wikipedia.org/wiki/List_of_regions_of_the_United_States
     '''
     all_locations = [ #prototype
