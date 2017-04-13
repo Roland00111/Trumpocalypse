@@ -323,11 +323,11 @@ class EventsLoop:
             pygame.time.wait(0)
     
     def check_character_alive(self):
-        #------------------------------------------
-        # If the character's health is 0
-        # then kill the character (is_dead=true).
-        # Then do the game over screen.
-        #------------------------------------------
+
+        '''If the character's health is 0 then kill the character
+        (is_dead=true). Then do the game over screen.
+        '''
+
         if (game_state.game.character != None and
             game_state.game.character.health <= 0 and 
             game_state.game.character.is_dead is True and
@@ -343,11 +343,11 @@ class EventsLoop:
             game_state.first_game_event=event
     
     def pui_has_alert(self, event):
-        #-------------------------------------------------
-        # If there is an alert then stop everything except
-        # mouse down, mouse up, and quit.
-        # Use continue to jump forward in event_loop.
-        #-------------------------------------------------
+        '''If there is an alert then stop everything except
+        mouse down, mouse up, and quit.
+        Use continue to jump forward in event_loop.
+        '''
+
         if self.cm.scene._has_alert is True and (
             event.type == pygame.MOUSEBUTTONDOWN or
             event.type == pygame.MOUSEBUTTONUP):
@@ -374,6 +374,9 @@ class EventsLoop:
         return False
         
     def process_pygame_events(self):
+        ''' This function contains our main while loop that is
+        constantly checking for keyboard and mouse button presses.
+        '''
         chosen_position = None # Reset on each loop
         ########################Used for Testing##################
         if self.test_events != None:
@@ -520,9 +523,11 @@ class EventsLoop:
             self.cm = self.cm.keypressArray[chosen_position]()
             
 class Character:
-    '''
+    ''' This class contains a default character and two hard coded
+    characters for testing purposes. 
     '''
     def __init__ (self, create_type):
+        ''' Default character '''
         self.name = 'Default'
         self.health = 3
         self.strength = 3
@@ -566,6 +571,11 @@ class Character:
         self.selected_house = 'Staying with Friends'    
         
     def randomGenerate(self):
+        ''' Eventually this will completly randomize what you get but
+        for now this contains two characters that are chosen at
+        randomly for the purpose of testing. This function also adds
+        the characters starting items randomly.
+        '''
         num = random.randint(0,1)
         if num == 0:
             self.name = 'Bill'
@@ -614,14 +624,17 @@ class Character:
             self.job = self.location.random_job()
     
     def born(self):
-        print self.name, ' is alive!'
+        print (self.name, ' is alive!')
     def died(self):
-        print self.name, ' is dead!'
+        print (self.name, ' is dead!')
       
 class Inventory:
+    ''' This class deals with everything related to the inventory of
+    the character.
+    '''
     def __init__(self):
-        '''
-        
+        ''' Holds starting data and will get modified to hold the
+        contents of the inventory.
         '''
         self.max_items = 999
         self.items = [] # Array of items.
@@ -634,12 +647,16 @@ class Inventory:
         }
         self.is_store = False
     def house_degrade(self,ratio):
+        ''' Decraments house uses by aratio for cases where an event
+        might cause you to loose 50% of your house for example.
+        '''
         for house in self.sorted_items['housing']:
             house.remaining_uses *= ratio
             
     def item_count(self):
-        #Iterates throught self.items and returns a list of all items
-        #in array with number of uses left.
+        ''' Iterates throught self.items and returns a list of all
+        items in array with number of uses left.
+        '''
         storage = []
         for item in self.items:
             storage.append({'item':item, 'value': item.item_type +
@@ -695,7 +712,7 @@ class Inventory:
         return storage
     
     def num_items(self):
-        # Returns the number of items in the inventory
+        ''' Returns the number of items in the inventory'''
         return len(self.items)
     
     def use_item(self, item, amount):
@@ -722,11 +739,15 @@ class Inventory:
             return True
         
     def use_transit(self, distance):
+        ''' This is called whenever you travel some whwere like to
+        work or to the store. The function then decrements the uses
+        on the proper form of transportation.
+        '''
         c = game_state.game.character
         mode = c.transit_mode
         if mode != 'Walking':
+            idx = c.transit_mode_idx - 1
             # Minus one as walking is not in this list...
-            idx = c.transit_mode_idx - 1 
             t_item = self.sorted_items['transit'][idx]
             print 'remaining uses:',t_item.remaining_uses
             print 'distance:',distance
@@ -771,14 +792,10 @@ class Inventory:
                     
     def add_item(self, item_type = None, item_amount = None):
         '''Add an item to this inventory.
-        
         If item_type is None then add a random item.
-        
         If item_type is not None then add item of this type.
-        
         Does the item already exist in the inventory?
         If so, then add the item's stats.
-        
         item_amount:
             if new_item.grouped_item is False: # single item
                 new_item.remaining_uses = item_amount 
@@ -807,6 +824,9 @@ class Inventory:
             self.update_or_add_item(rand_item)
     
     def sorted_append(self, new_item):
+        ''' This function makes sure that when an item is added to
+        inventory that the inventory reamins to sorted.
+        '''
         if new_item.item_type in ITEMS.n['transit_types']:
             self.sorted_items['transit'].append(new_item)
         elif new_item.item_type in ITEMS.n['housing_types']:
@@ -819,6 +839,8 @@ class Inventory:
             self.sorted_items['other'].append(new_item)
             
     def update_or_add_item(self, new_item):
+        ''' 
+        '''
         existing_item = self.contains_item(new_item.item_type)
         if existing_item != False:
             # Add to existing item.
@@ -2430,8 +2452,8 @@ class CreateCharacterAutomatic(Menu):
     '''The user wants to create an automatic character.
     Set game_state.game.character to a random character instance:
     Character('random').
-    Display the character's state. Allow the user to start the game
-    or go back to create a new character.
+    Display the character's state with CharacterHUD(self). Allow the
+    user to start the game or go back to create a new character.
     '''
     def __init__(self):
         self.menu_name = '...'
