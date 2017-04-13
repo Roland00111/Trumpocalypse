@@ -9,7 +9,7 @@ import math
 import copy
 import names # People's names.
 import items as ITEMS # Items dictionary.
-import jobs #Potential jobs
+import jobs as JOBS #Potential jobs
 
 
 from pygame.locals import *
@@ -1091,8 +1091,8 @@ class Jobs:
         #self.none = None
         #job = Job()
     def random_job(self):
-        r = random.randint(0,len(jobs.j.keys())-1)
-        x = jobs.j.values()[r]
+        r = random.randint(0,len(JOBS.j.keys())-1)
+        x = JOBS.j.values()[r]
         return Job(x['title'], x['income'], x['company'], x['area'],
                    x['events'])
 
@@ -1651,13 +1651,7 @@ class Location:
             Store() for i in range(random.randint(1,4))
         ]
         self.active_store_idx = None # Index of store being visited.
-        #r = random.randint(0, 10)
-        #print game_state
-        #print game_state.game
-        #self.jobs = [ game_state.game.jobs.random_job()
-        #for i in range(0, 10+r) ]
-
-    
+   
     def random_job(self):
         r = random.randint(0, 10)
         print game_state
