@@ -1088,8 +1088,6 @@ class Store:
 class Jobs:
     def __init__(self):
         pass
-        #self.none = None
-        #job = Job()
     def random_job(self):
         r = random.randint(0,len(JOBS.j.keys())-1)
         x = JOBS.j.values()[r]
