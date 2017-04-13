@@ -2115,10 +2115,7 @@ class EventScreen(Menu):
         
         :param boolean confirm: Confirm is always true in this case.
         '''
-        print 'x',game_state.first_game_event
         game_state.game.character.is_dead = True
-        print 'x',game_state.first_game_event
-        print pygame.event.post(game_state.first_game_event)
 
     def click_use_first_aid(self, confirm):
         '''User clicked "Use first aid packs" or
@@ -2131,7 +2128,6 @@ class EventScreen(Menu):
             False if "Do not" is pressed.
         '''
         c = game_state.game.character
-        print 'confirm:',confirm
         if confirm is False:
             self.alert(self.warn_ignore_health_pack, ['OK'], self.click_died)
             print 'after self.warn_ignore_health_pack...'
@@ -2146,7 +2142,8 @@ class EventScreen(Menu):
                 if n == 1:
                     m = "You're still alive thanks to a health pack!" 
                 else:
-                    m = "You're still alive thanks to those "+str(n)+" health packs!"
+                    m = "You're still alive thanks to those "
+                        str(n) " health packs!"
                 self.alert(m, ['OK'])
 
     
@@ -2338,28 +2335,24 @@ class Game:
                         +event)
             
         def strTimeProp(self,start, end, format, prop):
-            # Taken From : http://stackoverflow.com/questions/553303/
-            #generate-a-random-date-between-two-other-dates
-            # By: Tom Alsberg
-            '''
-            Get a time at a proportion of a range of two formatted
+            '''Get a time at a proportion of a range of two formatted
             times.
 
-            start and end should be strings specifying times formated
+            The start and end should be strings specifying times formated
             in thegiven format (strftime-style), giving an interval
             [start, end].prop specifies how a proportion of the
             interval to be taken afterstart.  The returned time will
             be in the specified format.
+            
+            Taken From : http://stackoverflow.com/questions/553303/
+                generate-a-random-date-between-two-other-dates
+            By: Tom Alsberg
             '''
 
             stime = time.mktime(time.strptime(start, format))
             etime = time.mktime(time.strptime(end, format)) - 1
-            print stime
-            print etime
             ptime = stime + prop * (etime - stime)
-
             return time.strftime(format, time.localtime(ptime))
-
 
         def randomDate(self,start, end, prop):
             return self.strTimeProp(start, end, '%m/%d/%Y', prop)
@@ -2435,6 +2428,12 @@ class CreateCharacterManual(Menu): #Not in effect yet
         Menu.scene.add_child(minus)
         
 class CreateCharacterAutomatic(Menu):
+    '''The user wants to create an automatic character.
+    Set game_state.game.character to a random character instance:
+    Character('random').
+    Display the character's state. Allow the user to start the game
+    or go back to create a new character.
+    '''
     def __init__(self):
         self.menu_name = '...'
         self.keypressArray = [
@@ -2528,13 +2527,11 @@ class DayScreen(Menu):
         CharacterHUD(self)
         
         if game_state.game.day_counter % 48 != 0:
-            
             self.keypressArray = [
                 EventScreen,
                 StoryScreen, #Reset Game.Day.day_hours back to 16
                 StoreScreen,
                 WorkScreen #Work -> -8 on the Game.Day.day_hours
-                
             ]
             self.titlesArray = [
                 'Events: ' + str(len(game_state.game.events.
@@ -2572,7 +2569,6 @@ class DayScreen(Menu):
     def update_body(self):
         '''Call this function to update text in the body.
         '''
-        #start here DDDDDDDDDDD
         text = ('Term Number: ' + str(game_state.game.term_count) + ' \nDay is: ' + str(game_state.game.current_day.generated_date)
         + ' \n' +' \nHours Left: ' + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
         self.body = {
@@ -2581,6 +2577,7 @@ class DayScreen(Menu):
             'top': 20,
             'height': 300
         }
+        
     def process_before_unload(self, chosen_position):
         '''Leave the DayScreen after user presses EnterKey.
         
@@ -2633,7 +2630,7 @@ class ElectionDay(Menu): #Use on 48,96 .... +=48
             'Vote For Anyone Else (End)',
         ]
         text = game_state.game.current_day.story_text
-        #For some reason font size 32 looks a lot better than 30 or 34 
+        
         self.body = {
             'text': text,
             'font_size': 32,
@@ -2642,21 +2639,23 @@ class ElectionDay(Menu): #Use on 48,96 .... +=48
         }
 
 class StoryScreen(Menu):
+    '''StoryScreen is the screen where new days occur.
+    This causes a few actions to take place:
+        1) Update friend's location;
+        2) Generate a random event;
+        3) Increment day counter and month counter;
+        4) Create a new Day() instance.
+    When creating a new Day() instance end of day modifications takes
+    place.
+    '''
     def __init__(self):
-        # Do a random event
         game_state.game.locations.update_friend_location()
-        game_state.game.events.random_event()
+        game_state.game.events.random_event() # Do a random event
         game_state.game.day_counter += 1
         game_state.game.month_counter += 1
-        
-        game_state.game.current_day = game_state.game.Day() #Game.Day()
-        
-        #~ if game_state.game.character.health == 0:
-            #~ self.do_end_screen()
-            #~ return
+        game_state.game.current_day = game_state.game.Day()
         
         self.menu_name = '...'
-        
         self.keypressArray = [
             DayScreen 
         ]
@@ -2664,14 +2663,12 @@ class StoryScreen(Menu):
             'Start Day',
         ]
         text = game_state.game.current_day.story_text
-        #For some reason font size 32 looks a lot better than 30 or 34 
         self.body = {
             'text': text,
             'font_size': 32,
             'top': 60,
             'height': 250
         }
-        
 
 class CreateCharacter(Menu):
     '''
