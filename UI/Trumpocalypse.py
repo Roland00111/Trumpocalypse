@@ -824,8 +824,11 @@ class Inventory:
             self.update_or_add_item(rand_item)
     
     def sorted_append(self, new_item):
-        ''' This function makes sure that when an item is added to
-        inventory that the inventory reamins to sorted.
+        '''This function ensures that when an item is added to an
+        inventory, the same item is also added to sorted_items.
+        sorted_items is a dictionary which organizes the items
+        in the inventory by type (transit, housing, cash, food, and
+        other) for easy access.
         '''
         if new_item.item_type in ITEMS.n['transit_types']:
             self.sorted_items['transit'].append(new_item)
