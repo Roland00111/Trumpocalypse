@@ -233,10 +233,6 @@ class Events:
         # Generate event duration.
         event.generate_duration()
         # Add to inactive events
-        # Shallow copy?
-        print ('event in self.inactive_events? ',
-               event in self.inactive_events)
-
         #Buffing the event if already in queue. Removing the original
         #event and adding a longer new event. Otherwise, would have
         #issues using the [-1] for last added later.

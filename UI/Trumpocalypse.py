@@ -267,7 +267,7 @@ class Menu:
         w = self.scene.frame.w - 160 - 160
         xoff = self.dest_surface.get_rect().centerx - w/2 
         # Draw a box background.
-        pygame.draw.rect(surface, (255,60,71),
+        pygame.draw.rect(cf.surface, (255,60,71),
             pygame.Rect(xoff, self.body['top'], w,
             self.body['height']), 10) 
         # There is a slight offset from the text
@@ -279,7 +279,7 @@ class Menu:
         font = (pygame.font.Font
             ('data/coders_crux/coders_crux.ttf',
             self.body['font_size']))
-        drawText(surface, self.body['text'], (0,0,0), rect,
+        drawText(cf.surface, self.body['text'], (0,0,0), rect,
                  font, aa=False, bkg=None)
     
 class EventsLoop:
@@ -362,7 +362,7 @@ class EventsLoop:
                     return True
         elif self.cm.scene._has_alert is True:
             # Make sure to draw alert
-            surface.blit(self.cm.scene.draw_alert(), (0, 0))
+            cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
             # and update, in the case of
             #self.cm.process_before_unload()=False and
             #chosen_position=True
@@ -452,19 +452,19 @@ class EventsLoop:
             #---------------------------
             
             # Draw PygameUI.
-            surface.blit(self.cm.scene.draw(), (0, 0))
+            cf.surface.blit(self.cm.scene.draw(), (0, 0))
             # Draw Menu
             if self.cm.body is False:
-                self.cm.init(self.cm.titlesArray, surface) 
+                self.cm.init(self.cm.titlesArray, cf.surface) 
                 self.cm.draw()
             else:
                 # Draw menu plus body
-                self.cm.init(self.cm.titlesArray, surface, 200) 
+                self.cm.init(self.cm.titlesArray, cf.surface, 200) 
                 self.cm.draw()
                 self.cm.draw_menu_body()
             # Draw scene alert.
             if self.cm.scene._has_alert is True:
-                surface.blit(self.cm.scene.draw_alert(), (0, 0))
+                cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
             # Update
             pygame.display.update()
         
@@ -494,18 +494,18 @@ class EventsLoop:
         while self.test_events:
             chosen_position = self.test_events.pop(0)
             self.cm.remove_pui_children()
-            surface.blit(self.cm.scene.draw(), (0, 0))
+            cf.surface.blit(self.cm.scene.draw(), (0, 0))
             if self.cm.body is False:
-                self.cm.init(self.cm.titlesArray, surface) # Draw non-body menu
+                self.cm.init(self.cm.titlesArray, cf.surface) # Draw non-body menu
                 self.cm.draw()
             else:
                 # Draw menu plus body
-                self.cm.init(self.cm.titlesArray, surface, 200) 
+                self.cm.init(self.cm.titlesArray, cf.surface, 200) 
                 self.cm.draw()
                 #300 - self.menu_width / 2  Calculate the x offset
                 x = self.cm.dest_surface.get_rect().centerx - 150
                 # Draw a box background.
-                pygame.draw.rect(surface, (255,60,71), pygame.Rect(x,
+                pygame.draw.rect(cf.surface, (255,60,71), pygame.Rect(x,
                 self.cm.body['top'], 300, self.cm.body['height']), 10) 
                                            #Box color
                 # There is a slight offset from the text and the box.
@@ -516,7 +516,7 @@ class EventsLoop:
                 font = (pygame.font.Font
                 ('data/coders_crux/coders_crux.ttf',
                  self.cm.body['font_size']))
-                drawText(surface, self.cm.body['text'], (0,0,0), rect,
+                drawText(cf.surface, self.cm.body['text'], (0,0,0), rect,
                          font, aa=False, bkg=None)
             pygame.display.update()
             self.cm = self.cm.keypressArray[chosen_position]()
@@ -2459,13 +2459,13 @@ def run_tests():
     :raises: None.
     '''
     import sys
-    surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
+    cf.surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
     GameState([0,1] + [ x*0 for x in range(1000)])
 
 if __name__ == '__main__':
     import sys
     
-    surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
+    cf.surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
 #    pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
     '''First you have to make an object of a *Menu class.
     *init take 2 arguments. list of fields and destination surface.
