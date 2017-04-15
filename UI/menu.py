@@ -11,6 +11,7 @@ import items as ITEMS # Items dictionary.
 import jobs as JOBS #Potential jobs
 import events as EVENTS
 import character as CHARACTER
+import sys
 
 class Menu:
     '''Original code for the menu class is from:
