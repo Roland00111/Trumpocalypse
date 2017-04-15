@@ -1,20 +1,3 @@
-import time
-import pygame
-#import unittest
-import random
-from TextWrap import *
-import PygameUI
-#import gc
-import math
-import copy
-import names # People's names.
-import items as ITEMS # Items dictionary.
-import jobs as JOBS #Potential jobs
-
-from pygame.locals import *
-
-print 'surface:',surface
-
 class Menu:
     '''Original code for the menu class is from:
         @author: avalanchy (at) google mail dot com
@@ -239,7 +222,7 @@ class Menu:
         w = self.scene.frame.w - 160 - 160
         xoff = self.dest_surface.get_rect().centerx - w/2 
         # Draw a box background.
-        pygame.draw.rect(surface, (255,60,71),
+        pygame.draw.rect(cf.surface, (255,60,71),
             pygame.Rect(xoff, self.body['top'], w,
             self.body['height']), 10) 
         # There is a slight offset from the text
@@ -251,5 +234,768 @@ class Menu:
         font = (pygame.font.Font
             ('data/coders_crux/coders_crux.ttf',
             self.body['font_size']))
-        drawText(surface, self.body['text'], (0,0,0), rect,
+        drawText(cf.surface, self.body['text'], (0,0,0), rect,
                  font, aa=False, bkg=None)
+
+
+class WorkScreen(Menu):
+    ''' This will knock 8 hours off the day and possibly more or less
+    depending on the work event
+    '''
+    def __init__(self):
+        self.menu_name = 'WorkScreen'
+
+        #Need to have work option removed when going back to DayScreen
+        self.keypressArray = [
+                DayScreen, 
+            ]
+        self.titlesArray = [
+               'Back to Day',
+            ]
+        #This points to job name which is a str.
+        #Then tries to do .work()
+        work_text = cf.gs.game.character.job.work() 
+        
+        self.body = {
+            'text': work_text,
+            'font_size': 32,
+            'top': 20,
+            'height': 300
+        }
+
+class StoreScreenSelect(Menu):
+    ''' This class deals with everything about the store '''
+    def __init__(self):
+        ''' This is a menu class so the init function sets up the
+        buttons and what they will look like.
+        '''
+        self.menu_name = '...'
+        location = cf.gs.game.character.location
+        # To get store.
+        self.store = location.stores[ location.active_store_idx ]
+        self.warning_not_enough_cash = ('Oops... that item costs '+
+                                        'too much money!')
+        
+        # HUD
+        CharacterHUD(self)
+        
+        # Lists
+        self.elements = []
+        self.draw_store_lists()
+        
+        self.keypressArray = [
+             DayScreen
+        ]
+        # Just back to day, no 'Back to Store List' 
+        self.titlesArray = ['Back to Day'] 
+        self.body = {
+            'text': 'Welcome to '+self.store.name+'!',
+            'font_size': 40,
+            'top': 10,
+            'height': 80
+        }
+    
+    def draw_store_lists(self):
+        ''' This displays the items that are for sale in the store.
+        '''
+        # Remove old elements, if they exist (on update lists).
+        if len(self.elements) != 0:
+            for l in self.elements:
+                self.scene.remove_child(l)
+        self.elements = []
+        
+        # Title for list.
+        x = PygameUI.Label('Click to Buy')
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400,
+                              Menu.scene.frame.h -220)
+        self.scene.add_child(x)
+        self.elements.append(x)
+        # List of items for sale.
+        x = PygameUI.List(self.store.inventory.item_count_buy())
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400,
+                              Menu.scene.frame.h -220)
+        x.frame.w = x.container.frame.w
+        x.border_width = 1
+        x.container.draggable = True
+        x.callback_function = self.click_buy
+        self.scene.add_child(x)
+        self.elements.append(x)
+        
+        # Title for list.
+        x = PygameUI.Label('Click to Sell')
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 100, 400,
+                              Menu.scene.frame.h -220)
+        self.scene.add_child(x)
+        self.elements.append(x)
+        # List of items to sell.
+        x = PygameUI.List(cf.gs.game.character.inventory.
+                          item_count_sell())
+        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400,
+                              Menu.scene.frame.h -220)
+        x.frame.w = x.container.frame.w
+        x.border_width = 1
+        x.container.draggable = True
+        x.callback_function = self.click_sell
+        self.scene.add_child(x)
+        self.elements.append(x)
+        
+    def process_before_unload(self,chosen_position):
+        '''Reset location.active_store_idx before leaving.
+        :param int chosen_position:
+            The position of the menu selected by user.
+        :return:
+            Return True if it is okay to continue, False if it is not.
+        :rtype: boolean.
+        '''
+        location = cf.gs.game.character.location
+        location.active_store_idx = None
+        return True
+        
+    def click_buy(self, selected_index, selected_value,
+                  selected_item):
+        '''Try to buy the clicked item.
+            Variables:
+                Character cash: (cf.gs.game.character.inventory.
+                sorted_items['cash'])
+                Cost of item: item.calculate_purchase_cost()
+                update_or_add function (?)
+        It is probably necessary for
+                now to reset character's selected housing and transit,
+                at least for simplicity (reset_modes).
+        '''
+        cf.gs.game.character.reset_modes()
+        cost = selected_item.calculate_purchase_cost()
+        cash = (cf.gs.game.character.inventory.
+                sorted_items['cash'].amount)
+        print 'cost',cost
+        print 'cash',cash
+        if cash < cost:
+            self.alert(self.warning_not_enough_cash, ['OK'],
+                       self.click_no_change)
+            return
+        # Enough cash, so...
+        (cf.gs.game.character.inventory.sorted_items['cash'].
+         amount) -= cost
+        (cf.gs.game.character.inventory.
+         update_or_add_item(selected_item))
+        self.store.inventory.remove_item(selected_item)
+        # Redraw lists.
+        self.draw_store_lists()
+        # Redraw HUD
+        cf.gs.game.character_hud.draw_elements()
+    
+    def click_sell(self, selected_index, selected_value,
+                   selected_item):
+        '''Sell the clicked item.
+        It is probably necessary for
+                now to reset character's selected housing and transit,
+                at least for simplicity (reset_modes).
+        '''
+        cf.gs.game.character.reset_modes()
+        cost = selected_item.calculate_resale_cost()
+        (cf.gs.game.character.inventory.sorted_items['cash'].
+         amount) += cost
+        cf.gs.game.character.inventory.remove_item(selected_item)
+        self.store.inventory.update_or_add_item(selected_item)
+        # Redraw lists.
+        self.draw_store_lists()
+        # Redraw HUD
+        cf.gs.game.character_hud.draw_elements()
+        
+    def click_no_change(self, confirm):
+        '''Do nothing.
+        '''
+        pass
+
+
+    
+class StoreScreen(Menu):
+    '''
+    Class StoreScreen. This shows the stores in the character's
+    current location. Then the user chooses to go to a specific store.
+    '''
+    def __init__(self):
+        self.menu_name = '...'
+        location = cf.gs.game.character.location
+        self.keypressArray = [ StoreScreenSelect
+            for x in range(len(location.stores)) ] + [ DayScreen ]
+        self.titlesArray = location.menu_values() + ['Back to Day']
+        
+        # HUD
+        CharacterHUD(self)
+    
+    def process_before_unload(self, chosen_position):
+        '''Go to the store or back home.
+        If store, validate that travel constraints are met (time).
+        Ceiling the travel time (20 minutes = one hour).
+        Set location.active_store_idx to chosen store.
+            Variables:  Num day hours remaining:
+                            cf.gs.game.current_day.day_hours
+                        Distance x 2 of store (round-trip):
+                            (cf.gs.game.character.location.
+                            stores[ chosen_position ].
+                            distance_from_house())
+                        Current mode of transit:
+                            mode = (cf.gs.game.character.
+                                    transit_mode)
+                            speed = (ITEMS.n['transit_attributes']
+                            [ mode ][0])
+            Time = (2 * Distance) / Speed.
+            E.g.   (2 * 5 miles ) / 30mph = 20 minutes.
+        :param int chosen_position:
+            The position of the menu selected by user.
+        :return:
+            Return True if it is okay to continue, False if it is not.
+        :rtype: boolean.
+        '''
+        location = cf.gs.game.character.location
+        if len(location.stores) -1  < chosen_position: # To DayScreen.
+            return True
+        
+        #-----------------
+        # Validate travel.
+        #-----------------
+        distance = 2 * (location.stores[ chosen_position ].
+                        distance_from_house())
+        mode = cf.gs.game.character.transit_mode
+        speed = ITEMS.n['transit_attributes'][ mode ][0]
+        travel_time = math.ceil(distance / speed)
+        # No store.
+        if cf.gs.game.current_day.day_hours < travel_time: 
+            store_name = location.stores[ chosen_position ].name
+            m = ('Warning: There is not enough time visit '+
+                 store_name+'.\nThe trip takes '+str(travel_time)+
+                 ' hours but only '+str(cf.gs.game.current_day.
+                                        day_hours)+' hours remain!')
+            self.alert(m, ['OK'], self.click_no_change)
+            return False
+        else:
+            # Subtract hours.
+            cf.gs.game.mod_hours(-travel_time)
+            # Subtract travel cost.
+            cf.gs.game.character.inventory.use_transit(distance)
+        # To store.
+        location.active_store_idx = chosen_position
+        return True
+        
+    def click_no_change(self, confirm):
+        '''This tests whether setting character health to 
+        zero actually results in game over.
+        '''
+        cf.gs.game.character.health = 0
+        cf.gs.game.character.is_dead = True
+        pygame.event.post(cf.gs.first_game_event)
+        pass
+        
+
+class GameOverScreen(Menu): 
+    def __init__(self):
+        self.menu_name = '...'
+        self.keypressArray = [
+             OpeningMenu,
+             Close
+        ]
+        self.titlesArray = ['Start Over', 'Quit']
+        # Tally score (implement)
+        cf.gs.game.tally_score()
+        text = 'Buh-bye!'
+        
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 60,
+            'height': 250
+        }
+        # Reset game
+        cf.gs.reset()
+        
+class EventScreen(Menu): 
+    def __init__(self):
+        self.menu_name = '...'
+        self.events_values = cf.gs.game.events.events_values()
+        self.keypressArray = [
+            DayScreen,
+            DayScreen,
+        ]
+        self.titlesArray = ['Active Event','Go Back To Day']
+        text = 'Select an event to continue...'
+        
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 60,
+            'height': 250
+        }
+        # Some variables specific to this screen.
+        self.selected_event = None
+        self.warn_no_event = (
+        "Warning: No event selected!\n"+
+        "You must select an event to activate!")
+        self.warn_ask_health_pack = (
+        "Warning: You are about to die!\n"+
+        "Would you like to use some health packs?")
+        self.warn_ignore_health_pack = (
+        "Warning: Why did you choose not to use a health pack!?\n"+
+        "Now you died!")
+        self.warn_no_health_pack = "Warning: No more health packs!\nYou died!"
+        self.warn_event_active = "Warning: The event is already activated!"
+        
+        g = cf.gs.game.events
+
+        x = PygameUI.List(g.show_inactive_events(), (200, 224, 200))
+        x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.border_width = 1
+        x.container.draggable = True
+        x.callback_function = self.click_event_list
+        self.scene.add_child(x)
+
+        x = PygameUI.List(g.show_active_events(), (200, 224, 200))
+        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        x.border_width = 1
+        x.container.draggable = True
+        x.callback_function = self.click_event_list
+        self.scene.add_child(x)
+
+    def click_died(self, confirm):
+        '''User clicked "OK". So end the game.
+        In EventsLoop this will immediately jump
+        to GameOverScreen, assuming also of course
+        that health <= 0.
+        
+        :param boolean confirm: Confirm is always true in this case.
+        '''
+        cf.gs.game.character.is_dead = True
+
+    def click_use_first_aid(self, confirm):
+        '''User clicked "Use first aid packs" or
+        "Do not use first aid packs".
+        If "Do not use" end the game. Else try using first aid packs
+        until there are no more remaining or until the character's
+        health > 0.
+        
+        :param boolean confirm: True if "Use" is pressed,
+            False if "Do not" is pressed.
+        '''
+        c = cf.gs.game.character
+        if confirm is False:
+            self.alert(self.warn_ignore_health_pack, ['OK'], self.click_died)
+        else:
+            n = 0
+            while (c.health <= 0 and
+                c.inventory.use_item(Item('First Aid Kit'), 1) is True
+            ):
+                c.health += 1
+                n += 1
+            if c.health <= 0:
+                self.alert(self.warn_no_health_pack, ['OK'], self.click_died)
+            else:
+                if n == 1:
+                    m = "You're still alive thanks to a health pack!" 
+                else:
+                    m = ("You're still alive thanks to those "
+                        +str(n)+" health packs!")
+                self.alert(m, ['OK'])
+
+    
+    def click_event_list(self, selected_index,
+        selected_value, selected_item):
+        ''' This will show the events text after you click the event
+        '''
+        self.selected_event = selected_item
+        self.body['text'] =selected_item.story_text
+
+    
+    def process_before_unload(self,chosen_position):
+        '''The user pressed "Activate Event".
+        '''
+        if chosen_position == 0:
+            # Has the user clicked on a list yet?
+            #selected_event is in Event Class, how do I ref it?
+            if self.selected_event is None:
+                self.alert(self.warn_no_event, ["OK"])
+                return False # Stay on EventScreen
+            # Clicked on something.
+            # Is it active?
+            if self.selected_event.activated is True:
+                self.alert(self.warn_event_active, ["OK"])
+                return False # Stay on EventScreen
+            # The event is not activated.
+            # Activate event.
+            cf.gs.game.events.toggle_event(self.selected_event)
+            # Check character.health.
+            c = cf.gs.game.character
+            if c.health >= 1:
+                return True # Back to DayScreen
+            elif c.health <= 0:
+                self.alert(self.warn_ask_health_pack,
+                        [ "Use some health packs.",
+                        "Do not use any health packs." ],
+                        self.click_use_first_aid)
+                return False # Stay on EventScreen
+        elif chosen_position == 1:
+            # User pressed Go Back to Day.
+            # In this case simply return True.
+            # This will go back to DayScreen.
+            return True
+
+
+class CreateCharacterManual(Menu): #Not in effect yet
+    def __init__(self):
+        '''Eg spend 20 points
+        intelligence, charisma, sanity, cash
+        '''
+        self.menu_name = '...'
+        self.keypressArray = [
+            StoryScreen,
+            CreateCharacter,
+        ]
+        self.titlesArray = [
+            'Continue To Location',
+            'Back To Previous Page'
+        ]
+        text = ""
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': -100,
+            'height': 0
+        }
+        
+
+        self.select_value(100,200,0) #button creation click does not work yet though
+        self.select_value(200,200,0)
+        
+        x = PygameUI.List([{'item':None,'value':'Item %s'%str(i) }
+                               for i in range(20)])
+        x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
+        x.frame.w = x.container.frame.w
+        x.selected_index = 1
+        x.border_width = 1
+        x.container.draggable = True
+        Menu.scene.add_child(x)
+
+        x = PygameUI.TextField()
+        x.frame = pygame.Rect(10, 50, 150, 30)
+        Menu.scene.add_child(x)
+        
+##        self.CustomField( # Something along the lines of.........
+##            'list',
+##            ['Choice 1', 'Choice 2', 'Choice 3'],
+##            'Make a "good" choice:',
+##            { MOUSEBUTTONUP: self.select_on_mouseup }
+##        )
+        #~ self.CustomField( # Something along the lines of.........
+            #~ 'button',
+            #~ 'Some Button',
+            #~ False,
+            #~ { MOUSEBUTTONUP: self.button_on_mouseup }
+        #~ )
+    
+    def select_on_mouseup(self, event):
+        print ('This is called when selecting a choice from the '+
+               'select field!')
+        
+    def select_value(self,left,top,attrib_value):
+        plus = PygameUI.Button("+")
+        plus.frame = pygame.Rect(left, top, 27, 30)
+        Menu.scene.add_child(plus)
+
+        value = PygameUI.Label()
+        value.frame = pygame.Rect(left, top+50, 27, 30)
+        value.text = str(attrib_value)
+        Menu.scene.add_child(value)
+
+        minus = PygameUI.Button("-")
+        minus.frame = pygame.Rect(left, top+100 ,27, 30)
+        Menu.scene.add_child(minus)
+        
+class CreateCharacterAutomatic(Menu):
+    '''The user wants to create an automatic character.
+    Set cf.gs.game.character to a random character instance:
+    Character('random').
+    Display the character's state with CharacterHUD(self). Allow the
+    user to start the game or go back to create a new character.
+    '''
+    def __init__(self):
+        self.menu_name = '...'
+        self.keypressArray = [
+            StoryScreen,
+            CreateCharacter,
+        ]
+
+        self.titlesArray = [
+            'Begin Your Adventure',
+            'Back To Previous Page',
+           
+        ]
+        cf.gs.game.character = Character('random')
+        
+        name= cf.gs.game.character.name
+        health=str(cf.gs.game.character.health)
+        strength=str(cf.gs.game.character.strength)
+        gender=cf.gs.game.character.gender
+        age=str(cf.gs.game.character.age)
+        charisma=str(cf.gs.game.character.charisma)
+        intelligence=str(cf.gs.game.character.intelligence)
+        job = cf.gs.game.character.job.title
+        income = str(cf.gs.game.character.job.income)
+        sanity = str(cf.gs.game.character.sanity)
+        location = cf.gs.game.character.location.location_name
+        
+        CharacterHUD(self)
+        
+        self.body = {
+            'text': ('Name: '+name+'\nLocation: '+location+'\n'+'Health: '+health+'\n'+
+                     'Strength: '+strength+'\n'+'Gender: '+gender+
+                     '\n'+'Age: '+age+'\n'+'Charisma: '+charisma+
+                     '\n'+'Intelligence: '+intelligence + '\n' +
+                     'Job: ' +job+ '\n' + 'Income: $'+income+'\n'+
+                     'Sanity: ' +sanity),'font_size': 32,'top': 40,
+            'height': 300
+        }
+        
+class HighScores(Menu):
+    def __init__(self):
+        self.menu_name = '...'
+        self.keypressArray = [
+            OpeningMenu,
+            ResetHighScore,
+            Close,
+        ]
+
+        high_score_file = open('high_score.txt', 'r+')
+        high_score = high_score_file.read().replace('\n', '')
+        high_score_file.close()
+
+        
+        self.titlesArray = [
+            'Main Menu',
+            'Reset Highscore',
+            'Quit',
+           
+        ]
+        a=str(high_score)
+ 
+        Text='Highscore:'+a
+        self.body = {
+            'text': Text,
+            'font_size': 44,
+            'top': 240,
+            'height': 44
+        }
+    
+    def get_high_score():
+        high_score_file = open('high_score.txt', 'r+')
+        high_score = high_score_file.read().replace('\n', '')
+        high_score_file.close()
+    
+    def save_high_score():
+        pass
+
+class ResetHighScore(Menu):
+    def __init__(self):
+        high_score_file = open('high_score.txt', 'w')
+        high_score_file.write(str(0))
+        high_score_file.close()
+        HighScores()
+
+class DayScreen(Menu):
+    def __init__(self):
+        self.menu_name = 'DayScreen'
+        # Add HUD
+        CharacterHUD(self)
+        
+        if cf.gs.game.day_counter % 48 != 0:
+            self.keypressArray = [
+                EventScreen,
+                StoryScreen, #Reset Game.Day.day_hours back to 16
+                StoreScreen,
+                WorkScreen #Work -> -8 on the Game.Day.day_hours
+            ]
+            self.titlesArray = [
+                'Events: ' + str(len(cf.gs.game.events.
+                                     inactive_events)),
+                'Next Day', 
+                'Store', 
+                'Work', 
+            ]
+        else:
+            self.keypressArray = [
+                ElectionDay, #Reset Game.Day.day_hours back to 16
+                StoreScreen,
+                StoryScreen #Work -> -8 on the Game.Day.day_hours
+                
+            ]
+            self.titlesArray = [
+                'Vote', 
+                'Store', 
+                'Work', 
+            ]
+        #This displays a text box showing how many hours left in your
+        #day to spend
+        text = ('Term Number: ' + str(cf.gs.game.term_count) +
+                ' \nDay is: ' + str(cf.gs.game.current_day.
+                generated_date)+ ' \n' +' \nHours Left: ' +
+                str(cf.gs.game.current_day.day_hours)) 
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 20,
+            'height': 300
+        }
+    
+    def update_body(self):
+        '''Call this function to update text in the body.
+        '''
+        text = ('Term Number: ' + str(cf.gs.game.term_count) + ' \nDay is: ' + str(cf.gs.game.current_day.generated_date)
+        + ' \n' +' \nHours Left: ' + str(cf.gs.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 20,
+            'height': 300
+        }
+        
+    def process_before_unload(self, chosen_position):
+        '''Leave the DayScreen after user presses EnterKey.
+        
+        :param int chosen_position:
+            The position of the menu selected by user.
+        :return:
+            Return True if it is okay to continue, False if it is not.
+        :rtype: boolean.
+        '''
+        if chosen_position != 3: # Anything but work
+            return True
+        
+        #----------------------
+        # Validate work travel.
+        #----------------------
+        job = cf.gs.game.character.job
+        distance = 2 * (job.distance_from_house())
+        mode = cf.gs.game.character.transit_mode
+        speed = ITEMS.n['transit_attributes'][ mode ][0]
+        travel_time = math.ceil(distance / speed)
+        # No store.
+        if cf.gs.game.current_day.day_hours < travel_time: 
+            m = ('Warning: There are not enough hours left to make it '+
+                 'to work!'+
+                 '\nThe trip takes '+str(travel_time)+
+                 ' hours but only '+str(cf.gs.game.current_day.
+                                        day_hours)+' hours remain!')
+            self.alert(m, ['OK'])
+            return False
+        else:
+            # Subtract hours.
+            cf.gs.game.mod_hours(-travel_time)
+            # Subtract travel cost.
+            cf.gs.game.character.inventory.use_transit(distance)
+            return True
+        
+class ElectionDay(Menu): #Use on 48,96 .... +=48
+    def __init__(self):
+        cf.gs.game.day_counter += 1
+        cf.gs.game.month_counter += 1
+        cf.gs.game.current_day = cf.gs.game.Day() #Game.Day()
+        self.menu_name = '...'
+        
+        self.keypressArray = [
+            DayScreen,
+            EndGame, # Need to add class, build when highscore point system is in place
+        ]
+        self.titlesArray = [
+            'Vote For Trump (Continue Playing)',
+            'Vote For Anyone Else (End)',
+        ]
+        text = cf.gs.game.current_day.story_text
+        
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 60,
+            'height': 250
+        }
+
+class StoryScreen(Menu):
+    '''StoryScreen is the screen where new days occur.
+    This causes a few actions to take place:
+        1) Update friend's location;
+        2) Generate a random event;
+        3) Increment day counter and month counter;
+        4) Create a new Day() instance.
+    When creating a new Day() instance end of day modifications takes
+    place.
+    '''
+    def __init__(self):
+        cf.gs.game.locations.update_friend_location()
+        cf.gs.game.events.random_event() # Do a random event
+        cf.gs.game.day_counter += 1
+        cf.gs.game.month_counter += 1
+        cf.gs.game.current_day = cf.gs.game.Day()
+        
+        self.menu_name = '...'
+        self.keypressArray = [
+            DayScreen 
+        ]
+        self.titlesArray = [
+            'Start Day',
+        ]
+        text = cf.gs.game.current_day.story_text
+        self.body = {
+            'text': text,
+            'font_size': 32,
+            'top': 60,
+            'height': 250
+        }
+
+class CreateCharacter(Menu):
+    '''
+    ...
+    '''
+    def __init__(self):
+        # some things in self are in the parent class.
+        self.menu_name = '...'
+        self.keypressArray = [
+            CreateCharacterManual,
+            CreateCharacterAutomatic,
+        ]
+        self.titlesArray = [
+            'Manual',
+            'Auto',
+        ]
+
+class OpeningMenu(Menu):
+    '''
+    ...
+    '''
+    def __init__(self):
+    # What does this do?: Menu.__init__(self)
+        self.menu_name = '...'
+        self.keypressArray = [
+            CreateCharacter,
+            StoryScreen, # OptionsFunction #Using this for testing rn 
+            HighScores,
+            Close, # QuitFunction
+        ]
+        self.titlesArray = [
+            'Start',
+            'Options',
+            'Highscore',
+            'Quit'
+        ]
+
+    def box(self):
+        print 'Box'
+
+class Close(Menu):
+    def __init__(self):
+        pygame.display.quit()
+        sys.exit()
+class EndGame(Menu):
+    def __init__(self):
+        self.titlesArray = [
+            'Test',
+        ]
+
