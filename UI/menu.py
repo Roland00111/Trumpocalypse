@@ -10,6 +10,7 @@ import names # People's names.
 import items as ITEMS # Items dictionary.
 import jobs as JOBS #Potential jobs
 import events as EVENTS
+import character as CHARACTER
 
 class Menu:
     '''Original code for the menu class is from:
@@ -743,7 +744,7 @@ class CreateCharacterAutomatic(Menu):
             'Back To Previous Page',
            
         ]
-        cf.gs.game.character = Character('random')
+        cf.gs.game.character = CHARACTER.Character('random')
         
         name= cf.gs.game.character.name
         health=str(cf.gs.game.character.health)
@@ -1012,3 +1013,218 @@ class EndGame(Menu):
             'Test',
         ]
 
+
+class CharacterHUD:
+    ''' This class takes care of everything you see on the main day
+    screen.
+    This is not a Menu class but is implemented only by Menu classes.
+    '''
+    def __init__(self, current_menu):
+        self.current_menu = current_menu
+        self.warning_change_house = ('Warning: Changing housing '+
+                                     'takes one hour to complete!')
+        self.warning_cannot_change_house = ('Warning: Changing '+
+                'housing is only allowed at home (home screen)!')
+        self.warning_not_enough_hours = ('Warning: Not enough day '+
+                                'hours remaining to change housing!')
+        cf.gs.game.character_hud = self # Add to global.
+       
+        # Draw
+        self.elements = []
+        self.draw_elements()
+        
+    def draw_elements(self):
+        ''' This displays everything on the main day screen.
+        '''
+        # Remove old (on update)
+        if len(self.elements) > 0:
+            for e in self.elements:
+                self.current_menu.scene.remove_child(e)
+        self.elements = []
+        
+        # Character attributes
+        x = PygameUI.List([
+                {'item':None, 'value':cf.gs.game.character.name},
+                {'item':None, 'value':'Hp: ' +
+                 str(cf.gs.game.character.health)},
+                {'item':None, 'value':'Str: ' +
+                 str(cf.gs.game.character.strength)},
+                {'item':None, 'value':'Char: ' +
+                 str(cf.gs.game.character.charisma)},
+                {'item':None, 'value':'Int: ' +
+                 str(cf.gs.game.character.intelligence)},
+                {'item':None, 'value':'Job: ' +
+                 cf.gs.game.character.job.title},
+                {'item':None, 'value':'Loc: ' + (cf.gs.game.
+                character.location.location_name)},
+                {'item':None, 'value':'Income: $' +
+                 str(cf.gs.game.character.job.income)},
+                {'item':None, 'value':'Sanity: ' +
+                 str(cf.gs.game.character.sanity)}
+            ], (255,120,71)
+        )
+        x.frame = pygame.Rect(
+            4, 4, 150, self.current_menu.scene.frame.h -8)
+        x.frame.w = x.container.frame.w
+        #~ x.selected_index = 1
+        x.border_width = 0
+        #Change to True is needs to be draggable 
+        x.container.draggable = False 
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
+
+        # Character items
+        x = PygameUI.List(cf.gs.game.character.inventory.
+                          item_count(), (255,120,71))
+        #Left quite a gap at end so it is easy on the eyes when list
+        #is full
+        x.frame = pygame.Rect(
+            self.current_menu.scene.frame.w -154, 4, 150,
+            self.current_menu.scene.frame.h - 230) 
+        x.frame.w = x.container.frame.w
+        #~ x.selected_index = 1
+        x.border_width = 0
+        #Change to True is needs to be draggable 
+        x.container.draggable = True 
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
+        
+        # Selected mode of housing.
+        # Title.
+        x = PygameUI.Label('Housing:')
+        x.frame = pygame.Rect(
+            self.current_menu.scene.frame.w -154,
+            self.current_menu.scene.frame.h -200, 150, 20)
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
+        # List of available transit types.
+        self.select_housing = PygameUI.List(
+            [{'item':None,'value':'Staying with Friends'}]+
+            cf.gs.game.character.inventory.list_housing_types()
+        )
+        self.select_housing.frame = pygame.Rect(
+            self.current_menu.scene.frame.w-154,
+            self.current_menu.scene.frame.h -180, 150, 80)
+        self.select_housing.frame.w = 150
+        # selected mode, default = Staying with Friends
+        self.select_housing.selected_index = (cf.gs.game.
+                                        character.selected_house_idx)
+        self.select_housing.border_width = 1
+        self.select_housing.container.draggable = True
+        # What to do on change mode? (i.e. click)
+        self.select_housing.callback_function = self.click_housing
+        self.current_menu.scene.add_child(self.select_housing)
+        self.elements.append(self.select_housing)
+        
+        # Selected mode of transit.
+        # Title.
+        x = PygameUI.Label('Transit Mode:')
+        x.frame = pygame.Rect(
+            self.current_menu.scene.frame.w -154,
+            self.current_menu.scene.frame.h -100, 150, 20)
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
+        # List of available transit types.
+        x = PygameUI.List(
+            [{'item':None,'value':'Walking'}]+cf.gs.game.
+            character.inventory.list_transit_types()
+        )
+        x.frame = pygame.Rect(
+            self.current_menu.scene.frame.w -154,
+            self.current_menu.scene.frame.h -80, 150, 80)
+        x.frame.w = 150
+        # selected mode, default = walking
+        x.selected_index = cf.gs.game.character.transit_mode_idx
+        x.border_width = 1
+        x.container.draggable = True
+        # What to do on change mode? (i.e. click)
+        x.callback_function = self.click_transit
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
+        
+    def click_housing(self, selected_index, selected_value,
+                      selected_item):
+        '''Update cf.gs.game.character.selected_house_idx and
+        cf.gs.game.character.selected_house.
+        Make an alert here saying that it will take X hours to move.
+        Default=1. Based on transit?
+        Or just automatically subtract 1 always.
+        And then if 0 hours remain change back to previous
+        selected index.
+        '''
+        # If the selected house is the same as current house,
+        # then do nothing.
+        if (selected_index == cf.gs.game.character.
+            selected_house_idx and
+            selected_value == cf.gs.game.character.
+            selected_house):
+            return
+        # If not DayScreen then do nothing.
+        # But show warning.
+        if self.current_menu.menu_name != 'DayScreen':
+            self.current_menu.alert(self.warning_cannot_change_house,
+                                    ['OK'], self.click_no_change)
+            return
+        # If hours remaining = 0 then do nothing.
+        # But show warning.
+        if cf.gs.game.current_day.day_hours < 1:
+            self.current_menu.alert(self.warning_not_enough_hours,
+                                    ['OK'], self.click_no_change)
+            return
+        # Force user to confirm change.
+        self.current_menu.alert(self.warning_change_house,
+        ['Yes, change housing.', 'No, stay put.'], self.click_alert)
+        
+    def test_list(self, selected_index, selected_value,
+                  selected_item):
+        '''This tests adding a list element to an alert box.
+        self.current_menu.alert('Test alert.', ['OK'],
+        self.click_ok_button, [{'item':self,'value':'meh'}],
+        self.test_list)
+        Either the OK button or the List is clickable.
+        Clicking either one dismisses the alert, calling the relevent
+        callback function (click_ok_button or test_list)
+        '''
+        print selected_index
+        print selected_value
+        print selected_item
+        
+    def click_transit(self, selected_index, selected_value,
+                      selected_item):
+        '''Update cf.gs.game.character.transit_mode
+        '''
+        cf.gs.game.character.transit_mode_idx = selected_index
+        cf.gs.game.character.transit_mode = (selected_value.
+                                                  split(':')[0])
+    
+    def click_no_change(self, confirm):
+        '''Reset index of housing list.
+        '''
+        self.select_housing.selected_index = (cf.gs.game.
+                                        character.selected_house_idx)
+        return
+        
+    def click_alert(self, confirm):
+        '''Handle alert button click.
+        :param boolean confirm:
+        True if first button clicked, False if second button clicked.
+        '''
+        if confirm is True: # 'Yes, change...'
+            cf.gs.game.character.selected_house_idx = (self.
+                                        select_housing.selected_index)
+            v = self.select_housing.selected_value
+            if v == 'Staying with Friends':
+                cf.gs.game.character.selected_house = ('Staying'+
+                                                    ' with Friends')
+            else:
+                cf.gs.game.character.selected_house = (v.
+                                                        split(':')[0])
+            # Reduce day hours.
+            cf.gs.game.mod_hours(-1) 
+            self.current_menu.update_body() # update menu
+        elif confirm is False: # 'No, stay...'
+            # Reset index of housing list.
+            self.select_housing.selected_index = (cf.gs.game.
+                                        character.selected_house_idx)
+        else: # Pass
+            pass
