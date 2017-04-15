@@ -131,6 +131,7 @@ class EventsLoop:
             self.set_first_game_event(event)
             # Check character is alive
             self.check_character_alive()
+            print 'check_character_alive'
             # Check quit event
             if event.type == QUIT:
                 pygame.display.quit()
