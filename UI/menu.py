@@ -599,7 +599,7 @@ class EventScreen(Menu):
         else:
             n = 0
             while (c.health <= 0 and
-                c.inventory.use_item(Item('First Aid Kit'), 1) is True
+                c.inventory.use_item(ITEMS.Item('First Aid Kit'), 1) is True
             ):
                 c.health += 1
                 n += 1
