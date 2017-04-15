@@ -1,4 +1,4 @@
-import global_vars
+import config as cf
 import time
 import pygame
 #import unittest
@@ -18,8 +18,10 @@ import events as EVENTS
 
 
 # A global variable to be accessible by all classes throughout the game.
-#~ game_state = None
-game_state = global_vars.game_states
+#~ cf.gs = None
+#~ cf.gs = global_vars.cf.gss
+
+#~ print 'cf.gs:',cf.gs
 
 from pygame.locals import *
 
@@ -36,7 +38,8 @@ CharacterDictionary = None
 
 def plus_minus():
     '''Return a random +1 or -1.
-    type: int.
+    
+    :rtype: int.
     '''
     return random.random()*2 - 1
 
@@ -324,7 +327,7 @@ class EventsLoop:
         self.test_events = test_events
         event_loop = True
         recurse_test = 0
-        game_state.first_game_event=False
+        cf.gs.first_game_event=False
         while event_loop:
             self.process_pygame_events()
             # CPU wait.
@@ -336,19 +339,19 @@ class EventsLoop:
         (is_dead=true). Then do the game over screen.
         '''
 
-        if (game_state.game.character != None and
-            game_state.game.character.health <= 0 and 
-            game_state.game.character.is_dead is True and
-            game_state.game.character.game_over is False):
+        if (cf.gs.game.character != None and
+            cf.gs.game.character.health <= 0 and 
+            cf.gs.game.character.is_dead is True and
+            cf.gs.game.character.game_over is False):
             # Set game_over=True
-            game_state.game.character.game_over = True
+            cf.gs.game.character.game_over = True
             self.cm.remove_pui_children()
             self.cm = GameOverScreen()
     
     def set_first_game_event(self, event):
-        if game_state.first_game_event==False:
+        if cf.gs.first_game_event==False:
             print("setting first game event")
-            game_state.first_game_event=event
+            cf.gs.first_game_event=event
     
     def pui_has_alert(self, event):
         '''If there is an alert then stop everything except
@@ -605,7 +608,7 @@ class Character:
             self.inventory.add_item('Food','random')
             self.inventory.add_item('Cash','random')
             # Location
-            self.location = (game_state.game.locations.
+            self.location = (cf.gs.game.locations.
                              random_location())
             self.job = self.location.random_job()
             print(self.location.location_name) #DDDDDDDDDD
@@ -628,7 +631,7 @@ class Character:
             self.inventory.add_item('Food','random')
             self.inventory.add_item('Cash','random')
             # Location
-            self.location=game_state.game.locations.random_location()
+            self.location=cf.gs.game.locations.random_location()
             self.job = self.location.random_job()
     
     def born(self):
@@ -752,7 +755,7 @@ class Inventory:
         work or to the store. The function then decrements the uses
         on the proper form of transportation.
         '''
-        c = game_state.game.character
+        c = cf.gs.game.character
         mode = c.transit_mode
         if mode != 'Walking':
             idx = c.transit_mode_idx - 1
@@ -1029,7 +1032,7 @@ class Item:
             
 class GameState:
     '''There is only one GameState instance. This is created when the
-    program is first started. A global variable game_state is 
+    program is first started. A global variable cf.gs is 
     made to reference this instance. Thus throughout the program
     it is possible to reference this instance.
     The GameState instance creates an instance of the Game class
@@ -1043,8 +1046,10 @@ class GameState:
     '''
     def __init__(self,testevents = None):
         # Reference the global game state variable to this object.
-        global game_state 
-        game_state = self
+        #~ global cf.gs
+        #~ print 'cf.gs:',cf.gs
+        cf.gs = self
+        #~ print 'cf.gs:',cf.gs
         self.game = Game()
         # Starts with opening menu.
         self.events_loop = EventsLoop(testevents) 
@@ -1124,18 +1129,18 @@ class Store:
     def distance_from_house(self):
         '''Calculate the euclidean distance to the current house.
         Character's current housing is (string):
-            game_state.game.character.selected_house
+            cf.gs.game.character.selected_house
         :return: Distance in miles, rounded to the tenth.
         :rtype: int.
         '''
         # Friend's house
-        if game_state.game.character.selected_house_idx == 0: 
-            c1 = (game_state.game.locations.
+        if cf.gs.game.character.selected_house_idx == 0: 
+            c1 = (cf.gs.game.locations.
                   friend_location['coordinates'])
         else:
             # Housing is always -1
-            idx = game_state.game.character.selected_house_idx - 1 
-            x = (game_state.game.character.inventory.
+            idx = cf.gs.game.character.selected_house_idx - 1 
+            x = (cf.gs.game.character.inventory.
                  sorted_items['housing'][ idx ].coordinates)
             c1 = [x['x'], x['y']]
         c2 = self.coordinates
@@ -1179,11 +1184,11 @@ class Job:
         
         self.hours_worked = (self.work_events.values()
                               [self.random_dictPos])
-        if self.hours_worked > game_state.game.current_day.day_hours:
-            self.hours_worked = game_state.game.current_day.day_hours
-        game_state.game.mod_hours(-self.hours_worked)
+        if self.hours_worked > cf.gs.game.current_day.day_hours:
+            self.hours_worked = cf.gs.game.current_day.day_hours
+        cf.gs.game.mod_hours(-self.hours_worked)
         print self.hours_worked
-        self.money_made = (game_state.game.character.
+        self.money_made = (cf.gs.game.character.
                            earn_money( self.hours_worked))
         print self.money_made
 
@@ -1215,19 +1220,19 @@ class Job:
     def distance_from_house(self):
         '''Calculate the euclidean distance to the current house.
         Character's current housing is (string):
-            game_state.game.character.selected_house
+            cf.gs.game.character.selected_house
         
         :return: Distance in miles, rounded to the tenth.
         :rtype: int.
         '''
         # Friend's house
-        if game_state.game.character.selected_house_idx == 0: 
-            c1 = (game_state.game.locations.
+        if cf.gs.game.character.selected_house_idx == 0: 
+            c1 = (cf.gs.game.locations.
                   friend_location['coordinates'])
         else:
             # Housing is always -1
-            idx = game_state.game.character.selected_house_idx - 1 
-            x = (game_state.game.character.inventory.
+            idx = cf.gs.game.character.selected_house_idx - 1 
+            x = (cf.gs.game.character.inventory.
                  sorted_items['housing'][ idx ].coordinates)
             c1 = [x['x'], x['y']]
         c2 = self.coordinates
@@ -1245,7 +1250,7 @@ class CharacterHUD:
                 'housing is only allowed at home (home screen)!')
         self.warning_not_enough_hours = ('Warning: Not enough day '+
                                 'hours remaining to change housing!')
-        game_state.game.character_hud = self # Add to global.
+        cf.gs.game.character_hud = self # Add to global.
         
         # Draw
         self.elements = []
@@ -1262,23 +1267,23 @@ class CharacterHUD:
         
         # Character attributes
         x = PygameUI.List([
-                {'item':None, 'value':game_state.game.character.name},
+                {'item':None, 'value':cf.gs.game.character.name},
                 {'item':None, 'value':'Hp: ' +
-                 str(game_state.game.character.health)},
+                 str(cf.gs.game.character.health)},
                 {'item':None, 'value':'Str: ' +
-                 str(game_state.game.character.strength)},
+                 str(cf.gs.game.character.strength)},
                 {'item':None, 'value':'Char: ' +
-                 str(game_state.game.character.charisma)},
+                 str(cf.gs.game.character.charisma)},
                 {'item':None, 'value':'Int: ' +
-                 str(game_state.game.character.intelligence)},
+                 str(cf.gs.game.character.intelligence)},
                 {'item':None, 'value':'Job: ' +
-                 game_state.game.character.job.title},
-                {'item':None, 'value':'Loc: ' + (game_state.game.
+                 cf.gs.game.character.job.title},
+                {'item':None, 'value':'Loc: ' + (cf.gs.game.
                 character.location.location_name)},
                 {'item':None, 'value':'Income: $' +
-                 str(game_state.game.character.job.income)},
+                 str(cf.gs.game.character.job.income)},
                 {'item':None, 'value':'Sanity: ' +
-                 str(game_state.game.character.sanity)}
+                 str(cf.gs.game.character.sanity)}
             ], (255,120,71)
         )
         x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
@@ -1291,7 +1296,7 @@ class CharacterHUD:
         self.elements.append(x)
 
         # Character items
-        x = PygameUI.List(game_state.game.character.inventory.
+        x = PygameUI.List(cf.gs.game.character.inventory.
                           item_count(), (255,120,71))
         #Left quite a gap at end so it is easy on the eyes when list
         #is full
@@ -1315,13 +1320,13 @@ class CharacterHUD:
         # List of available transit types.
         self.select_housing = PygameUI.List(
             [{'item':None,'value':'Staying with Friends'}]+
-            game_state.game.character.inventory.list_housing_types()
+            cf.gs.game.character.inventory.list_housing_types()
         )
         self.select_housing.frame = (pygame.
         Rect(Menu.scene.frame.w-154,Menu.scene.frame.h -180, 150, 80))
         self.select_housing.frame.w = 150
         # selected mode, default = Staying with Friends
-        self.select_housing.selected_index = (game_state.game.
+        self.select_housing.selected_index = (cf.gs.game.
                                         character.selected_house_idx)
         self.select_housing.border_width = 1
         self.select_housing.container.draggable = True
@@ -1339,14 +1344,14 @@ class CharacterHUD:
         self.elements.append(x)
         # List of available transit types.
         x = PygameUI.List(
-            [{'item':None,'value':'Walking'}]+game_state.game.
+            [{'item':None,'value':'Walking'}]+cf.gs.game.
             character.inventory.list_transit_types()
         )
         x.frame = pygame.Rect(Menu.scene.frame.w -154,
                               Menu.scene.frame.h -80, 150, 80)
         x.frame.w = 150
         # selected mode, default = walking
-        x.selected_index = game_state.game.character.transit_mode_idx
+        x.selected_index = cf.gs.game.character.transit_mode_idx
         x.border_width = 1
         x.container.draggable = True
         # What to do on change mode? (i.e. click)
@@ -1356,8 +1361,8 @@ class CharacterHUD:
         
     def click_housing(self, selected_index, selected_value,
                       selected_item):
-        '''Update game_state.game.character.selected_house_idx and
-        game_state.game.character.selected_house.
+        '''Update cf.gs.game.character.selected_house_idx and
+        cf.gs.game.character.selected_house.
         Make an alert here saying that it will take X hours to move.
         Default=1. Based on transit?
         Or just automatically subtract 1 always.
@@ -1366,9 +1371,9 @@ class CharacterHUD:
         '''
         # If the selected house is the same as current house,
         # then do nothing.
-        if (selected_index == game_state.game.character.
+        if (selected_index == cf.gs.game.character.
             selected_house_idx and
-            selected_value == game_state.game.character.
+            selected_value == cf.gs.game.character.
             selected_house):
             return
         # If not DayScreen then do nothing.
@@ -1379,7 +1384,7 @@ class CharacterHUD:
             return
         # If hours remaining = 0 then do nothing.
         # But show warning.
-        if game_state.game.current_day.day_hours < 1:
+        if cf.gs.game.current_day.day_hours < 1:
             self.current_menu.alert(self.warning_not_enough_hours,
                                     ['OK'], self.click_no_change)
             return
@@ -1403,16 +1408,16 @@ class CharacterHUD:
         
     def click_transit(self, selected_index, selected_value,
                       selected_item):
-        '''Update game_state.game.character.transit_mode
+        '''Update cf.gs.game.character.transit_mode
         '''
-        game_state.game.character.transit_mode_idx = selected_index
-        game_state.game.character.transit_mode = (selected_value.
+        cf.gs.game.character.transit_mode_idx = selected_index
+        cf.gs.game.character.transit_mode = (selected_value.
                                                   split(':')[0])
     
     def click_no_change(self, confirm):
         '''Reset index of housing list.
         '''
-        self.select_housing.selected_index = (game_state.game.
+        self.select_housing.selected_index = (cf.gs.game.
                                         character.selected_house_idx)
         return
         
@@ -1422,21 +1427,21 @@ class CharacterHUD:
         True if first button clicked, False if second button clicked.
         '''
         if confirm is True: # 'Yes, change...'
-            game_state.game.character.selected_house_idx = (self.
+            cf.gs.game.character.selected_house_idx = (self.
                                         select_housing.selected_index)
             v = self.select_housing.selected_value
             if v == 'Staying with Friends':
-                game_state.game.character.selected_house = ('Staying'+
+                cf.gs.game.character.selected_house = ('Staying'+
                                                     ' with Friends')
             else:
-                game_state.game.character.selected_house = (v.
+                cf.gs.game.character.selected_house = (v.
                                                         split(':')[0])
             # Reduce day hours.
-            game_state.game.mod_hours(-1) 
+            cf.gs.game.mod_hours(-1) 
             self.current_menu.update_body() # update menu
         elif confirm is False: # 'No, stay...'
             # Reset index of housing list.
-            self.select_housing.selected_index = (game_state.game.
+            self.select_housing.selected_index = (cf.gs.game.
                                         character.selected_house_idx)
         else: # Pass
             pass
@@ -1457,7 +1462,7 @@ class WorkScreen(Menu):
             ]
         #This points to job name which is a str.
         #Then tries to do .work()
-        work_text = game_state.game.character.job.work() 
+        work_text = cf.gs.game.character.job.work() 
         
         self.body = {
             'text': work_text,
@@ -1473,7 +1478,7 @@ class StoreScreenSelect(Menu):
         buttons and what they will look like.
         '''
         self.menu_name = '...'
-        location = game_state.game.character.location
+        location = cf.gs.game.character.location
         # To get store.
         self.store = location.stores[ location.active_store_idx ]
         self.warning_not_enough_cash = ('Oops... that item costs '+
@@ -1531,7 +1536,7 @@ class StoreScreenSelect(Menu):
         self.scene.add_child(x)
         self.elements.append(x)
         # List of items to sell.
-        x = PygameUI.List(game_state.game.character.inventory.
+        x = PygameUI.List(cf.gs.game.character.inventory.
                           item_count_sell())
         x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400,
                               Menu.scene.frame.h -220)
@@ -1550,7 +1555,7 @@ class StoreScreenSelect(Menu):
             Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
-        location = game_state.game.character.location
+        location = cf.gs.game.character.location
         location.active_store_idx = None
         return True
         
@@ -1558,7 +1563,7 @@ class StoreScreenSelect(Menu):
                   selected_item):
         '''Try to buy the clicked item.
             Variables:
-                Character cash: (game_state.game.character.inventory.
+                Character cash: (cf.gs.game.character.inventory.
                 sorted_items['cash'])
                 Cost of item: item.calculate_purchase_cost()
                 update_or_add function (?)
@@ -1566,9 +1571,9 @@ class StoreScreenSelect(Menu):
                 now to reset character's selected housing and transit,
                 at least for simplicity (reset_modes).
         '''
-        game_state.game.character.reset_modes()
+        cf.gs.game.character.reset_modes()
         cost = selected_item.calculate_purchase_cost()
-        cash = (game_state.game.character.inventory.
+        cash = (cf.gs.game.character.inventory.
                 sorted_items['cash'].amount)
         print 'cost',cost
         print 'cash',cash
@@ -1577,15 +1582,15 @@ class StoreScreenSelect(Menu):
                        self.click_no_change)
             return
         # Enough cash, so...
-        (game_state.game.character.inventory.sorted_items['cash'].
+        (cf.gs.game.character.inventory.sorted_items['cash'].
          amount) -= cost
-        (game_state.game.character.inventory.
+        (cf.gs.game.character.inventory.
          update_or_add_item(selected_item))
         self.store.inventory.remove_item(selected_item)
         # Redraw lists.
         self.draw_store_lists()
         # Redraw HUD
-        game_state.game.character_hud.draw_elements()
+        cf.gs.game.character_hud.draw_elements()
     
     def click_sell(self, selected_index, selected_value,
                    selected_item):
@@ -1594,16 +1599,16 @@ class StoreScreenSelect(Menu):
                 now to reset character's selected housing and transit,
                 at least for simplicity (reset_modes).
         '''
-        game_state.game.character.reset_modes()
+        cf.gs.game.character.reset_modes()
         cost = selected_item.calculate_resale_cost()
-        (game_state.game.character.inventory.sorted_items['cash'].
+        (cf.gs.game.character.inventory.sorted_items['cash'].
          amount) += cost
-        game_state.game.character.inventory.remove_item(selected_item)
+        cf.gs.game.character.inventory.remove_item(selected_item)
         self.store.inventory.update_or_add_item(selected_item)
         # Redraw lists.
         self.draw_store_lists()
         # Redraw HUD
-        game_state.game.character_hud.draw_elements()
+        cf.gs.game.character_hud.draw_elements()
         
     def click_no_change(self, confirm):
         '''Do nothing.
@@ -1619,7 +1624,7 @@ class StoreScreen(Menu):
     '''
     def __init__(self):
         self.menu_name = '...'
-        location = game_state.game.character.location
+        location = cf.gs.game.character.location
         self.keypressArray = [ StoreScreenSelect
             for x in range(len(location.stores)) ] + [ DayScreen ]
         self.titlesArray = location.menu_values() + ['Back to Day']
@@ -1633,13 +1638,13 @@ class StoreScreen(Menu):
         Ceiling the travel time (20 minutes = one hour).
         Set location.active_store_idx to chosen store.
             Variables:  Num day hours remaining:
-                            game_state.game.current_day.day_hours
+                            cf.gs.game.current_day.day_hours
                         Distance x 2 of store (round-trip):
-                            (game_state.game.character.location.
+                            (cf.gs.game.character.location.
                             stores[ chosen_position ].
                             distance_from_house())
                         Current mode of transit:
-                            mode = (game_state.game.character.
+                            mode = (cf.gs.game.character.
                                     transit_mode)
                             speed = (ITEMS.n['transit_attributes']
                             [ mode ][0])
@@ -1651,7 +1656,7 @@ class StoreScreen(Menu):
             Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
-        location = game_state.game.character.location
+        location = cf.gs.game.character.location
         if len(location.stores) -1  < chosen_position: # To DayScreen.
             return True
         
@@ -1660,23 +1665,23 @@ class StoreScreen(Menu):
         #-----------------
         distance = 2 * (location.stores[ chosen_position ].
                         distance_from_house())
-        mode = game_state.game.character.transit_mode
+        mode = cf.gs.game.character.transit_mode
         speed = ITEMS.n['transit_attributes'][ mode ][0]
         travel_time = math.ceil(distance / speed)
         # No store.
-        if game_state.game.current_day.day_hours < travel_time: 
+        if cf.gs.game.current_day.day_hours < travel_time: 
             store_name = location.stores[ chosen_position ].name
             m = ('Warning: There is not enough time visit '+
                  store_name+'.\nThe trip takes '+str(travel_time)+
-                 ' hours but only '+str(game_state.game.current_day.
+                 ' hours but only '+str(cf.gs.game.current_day.
                                         day_hours)+' hours remain!')
             self.alert(m, ['OK'], self.click_no_change)
             return False
         else:
             # Subtract hours.
-            game_state.game.mod_hours(-travel_time)
+            cf.gs.game.mod_hours(-travel_time)
             # Subtract travel cost.
-            game_state.game.character.inventory.use_transit(distance)
+            cf.gs.game.character.inventory.use_transit(distance)
         # To store.
         location.active_store_idx = chosen_position
         return True
@@ -1685,9 +1690,9 @@ class StoreScreen(Menu):
         '''This tests whether setting character health to 
         zero actually results in game over.
         '''
-        game_state.game.character.health = 0
-        game_state.game.character.is_dead = True
-        pygame.event.post(game_state.first_game_event)
+        cf.gs.game.character.health = 0
+        cf.gs.game.character.is_dead = True
+        pygame.event.post(cf.gs.first_game_event)
         pass
 
 class Location:
@@ -1711,7 +1716,7 @@ class Location:
     def random_job(self):
         ''' Assigns a random job '''
         r = random.randint(0, 10)
-        self.jobs = [ game_state.game.jobs.random_job()
+        self.jobs = [ cf.gs.game.jobs.random_job()
                       for i in range(0, 10+r) ]
         
         r = random.randint(0, len(self.jobs)-1)
@@ -1778,7 +1783,7 @@ class GameOverScreen(Menu):
         ]
         self.titlesArray = ['Start Over', 'Quit']
         # Tally score (implement)
-        game_state.game.tally_score()
+        cf.gs.game.tally_score()
         text = 'Buh-bye!'
         
         self.body = {
@@ -1788,12 +1793,12 @@ class GameOverScreen(Menu):
             'height': 250
         }
         # Reset game
-        game_state.reset()
+        cf.gs.reset()
         
 class EventScreen(Menu): 
     def __init__(self):
         self.menu_name = '...'
-        self.events_values = game_state.game.events.events_values()
+        self.events_values = cf.gs.game.events.events_values()
         self.keypressArray = [
             DayScreen,
             DayScreen,
@@ -1821,7 +1826,7 @@ class EventScreen(Menu):
         self.warn_no_health_pack = "Warning: No more health packs!\nYou died!"
         self.warn_event_active = "Warning: The event is already activated!"
         
-        g = game_state.game.events
+        g = cf.gs.game.events
 
         x = PygameUI.List(g.show_inactive_events(), (200, 224, 200))
         x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
@@ -1847,7 +1852,7 @@ class EventScreen(Menu):
         
         :param boolean confirm: Confirm is always true in this case.
         '''
-        game_state.game.character.is_dead = True
+        cf.gs.game.character.is_dead = True
 
     def click_use_first_aid(self, confirm):
         '''User clicked "Use first aid packs" or
@@ -1859,7 +1864,7 @@ class EventScreen(Menu):
         :param boolean confirm: True if "Use" is pressed,
             False if "Do not" is pressed.
         '''
-        c = game_state.game.character
+        c = cf.gs.game.character
         if confirm is False:
             self.alert(self.warn_ignore_health_pack, ['OK'], self.click_died)
         else:
@@ -1904,9 +1909,9 @@ class EventScreen(Menu):
                 return False # Stay on EventScreen
             # The event is not activated.
             # Activate event.
-            game_state.game.events.toggle_event(self.selected_event)
+            cf.gs.game.events.toggle_event(self.selected_event)
             # Check character.health.
-            c = game_state.game.character
+            c = cf.gs.game.character
             if c.health >= 1:
                 return True # Back to DayScreen
             elif c.health <= 0:
@@ -1955,11 +1960,11 @@ class Game:
         to 0.
         '''
         if operation==False:
-            game_state.game.current_day.day_hours += hours
+            cf.gs.game.current_day.day_hours += hours
         if operation==True:
-            game_state.game.current_day.day_hours *= hours
-        if game_state.game.current_day.day_hours < 0:
-            game_state.game.current_day.day_hours=0
+            cf.gs.game.current_day.day_hours *= hours
+        if cf.gs.game.current_day.day_hours < 0:
+            cf.gs.game.current_day.day_hours=0
         
     class Day:
         day_hours = 16
@@ -1979,7 +1984,7 @@ class Game:
 
         def eod_mods(self):
             #
-            food = (game_state.game.character.inventory.
+            food = (cf.gs.game.character.inventory.
                     sorted_items['food'])
 
             
@@ -1989,19 +1994,19 @@ class Game:
             
             elif (food.amount <3 ):
                 food.amount = 0
-                game_state.game.character.health -= 1
-                game_state.game.character.sanity -= 1
+                cf.gs.game.character.health -= 1
+                cf.gs.game.character.sanity -= 1
 
             
-            elif (game_state.game.character.selected_house == ('Staying with Friends')):
-                game_state.game.character.sanity -= 1
+            elif (cf.gs.game.character.selected_house == ('Staying with Friends')):
+                cf.gs.game.character.sanity -= 1
                 
 
                 #if sanity dips under zero at the end of the day it hurts
                 #your health
-            elif (game_state.game.character.sanity <=0):
-                game_state.game.character.sanity = 5
-                game_state.game.character.health -=1
+            elif (cf.gs.game.character.sanity <=0):
+                cf.gs.game.character.sanity = 5
+                cf.gs.game.character.health -=1
 
             else:
                 #Continue the events whose durations have not run out.
@@ -2009,10 +2014,10 @@ class Game:
             
             ##
             ##
-            #game_state.game.character.check_health()
+            #cf.gs.game.character.check_health()
                           
         def gen_date(self):
-            g = game_state.game # A shortcut
+            g = cf.gs.game # A shortcut
             self.gen_story_text() # Generate today's story text
             if g.month_counter % 12 == 1 and g.day_counter != 1:
                 g.current_year += 1
@@ -2035,7 +2040,7 @@ class Game:
                 g.month_counter = 0
         
         def gen_story_text(self):
-            g = game_state.game # A shortcut
+            g = cf.gs.game # A shortcut
             if g.day_counter == 1:
                 self.story_text = ('Today is ' +
                 Game.Day.inauguration_day + '\ninauguration day, '+
@@ -2048,8 +2053,8 @@ class Game:
             else:
                 #If latest random event is a repeat, add again to the
                 #text.
-                event = game_state.game.events.last_random_event[0]
-                if (game_state.game.events.last_random_event[1] == 1):
+                event = cf.gs.game.events.last_random_event[0]
+                if (cf.gs.game.events.last_random_event[1] == 1):
                     self.story_text = ('You are sitting on the couch'
                         ' watching the news while eating your '
                         'breakfast and drinking your arbitrary drink'
@@ -2162,7 +2167,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
         
 class CreateCharacterAutomatic(Menu):
     '''The user wants to create an automatic character.
-    Set game_state.game.character to a random character instance:
+    Set cf.gs.game.character to a random character instance:
     Character('random').
     Display the character's state with CharacterHUD(self). Allow the
     user to start the game or go back to create a new character.
@@ -2179,19 +2184,19 @@ class CreateCharacterAutomatic(Menu):
             'Back To Previous Page',
            
         ]
-        game_state.game.character = Character('random')
+        cf.gs.game.character = Character('random')
         
-        name= game_state.game.character.name
-        health=str(game_state.game.character.health)
-        strength=str(game_state.game.character.strength)
-        gender=game_state.game.character.gender
-        age=str(game_state.game.character.age)
-        charisma=str(game_state.game.character.charisma)
-        intelligence=str(game_state.game.character.intelligence)
-        job = game_state.game.character.job.title
-        income = str(game_state.game.character.job.income)
-        sanity = str(game_state.game.character.sanity)
-        location = game_state.game.character.location.location_name
+        name= cf.gs.game.character.name
+        health=str(cf.gs.game.character.health)
+        strength=str(cf.gs.game.character.strength)
+        gender=cf.gs.game.character.gender
+        age=str(cf.gs.game.character.age)
+        charisma=str(cf.gs.game.character.charisma)
+        intelligence=str(cf.gs.game.character.intelligence)
+        job = cf.gs.game.character.job.title
+        income = str(cf.gs.game.character.job.income)
+        sanity = str(cf.gs.game.character.sanity)
+        location = cf.gs.game.character.location.location_name
         
         CharacterHUD(self)
         
@@ -2256,7 +2261,7 @@ class DayScreen(Menu):
         # Add HUD
         CharacterHUD(self)
         
-        if game_state.game.day_counter % 48 != 0:
+        if cf.gs.game.day_counter % 48 != 0:
             self.keypressArray = [
                 EventScreen,
                 StoryScreen, #Reset Game.Day.day_hours back to 16
@@ -2264,7 +2269,7 @@ class DayScreen(Menu):
                 WorkScreen #Work -> -8 on the Game.Day.day_hours
             ]
             self.titlesArray = [
-                'Events: ' + str(len(game_state.game.events.
+                'Events: ' + str(len(cf.gs.game.events.
                                      inactive_events)),
                 'Next Day', 
                 'Store', 
@@ -2284,10 +2289,10 @@ class DayScreen(Menu):
             ]
         #This displays a text box showing how many hours left in your
         #day to spend
-        text = ('Term Number: ' + str(game_state.game.term_count) +
-                ' \nDay is: ' + str(game_state.game.current_day.
+        text = ('Term Number: ' + str(cf.gs.game.term_count) +
+                ' \nDay is: ' + str(cf.gs.game.current_day.
                 generated_date)+ ' \n' +' \nHours Left: ' +
-                str(game_state.game.current_day.day_hours)) 
+                str(cf.gs.game.current_day.day_hours)) 
         self.body = {
             'text': text,
             'font_size': 32,
@@ -2298,8 +2303,8 @@ class DayScreen(Menu):
     def update_body(self):
         '''Call this function to update text in the body.
         '''
-        text = ('Term Number: ' + str(game_state.game.term_count) + ' \nDay is: ' + str(game_state.game.current_day.generated_date)
-        + ' \n' +' \nHours Left: ' + str(game_state.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
+        text = ('Term Number: ' + str(cf.gs.game.term_count) + ' \nDay is: ' + str(cf.gs.game.current_day.generated_date)
+        + ' \n' +' \nHours Left: ' + str(cf.gs.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
         self.body = {
             'text': text,
             'font_size': 32,
@@ -2322,32 +2327,32 @@ class DayScreen(Menu):
         #----------------------
         # Validate work travel.
         #----------------------
-        job = game_state.game.character.job
+        job = cf.gs.game.character.job
         distance = 2 * (job.distance_from_house())
-        mode = game_state.game.character.transit_mode
+        mode = cf.gs.game.character.transit_mode
         speed = ITEMS.n['transit_attributes'][ mode ][0]
         travel_time = math.ceil(distance / speed)
         # No store.
-        if game_state.game.current_day.day_hours < travel_time: 
+        if cf.gs.game.current_day.day_hours < travel_time: 
             m = ('Warning: There are not enough hours left to make it '+
                  'to work!'+
                  '\nThe trip takes '+str(travel_time)+
-                 ' hours but only '+str(game_state.game.current_day.
+                 ' hours but only '+str(cf.gs.game.current_day.
                                         day_hours)+' hours remain!')
             self.alert(m, ['OK'])
             return False
         else:
             # Subtract hours.
-            game_state.game.mod_hours(-travel_time)
+            cf.gs.game.mod_hours(-travel_time)
             # Subtract travel cost.
-            game_state.game.character.inventory.use_transit(distance)
+            cf.gs.game.character.inventory.use_transit(distance)
             return True
         
 class ElectionDay(Menu): #Use on 48,96 .... +=48
     def __init__(self):
-        game_state.game.day_counter += 1
-        game_state.game.month_counter += 1
-        game_state.game.current_day = game_state.game.Day() #Game.Day()
+        cf.gs.game.day_counter += 1
+        cf.gs.game.month_counter += 1
+        cf.gs.game.current_day = cf.gs.game.Day() #Game.Day()
         self.menu_name = '...'
         
         self.keypressArray = [
@@ -2358,7 +2363,7 @@ class ElectionDay(Menu): #Use on 48,96 .... +=48
             'Vote For Trump (Continue Playing)',
             'Vote For Anyone Else (End)',
         ]
-        text = game_state.game.current_day.story_text
+        text = cf.gs.game.current_day.story_text
         
         self.body = {
             'text': text,
@@ -2378,11 +2383,11 @@ class StoryScreen(Menu):
     place.
     '''
     def __init__(self):
-        game_state.game.locations.update_friend_location()
-        game_state.game.events.random_event() # Do a random event
-        game_state.game.day_counter += 1
-        game_state.game.month_counter += 1
-        game_state.game.current_day = game_state.game.Day()
+        cf.gs.game.locations.update_friend_location()
+        cf.gs.game.events.random_event() # Do a random event
+        cf.gs.game.day_counter += 1
+        cf.gs.game.month_counter += 1
+        cf.gs.game.current_day = cf.gs.game.Day()
         
         self.menu_name = '...'
         self.keypressArray = [
@@ -2391,7 +2396,7 @@ class StoryScreen(Menu):
         self.titlesArray = [
             'Start Day',
         ]
-        text = game_state.game.current_day.story_text
+        text = cf.gs.game.current_day.story_text
         self.body = {
             'text': text,
             'font_size': 32,

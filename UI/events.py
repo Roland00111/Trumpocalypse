@@ -1,6 +1,9 @@
 import random
 import copy
-import global_vars
+import config as cf
+import items as ITEMS
+
+#~ global_vars.game_states = 'bbb'
 
 class Event:
     '''
@@ -45,30 +48,31 @@ class Event:
             3) or, change one of the character's attributes,
             such as hp.
         '''
-        gs = global_vars.game_states
-        c = gs.game.character
+        #~ gs = cf.gs#ame_state
+        #~ print gs
+        c = cf.gs.game.character
         for key, value in self.bonuses.iteritems():
             if key == 'hours':                      # Hours
-                gs.game.mod_hours(value)
+                cf.gs.game.mod_hours(value)
             elif key in ITEMS.n['all_choices']:    # Inventory
                 c.inventory.add_item(str(key),int(value))
                                      # Character attribute
             #Throwing in an if to catch the error from income no
             #longer being in character
             elif key == 'income':
-                gs.game.character.job.income += value
+                cf.gs.game.character.job.income += value
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
         for key, value in self.bonuses_by_ratio.iteritems():
             if key == 'hours':
-                gs.game.mod_hours(value,True)
+                cf.gs.game.mod_hours(value,True)
             elif key in ITEMS.n['all_choices']:
                 c.inventory.multiply_item(str(key),float(value))
             elif key == 'income':
-                gs.game.character.job.income *= value
+                cf.gs.game.character.job.income *= value
             elif key == 'housing':
-                gs.game.character.inventory.house_degrade(value)
+                cf.gs.game.character.inventory.house_degrade(value)
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n*value)
