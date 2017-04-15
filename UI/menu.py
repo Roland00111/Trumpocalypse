@@ -1,3 +1,16 @@
+import config as cf
+import time
+import pygame
+import random
+from TextWrap import *
+import PygameUI
+import math
+import copy
+import names # People's names.
+import items as ITEMS # Items dictionary.
+import jobs as JOBS #Potential jobs
+import events as EVENTS
+
 class Menu:
     '''Original code for the menu class is from:
         @author: avalanchy (at) google mail dot com

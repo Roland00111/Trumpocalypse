@@ -10,6 +10,7 @@ import names # People's names.
 import items as ITEMS # Items dictionary.
 import jobs as JOBS #Potential jobs
 import events as EVENTS
+import menu as MENU
 
 from pygame.locals import *
 
@@ -73,7 +74,7 @@ class EventsLoop:
             A list of keypress indexes to auto-"press".
         '''
         # Start on opening menu. Then changes.
-        self.cm = OpeningMenu() # Current menu reference
+        self.cm = MENU.OpeningMenu() # Current menu reference
         self.test_events = test_events
         event_loop = True
         recurse_test = 0
@@ -1001,7 +1002,7 @@ class CharacterHUD:
         self.warning_not_enough_hours = ('Warning: Not enough day '+
                                 'hours remaining to change housing!')
         cf.gs.game.character_hud = self # Add to global.
-        
+       
         # Draw
         self.elements = []
         self.draw_elements()
@@ -1036,7 +1037,8 @@ class CharacterHUD:
                  str(cf.gs.game.character.sanity)}
             ], (255,120,71)
         )
-        x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
+        x.frame = pygame.Rect(
+            4, 4, 150, self.current_menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
         #~ x.selected_index = 1
         x.border_width = 0
@@ -1050,8 +1052,9 @@ class CharacterHUD:
                           item_count(), (255,120,71))
         #Left quite a gap at end so it is easy on the eyes when list
         #is full
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150,
-                              Menu.scene.frame.h - 230) 
+        x.frame = pygame.Rect(
+            self.current_menu.scene.frame.w -154, 4, 150,
+            self.current_menu.scene.frame.h - 230) 
         x.frame.w = x.container.frame.w
         #~ x.selected_index = 1
         x.border_width = 0
@@ -1063,8 +1066,9 @@ class CharacterHUD:
         # Selected mode of housing.
         # Title.
         x = PygameUI.Label('Housing:')
-        x.frame = pygame.Rect(Menu.scene.frame.w -154,
-                              Menu.scene.frame.h -200, 150, 20)
+        x.frame = pygame.Rect(
+            self.current_menu.scene.frame.w -154,
+            self.current_menu.scene.frame.h -200, 150, 20)
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
         # List of available transit types.
@@ -1072,8 +1076,9 @@ class CharacterHUD:
             [{'item':None,'value':'Staying with Friends'}]+
             cf.gs.game.character.inventory.list_housing_types()
         )
-        self.select_housing.frame = (pygame.
-        Rect(Menu.scene.frame.w-154,Menu.scene.frame.h -180, 150, 80))
+        self.select_housing.frame = pygame.Rect(
+            self.current_menu.scene.frame.w-154,
+            self.current_menu.scene.frame.h -180, 150, 80)
         self.select_housing.frame.w = 150
         # selected mode, default = Staying with Friends
         self.select_housing.selected_index = (cf.gs.game.
@@ -1088,8 +1093,9 @@ class CharacterHUD:
         # Selected mode of transit.
         # Title.
         x = PygameUI.Label('Transit Mode:')
-        x.frame = pygame.Rect(Menu.scene.frame.w -154,
-                              Menu.scene.frame.h -100, 150, 20)
+        x.frame = pygame.Rect(
+            self.current_menu.scene.frame.w -154,
+            self.current_menu.scene.frame.h -100, 150, 20)
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
         # List of available transit types.
@@ -1097,8 +1103,9 @@ class CharacterHUD:
             [{'item':None,'value':'Walking'}]+cf.gs.game.
             character.inventory.list_transit_types()
         )
-        x.frame = pygame.Rect(Menu.scene.frame.w -154,
-                              Menu.scene.frame.h -80, 150, 80)
+        x.frame = pygame.Rect(
+            self.current_menu.scene.frame.w -154,
+            self.current_menu.scene.frame.h -80, 150, 80)
         x.frame.w = 150
         # selected mode, default = walking
         x.selected_index = cf.gs.game.character.transit_mode_idx
