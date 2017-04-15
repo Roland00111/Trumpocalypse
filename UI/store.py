@@ -1,6 +1,8 @@
 import names as NAMES # People's names.
 import random
 import inventory as INVENTORY
+import config as cf
+
 
 class Store:
     '''
@@ -84,4 +86,4 @@ class Store:
                  sorted_items['housing'][ idx ].coordinates)
             c1 = [x['x'], x['y']]
         c2 = self.coordinates
-        return round(euclidean(c1, [c2['x'], c2['y']]), 1)
+        return round(cf.euclidean(c1, [c2['x'], c2['y']]), 1)

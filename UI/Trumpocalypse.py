@@ -6,13 +6,10 @@ from TextWrap import *
 import PygameUI
 import math
 import copy
-import names # People's names.
 import items as ITEMS # Items dictionary.
 import jobs as JOBS #Potential jobs
 import events as EVENTS
 import menu as MENU
-import character as CHARACTER
-import inventory as INVENTORY
 import store as STORE
 
 from pygame.locals import *
@@ -28,19 +25,7 @@ if not pygame.font.get_init():
 down_in = None 
 CharacterDictionary = None
 
-def euclidean(p1, p2):
-    '''Determine euclidean distance between two points.
-    Pretty straightforward: http://stackoverflow.com/a/4169284/2178774.
-    
-    :param list p1: A list with first element=x, second=y.
-    :param list p2: A list with first element=x, second=y.
-    :return: Euclidean distance between points.
-    :rtype: int.
-    '''
-    return math.sqrt((p2[0] - p1[0]) ** 2 +
-                     (p2[1] - p1[1]) ** 2)
-
-    
+  
 class EventsLoop:
     '''
     This loop is running continuously to check for any time a key on
@@ -401,7 +386,7 @@ class Job:
                  sorted_items['housing'][ idx ].coordinates)
             c1 = [x['x'], x['y']]
         c2 = self.coordinates
-        return round(euclidean(c1, [c2['x'], c2['y']]), 1)
+        return round(cf.euclidean(c1, [c2['x'], c2['y']]), 1)
 
 class Location:
     '''Provide the player with a location. Each location has 1-4
