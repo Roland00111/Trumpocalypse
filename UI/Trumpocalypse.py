@@ -78,7 +78,7 @@ class EventsLoop:
             # Set game_over=True
             cf.gs.game.character.game_over = True
             self.cm.remove_pui_children()
-            self.cm = GameOverScreen()
+            self.cm = MENU.GameOverScreen()
     
     def set_first_game_event(self, event):
         if cf.gs.first_game_event==False:
