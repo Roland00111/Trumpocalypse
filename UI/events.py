@@ -3,8 +3,6 @@ import copy
 import config as cf
 import items as ITEMS
 
-#~ global_vars.game_states = 'bbb'
-
 class Event:
     '''
     '''
@@ -48,8 +46,6 @@ class Event:
             3) or, change one of the character's attributes,
             such as hp.
         '''
-        #~ gs = cf.gs#ame_state
-        #~ print gs
         c = cf.gs.game.character
         for key, value in self.bonuses.iteritems():
             if key == 'hours':                      # Hours

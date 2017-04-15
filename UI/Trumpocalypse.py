@@ -1,27 +1,15 @@
 import config as cf
 import time
 import pygame
-#import unittest
 import random
 from TextWrap import *
 import PygameUI
-#import gc
 import math
 import copy
 import names # People's names.
 import items as ITEMS # Items dictionary.
 import jobs as JOBS #Potential jobs
 import events as EVENTS
-#import events
-#~ from events import *
-
-
-
-# A global variable to be accessible by all classes throughout the game.
-#~ cf.gs = None
-#~ cf.gs = global_vars.cf.gss
-
-#~ print 'cf.gs:',cf.gs
 
 from pygame.locals import *
 
