@@ -3,6 +3,8 @@ import math
 
 gs = None # Previously: game_state
 surface = None
+# A global variable for pygameui (menu custom fields)
+down_in = None 
 
 def plus_minus():
     '''Return a random +1 or -1.
