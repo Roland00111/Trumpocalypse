@@ -20,12 +20,6 @@ if not pygame.display.get_init():
 if not pygame.font.get_init():
     pygame.font.init()
     
-
-# A global variable for pygameui (menu custom fields)
-down_in = None 
-CharacterDictionary = None
-
-  
 class EventsLoop:
     '''
     This loop is running continuously to check for any time a key on
@@ -157,12 +151,12 @@ class EventsLoop:
                     
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    global down_in
-                    down_in = self.cm.scene.hit(event.pos)
-                    if (down_in is not None and
-                        not isinstance(down_in, PygameUI.Scene)):
-                        down_in.mouse_down(event.button,
-                            down_in.from_window_point(event.pos))
+                    cf.down_in
+                    cf.down_in = self.cm.scene.hit(event.pos)
+                    if (cf.down_in is not None and
+                        not isinstance(cf.down_in, PygameUI.Scene)):
+                        cf.down_in.mouse_down(event.button,
+                            cf.down_in.from_window_point(event.pos))
             elif event.type == pygame.MOUSEBUTTONUP:
                 '''
                 http://stackoverflow.com/questions/10990137/
@@ -176,16 +170,16 @@ class EventsLoop:
                            pygame.mouse.get_pressed())
                     # PygameUI
                     up_in = self.cm.scene.hit(event.pos)
-                    if down_in == up_in:
-                        down_in.mouse_up(event.button,
-                            down_in.from_window_point(event.pos))
-                    down_in = None
+                    if cf.down_in == up_in:
+                        cf.down_in.mouse_up(event.button,
+                            cf.down_in.from_window_point(event.pos))
+                    cf.down_in = None
             elif event.type == pygame.MOUSEMOTION:
-                if down_in is not None and down_in.draggable:
-                    if down_in.parent is not None:
-                        (down_in.parent.
-                        child_dragged(down_in, event.rel))
-                    down_in.dragged(event.rel)
+                if cf.down_in is not None and cf.down_in.draggable:
+                    if cf.down_in.parent is not None:
+                        (cf.down_in.parent.
+                        child_dragged(cf.down_in, event.rel))
+                    cf.down_in.dragged(event.rel)
             elif event.type == pygame.KEYDOWN:
                 self.cm.scene.key_down(
                     event.key, event.unicode)
@@ -212,7 +206,6 @@ class EventsLoop:
                 cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
             # Update
             pygame.display.update()
-        
    
         #----------------------------
         # Enter key has been pressed.
@@ -282,10 +275,7 @@ class GameState:
     '''
     def __init__(self,testevents = None):
         # Reference the global game state variable to this object.
-        #~ global cf.gs
-        #~ print 'cf.gs:',cf.gs
         cf.gs = self
-        #~ print 'cf.gs:',cf.gs
         self.game = Game()
         # Starts with opening menu.
         self.events_loop = EventsLoop(testevents) 
@@ -654,14 +644,18 @@ def run_tests():
     :raises: None.
     '''
     import sys
-    cf.surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
+    #0,6671875 and 0,(6) of HD resoultion
+    cf.surface = pygame.display.set_mode((854,480))
     GameState([0,1] + [ x*0 for x in range(1000)])
 
 if __name__ == '__main__':
     import sys
-    
-    cf.surface = pygame.display.set_mode((854,480)) #0,6671875 and 0,(6) of HD resoultion
-#    pygame.display.toggle_fullscreen() # Toggle full screen #Apparently only works when running X11
+    #0,6671875 and 0,(6) of HD resoultion
+    cf.surface = pygame.display.set_mode((854,480))
+    # Toggle full screen #Apparently only works when running X11
+    #pygame.display.toggle_fullscreen()
+    GameState()
+
     '''First you have to make an object of a *Menu class.
     *init take 2 arguments. list of fields and destination surface.
     Then you have a 4 configuration options:
@@ -676,7 +670,5 @@ if __name__ == '__main__':
     arguments to move selection or nothing. This function will return actual 
     position of selection.
     *get_postion will return actual position of seletion. '''
-    GameState()
-    #unittest.main()
-#else: #used for testing #To run this code do import Trumpocalypse in python shell
+    
 
