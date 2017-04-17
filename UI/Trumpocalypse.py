@@ -48,6 +48,7 @@ class EventsLoop:
         :param list test_events:
             A list of keypress indexes to auto-"press".
         '''
+        pygame.display.set_caption('Trumpocalypse!')
         # Start on opening menu. Then changes.
         self.cm = MENU.OpeningMenu() # Current menu reference
         self.test_events = test_events
