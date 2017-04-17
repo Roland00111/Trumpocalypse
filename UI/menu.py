@@ -1047,7 +1047,7 @@ class CharacterHUD:
         x = PygameUI.List([
                 {'item':None, 'value':cf.gs.game.character.name},
                 {'item':None, 'value':'Hp: ' +
-                 str(cf.gs.game.character.health)},
+                 str(cf.gs.game.character.health),'color':(255,0,0)},
                 {'item':None, 'value':'Str: ' +
                  str(cf.gs.game.character.strength)},
                 {'item':None, 'value':'Char: ' +

@@ -216,7 +216,7 @@ class Label(Control):
     selected_bgcolor = (255,120,71) #(200, 224, 200)
     bgcolor = Control.bgcolor
 
-    def __init__(self, text=None, label_bgcolor=(255,120,71), item=None):
+    def __init__(self, text=None, label_bgcolor=(255,120,71), item=None,text_color=(0,0,0)):
         '''
         :param item: An object to reference.
         :type item: object reference or None.
@@ -226,7 +226,7 @@ class Label(Control):
         self.interactive = False
         self.font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 16)
         self.text = text
-        self.text_color = Label.text_color
+        self.text_color = text_color
         self.padding = Label.padding
         self.item = item
 
@@ -276,7 +276,12 @@ class List(Control):
         self.callback_function = callback_function
         y, w = 0, 0
         for label in labels:
-            lbl = Label(label['value'], selected_bgcolor, label['item'])
+            if hasattr(label,'color') is False:
+                label['color']=(0,0,0)
+                print"does Not have a label"
+            else:
+                print "does have a label"
+            lbl = Label(label['value'], selected_bgcolor, label['item'],label['color'])
             lbl.frame.topleft = (0, y)
             size = lbl.size_of(label['value'])
             y += size[1]
