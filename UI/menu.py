@@ -12,6 +12,7 @@ import jobs as JOBS #Potential jobs
 import events as EVENTS
 import character as CHARACTER
 import sys
+import inventory as INVENTORY
 
 class Menu:
     '''Original code for the menu class is from:
@@ -599,7 +600,7 @@ class EventScreen(Menu):
         else:
             n = 0
             while (c.health <= 0 and
-                c.inventory.use_item(ITEMS.Item('First Aid Kit'), 1) is True
+                c.inventory.use_item(INVENTORY.Item('First Aid Kit'), 1) is True
             ):
                 c.health += 1
                 n += 1
