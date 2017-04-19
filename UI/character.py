@@ -37,6 +37,14 @@ class Character:
         amount = round(self.job.income * (num_hours / 8), 1)
         self.inventory.add_item('Cash', amount)
         return amount
+
+#Removes health, if statement should at some point add warning popup 
+#or kill functionality of some sort to all screens. 
+    def lose_health(self, number):
+        self.health -= number
+#        if (self.health <= 0):
+
+
     
     def reset_modes(self):
         '''Reset transit and housing type to original values.

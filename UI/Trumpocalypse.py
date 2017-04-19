@@ -525,7 +525,7 @@ class Game:
             
             elif (food.amount <3 ):
                 food.amount = 0
-                cf.gs.game.character.health -= 1
+                cf.gs.game.character.lose_health(1)
                 cf.gs.game.character.sanity -= 1
 
             
@@ -537,7 +537,7 @@ class Game:
                 #your health
             elif (cf.gs.game.character.sanity <=0):
                 cf.gs.game.character.sanity = 5
-                cf.gs.game.character.health -=1
+                cf.gs.game.character.lose_health(1)
 
             else:
                 #Continue the events whose durations have not run out.
