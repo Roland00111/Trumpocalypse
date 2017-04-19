@@ -1043,12 +1043,15 @@ class CharacterHUD:
             for e in self.elements:
                 self.current_menu.scene.remove_child(e)
         self.elements = []
-        
+        if cf.gs.game.character.health<=0:
+            temp_font_size=64
+        else:
+            temp_font_size=int(48/cf.gs.game.character.health+0.01)
         # Character attributes
         x = PygameUI.List([
                 {'item':None, 'value':cf.gs.game.character.name},
                 {'item':None, 'value':'Hp: ' +
-                 str(cf.gs.game.character.health),'color':(255,0,0)},
+                 str(cf.gs.game.character.health),'color':(255,0,0),'font_size':temp_font_size},
                 {'item':None, 'value':'Str: ' +
                  str(cf.gs.game.character.strength)},
                 {'item':None, 'value':'Char: ' +

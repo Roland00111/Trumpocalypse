@@ -216,7 +216,7 @@ class Label(Control):
     selected_bgcolor = (255,120,71) #(200, 224, 200)
     bgcolor = Control.bgcolor
 
-    def __init__(self, text=None, label_bgcolor=(255,120,71), item=None,text_color=(0,0,0)):
+    def __init__(self, text=None, label_bgcolor=(255,120,71), item=None,text_color=(0,0,0),font_size=16):
         '''
         :param item: An object to reference.
         :type item: object reference or None.
@@ -224,7 +224,7 @@ class Label(Control):
         Control.__init__(self)
         self.selected_bgcolor = label_bgcolor
         self.interactive = False
-        self.font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 16)
+        self.font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', font_size)
         self.text = text
         self.text_color = text_color
         self.padding = Label.padding
@@ -276,11 +276,14 @@ class List(Control):
         self.callback_function = callback_function
         y, w = 0, 0
         for label in labels:
-            if 'color' in label:
-            else:
+            if 'color' not in label:
                 label['color']=(0,0,0)
+            if 'font_size' not in label:
+                label['font_size']=16
+            
                 
-            lbl = Label(label['value'], selected_bgcolor, label['item'],label['color'])
+            lbl = Label(label['value'], selected_bgcolor, label['item'],
+                        label['color'],label['font_size'])
             lbl.frame.topleft = (0, y)
             size = lbl.size_of(label['value'])
             y += size[1]
