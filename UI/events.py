@@ -69,6 +69,8 @@ class Event:
                 cf.gs.game.character.job.income *= value
             elif key == 'housing':
                 cf.gs.game.character.inventory.house_degrade(value)
+            elif key == 'health':
+                f.gs.game.character.modifyHealth(value)  
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n*value)

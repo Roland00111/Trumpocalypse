@@ -602,7 +602,7 @@ class EventScreen(Menu):
             while (c.health <= 0 and
                 c.inventory.use_item(INVENTORY.Item('First Aid Kit'), 1) is True
             ):
-                c.health += 1
+                c.modifyHealth(1)
                 n += 1
             if c.health <= 0:
                 self.alert(self.warn_no_health_pack, ['OK'], self.click_died)
