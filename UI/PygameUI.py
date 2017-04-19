@@ -276,11 +276,10 @@ class List(Control):
         self.callback_function = callback_function
         y, w = 0, 0
         for label in labels:
-            if hasattr(label,'color') is False:
-                label['color']=(0,0,0)
-                print"does Not have a label"
+            if 'color' in label:
             else:
-                print "does have a label"
+                label['color']=(0,0,0)
+                
             lbl = Label(label['value'], selected_bgcolor, label['item'],label['color'])
             lbl.frame.topleft = (0, y)
             size = lbl.size_of(label['value'])
