@@ -38,10 +38,10 @@ class Character:
         self.inventory.add_item('Cash', amount)
         return amount
 
-#Removes health, if statement should at some point add warning popup 
+#updates health, the if statement should at some point add warning popup 
 #or kill functionality of some sort to all screens. 
-    def lose_health(self, number):
-        self.health -= number
+    def modifyHealth(self, number):
+        self.health += number
 #        if (self.health <= 0):
 
 

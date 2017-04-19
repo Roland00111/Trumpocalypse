@@ -525,19 +525,19 @@ class Game:
             
             elif (food.amount <3 ):
                 food.amount = 0
-                cf.gs.game.character.lose_health(1)
+                cf.gs.game.character.modifyHealth(-1)
                 cf.gs.game.character.sanity -= 1
 
             
-            elif (cf.gs.game.character.selected_house == ('Staying with Friends')):
+            if (cf.gs.game.character.selected_house == ('Staying with Friends')):
                 cf.gs.game.character.sanity -= 1
                 
 
                 #if sanity dips under zero at the end of the day it hurts
                 #your health
-            elif (cf.gs.game.character.sanity <=0):
+            if (cf.gs.game.character.sanity <=0):
                 cf.gs.game.character.sanity = 5
-                cf.gs.game.character.lose_health(1)
+                cf.gs.game.character.modifyHealth(-1)
 
             else:
                 #Continue the events whose durations have not run out.
