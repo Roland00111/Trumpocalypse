@@ -950,7 +950,22 @@ class StoryScreen(Menu):
         cf.gs.game.day_counter += 1
         cf.gs.game.month_counter += 1
         cf.gs.game.current_day = cf.gs.game.Day()
+
         
+        self.warn_ask_health_pack = (
+        "Warning: You are about to die!\n"+
+        "Use some Health Packs to prevent your death?")
+        self.warn_ignore_health_pack = (
+        "Warning: Why did you choose not to use a health pack!?\n"+
+        "Now you died!")
+        self.warn_no_health_pack = "Warning: No more health packs!\nYou died!"
+        
+        if cf.gs.game.character.health < 1:
+                    self.alert(self.warn_ask_health_pack,
+                        [ "Use some health packs.",
+                        "Do not use any health packs." ],
+                        self.click_use_first_aid)
+                    
         self.menu_name = '...'
         self.keypressArray = [
             DayScreen 
@@ -965,6 +980,49 @@ class StoryScreen(Menu):
             'top': 60,
             'height': 250
         }
+
+       
+        
+    def click_died(self, confirm):
+        '''User clicked "OK". So end the game.
+        In EventsLoop this will immediately jump
+        to GameOverScreen, assuming also of course
+        that health <= 0.
+        
+        :param boolean confirm: Confirm is always true in this case.
+        '''
+        cf.gs.game.character.is_dead = True
+
+    def click_use_first_aid(self, confirm):
+        '''User clicked "Use first aid packs" or
+        "Do not use first aid packs".
+        If "Do not use" end the game. Else try using first aid packs
+        until there are no more remaining or until the character's
+        health > 0.
+        
+        :param boolean confirm: True if "Use" is pressed,
+            False if "Do not" is pressed.
+        '''
+        c = cf.gs.game.character
+        if confirm is False:
+            self.alert(self.warn_ignore_health_pack, ['OK'], self.click_died)
+        else:
+            n = 0
+            while (c.health <= 0 and
+                c.inventory.use_item(INVENTORY.Item('First Aid Kit'), 1) is True
+            ):
+                c.modifyHealth(1)
+                n += 1
+            if c.health <= 0:
+                self.alert(self.warn_no_health_pack, ['OK'], self.click_died)
+            else:
+                if n == 1:
+                    m = "You're still alive thanks to a health pack!" 
+                else:
+                    m = ("You're still alive thanks to those "
+                        +str(n)+" health packs!")
+                self.alert(m, ['OK'])
+
 
 class CreateCharacter(Menu):
     '''
