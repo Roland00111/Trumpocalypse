@@ -187,6 +187,13 @@ class EventsLoop:
             elif event.type == pygame.KEYDOWN:
                 self.cm.scene.key_down(
                     event.key, event.unicode)
+                #https://pythonhosted.org/kitchen/unicode-frustrations.html
+                #unicode type stores an abstract sequence of code points
+                #https://pythonhosted.org/kitchen/glossary.html#term-code-points
+                #code points make it so that we have a number pointing to a character without... 
+                #worrying about implementation details of how those numbers are stored for the computer to read
+                # .unicode allows you to encode the characters however you like ie. encode('latin1'))
+                #by using unicode of KEYDOWN if can be used/converted for every encoding, making it universal of sorts
             elif event.type == pygame.KEYUP:
                 self.cm.scene.key_up(event.key)
             
