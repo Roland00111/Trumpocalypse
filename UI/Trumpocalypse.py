@@ -41,12 +41,11 @@ class EventsLoop:
     '''
     current_menu = None
     test_events = None
-    
+    Score = 0
     def __init__(self,test_events = None):
         '''This starts the continuosly running loop.
                 
-        :param list test_events:
-            A list of keypress indexes to auto-"press".
+        :param list test_events:            A list of keypress indexes to auto-"press".
         '''
         pygame.display.set_caption('Trumpocalypse!')
         # Start on opening menu. Then changes.
@@ -481,10 +480,12 @@ class Game:
         self.events = EVENTS.Events()#Events() #EVENTS.Events()
     
     def tally_score(self):
-        '''This function is called when the game is over.
-        It will tally the score of the game.
-        '''
-        print 'Tally the score...'
+        score = 0
+      #      score += item.calculate_resale_cost()
+        size = len(cf.gs.game.events.inactive_events)
+        score -= (size*1000)
+        print 'Tallied the score...'
+        print (score)
 
     def mod_hours(self,hours,operation=False):
         '''Modifies hours. Ensures that hours is greater than or equal
