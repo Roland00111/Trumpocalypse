@@ -481,11 +481,12 @@ class Game:
     
     def tally_score(self):
         score = 0
-      #      score += item.calculate_resale_cost()
+      #     score += item.calculate_resale_cost()
         size = len(cf.gs.game.events.inactive_events)
         score -= (size*1000)
         print 'Tallied the score...'
         print (score)
+        return score
 
     def mod_hours(self,hours,operation=False):
         '''Modifies hours. Ensures that hours is greater than or equal
