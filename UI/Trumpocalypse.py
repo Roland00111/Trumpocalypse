@@ -57,6 +57,11 @@ class EventsLoop:
         while event_loop:
             self.process_pygame_events()
             # CPU wait.
+            #http://git.net/ml/python.pygame/2003-07/msg00042.html
+            #pygame.time.wait(0) makes the game wait until an action is performed
+            #and since game is not animated having it wait until an action is perfect
+            #so the wait(0) puts the CPU to 0% usage when an action is not performed...
+            #which is most the time
             pygame.time.wait(0)
     
     def check_character_alive(self):
