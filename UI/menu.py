@@ -483,7 +483,7 @@ class StoreScreen(Menu):
                  store_name+'.\nThe trip takes '+str(travel_time)+
                  ' hours but only '+str(cf.gs.game.current_day.
                                         day_hours)+' hours remain!')
-            self.alert(m, ['OK'], self.click_no_change)
+            self.alert(m, ['OK'], None)
             return False
         else:
             # Subtract hours.
@@ -494,6 +494,8 @@ class StoreScreen(Menu):
         location.active_store_idx = chosen_position
         return True
         
+#No longer being called, replace None in the self alert
+    #above to die when going to store with no time
     def click_no_change(self, confirm):
         '''This tests whether setting character health to 
         zero actually results in game over.
@@ -512,7 +514,7 @@ class GameOverScreen(Menu):
              Close
         ]
         self.titlesArray = ['Start Over', 'Quit']
-        # Tally score (implement)
+        # Tally score 
         finalScore = cf.gs.game.tally_score()
         text = ('Game Over, better luck next time! \n '
                 +'Your score:'+str(finalScore))
@@ -583,7 +585,9 @@ class EventScreen(Menu):
         
         :param boolean confirm: Confirm is always true in this case.
         '''
+        cf.gs.game.character.health = 0
         cf.gs.game.character.is_dead = True
+        pygame.event.post(cf.gs.first_game_event)
 
     def click_use_first_aid(self, confirm):
         '''User clicked "Use first aid packs" or
@@ -993,7 +997,9 @@ class StoryScreen(Menu):
         
         :param boolean confirm: Confirm is always true in this case.
         '''
+        cf.gs.game.character.health = 0
         cf.gs.game.character.is_dead = True
+        pygame.event.post(cf.gs.first_game_event)
 
     def click_use_first_aid(self, confirm):
         '''User clicked "Use first aid packs" or
@@ -1024,7 +1030,7 @@ class StoryScreen(Menu):
                     m = ("You're still alive thanks to those "
                         +str(n)+" health packs!")
                 self.alert(m, ['OK'])
-
+            pygame.event.post(cf.gs.first_game_event)
 
 class CreateCharacter(Menu):
     '''
