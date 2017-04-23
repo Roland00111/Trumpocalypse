@@ -21,7 +21,7 @@ if not pygame.font.get_init():
     pygame.font.init()
     
 class EventsLoop:
-    '''
+    '''???
     This loop is running continuously to check for any time a key on
     the keyboard is pressed or a mouse button is pressed.
     As well as drawing the next menu by creating a new Menu() class
@@ -43,9 +43,10 @@ class EventsLoop:
     test_events = None
     Score = 0
     def __init__(self,test_events = None):
-        '''This starts the continuosly running loop.
-                
-        :param list test_events:            A list of keypress indexes to auto-"press".
+        '''
+        The init function takes self and test_events. If test_events
+        is not given it defaults to None and ???
+        :param list test_events: A list of keypress indexes to auto-"press".
         '''
         pygame.display.set_caption('Trumpocalypse!')
         # Start on opening menu. Then changes.
@@ -58,15 +59,17 @@ class EventsLoop:
             self.process_pygame_events()
             # CPU wait.
             #http://git.net/ml/python.pygame/2003-07/msg00042.html
-            #pygame.time.wait(0) makes the game wait until an action is performed
-            #and since game is not animated having it wait until an action is perfect
-            #so the wait(0) puts the CPU to 0% usage when an action is not performed...
-            #which is most the time
+            #pygame.time.wait(0) makes the game wait until an action
+            #is performed and since game is not animated having it
+            #wait until an action is perfec so the wait(0) puts the
+            #CPU to 0% usage when an action is not performed. Which
+            #is most of the time
             pygame.time.wait(0)
     
     def check_character_alive(self):
 
-        '''If the character's health is 0 then kill the character
+        '''
+        If the character's health is 0 then kill the character
         (is_dead=true). Then do the game over screen.
         '''
 
@@ -85,9 +88,14 @@ class EventsLoop:
             cf.gs.first_game_event=event
     
     def pui_has_alert(self, event):
-        '''If there is an alert then stop everything except
-        mouse down, mouse up, and quit.
-        Use continue to jump forward in event_loop.
+        '''
+        This takes a single event as the parameter and checks that
+        there is no alerts that need to interupt game play and if
+        there is no alerts then it returns false. If there is an
+        alert than it returns true and shows the alert for the user.
+        If there is an alert then stop everything except mouse down,
+        mouse up, and quit. Use continue to jump forward in
+        event_loop.
         '''
 
         if self.cm.scene._has_alert is True and (
@@ -238,8 +246,7 @@ class EventsLoop:
                                  [chosen_position]()) 
 
     def test():
-        '''Run tests.
-        '''
+        '''Run tests.'''
         while self.test_events:
             chosen_position = self.test_events.pop(0)
             self.cm.remove_pui_children()
@@ -292,6 +299,9 @@ class GameState:
         self.events_loop = EventsLoop(testevents) 
     
     def reset(self):
+        ''' Takes self meaning the game as a parameter and resets the
+        time.
+        '''
         Game.day_counter = 0
         Game.current_year = 2017
         Game.month_counter = 1
@@ -308,6 +318,7 @@ class Jobs:
     def __init__(self):
         pass
     def random_job(self):
+        ''' This generates a random job for the user '''
         r = random.randint(0,len(JOBS.j.keys())-1)
         x = JOBS.j.values()[r]
         return Job(x['title'], x['income'], x['company'], x['area'],
@@ -317,7 +328,9 @@ class Job:
     ''' Deals with anythinng that deals with the characters job'''
     def __init__(self,title=None,income=None,company=None,area=None,
                  work_events=None):
-        ''' Sets default things related to the characters job '''
+        ''' The parameters are title, income, company, area, and
+        work_events and asigns them to the charecter.
+        '''
         self.title = title
         self.income = income
         self.company = company
@@ -328,7 +341,7 @@ class Job:
         self.distances()
 
     def work(self):
-        ''' this is called when the character goes to work so it
+        ''' This is called when the character goes to work so it
         decrements time and increases there cash.
         '''
         self.random_dictPos = random.randint(0,
@@ -418,6 +431,10 @@ class Location:
         return self.jobs[ r ]
 
     def menu_values(self):
+        '''Takes no parameter but goes through the list of all???
+        store names and gives each store a random distance from the
+        users house and adds the string to an array called temp_array
+        '''
         temp_array = []
         for store in self.stores:
             temp_array.append(store.name + ': ' +
@@ -449,7 +466,7 @@ class Locations:
         'Pacific'
     ]
     def __init__(self):
-        self.locations = [ Location(name) for name in self.all_locations ]
+        self.locations=[Location(name) for name in self.all_locations]
         self.friend_location = { 'coordinates': [ 0, 0 ] }
         pass
     
@@ -501,8 +518,11 @@ class Game:
         return score
 
     def mod_hours(self,hours,operation=False):
-        '''Modifies hours. Ensures that hours is greater than or equal
-        to 0.
+        '''The parameters are the amount of hours if its adding time
+        or -hours if its taking time away and the operation.By default
+        the operation is False which equates to adding if you pass
+        True then it multiplies. Finally it ensures that hours is
+        greater than or equal to 0.
         '''
         if operation==False:
             cf.gs.game.current_day.day_hours += hours
