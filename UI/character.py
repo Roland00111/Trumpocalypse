@@ -1,7 +1,7 @@
 import inventory as INVENTORY
 import random
 import config as cf
-
+import names
 class Character:
     ''' This class contains a default character and two hard coded
     characters for testing purposes. 
@@ -66,7 +66,8 @@ class Character:
         '''
         num = random.randint(0,1)
         if num == 0:
-            self.name = 'Bill'
+            r=random.randint(0,4994)
+            self.name = names.NAMES_LIST[r]
             self.health = 3
             self.strength = 5
             self.gender = 'male'
@@ -90,9 +91,11 @@ class Character:
             self.job = self.location.random_job()
             print(self.location.location_name) #DDDDDDDDDD
         elif num == 1:
-            self.name = 'Linda'
+            r=random.randint(0,4994)
+            self.name = names.NAMES_LIST[r]
             self.health = 3
             self.strength = 1
+            #why is geneder important as of now we dont have any events that affect you becasue of your gender
             self.gender = 'female'
             self.age = 40
             self.charisma = 4
