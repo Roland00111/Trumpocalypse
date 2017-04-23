@@ -2,7 +2,6 @@ import config as cf
 import time
 import pygame
 import random
-from TextWrap import *
 import PygameUI
 import math
 import copy
@@ -11,7 +10,7 @@ import jobs as JOBS #Potential jobs
 import events as EVENTS
 import menu as MENU
 import store as STORE
-
+from TextWrap import *
 from pygame.locals import *
 
 if not pygame.display.get_init():
@@ -67,12 +66,10 @@ class EventsLoop:
             pygame.time.wait(0)
     
     def check_character_alive(self):
-
         '''
         If the character's health is 0 then kill the character
         (is_dead=true). Then do the game over screen.
         '''
-
         if (cf.gs.game.character != None and
             cf.gs.game.character.health <= 0 and 
             cf.gs.game.character.is_dead is True and
@@ -97,7 +94,6 @@ class EventsLoop:
         mouse up, and quit. Use continue to jump forward in
         event_loop.
         '''
-
         if self.cm.scene._has_alert is True and (
             event.type == pygame.MOUSEBUTTONDOWN or
             event.type == pygame.MOUSEBUTTONUP):
@@ -145,7 +141,6 @@ class EventsLoop:
             # Check alert status
             if self.pui_has_alert(event):
                 continue
-            
             #-----------------------------------
             # Key press events and mouse events.
             #-----------------------------------
@@ -204,11 +199,9 @@ class EventsLoop:
                 #by using unicode of KEYDOWN if can be used/converted for every encoding, making it universal of sorts
             elif event.type == pygame.KEYUP:
                 self.cm.scene.key_up(event.key)
-            
             #---------------------------
             # Drawing stuff starts here.
             #---------------------------
-            
             # Draw PygameUI.
             cf.surface.blit(self.cm.scene.draw(), (0, 0))
             # Draw Menu
@@ -225,7 +218,6 @@ class EventsLoop:
                 cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
             # Update
             pygame.display.update()
-   
         #----------------------------
         # Enter key has been pressed.
         #----------------------------
@@ -386,7 +378,6 @@ class Job:
         '''Calculate the euclidean distance to the current house.
         Character's current housing is (string):
             cf.gs.game.character.selected_house
-        
         :return: Distance in miles, rounded to the tenth.
         :rtype: int.
         '''
@@ -510,7 +501,7 @@ class Game:
     
     def tally_score(self):
         score = 0
-      #     score += item.calculate_resale_cost()
+        #score += item.calculate_resale_cost()
         size = len(cf.gs.game.events.inactive_events)
         score -= (size*1000)
         print 'Tallied the score...'
@@ -548,12 +539,15 @@ class Game:
             self.gen_date()
 
         def eod_mods(self):
-            #
+            '''This function checks if you have enough food to go to
+            the next day unharmed. Then checks if you are staying at
+            your friends house to decrement sanity. Then checks if
+            your sanity has gone below 0 and if it has then it
+            decrements health and sets sanity to 5. 
+            '''
             food = (cf.gs.game.character.inventory.
                     sorted_items['food'])
 
-            
-            
             if (food.amount >= 3):
                 food.amount -= 3
             
@@ -562,11 +556,9 @@ class Game:
                 cf.gs.game.character.modifyHealth(-1)
                 cf.gs.game.character.sanity -= 1
 
-            
             if (cf.gs.game.character.selected_house == ('Staying with Friends')):
                 cf.gs.game.character.sanity -= 1
                 
-
                 #if sanity dips under zero at the end of the day it hurts
                 #your health
             if (cf.gs.game.character.sanity <=0):
@@ -576,9 +568,6 @@ class Game:
             else:
                 #Continue the events whose durations have not run out.
                 pass
-            
-            ##
-            ##
             #cf.gs.game.character.check_health()
                           
         def gen_date(self):
@@ -640,18 +629,15 @@ class Game:
         def strTimeProp(self,start, end, format, prop):
             '''Get a time at a proportion of a range of two formatted
             times.
-
             The start and end should be strings specifying times formated
             in thegiven format (strftime-style), giving an interval
             [start, end].prop specifies how a proportion of the
             interval to be taken afterstart.  The returned time will
             be in the specified format.
-            
             Taken From : http://stackoverflow.com/questions/553303/
                 generate-a-random-date-between-two-other-dates
             By: Tom Alsberg
             '''
-
             stime = time.mktime(time.strptime(start, format))
             etime = time.mktime(time.strptime(end, format)) - 1
             ptime = stime + prop * (etime - stime)
@@ -659,7 +645,6 @@ class Game:
 
         def randomDate(self,start, end, prop):
             return self.strTimeProp(start, end, '%m/%d/%Y', prop)
-        
 # Sample unittest test case.
 #class TestGame(unittest.TestCase):
 #    def test1(self):
@@ -667,12 +652,9 @@ class Game:
 
 def run_tests():
     '''.. function:: run_tests()
-
     This is where tests are run.
-    
     In the python shell run `import Trumpocalypse.py`.
     Then run Trumpocalypse.run_tests() to run this code.
-    
     :param: None.
     :rtype: Does not a return value.
     :raises: None.
@@ -683,13 +665,6 @@ def run_tests():
     GameState([0,1] + [ x*0 for x in range(1000)])
 
 if __name__ == '__main__':
-    import sys
-    #0,6671875 and 0,(6) of HD resoultion
-    cf.surface = pygame.display.set_mode((854,480))
-    # Toggle full screen #Apparently only works when running X11
-    #pygame.display.toggle_fullscreen()
-    GameState()
-
     '''First you have to make an object of a *Menu class.
     *init take 2 arguments. list of fields and destination surface.
     Then you have a 4 configuration options:
@@ -704,5 +679,9 @@ if __name__ == '__main__':
     arguments to move selection or nothing. This function will return actual 
     position of selection.
     *get_postion will return actual position of seletion. '''
-    
-
+    import sys
+    #0,6671875 and 0,(6) of HD resoultion
+    cf.surface = pygame.display.set_mode((854,480))
+    # Toggle full screen #Apparently only works when running X11
+    #pygame.display.toggle_fullscreen()
+    GameState()
