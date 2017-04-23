@@ -44,8 +44,6 @@ class Character:
         self.health += number
 #        if (self.health <= 0):
 
-
-    
     def reset_modes(self):
         '''Reset transit and housing type to original values.
         '''
@@ -89,7 +87,6 @@ class Character:
             self.location = (cf.gs.game.locations.
                              random_location())
             self.job = self.location.random_job()
-            print(self.location.location_name) #DDDDDDDDDD
         elif num == 1:
             r=random.randint(0,4994)
             self.name = names.NAMES_LIST[r]

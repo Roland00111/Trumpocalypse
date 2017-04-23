@@ -52,7 +52,6 @@ class Menu:
 
     class Field:
         ''' Saves some variables for the ????.'''
-        
         test = ''
         Field = pygame.Surface
         Field_rect = pygame.Rect
@@ -60,29 +59,24 @@ class Menu:
 
     def move_menu(self, top, left):
         ''' Starting point for pygame window.'''
-        
         self.Position = (top,left) 
 
     def set_colors(self, text, selection, background):
         ''' Sets the color for everything when called.'''
-        
         self.BackgroundColor = background
         self.TextColor =  text
         self.SelectionColor = selection
         
     def set_fontsize(self,font_size):
         ''' Sets the font size.'''
-        
         self.FontSize = font_size
         
     def set_font(self, path):
         '''Sets font type.'''
-        
         self.font_path = path
         
     def get_position(self):
         '''Gets the position of the selecter????.'''
-        
         return self.PositionSelection
     
     def init(self, lista, dest_surface, height_top=0):
@@ -154,20 +148,18 @@ class Menu:
               choice_list=None, choice_list_callback=None):
         '''Helper function to show alert using PygameUI scene.
         There is only one alert allowed at a time.
-        
         See class Alert for parameter details.
         '''
         #~ if self.scene._has_alert:
             #~ self.scene._has_alert = False
-        
+
         self.scene.show_alert(message, buttons, callback_function,
                               choice_list, choice_list_callback)
-        
+
     class CustomField:
         def __init__(self, field_type, field_content, field_label,
                      field_event_hooks):
             '''Testing. Not fully implemented.
-            
             :param str field_type: 'list', 'button', 'input', or
                 'number' (also input but limits to numbers)
             :param list field_content:
@@ -233,6 +225,7 @@ class Menu:
             for child in self.scene.children:
                 self.scene.remove_child(child)
                 break
+
     def draw_menu_body(self):
         # Calculate x offset
         w = self.scene.frame.w - 160 - 160
@@ -253,14 +246,12 @@ class Menu:
         drawText(cf.surface, self.body['text'], (0,0,0), rect,
                  font, aa=False, bkg=None)
 
-
 class WorkScreen(Menu):
     ''' This will knock 8 hours off the day and possibly more or less
     depending on the work event
     '''
     def __init__(self):
         self.menu_name = 'WorkScreen'
-
         #Need to have work option removed when going back to DayScreen
         self.keypressArray = [
                 DayScreen, 
@@ -292,11 +283,9 @@ class StoreScreenSelect(Menu):
         self.warning_not_enough_cash = ('Oops... that item costs '+
                                         'too much money!')
         
-        # HUD
-        CharacterHUD(self)
+        CharacterHUD(self) # HUD
         
-        # Lists
-        self.elements = []
+        self.elements = [] # Lists
         self.draw_store_lists()
         
         self.keypressArray = [

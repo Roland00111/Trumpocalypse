@@ -94,7 +94,6 @@ class Inventory:
     def use_item(self, item, amount):
         '''Try to use an item in the inventory.
         Returns True if the item was used, False otherwise.
-        
         :param item: An Item instance.
         :type item: Item.
         :param amount: The amount to use.
@@ -172,12 +171,11 @@ class Inventory:
         If item_type is not None then add item of this type.
         Does the item already exist in the inventory?
         If so, then add the item's stats.
-        item_amount:
-            if new_item.grouped_item is False: # single item
-                new_item.remaining_uses = item_amount 
-            else:                               # grouped item
-                new_item.amount = item_amount 
         '''
+        #if new_item.grouped_item is False: # single item
+        #        new_item.remaining_uses = item_amount 
+        #    else:                               # grouped item
+        #        new_item.amount = item_amount 
         if item_type != None:
             new_item = Item(item_type)
             if item_amount == 'random':
@@ -295,7 +293,6 @@ class Item:
         This will somehow use the item.
         Deincroment remaining_uses, along with in game effect.
         '''
-        
         pass
     
     def sell_item(self):
@@ -312,7 +309,6 @@ class Item:
         the seller never pays the resale ratio.
         That is, the seller always sells as though the item were
         in new condition, minus whatever amount has been used.
-        
         :return: The purchase cost of this item.
         :rtype: str.
         '''
@@ -327,16 +323,17 @@ class Item:
         '''Returns the sell cost of the item or group of items.
         The cost is always rounded down. So if an item is only
         worth $0.80 then it is really worth $0.
-        In the case of grouped items this is:
-            floor: [ self.resale_cost * (self.amount /
-            self.original_amount) ]
-        In the case of single items this is:
-            floor: [ self.resale_cost * (self.remaining_uses /
-            self.max_remaining_uses) ]
-            
         :return: The sell cost of this item.
         :rtype: str.
         '''
+
+        #In the case of grouped items this is:
+        #   floor: [ self.resale_cost * (self.amount /
+        #    self.original_amount) ]
+        #In the case of single items this is:
+        #    floor: [ self.resale_cost * (self.remaining_uses /
+        #    self.max_remaining_uses) ]
+        
         if self.grouped_item: # Grouped item (num remaining)
             return math.floor(self.purchase_cost * self.resale_cost *
                               (self.amount / self.original_amount))
@@ -358,7 +355,6 @@ class Item:
     def set_item(self, item_type):
         '''Single use items have remaining_use that declines.
         Grouped use items have num_in_group that declines.
-    
         :raises TypeError: If item_type is not in ITEMS.n['stats'].
         '''
         try:
@@ -393,4 +389,3 @@ class Item:
                                              cf.plus_minus())
         except:
             raise TypeError
-            

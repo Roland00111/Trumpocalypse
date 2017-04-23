@@ -190,6 +190,24 @@ class Events:
                 'it is because of dissidents. No one knows the real reason '
                 'behind the curfew... : -4 hours -2 sanity',
                 2,0,1),
+        Event(  'Carnival', {'hours':-2,'sanity':10}, {},
+                'Trump decided to send a carnival to your town in order to '
+                'increase his support in the area. You decided to go to the '
+                'carnival to relieve some of the stress from everything thats '
+                'happening : -2 hours +10 sanity',
+                2,0,1),
+        Event(  'Death in the family', {'hours':-4,'sanity':-10,'Cash':-1000}, {},
+                'Everything was starting to look up when you got a phone call '
+                'from your Aunt Mable telling you your brother just died and '
+                'you had to fly home to attend '
+                'his funeral : -4 hours -10 sanity -1000 Cash',
+                2,0,1),
+        Event(  'New Pandemic', {'hours':-6,'sanity':-2,'health':-1}, {},
+                'You were eating your lunch watching the news when they '
+                'announced that there is a pandemic happening called ???'
+                'You must prepare for the pandemic and take the proper '
+                'percautions : -6 hours -2 sanity -1 health',
+                2,0,1),
         ]
     
     def __init__(self):
