@@ -392,9 +392,8 @@ class StoreScreenSelect(Menu):
     def click_sell(self, selected_index, selected_value,
                    selected_item):
         '''Sell the clicked item.
-        It is probably necessary for
-                now to reset character's selected housing and transit,
-                at least for simplicity (reset_modes).
+        It is probably necessary for now to reset character's selected
+        housing and transit, at least for simplicity (reset_modes).
         '''
         cf.gs.game.character.reset_modes()
         cost = selected_item.calculate_resale_cost()
@@ -412,8 +411,6 @@ class StoreScreenSelect(Menu):
         '''
         pass
 
-
-    
 class StoreScreen(Menu):
     '''
     Class StoreScreen. This shows the stores in the character's
@@ -425,7 +422,6 @@ class StoreScreen(Menu):
         self.keypressArray = [ StoreScreenSelect
             for x in range(len(location.stores)) ] + [ DayScreen ]
         self.titlesArray = location.menu_values() + ['Back to Day']
-        
         # HUD
         CharacterHUD(self)
     
@@ -456,7 +452,6 @@ class StoreScreen(Menu):
         location = cf.gs.game.character.location
         if len(location.stores) -1  < chosen_position: # To DayScreen.
             return True
-        
         #-----------------
         # Validate travel.
         #-----------------
@@ -494,7 +489,6 @@ class StoreScreen(Menu):
         pygame.event.post(cf.gs.first_game_event)
         pass
         
-
 class GameOverScreen(Menu): 
     def __init__(self):
         self.menu_name = '...'
@@ -537,19 +531,18 @@ class EventScreen(Menu):
         # Some variables specific to this screen.
         self.selected_event = None
         self.warn_no_event = (
-        "Warning: No event selected!\n"+
-        "You must select an event to activate!")
+        'Warning: No event selected!\n'+
+        'You must select an event to activate!')
         self.warn_ask_health_pack = (
-        "Warning: You are about to die!\n"+
-        "Would you like to use some health packs?")
+        'Warning: You are about to die!\n'+
+        'Would you like to use some health packs?')
         self.warn_ignore_health_pack = (
-        "Warning: Why did you choose not to use a health pack!?\n"+
-        "Now you died!")
-        self.warn_no_health_pack = "Warning: No more health packs!\nYou died!"
-        self.warn_event_active = "Warning: The event is already activated!"
+        'Warning: Why did you choose not to use a health pack!?\n'+
+        'Now you died!')
+        self.warn_no_health_pack = 'Warning: No more health packs!\nYou died!'
+        self.warn_event_active = 'Warning: The event is already activated!'
         
         g = cf.gs.game.events
-
         x = PygameUI.List(g.show_inactive_events(), (200, 224, 200))
         x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
@@ -571,7 +564,6 @@ class EventScreen(Menu):
         In EventsLoop this will immediately jump
         to GameOverScreen, assuming also of course
         that health <= 0.
-        
         :param boolean confirm: Confirm is always true in this case.
         '''
         cf.gs.game.character.health = 0
@@ -584,7 +576,6 @@ class EventScreen(Menu):
         If "Do not use" end the game. Else try using first aid packs
         until there are no more remaining or until the character's
         health > 0.
-        
         :param boolean confirm: True if "Use" is pressed,
             False if "Do not" is pressed.
         '''
@@ -608,7 +599,6 @@ class EventScreen(Menu):
                         +str(n)+" health packs!")
                 self.alert(m, ['OK'])
 
-    
     def click_event_list(self, selected_index,
         selected_value, selected_item):
         ''' This will show the events text after you click the event
@@ -616,7 +606,6 @@ class EventScreen(Menu):
         self.selected_event = selected_item
         self.body['text'] =selected_item.story_text
 
-    
     def process_before_unload(self,chosen_position):
         '''The user pressed "Activate Event".
         '''
@@ -624,12 +613,12 @@ class EventScreen(Menu):
             # Has the user clicked on a list yet?
             #selected_event is in Event Class, how do I ref it?
             if self.selected_event is None:
-                self.alert(self.warn_no_event, ["OK"])
+                self.alert(self.warn_no_event, ['OK'])
                 return False # Stay on EventScreen
             # Clicked on something.
             # Is it active?
             if self.selected_event.activated is True:
-                self.alert(self.warn_event_active, ["OK"])
+                self.alert(self.warn_event_active, ['OK'])
                 return False # Stay on EventScreen
             # The event is not activated.
             # Activate event.
@@ -640,8 +629,8 @@ class EventScreen(Menu):
                 return True # Back to DayScreen
             elif c.health <= 0:
                 self.alert(self.warn_ask_health_pack,
-                        [ "Use some health packs.",
-                        "Do not use any health packs." ],
+                        [ 'Use some health packs.',
+                        'Do not use any health packs.' ],
                         self.click_use_first_aid)
                 return False # Stay on EventScreen
         elif chosen_position == 1:
@@ -649,7 +638,6 @@ class EventScreen(Menu):
             # In this case simply return True.
             # This will go back to DayScreen.
             return True
-
 
 class CreateCharacterManual(Menu): #Not in effect yet
     def __init__(self):
@@ -665,7 +653,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
             'Continue To Location',
             'Back To Previous Page'
         ]
-        text = ""
+        text = ''
         self.body = {
             'text': text,
             'font_size': 32,
@@ -673,12 +661,11 @@ class CreateCharacterManual(Menu): #Not in effect yet
             'height': 0
         }
         
-
         self.select_value(100,200,0) #button creation click does not work yet though
         self.select_value(200,200,0)
         
         x = PygameUI.List([{'item':None,'value':'Item %s'%str(i) }
-                               for i in range(20)])
+                            for i in range(20)])
         x.frame = pygame.Rect(Menu.scene.frame.w // 2, 10, 150, 170)
         x.frame.w = x.container.frame.w
         x.selected_index = 1
@@ -689,11 +676,10 @@ class CreateCharacterManual(Menu): #Not in effect yet
         x = PygameUI.TextField()
         x.frame = pygame.Rect(10, 50, 150, 30)
         Menu.scene.add_child(x)
-        
 ##        self.CustomField( # Something along the lines of.........
 ##            'list',
 ##            ['Choice 1', 'Choice 2', 'Choice 3'],
-##            'Make a "good" choice:',
+##            'Make a 'good' choice:',
 ##            { MOUSEBUTTONUP: self.select_on_mouseup }
 ##        )
         #~ self.CustomField( # Something along the lines of.........
@@ -708,7 +694,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
                'select field!')
         
     def select_value(self,left,top,attrib_value):
-        plus = PygameUI.Button("+")
+        plus = PygameUI.Button('+')
         plus.frame = pygame.Rect(left, top, 27, 30)
         Menu.scene.add_child(plus)
 
@@ -717,7 +703,7 @@ class CreateCharacterManual(Menu): #Not in effect yet
         value.text = str(attrib_value)
         Menu.scene.add_child(value)
 
-        minus = PygameUI.Button("-")
+        minus = PygameUI.Button('-')
         minus.frame = pygame.Rect(left, top+100 ,27, 30)
         Menu.scene.add_child(minus)
         
@@ -779,7 +765,6 @@ class HighScores(Menu):
         high_score = high_score_file.read().replace('\n', '')
         high_score_file.close()
 
-        
         self.titlesArray = [
             'Main Menu',
             'Reset Highscore',
@@ -817,7 +802,6 @@ class DayScreen(Menu):
         self.menu_name = 'DayScreen'
         # Add HUD
         CharacterHUD(self)
-        
         if cf.gs.game.day_counter % 48 != 0:
             self.keypressArray = [
                 EventScreen,
@@ -860,8 +844,11 @@ class DayScreen(Menu):
     def update_body(self):
         '''Call this function to update text in the body.
         '''
-        text = ('Term Number: ' + str(cf.gs.game.term_count) + ' \nDay is: ' + str(cf.gs.game.current_day.generated_date)
-        + ' \n' +' \nHours Left: ' + str(cf.gs.game.current_day.day_hours)) #This displays a text box showing how many hours left in your day to spend
+        text = ('Term Number: ' + str(cf.gs.game.term_count) +
+                ' \nDay is: ' + str(cf.gs.game.current_day.
+                generated_date)+ ' \n' +' \nHours Left: ' + str(cf.gs.
+                game.current_day.day_hours)) #This displays a text box
+                     #showing how many hours left in your day to spend
         self.body = {
             'text': text,
             'font_size': 32,
@@ -871,7 +858,6 @@ class DayScreen(Menu):
         
     def process_before_unload(self, chosen_position):
         '''Leave the DayScreen after user presses EnterKey.
-        
         :param int chosen_position:
             The position of the menu selected by user.
         :return:
@@ -880,7 +866,6 @@ class DayScreen(Menu):
         '''
         if chosen_position != 3: # Anything but work
             return True
-        
         #----------------------
         # Validate work travel.
         #----------------------
@@ -914,7 +899,8 @@ class ElectionDay(Menu): #Use on 48,96 .... +=48
         
         self.keypressArray = [
             DayScreen,
-            EndGame, # Need to add class, build when highscore point system is in place
+            EndGame, # Need to add class, build when highscore point
+                     #system is in place
         ]
         self.titlesArray = [
             'Vote For Trump (Continue Playing)',
@@ -946,19 +932,18 @@ class StoryScreen(Menu):
         cf.gs.game.month_counter += 1
         cf.gs.game.current_day = cf.gs.game.Day()
 
-        
         self.warn_ask_health_pack = (
-        "Warning: You are about to die!\n"+
-        "Use some Health Packs to prevent your death?")
+        'Warning: You are about to die!\n'+
+        'Use some Health Packs to prevent your death?')
         self.warn_ignore_health_pack = (
-        "Warning: Why did you choose not to use a health pack!?\n"+
-        "Now you died!")
-        self.warn_no_health_pack = "Warning: No more health packs!\nYou died!"
+        'Warning: Why did you choose not to use a health pack!?\n'+
+        'Now you died!')
+        self.warn_no_health_pack = 'Warning: No more health packs!\nYou died!'
         
         if cf.gs.game.character.health < 1:
                     self.alert(self.warn_ask_health_pack,
-                        [ "Use some health packs.",
-                        "Do not use any health packs." ],
+                        [ 'Use some health packs.',
+                        'Do not use any health packs.' ],
                         self.click_use_first_aid)
                     
         self.menu_name = '...'
@@ -976,14 +961,11 @@ class StoryScreen(Menu):
             'height': 250
         }
 
-       
-        
     def click_died(self, confirm):
         '''User clicked "OK". So end the game.
         In EventsLoop this will immediately jump
         to GameOverScreen, assuming also of course
         that health <= 0.
-        
         :param boolean confirm: Confirm is always true in this case.
         '''
         cf.gs.game.character.health = 0
@@ -996,13 +978,13 @@ class StoryScreen(Menu):
         If "Do not use" end the game. Else try using first aid packs
         until there are no more remaining or until the character's
         health > 0.
-        
         :param boolean confirm: True if "Use" is pressed,
             False if "Do not" is pressed.
         '''
         c = cf.gs.game.character
         if confirm is False:
-            self.alert(self.warn_ignore_health_pack, ['OK'], self.click_died)
+            self.alert(self.warn_ignore_health_pack, ['OK'],
+                       self.click_died)
         else:
             n = 0
             while (c.health <= 0 and
@@ -1011,13 +993,14 @@ class StoryScreen(Menu):
                 c.modifyHealth(1)
                 n += 1
             if c.health <= 0:
-                self.alert(self.warn_no_health_pack, ['OK'], self.click_died)
+                self.alert(self.warn_no_health_pack, ['OK'],
+                           self.click_died)
             else:
                 if n == 1:
-                    m = "You're still alive thanks to a health pack!" 
+                    m = "You're still alive thanks to a health pack!"
                 else:
                     m = ("You're still alive thanks to those "
-                        +str(n)+" health packs!")
+                        +str(n)+' health packs!')
                 self.alert(m, ['OK'])
             pygame.event.post(cf.gs.first_game_event)
 
@@ -1069,8 +1052,7 @@ class EndGame(Menu):
         self.titlesArray = [
             'Test',
         ]
-
-
+        
 class CharacterHUD:
     ''' This class takes care of everything you see on the main day
     screen.
@@ -1106,9 +1088,9 @@ class CharacterHUD:
         x = PygameUI.List([
                 {'item':None, 'value':cf.gs.game.character.name},
                 {'item':None, 'value':'Hp: ' +
-                 str(cf.gs.game.character.health),'color':(255,0,0),'font_size':temp_font_size},
-                {'item':None, 'value':'Str: ' +
-                 str(cf.gs.game.character.strength)},
+                 str(cf.gs.game.character.health),'color':(255,0,0),
+                 'font_size':temp_font_size},{'item':None, ('value':
+                'Str: ') + str(cf.gs.game.character.strength)},
                 {'item':None, 'value':'Char: ' +
                  str(cf.gs.game.character.charisma)},
                 {'item':None, 'value':'Int: ' +
@@ -1160,8 +1142,7 @@ class CharacterHUD:
         # List of available transit types.
         self.select_housing = PygameUI.List(
             [{'item':None,'value':'Staying with Friends'}]+
-            cf.gs.game.character.inventory.list_housing_types()
-        )
+            cf.gs.game.character.inventory.list_housing_types())
         self.select_housing.frame = pygame.Rect(
             self.current_menu.scene.frame.w-154,
             self.current_menu.scene.frame.h -180, 150, 80)

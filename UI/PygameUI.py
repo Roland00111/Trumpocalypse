@@ -195,14 +195,17 @@ class Scene(Control):
             self._focus = new_focus
             self._focus.became_focused()
 
-    def show_alert(self, message, buttons, btn_action, choice_list, choice_list_callback):
+    def show_alert(self, message, buttons, btn_action, choice_list,
+                   choice_list_callback):
         if self._has_alert is True: # Do not do two alerts at once (for now)
             print 'show_alert:has alert'
             return
-        alert = Alert(message, buttons, btn_action, choice_list, choice_list_callback)
-        alert.frame = pygame.Rect(0, 0, self.frame.w, max(120, self.frame.h // 3))
-        self._has_alert = True   # :)
-        self._alert = alert      # :)
+        alert = Alert(message, buttons, btn_action, choice_list,
+                      choice_list_callback)
+        alert.frame = pygame.Rect(0, 0, self.frame.w, max(120,
+                                            self.frame.h // 3))
+        self._has_alert = True   
+        self._alert = alert      
         self.add_child(alert)
         
     def draw_alert(self):
@@ -216,7 +219,8 @@ class Label(Control):
     selected_bgcolor = (255,120,71) #(200, 224, 200)
     bgcolor = Control.bgcolor
 
-    def __init__(self, text=None, label_bgcolor=(255,120,71), item=None,text_color=(0,0,0),font_size=16):
+    def __init__(self, text=None, label_bgcolor=(255,120,71),
+                 item=None,text_color=(0,0,0),font_size=16):
         '''
         :param item: An object to reference.
         :type item: object reference or None.
@@ -224,7 +228,8 @@ class Label(Control):
         Control.__init__(self)
         self.selected_bgcolor = label_bgcolor
         self.interactive = False
-        self.font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', font_size)
+        self.font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf'
+                                        , font_size)
         self.text = text
         self.text_color = text_color
         self.padding = Label.padding
@@ -256,10 +261,12 @@ class Label(Control):
 
 class List(Control):
     
-    def __init__(self, labels, selected_bgcolor=(255,120,71), callback_function = False):
+    def __init__(self, labels, selected_bgcolor=(255,120,71),
+                 callback_function = False):
         '''Initialize List().
-        
-        :param list labels: A list of labels, each label is a dictionary {'item':*item reference or None*, 'str':*a string*}.
+        :param list labels:
+            A list of labels, each label is a dictionary {'item':*item
+            reference or None*, 'str':*a string*}.
         :param tuple selected_bgcolor: Color when selected.
         :param def callback_function: Callback function when clicked.
         '''
@@ -281,7 +288,6 @@ class List(Control):
             if 'font_size' not in label:
                 label['font_size']=16
             
-                
             lbl = Label(label['value'], selected_bgcolor, label['item'],
                         label['color'],label['font_size'])
             lbl.frame.topleft = (0, y)
@@ -310,8 +316,8 @@ class List(Control):
         '''
         If there is a callback function, then pass back the selected
         index and child text.
-        
-        :return: In the case of the callback function, returns self.selected_index, self.selected_value, self.selected_item.
+        :return: In the case of the callback function, returns self.
+            selected_index, self.selected_value, self.selected_item.
         '''
         if self.down_at is None:
             return
@@ -323,7 +329,8 @@ class List(Control):
                 self.selected_value = child.text
                 self.selected_item = child.item
                 if self.callback_function:
-                    self.callback_function(self.selected_index, self.selected_value, self.selected_item)
+                    self.callback_function(self.selected_index, self.
+                                selected_value, self.selected_item)
                 return
         self.selected_index = None
     
@@ -395,21 +402,24 @@ class TextField(Control):
 class Alert(Control):
     bgcolor = (240, 240, 200)
 
-    def __init__(self, message, buttons, callback_function=None, choice_list=None, choice_list_callback=None):
+    def __init__(self, message, buttons, callback_function=None,
+                 choice_list=None, choice_list_callback=None):
         '''Create an alert box.
         Creates either one or two buttons plus buttons callback.
         Creates an additional list plus list callback.
-        
         :param str message: The message on the alert.
         :param str buttons: List of strings for buttons.
-        :param callback_function: The callback function for button clicks (with return arguments: True or False).
+        :param callback_function: The callback function for button
+            clicks (with return arguments: True or False).
         :type callback_function: def.
-        :param list choice_list: List of dictionaries for a PygameUI.List().
-        :param choice_list_callback: The callback function for list clicks, in the format (selected_index, selected_value, selected_item).
+        :param list choice_list: List of dictionaries for a PygameUI.
+            List().
+        :param choice_list_callback: The callback function for list
+            clicks, in the format (selected_index, selected_value,
+            selected_item).
         :type choice_list_callback: def.
         '''
         Control.__init__(self)
-
         self.bgcolor = Alert.bgcolor
         
         # Consider \n
@@ -417,7 +427,8 @@ class Alert(Control):
         self.messages = []
         for text in m:
             l = Label(text)
-            large_font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 16*2)
+            large_font = (pygame.font.
+                    SysFont('data/coders_crux/coders_crux.ttf', 16*2))
             l.font = large_font
             l.size_to_fit()
             l.bgcolor = self.bgcolor
@@ -430,7 +441,8 @@ class Alert(Control):
         if len(self.buttons) == 1:   # One button.
             self.btn = Button(buttons[0])
             self.btn.size_to_fit()
-            self.btn.on_clicked.add(lambda btn: self.press(True)) # Send back True, even though there is no difference!
+            # Send back True, even though there is no difference!
+            self.btn.on_clicked.add(lambda btn: self.press(True)) 
             self.add_child(self.btn)
         else:                   # Two buttons.
             self.btn = Button(buttons[0])
@@ -455,7 +467,6 @@ class Alert(Control):
             self.add_child(self.clist)
 
     def layout(self):
-        
         if len(self.buttons) == 1:  # One button.
             self.btn.frame.centerx = self.frame.w // 2
             self.btn.frame.bottom = self.frame.h - 10
@@ -470,21 +481,27 @@ class Alert(Control):
             self.messages[0].frame.centery = (self.btn.frame.top // 2)
         elif len(self.messages) == 2:   # One \n.
             self.messages[0].frame.centerx = self.frame.w // 2
-            self.messages[0].frame.centery = (self.btn.frame.top // 2) - self.messages[0].frame.h
+            self.messages[0].frame.centery = ((self.btn.frame.
+                                top // 2) - self.messages[0].frame.h)
             self.messages[1].frame.centerx = self.frame.w // 2
             self.messages[1].frame.centery = (self.btn.frame.top // 2)
         else:                           # Assume no more than two \n.
             self.messages[0].frame.centerx = self.frame.w // 2
-            self.messages[0].frame.centery = (self.btn.frame.top // 2) - self.messages[0].frame.h - self.messages[1].frame.h
+            self.messages[0].frame.centery = ((self.btn.frame.
+            top // 2) - self.messages[0].frame.h - self.messages[1].
+                                                              frame.h)
             self.messages[1].frame.centerx = self.frame.w // 2
-            self.messages[1].frame.centery = (self.btn.frame.top // 2) - self.messages[0].frame.h
+            self.messages[1].frame.centery = ((self.btn.frame.
+                                top // 2) - self.messages[0].frame.h)
             self.messages[2].frame.centerx = self.frame.w // 2
             self.messages[2].frame.centery = (self.btn.frame.top // 2)
         
         if self.clist != False:
-            self.clist.frame = pygame.Rect(self.frame.w // 2, self.btn.frame.top, 150, 100)
+            self.clist.frame = pygame.Rect(self.frame.w // 2, self.
+                                           btn.frame.top, 150, 100)
             self.clist.frame.w = self.clist.container.frame.w
-            self.clist.frame.centerx = self.frame.w // 2 # Actually center it.
+            # Actually center it.
+            self.clist.frame.centerx = self.frame.w // 2 
             # Move buttons down.
             if len(self.buttons) == 1:
                 self.btn.frame.bottom += 110
@@ -504,8 +521,10 @@ class Alert(Control):
             self.callback_function(yes_or_no) # Call action
         self.dismiss()
     
-    def press_list(self, selected_index, selected_value, selected_item):
-        self.clist_callback(selected_index, selected_value, selected_item)
+    def press_list(self, selected_index, selected_value,
+                   selected_item):
+        self.clist_callback(selected_index, selected_value,
+                            selected_item)
         self.dismiss()
     
     def draw(self):
@@ -527,7 +546,8 @@ class Button(Control):
         self.border_width = Button.border_width
         self.border_color = Button.border_color
         self.label = Label(text)
-        bold_font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf', 20)
+        bold_font = (pygame.font.
+                    SysFont('data/coders_crux/coders_crux.ttf', 20))
         self.label.font = bold_font
         self.label.bgcolor = Button.bgcolor
         self.bgcolor = Button.bgcolor
