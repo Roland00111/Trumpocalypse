@@ -1,0 +1,10 @@
+config.py:1 at module level:
+        D100: Missing docstring in public module
+config.py:9 in public function `plus_minus`:
+        D205: 1 blank line required between summary line and description (found 0)
+config.py:9 in public function `plus_minus`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+config.py:15 in public function `euclidean`:
+        D205: 1 blank line required between summary line and description (found 0)
+config.py:15 in public function `euclidean`:
+        D300: Use """triple double quotes""" (found '''-quotes)

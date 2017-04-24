@@ -1,0 +1,168 @@
+inventory.py:1 at module level:
+        D100: Missing docstring in public module
+inventory.py:6 in public class `Inventory`:
+        D210: No whitespaces allowed surrounding docstring text
+inventory.py:6 in public class `Inventory`:
+        D204: 1 blank line required after class docstring (found 0)
+inventory.py:6 in public class `Inventory`:
+        D400: First line should end with a period (not 'f')
+inventory.py:6 in public class `Inventory`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:6 in public class `Inventory`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:10 in public method `__init__`:
+        D210: No whitespaces allowed surrounding docstring text
+inventory.py:10 in public method `__init__`:
+        D401: First line should be in imperative mood ('Hold', not 'Holds')
+inventory.py:10 in public method `__init__`:
+        D400: First line should end with a period (not 'e')
+inventory.py:10 in public method `__init__`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:10 in public method `__init__`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:24 in public method `house_degrade`:
+        D210: No whitespaces allowed surrounding docstring text
+inventory.py:24 in public method `house_degrade`:
+        D401: First line should be in imperative mood ('Decrament', not 'Decraments')
+inventory.py:24 in public method `house_degrade`:
+        D400: First line should end with a period (not 't')
+inventory.py:24 in public method `house_degrade`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:24 in public method `house_degrade`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:31 in public method `item_count`:
+        D210: No whitespaces allowed surrounding docstring text
+inventory.py:31 in public method `item_count`:
+        D401: First line should be in imperative mood ('Iterate', not 'Iterates')
+inventory.py:31 in public method `item_count`:
+        D400: First line should end with a period (not 'l')
+inventory.py:31 in public method `item_count`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:31 in public method `item_count`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:41 in public method `item_count_buy`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:41 in public method `item_count_buy`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:54 in public method `item_count_sell`:
+        D400: First line should end with a period (not 'r')
+inventory.py:54 in public method `item_count_sell`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:54 in public method `item_count_sell`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:68 in public method `list_housing_types`:
+        D401: First line should be in imperative mood ('Iterate', not 'Iterates')
+inventory.py:68 in public method `list_housing_types`:
+        D400: First line should end with a period (not 's')
+inventory.py:68 in public method `list_housing_types`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:68 in public method `list_housing_types`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:79 in public method `list_transit_types`:
+        D401: First line should be in imperative mood ('Iterate', not 'Iterates')
+inventory.py:79 in public method `list_transit_types`:
+        D400: First line should end with a period (not 's')
+inventory.py:79 in public method `list_transit_types`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:79 in public method `list_transit_types`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:90 in public method `num_items`:
+        D210: No whitespaces allowed surrounding docstring text
+inventory.py:90 in public method `num_items`:
+        D401: First line should be in imperative mood ('Return', not 'Returns')
+inventory.py:90 in public method `num_items`:
+        D400: First line should end with a period (not 'y')
+inventory.py:90 in public method `num_items`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:94 in public method `use_item`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:94 in public method `use_item`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:116 in public method `use_transit`:
+        D210: No whitespaces allowed surrounding docstring text
+inventory.py:116 in public method `use_transit`:
+        D401: First line should be in imperative mood ('Thi', not 'This')
+inventory.py:116 in public method `use_transit`:
+        D400: First line should end with a period (not 'o')
+inventory.py:116 in public method `use_transit`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:116 in public method `use_transit`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:136 in public method `remove_item`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:136 in public method `remove_item`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:153 in public method `multiply_item`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:153 in public method `multiply_item`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:168 in public method `add_item`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:168 in public method `add_item`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:200 in public method `sorted_append`:
+        D401: First line should be in imperative mood ('Thi', not 'This')
+inventory.py:200 in public method `sorted_append`:
+        D400: First line should end with a period (not 'n')
+inventory.py:200 in public method `sorted_append`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:200 in public method `sorted_append`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:218 in public method `update_or_add_item`:
+        D210: No whitespaces allowed surrounding docstring text
+inventory.py:218 in public method `update_or_add_item`:
+        D401: First line should be in imperative mood ('Update', not 'Updates')
+inventory.py:218 in public method `update_or_add_item`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:218 in public method `update_or_add_item`:
+        D200: One-line docstring should fit on one line with quotes (found 2)
+inventory.py:240 in public method `contains_item`:
+        D401: First line should be in imperative mood ('Return', not 'Returns')
+inventory.py:240 in public method `contains_item`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:240 in public method `contains_item`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:251 in public method `shabbitize`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:251 in public method `shabbitize`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:272 in public class `Item`:
+        D204: 1 blank line required after class docstring (found 0)
+inventory.py:272 in public class `Item`:
+        D400: First line should end with a period (not ':')
+inventory.py:272 in public class `Item`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:272 in public class `Item`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:278 in public method `__init__`:
+        D102: Missing docstring in public method
+inventory.py:291 in public method `use_item`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:291 in public method `use_item`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:298 in public method `sell_item`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:298 in public method `sell_item`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:305 in public method `calculate_purchase_cost`:
+        D401: First line should be in imperative mood ('Return', not 'Returns')
+inventory.py:305 in public method `calculate_purchase_cost`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:305 in public method `calculate_purchase_cost`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:322 in public method `calculate_resale_cost`:
+        D401: First line should be in imperative mood ('Return', not 'Returns')
+inventory.py:322 in public method `calculate_resale_cost`:
+        D202: No blank lines allowed after function docstring (found 1)
+inventory.py:322 in public method `calculate_resale_cost`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:322 in public method `calculate_resale_cost`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:344 in public method `show_amount`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:344 in public method `show_amount`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+inventory.py:355 in public method `set_item`:
+        D205: 1 blank line required between summary line and description (found 0)
+inventory.py:355 in public method `set_item`:
+        D300: Use """triple double quotes""" (found '''-quotes)

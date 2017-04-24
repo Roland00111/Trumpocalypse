@@ -1,0 +1,40 @@
+character.py:1 at module level:
+        D100: Missing docstring in public module
+character.py:5 in public class `Character`:
+        D210: No whitespaces allowed surrounding docstring text
+character.py:5 in public class `Character`:
+        D204: 1 blank line required after class docstring (found 0)
+character.py:5 in public class `Character`:
+        D400: First line should end with a period (not 'd')
+character.py:5 in public class `Character`:
+        D205: 1 blank line required between summary line and description (found 0)
+character.py:5 in public class `Character`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+character.py:9 in public method `__init__`:
+        D210: No whitespaces allowed surrounding docstring text
+character.py:9 in public method `__init__`:
+        D400: First line should end with a period (not 'r')
+character.py:9 in public method `__init__`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+character.py:28 in public method `earn_money`:
+        D205: 1 blank line required between summary line and description (found 0)
+character.py:28 in public method `earn_money`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+character.py:43 in public method `modifyHealth`:
+        D102: Missing docstring in public method
+character.py:47 in public method `reset_modes`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+character.py:47 in public method `reset_modes`:
+        D200: One-line docstring should fit on one line with quotes (found 2)
+character.py:59 in public method `randomGenerate`:
+        D210: No whitespaces allowed surrounding docstring text
+character.py:59 in public method `randomGenerate`:
+        D400: First line should end with a period (not 't')
+character.py:59 in public method `randomGenerate`:
+        D205: 1 blank line required between summary line and description (found 0)
+character.py:59 in public method `randomGenerate`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+character.py:114 in public method `born`:
+        D102: Missing docstring in public method
+character.py:116 in public method `died`:
+        D102: Missing docstring in public method

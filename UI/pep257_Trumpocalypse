@@ -1,0 +1,214 @@
+Trumpocalypse.py:1 at module level:
+        D100: Missing docstring in public module
+Trumpocalypse.py:22 in public class `EventsLoop`:
+        D204: 1 blank line required after class docstring (found 0)
+Trumpocalypse.py:22 in public class `EventsLoop`:
+        D400: First line should end with a period (not 'n')
+Trumpocalypse.py:22 in public class `EventsLoop`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:22 in public class `EventsLoop`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:45 in public method `__init__`:
+        D400: First line should end with a period (not 'f')
+Trumpocalypse.py:45 in public method `__init__`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:45 in public method `__init__`:
+        D206: Docstring should be indented with spaces, not tabs
+Trumpocalypse.py:45 in public method `__init__`:
+        D207: Docstring is under-indented
+Trumpocalypse.py:45 in public method `__init__`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:70 in public method `check_character_alive`:
+        D400: First line should end with a period (not 'r')
+Trumpocalypse.py:70 in public method `check_character_alive`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:70 in public method `check_character_alive`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:83 in public method `set_first_game_event`:
+        D102: Missing docstring in public method
+Trumpocalypse.py:88 in public method `pui_has_alert`:
+        D401: First line should be in imperative mood ('Thi', not 'This')
+Trumpocalypse.py:88 in public method `pui_has_alert`:
+        D400: First line should end with a period (not 't')
+Trumpocalypse.py:88 in public method `pui_has_alert`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:88 in public method `pui_has_alert`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:123 in public method `process_pygame_events`:
+        D210: No whitespaces allowed surrounding docstring text
+Trumpocalypse.py:123 in public method `process_pygame_events`:
+        D401: First line should be in imperative mood ('Thi', not 'This')
+Trumpocalypse.py:123 in public method `process_pygame_events`:
+        D400: First line should end with a period (not 's')
+Trumpocalypse.py:123 in public method `process_pygame_events`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:123 in public method `process_pygame_events`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:241 in public method `test`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:273 in public class `GameState`:
+        D204: 1 blank line required after class docstring (found 0)
+Trumpocalypse.py:273 in public class `GameState`:
+        D400: First line should end with a period (not 'e')
+Trumpocalypse.py:273 in public class `GameState`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:273 in public class `GameState`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:287 in public method `__init__`:
+        D102: Missing docstring in public method
+Trumpocalypse.py:294 in public method `reset`:
+        D210: No whitespaces allowed surrounding docstring text
+Trumpocalypse.py:294 in public method `reset`:
+        D401: First line should be in imperative mood ('Take', not 'Takes')
+Trumpocalypse.py:294 in public method `reset`:
+        D400: First line should end with a period (not 'e')
+Trumpocalypse.py:294 in public method `reset`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:294 in public method `reset`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:305 in public class `Jobs`:
+        D204: 1 blank line required after class docstring (found 0)
+Trumpocalypse.py:305 in public class `Jobs`:
+        D400: First line should end with a period (not 'e')
+Trumpocalypse.py:305 in public class `Jobs`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:305 in public class `Jobs`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:311 in public method `__init__`:
+        D102: Missing docstring in public method
+Trumpocalypse.py:313 in public method `random_job`:
+        D210: No whitespaces allowed surrounding docstring text
+Trumpocalypse.py:313 in public method `random_job`:
+        D401: First line should be in imperative mood ('Thi', not 'This')
+Trumpocalypse.py:313 in public method `random_job`:
+        D400: First line should end with a period (not 'r')
+Trumpocalypse.py:313 in public method `random_job`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:320 in public class `Job`:
+        D210: No whitespaces allowed surrounding docstring text
+Trumpocalypse.py:320 in public class `Job`:
+        D204: 1 blank line required after class docstring (found 0)
+Trumpocalypse.py:320 in public class `Job`:
+        D400: First line should end with a period (not 'b')
+Trumpocalypse.py:320 in public class `Job`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:322 in public method `__init__`:
+        D210: No whitespaces allowed surrounding docstring text
+Trumpocalypse.py:322 in public method `__init__`:
+        D400: First line should end with a period (not 'd')
+Trumpocalypse.py:322 in public method `__init__`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:322 in public method `__init__`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:336 in public method `work`:
+        D210: No whitespaces allowed surrounding docstring text
+Trumpocalypse.py:336 in public method `work`:
+        D401: First line should be in imperative mood ('Thi', not 'This')
+Trumpocalypse.py:336 in public method `work`:
+        D400: First line should end with a period (not 't')
+Trumpocalypse.py:336 in public method `work`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:336 in public method `work`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:357 in public method `distances`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:357 in public method `distances`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:378 in public method `distance_from_house`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:378 in public method `distance_from_house`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:398 in public class `Location`:
+        D204: 1 blank line required after class docstring (found 0)
+Trumpocalypse.py:398 in public class `Location`:
+        D400: First line should end with a period (not '4')
+Trumpocalypse.py:398 in public class `Location`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:398 in public class `Location`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:405 in public method `__init__`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:405 in public method `__init__`:
+        D200: One-line docstring should fit on one line with quotes (found 3)
+Trumpocalypse.py:416 in public method `random_job`:
+        D210: No whitespaces allowed surrounding docstring text
+Trumpocalypse.py:416 in public method `random_job`:
+        D401: First line should be in imperative mood ('Assign', not 'Assigns')
+Trumpocalypse.py:416 in public method `random_job`:
+        D400: First line should end with a period (not 'b')
+Trumpocalypse.py:416 in public method `random_job`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:425 in public method `menu_values`:
+        D401: First line should be in imperative mood ('Take', not 'Takes')
+Trumpocalypse.py:425 in public method `menu_values`:
+        D400: First line should end with a period (not '?')
+Trumpocalypse.py:425 in public method `menu_values`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:425 in public method `menu_values`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:436 in public class `Locations`:
+        D204: 1 blank line required after class docstring (found 0)
+Trumpocalypse.py:436 in public class `Locations`:
+        D400: First line should end with a period (not 'e')
+Trumpocalypse.py:436 in public class `Locations`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:436 in public class `Locations`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:460 in public method `__init__`:
+        D102: Missing docstring in public method
+Trumpocalypse.py:465 in public method `update_friend_location`:
+        D401: First line should be in imperative mood ('Thi', not 'This')
+Trumpocalypse.py:465 in public method `update_friend_location`:
+        D400: First line should end with a period (not 'f')
+Trumpocalypse.py:465 in public method `update_friend_location`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:465 in public method `update_friend_location`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:474 in public method `random_location`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:474 in public method `random_location`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:481 in public class `Game`:
+        D204: 1 blank line required after class docstring (found 0)
+Trumpocalypse.py:481 in public class `Game`:
+        D400: First line should end with a period (not 'm')
+Trumpocalypse.py:481 in public class `Game`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:481 in public class `Game`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:494 in public method `__init__`:
+        D102: Missing docstring in public method
+Trumpocalypse.py:503 in public method `tally_score`:
+        D102: Missing docstring in public method
+Trumpocalypse.py:512 in public method `mod_hours`:
+        D400: First line should end with a period (not 'e')
+Trumpocalypse.py:512 in public method `mod_hours`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:512 in public method `mod_hours`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:533 in private method `__init__`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:533 in private method `__init__`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:542 in private method `eod_mods`:
+        D401: First line should be in imperative mood ('Thi', not 'This')
+Trumpocalypse.py:542 in private method `eod_mods`:
+        D400: First line should end with a period (not 'o')
+Trumpocalypse.py:542 in private method `eod_mods`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:542 in private method `eod_mods`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:630 in private method `strTimeProp`:
+        D400: First line should end with a period (not 'd')
+Trumpocalypse.py:630 in private method `strTimeProp`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:630 in private method `strTimeProp`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+Trumpocalypse.py:654 in public function `run_tests`:
+        D402: First line should not be the function's "signature"
+Trumpocalypse.py:654 in public function `run_tests`:
+        D400: First line should end with a period (not ')')
+Trumpocalypse.py:654 in public function `run_tests`:
+        D205: 1 blank line required between summary line and description (found 0)
+Trumpocalypse.py:654 in public function `run_tests`:
+        D300: Use """triple double quotes""" (found '''-quotes)
