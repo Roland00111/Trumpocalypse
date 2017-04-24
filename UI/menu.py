@@ -795,7 +795,7 @@ class ResetHighScore(Menu):
         high_score_file = open('high_score.txt', 'w')
         high_score_file.write(str(0))
         high_score_file.close()
-        HighScores()
+        HighScores.__init__() #DDDDDDDD
 
 class DayScreen(Menu):
     def __init__(self):
@@ -1089,8 +1089,8 @@ class CharacterHUD:
                 {'item':None, 'value':cf.gs.game.character.name},
                 {'item':None, 'value':'Hp: ' +
                  str(cf.gs.game.character.health),'color':(255,0,0),
-                 'font_size':temp_font_size},{'item':None, ('value':
-                'Str: ') + str(cf.gs.game.character.strength)},
+                 'font_size':temp_font_size},{'item':None,
+                 'value':'Str: ' + str(cf.gs.game.character.strength)},
                 {'item':None, 'value':'Char: ' +
                  str(cf.gs.game.character.charisma)},
                 {'item':None, 'value':'Int: ' +

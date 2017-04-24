@@ -3,7 +3,6 @@ import random
 import inventory as INVENTORY
 import config as cf
 
-
 class Store:
     '''
     Each store is located in a urban, suburban, or rural location.
