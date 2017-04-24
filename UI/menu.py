@@ -757,7 +757,7 @@ class HighScores(Menu):
         self.menu_name = '...'
         self.keypressArray = [
             OpeningMenu,
-            self.reset_highscore,
+            ResetHighScore, #Have to call a class on the keypress array
             Close,
         ]
 
@@ -790,18 +790,29 @@ class HighScores(Menu):
     def save_high_score():
         pass
 
-    def reset_highscore(self):
-        high_score_file = open('high_score.txt', 'r+')
-        high_score_file.write(str(0))
-        high_score = high_score_file.read().replace('\n', '')
-        high_score_file.close()
-        return high_score
-    
-class ResetHighScore(Menu):
+class ResetHighScore(Menu): #Idea... what if above when they hit reset highscore
+                            #it brings them to a page asking if they are sure              
     def __init__(self):
         high_score_file = open('high_score.txt', 'w')
         high_score_file.write(str(0))
         high_score_file.close()
+
+        self.keypressArray = [
+            HighScores, #Have to call a class on the keypress array
+            HighScores
+        ]
+
+        self.body = {
+            'text': 'Are you sure you want to reset your BEST score??',
+            'font_size': 44,
+            'top': 140,
+            'height': 70
+        }
+
+        self.titlesArray = [
+            'Yes',
+            'No',
+        ]
         
 class DayScreen(Menu):
     def __init__(self):
