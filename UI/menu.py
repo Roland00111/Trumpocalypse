@@ -757,7 +757,7 @@ class HighScores(Menu):
         self.menu_name = '...'
         self.keypressArray = [
             OpeningMenu,
-            ResetHighScore,
+            self.reset_highscore,
             Close,
         ]
 
@@ -790,13 +790,19 @@ class HighScores(Menu):
     def save_high_score():
         pass
 
+    def reset_highscore(self):
+        high_score_file = open('high_score.txt', 'r+')
+        high_score_file.write(str(0))
+        high_score = high_score_file.read().replace('\n', '')
+        high_score_file.close()
+        return high_score
+    
 class ResetHighScore(Menu):
     def __init__(self):
         high_score_file = open('high_score.txt', 'w')
         high_score_file.write(str(0))
         high_score_file.close()
         
-
 class DayScreen(Menu):
     def __init__(self):
         self.menu_name = 'DayScreen'
