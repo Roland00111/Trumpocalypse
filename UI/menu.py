@@ -795,7 +795,7 @@ class ResetHighScore(Menu):
         high_score_file = open('high_score.txt', 'w')
         high_score_file.write(str(0))
         high_score_file.close()
-        HighScores.__init__() #DDDDDDDD
+        
 
 class DayScreen(Menu):
     def __init__(self):
