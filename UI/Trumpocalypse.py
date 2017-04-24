@@ -20,11 +20,16 @@ if not pygame.font.get_init():
     pygame.font.init()
     
 class EventsLoop:
-    '''This loop is running continuously to check for any time a key on
-    the keyboard is pressed or a mouse button is pressed.
+    """This loop is running continuously to check for events.
     
-    As well as drawing the next menu by creating a new Menu() class
-    for the specified keypress index when a menu item is selected.
+    Any time a key on the keyboard is pressed or a mouse button is
+    pressed it is filtered through this function.
+      
+    Drawing the next menu also takes place here, by creating a new
+    Menu() class for the specified keypress index when a menu item is
+    selected. When the game is first started an initial Menu instance is
+    started using OpeningMenu(). OpeningMenu is just one of the many
+    classes that inherit from the Menu class.
     
     To reduce CPU usage from 100% the loop utilizes a 
     call to pygame.time.wait(0). This is noted at this URL:
@@ -33,12 +38,8 @@ class EventsLoop:
     The author states: "Giving up any remainder of the timeslice
     is the key to lowering CPU usage, which is done by sleeping - or,
     in the case of PyGame, calling time.wait()."
+    """
     
-    When the game is first started an initial Menu instance is started
-    using OpeningMenu(). OpeningMenu is just one of the many classes
-    that inherit from the Menu class.
-    
-    '''
     current_menu = None
     test_events = None
     Score = 0
