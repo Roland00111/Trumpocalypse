@@ -20,32 +20,34 @@ if not pygame.font.get_init():
     pygame.font.init()
     
 class EventsLoop:
-    '''???
-    This loop is running continuously to check for any time a key on
+    '''This loop is running continuously to check for any time a key on
     the keyboard is pressed or a mouse button is pressed.
+    
     As well as drawing the next menu by creating a new Menu() class
     for the specified keypress index when a menu item is selected.
+    
     To reduce CPU usage from 100% the loop utilizes a 
-    call to pygame.time.wait(0).
-    This is noted at this URL:
+    call to pygame.time.wait(0). This is noted at this URL:
         https://www.gamedev.net/topic/
         518494-pygame-eating-up-my-cpu/#entry4368408
-    The author states:
-        "Giving up any remainder of the timeslice is the key to
-        lowering CPU usage, which is done by sleeping - or,
-        in the case of PyGame, calling time.wait()."
+    The author states: "Giving up any remainder of the timeslice
+    is the key to lowering CPU usage, which is done by sleeping - or,
+    in the case of PyGame, calling time.wait()."
+    
     When the game is first started an initial Menu instance is started
     using OpeningMenu(). OpeningMenu is just one of the many classes
     that inherit from the Menu class.
+    
     '''
     current_menu = None
     test_events = None
     Score = 0
     def __init__(self,test_events = None):
-        '''
-        The init function takes self and test_events. If test_events
-        is not given it defaults to None and ???
-        :param list test_events: A list of keypress indexes to auto-"press".
+        '''The init function takes an optional test_events which if
+        not None will run a set of events.
+        
+        :param list test_events:
+			A list of keypress indexes to auto-"press".
         '''
         pygame.display.set_caption('Trumpocalypse!')
         # Start on opening menu. Then changes.
@@ -66,8 +68,7 @@ class EventsLoop:
             pygame.time.wait(0)
     
     def check_character_alive(self):
-        '''
-        If the character's health is 0 then kill the character
+        '''If the character's health is 0 then kill the character
         (is_dead=true). Then do the game over screen.
         '''
         if (cf.gs.game.character != None and
