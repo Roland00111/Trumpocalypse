@@ -502,8 +502,8 @@ class Game:
         self.events = EVENTS.Events()#Events() #EVENTS.Events()
     
     def tally_score(self):
-        score = 0
-        #score += item.calculate_resale_cost()
+        score = 10000
+        #score += item.calculate_resale_cost() or some new way?
         size = len(cf.gs.game.events.inactive_events)
         score -= (size*1000)
         print 'Tallied the score...'

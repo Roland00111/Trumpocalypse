@@ -499,8 +499,26 @@ class GameOverScreen(Menu):
         self.titlesArray = ['Start Over', 'Quit']
         # Tally score 
         finalScore = cf.gs.game.tally_score()
-        text = ('Game Over, better luck next time! \n '
-                +'Your score:'+str(finalScore))
+        high_score_file = open("high_score.txt", "r")
+        highScore = high_score_file.readline()
+        high_score_file.close()
+        
+
+        if finalScore > (int(highScore)):
+            text = ('Congratulations, new Highscore! \n '
+                    +'Your score:'+str(finalScore))
+            
+            high_score_file = open('high_score.txt', 'w')
+            high_score_file.write(str(finalScore))
+            high_score_file.close()
+                    
+        elif finalScore <= (int(highScore)):
+            text = ('Game Over, better luck next time! \n '
+                    +'Your score:'+str(finalScore)+' \n '
+                    +'HighScore:'+str(highScore))
+            
+    
+        
         
         self.body = {
             'text': text,
@@ -783,9 +801,10 @@ class HighScores(Menu):
     
     def get_high_score():
         high_score_file = open('high_score.txt', 'r+')
+        highScoreStr = high_score_file.read()
         high_score = high_score_file.read().replace('\n', '')
         high_score_file.close()
-        return high_score
+        return highScoreStr
     
     def save_high_score():
         pass
