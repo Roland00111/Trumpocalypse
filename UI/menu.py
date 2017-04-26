@@ -51,18 +51,24 @@ class Menu:
     menu_name = '...' # Default menu name.
 
     class Field:
-        ''' Saves some variables for the ????.'''
+        ''' Saves some variables for future use of methods.'''
         test = ''
         Field = pygame.Surface
         Field_rect = pygame.Rect
         Selection_rect = pygame.Rect
 
     def move_menu(self, top, left):
-        ''' Starting point for pygame window.'''
+        '''
+        Starting point for pygame window, parameters are the location
+        coordinates for the top, and the left most side of the window.
+        '''
         self.Position = (top,left) 
 
     def set_colors(self, text, selection, background):
-        ''' Sets the color for everything when called.'''
+        '''
+        Sets the text color, color of anything while it is
+        selected, and the background color for screens.
+        '''
         self.BackgroundColor = background
         self.TextColor =  text
         self.SelectionColor = selection

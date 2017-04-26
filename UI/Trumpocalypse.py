@@ -10,7 +10,7 @@ import jobs as JOBS #Potential jobs
 import events as EVENTS
 import menu as MENU
 import store as STORE
-#from TextWrap import *
+from TextWrap import *
 from pygame.locals import *
 
 if not pygame.display.get_init():
