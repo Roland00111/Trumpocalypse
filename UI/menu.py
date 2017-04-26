@@ -74,15 +74,18 @@ class Menu:
         self.SelectionColor = selection
         
     def set_fontsize(self,font_size):
-        ''' Sets the font size.'''
+        ''' Sets the font size taking an integer'''
         self.FontSize = font_size
         
     def set_font(self, path):
-        '''Sets font type.'''
+        '''Sets font type, takes the path to the font as parameter'''
         self.font_path = path
         
     def get_position(self):
-        '''Gets the position of the selecter????.'''
+        '''
+        Gets the position location for many screens, no parameters
+        allows the system to understand which button was chosen
+        '''
         return self.PositionSelection
     
     def init(self, lista, dest_surface, height_top=0):
@@ -233,6 +236,9 @@ class Menu:
                 break
 
     def draw_menu_body(self):
+        '''
+        calculates where to put box and text then draws it
+        '''
         # Calculate x offset
         w = self.scene.frame.w - 160 - 160
         xoff = self.dest_surface.get_rect().centerx - w/2 
@@ -243,7 +249,7 @@ class Menu:
         # There is a slight offset from the text
         # and the box. The box needs to contain the text.
         # So the text is going to be slightly smaller.
-        # How about 8 pixels???? nescasary?
+        # How about 8 pixels???? neccesary?
         rect = pygame.Rect((xoff+8,self.body['top']+8,
                 w-8,300-8)) # left,top,width,height
         font = (pygame.font.Font
@@ -495,7 +501,12 @@ class StoreScreen(Menu):
         pygame.event.post(cf.gs.first_game_event)
         pass
         
-class GameOverScreen(Menu): 
+class GameOverScreen(Menu):
+    '''
+    This menu when directed to creates the game over screen and
+    calls the score to be calculated and replaces highscore if
+    the new one is better. 
+    '''
     def __init__(self):
         self.menu_name = '...'
         self.keypressArray = [
@@ -503,7 +514,7 @@ class GameOverScreen(Menu):
              Close
         ]
         self.titlesArray = ['Start Over', 'Quit']
-        # Tally score 
+        #Calculate the score, then open and read current highscore
         finalScore = cf.gs.game.tally_score()
         high_score_file = open("high_score.txt", "r")
         highScore = high_score_file.readline()
@@ -511,6 +522,7 @@ class GameOverScreen(Menu):
         
 
         if finalScore > (int(highScore)):
+            #Replace with new highscore
             text = ('Congratulations, new Highscore! \n '
                     +'Your score:'+str(finalScore))
             
@@ -718,6 +730,9 @@ class CreateCharacterManual(Menu): #Not in effect yet
                'select field!')
         
     def select_value(self,left,top,attrib_value):
+        '''
+        
+        '''
         plus = PygameUI.Button('+')
         plus.frame = pygame.Rect(left, top, 27, 30)
         Menu.scene.add_child(plus)
