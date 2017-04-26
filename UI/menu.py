@@ -19,7 +19,7 @@ class Menu:
         @author: avalanchy (at) google mail dot com
         @version: 0.1; python 2.7; pygame 1.9.2pre; SDL 1.2.14;
             MS Windows XP SP3
-        @date: 2012-04-08
+       @date: 2012-04-08
         @license: This document is under GNU GPL v3
         README on the bottom of document.
         @font: from http://www.dafont.com/coders-crux.font
@@ -818,19 +818,20 @@ class ResetHighScore(Menu): #Idea... what if above when they hit reset highscore
 
         self.keypressArray = [
             HighScores, #Have to call a class on the keypress array
-            HighScores
+            OpeningMenu,
+            
         ]
 
         self.body = {
-            'text': 'Are you sure you want to reset your BEST score??',
+            'text': 'Your highscore has been reset to zero!',
             'font_size': 44,
             'top': 140,
             'height': 70
         }
 
         self.titlesArray = [
-            'Yes',
-            'No',
+            'Back to Highscores',
+            'Main Menu',
         ]
         
 class DayScreen(Menu):
@@ -1050,10 +1051,12 @@ class CreateCharacter(Menu):
         self.keypressArray = [
             CreateCharacterManual,
             CreateCharacterAutomatic,
+            OpeningMenu,
         ]
         self.titlesArray = [
             'Manual',
             'Auto',
+            'Main Menu',
         ]
 
 class OpeningMenu(Menu):
