@@ -1,4 +1,7 @@
 # https://raw.githubusercontent.com/dominictarr/random-name/master/first-names.json
+'''
+Massive list of names that are used for name generation
+'''
 NAMES_LIST = [
 "Aaren"
 ,
