@@ -731,7 +731,8 @@ class CreateCharacterManual(Menu): #Not in effect yet
         
     def select_value(self,left,top,attrib_value):
         '''
-        
+        Increment/decrement button drawing takes parameters of the
+        left side, top side, and the value for the attribute
         '''
         plus = PygameUI.Button('+')
         plus.frame = pygame.Rect(left, top, 27, 30)
@@ -821,17 +822,21 @@ class HighScores(Menu):
         }
     
     def get_high_score():
+        '''
+        Opens a hard coded location of a text file, reads it saves it
+        and then closes the file returning the high score
+        '''
         high_score_file = open('high_score.txt', 'r+')
         highScoreStr = high_score_file.read()
         high_score = high_score_file.read().replace('\n', '')
         high_score_file.close()
         return highScoreStr
-    
-    def save_high_score():
-        pass
 
 class ResetHighScore(Menu): #Idea... what if above when they hit reset highscore
-                            #it brings them to a page asking if they are sure              
+                            #it brings them to a page asking if they are sure
+    '''
+    Coming to this screen resets your highscore
+    '''
     def __init__(self):
         high_score_file = open('high_score.txt', 'w')
         high_score_file.write(str(0))
@@ -949,6 +954,10 @@ class DayScreen(Menu):
             return True
         
 class ElectionDay(Menu): #Use on 48,96 .... +=48
+    '''
+    This screen brings you to election day ever 4 years to decide if
+    you want to end the game or continue
+    '''
     def __init__(self):
         cf.gs.game.day_counter += 1
         cf.gs.game.month_counter += 1
@@ -1064,7 +1073,8 @@ class StoryScreen(Menu):
 
 class CreateCharacter(Menu):
     '''
-    ...
+    This is the menu in which you decide which character creation you
+    would like to go to, or return to the main menu.
     '''
     def __init__(self):
         # some things in self are in the parent class.
@@ -1082,7 +1092,7 @@ class CreateCharacter(Menu):
 
 class OpeningMenu(Menu):
     '''
-    ...
+    The beginning main menu which draws everything for you.
     '''
     def __init__(self):
     # What does this do?: Menu.__init__(self)
