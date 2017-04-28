@@ -802,6 +802,7 @@ class HighScores(Menu):
         ]
 
         
+        
         high_score_file = open('high_score.txt', 'r+')
         high_score = high_score_file.read().replace('\n', '')
         high_score_file.close()
@@ -1028,7 +1029,8 @@ class StoryScreen(Menu):
             'top': 60,
             'height': 250
         }
-
+        
+        
     def click_died(self, confirm):
         '''User clicked "OK". So end the game.
         In EventsLoop this will immediately jump
@@ -1090,7 +1092,8 @@ class CreateCharacter(Menu):
             'Auto',
             'Main Menu',
         ]
-
+        
+        
 class OpeningMenu(Menu):
     '''
     The beginning main menu which draws everything for you.
