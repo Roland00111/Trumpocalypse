@@ -1098,11 +1098,13 @@ class OpeningMenu(Menu):
     def __init__(self):
     # What does this do?: Menu.__init__(self)
         self.menu_name = '...'
+        
         self.keypressArray = [
             CreateCharacter,
             StoryScreen, # OptionsFunction #Using this for testing rn 
             HighScores,
             Close, # QuitFunction
+            
         ]
         self.titlesArray = [
             'Start',
@@ -1110,10 +1112,8 @@ class OpeningMenu(Menu):
             'Highscore',
             'Quit'
         ]
-        pygame.init()
-        pygame.mixer.music.load('spoopy.wav')
-        pygame.mixer.music.play(-1)
-        pygame.event.post(cf.gs.first_game_event)
+        
+        
         
         
     def box(self):
