@@ -1091,7 +1091,7 @@ class CreateCharacter(Menu):
             'Main Menu',
         ]
 
-class OpeningMenu():
+class OpeningMenu(Menu):
     '''
     The beginning main menu which draws everything for you.
     '''

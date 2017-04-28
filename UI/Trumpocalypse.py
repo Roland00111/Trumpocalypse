@@ -510,6 +510,7 @@ class Game:
     def __init__(self):
         self.jobs = Jobs()
         self.current_day = None
+        self.opening_menu = MENU.OpeningMenu()
         #Character('random') creates charecter on start menu becasue
         #its an error.
         self.character = None 
