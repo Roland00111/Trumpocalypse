@@ -1070,7 +1070,7 @@ class StoryScreen(Menu):
                     m = ("You're still alive thanks to those "
                         +str(n)+' health packs!')
                 self.alert(m, ['OK'])
-            pygame.event.post(cf.gs.first_game_event)
+            
 
 class CreateCharacter(Menu):
     '''
@@ -1110,13 +1110,19 @@ class OpeningMenu(Menu):
             'Highscore',
             'Quit'
         ]
-
+        pygame.init()
+        pygame.mixer.music.load('spoopy.wav')
+        pygame.mixer.music.play(-1)
+        pygame.event.post(cf.gs.first_game_event)
+        
+        
     def box(self):
         print 'Box'
 
 class Close(Menu):
     def __init__(self):
         pygame.display.quit()
+        pygame.quit()
         sys.exit()
 class EndGame(Menu):
     def __init__(self):

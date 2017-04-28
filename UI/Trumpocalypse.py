@@ -139,6 +139,7 @@ class EventsLoop:
             # Check quit event
             if event.type == QUIT:
                 pygame.display.quit()
+                pygame.quit()
                 sys.exit()
             # Check alert status
             if self.pui_has_alert(event):
