@@ -226,7 +226,15 @@ class EventsLoop:
             if self.cm.scene._has_alert is True:
                 cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
             # Update
-            pygame.display.update()
+            print self.cm
+            if cf.gs.game.opening_menu.om == True:
+                image = pygame.image.load('trump.png')
+                cf.surface.blit(image, [-25, 235])
+                image2 = pygame.image.load('trump2.png')
+                cf.surface.blit(image2, [510, 235])
+                pygame.display.update()
+            else:
+                pygame.display.update()
         #----------------------------
         # Enter key has been pressed.
         #----------------------------

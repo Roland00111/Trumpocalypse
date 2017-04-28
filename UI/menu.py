@@ -1091,13 +1091,14 @@ class CreateCharacter(Menu):
             'Main Menu',
         ]
 
-class OpeningMenu(Menu):
+class OpeningMenu():
     '''
     The beginning main menu which draws everything for you.
     '''
     def __init__(self):
     # What does this do?: Menu.__init__(self)
         self.menu_name = '...'
+        self.om = True
         
         self.keypressArray = [
             CreateCharacter,
@@ -1112,6 +1113,7 @@ class OpeningMenu(Menu):
             'Highscore',
             'Quit'
         ]
+        
         
         
         
