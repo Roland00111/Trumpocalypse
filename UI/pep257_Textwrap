@@ -1,4 +1,0 @@
-TextWrap.py:1 at module level:
-        D100: Missing docstring in public module
-TextWrap.py:4 in public function `drawText`:
-        D103: Missing docstring in public function
