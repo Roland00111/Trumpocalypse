@@ -801,6 +801,7 @@ class HighScores(Menu):
             Close,
         ]
 
+        
         high_score_file = open('high_score.txt', 'r+')
         high_score = high_score_file.read().replace('\n', '')
         high_score_file.close()
