@@ -586,5 +586,3 @@ class Button(Control):
         self.is_pressed = False
         if self.on_clicked is not False: 
             self.on_clicked(self)
-        else:
-            Signal()
