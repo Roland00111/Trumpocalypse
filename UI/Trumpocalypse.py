@@ -85,12 +85,7 @@ class EventsLoop:
         if cf.gs.first_game_event==False:
             print("setting first game event")
             cf.gs.first_game_event=event
-            self.start_music('spoopy.wav')
-            
-    def start_music(self, musicName):
-        pygame.init()
-        pygame.mixer.music.load(musicName)
-        pygame.mixer.music.play(-1)
+            cf.start_music('spoopy.wav')
     
     def pui_has_alert(self, event):
         '''

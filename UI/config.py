@@ -1,5 +1,6 @@
 import random
 import math
+import pygame
 
 gs = None # Previously: game_state
 surface = None
@@ -24,3 +25,8 @@ def euclidean(p1, p2):
     '''
     return math.sqrt((p2[0] - p1[0]) ** 2 +
                      (p2[1] - p1[1]) ** 2)
+
+def start_music(musicName):
+    pygame.init()
+    pygame.mixer.music.load(musicName)
+    pygame.mixer.music.play(-1)

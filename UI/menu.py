@@ -1139,23 +1139,50 @@ class OptionsMenu(Menu):
         ]
         # Toggle music on and off.
         # Setting is config.music_on.
-        if cf.music_on:
-            x = PygameUI.Button('Turn Music Off')       
+        self.add_button(True)
+    
+    def remove_button(self):
+        """Remove old buton (on update)."""
+        self.scene.remove_child(self.toggle_button_el)
+        
+    def add_button(self, first_run = False):
+        """Add a button that toggles music config setting.
+        
+        Do not start or stop the music when first arriving
+        at this menu.
+        
+        :param boolean first_run:
+            On the first run do not toggle the config setting.
+        """
+        if cf.music_on is True:
+            m = 'Off'
+            if first_run is False:
+                cf.start_music('spoopy.wav')
         elif cf.music_on is False:
-            x = PygameUI.Button('Turn Music On')
+            m = 'On'
+            if first_run is False:
+                pygame.mixer.music.stop()
+        x = PygameUI.Button('Turn Music '+m,self.click_music)
         x.frame = pygame.Rect(0, 100, 270, 30)
         self.scene.add_child(x)
-        x.callback = self.click_music
         w = x.frame.w
         xoff = cf.surface.get_rect().centerx-w/2
         x.frame = pygame.Rect(xoff, 100, 270, 30)
+        self.toggle_button_el = x
         
     def click_music(self, button):
         """Handle the click on the music toggle button.
         
         :param button: This is the clicked PygameUI button.
         """
-        
+        if cf.music_on is True:
+            cf.music_on = False
+        elif cf.music_on is False:
+            cf.music_on = True
+        # Remove old button.
+        self.remove_button()
+        # Re-add the button.
+        self.add_button()
         
 class Close(Menu):
     def __init__(self):
