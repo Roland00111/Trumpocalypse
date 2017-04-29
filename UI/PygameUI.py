@@ -553,7 +553,10 @@ class Button(Control):
         self.bgcolor = Button.bgcolor
         self.active_bgcolor = Button.active_bgcolor
         self.add_child(self.label)
-        self.on_clicked = callback #Signal()
+        if callback is False:
+            self.on_clicked = Signal()
+        else:
+            self.on_clicked = callback
         self.is_pressed = False
 
     def enable(self, yesno):
@@ -583,3 +586,5 @@ class Button(Control):
         self.is_pressed = False
         if self.on_clicked is not False: 
             self.on_clicked(self)
+        else:
+            Signal()
