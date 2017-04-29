@@ -541,7 +541,7 @@ class Button(Control):
     border_color = (100, 100, 100)
     disabled_text_color = (128, 128, 128)
 
-    def __init__(self, text):
+    def __init__(self, text, callback = False):
         Control.__init__(self)
         self.border_width = Button.border_width
         self.border_color = Button.border_color
@@ -553,7 +553,7 @@ class Button(Control):
         self.bgcolor = Button.bgcolor
         self.active_bgcolor = Button.active_bgcolor
         self.add_child(self.label)
-        self.on_clicked = Signal()
+        self.on_clicked = callback #Signal()
         self.is_pressed = False
 
     def enable(self, yesno):
@@ -581,4 +581,5 @@ class Button(Control):
         Control.mouse_up(self, button, pt)
         self.label.bgcolor = self.bgcolor
         self.is_pressed = False
-        self.on_clicked(self)
+        if self.on_clicked is not False: 
+            self.on_clicked(self)

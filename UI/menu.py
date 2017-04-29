@@ -1105,7 +1105,7 @@ class OpeningMenu(Menu):
         
         self.keypressArray = [
             CreateCharacter,
-            StoryScreen, # OptionsFunction #Using this for testing rn 
+            OptionsMenu, # OptionsFunction #Using this for testing rn 
             HighScores,
             Close, # QuitFunction
             
@@ -1117,13 +1117,46 @@ class OpeningMenu(Menu):
             'Quit'
         ]
         
-        
-        
-        
-        
     def box(self):
         print 'Box'
 
+class OptionsMenu(Menu):
+    """An options menu that shows lots of options.
+    
+    Options such as volume control, music on and off,
+    music file selection, and difficulty level.
+    """
+    
+    def __init__(self):
+        """Initialize the menu."""
+        self.menu_name = '...'
+        
+        self.keypressArray = [
+            OpeningMenu,
+        ]
+        self.titlesArray = [
+            'Main Menu'
+        ]
+        # Toggle music on and off.
+        # Setting is config.music_on.
+        if cf.music_on:
+            x = PygameUI.Button('Turn Music Off')       
+        elif cf.music_on is False:
+            x = PygameUI.Button('Turn Music On')
+        x.frame = pygame.Rect(0, 100, 270, 30)
+        self.scene.add_child(x)
+        x.callback = self.click_music
+        w = x.frame.w
+        xoff = cf.surface.get_rect().centerx-w/2
+        x.frame = pygame.Rect(xoff, 100, 270, 30)
+        
+    def click_music(self, button):
+        """Handle the click on the music toggle button.
+        
+        :param button: This is the clicked PygameUI button.
+        """
+        
+        
 class Close(Menu):
     def __init__(self):
         pygame.display.quit()
