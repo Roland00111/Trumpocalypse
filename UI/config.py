@@ -10,13 +10,15 @@ down_in = None
 music_on = True
 
 def plus_minus():
-    '''Return a random +1 or -1.
+    '''
+    Return a random +1 or -1.
     :rtype: int.
     '''
     return random.random()*2 - 1
 
 def euclidean(p1, p2):
-    '''Determine euclidean distance between two points.
+    '''
+    Determine euclidean distance between two points.
     Pretty straightforward: http://stackoverflow.com/a/4169284/2178774.
     :param list p1: A list with first element=x, second=y.
     :param list p2: A list with first element=x, second=y.

@@ -87,7 +87,7 @@ j = {
         'Programmer': {
             'title': 'Programmer',
             'income':15000,
-            'company': "Real Koders", #I have no idea for name
+            'company': "Freelance", #I have no idea for name
             'area': 'urban',
             'events':{
                 "Honest about time actually worked":4.0,

@@ -82,7 +82,8 @@ class Event:
         # Then ...
 
     def generate_duration(self):
-        '''Generate the duration of this event. It is between
+        '''
+        Generate the duration of this event. It is between
         [base_duration + duration_rand_min] and [base_duration +
         duration_rand_max].
         Then set months_remaining to be duration.
@@ -218,7 +219,8 @@ class Events:
         pass
     
     def show_inactive_events(self):
-        '''Return a list of inactive events.
+        '''
+        Return a list of inactive events.
         '''
         temp = [ ]
         for event in self.inactive_events:
@@ -226,7 +228,8 @@ class Events:
         return temp
 
     def show_active_events(self):
-        '''Return a list of active events.
+        '''
+        Return a list of active events.
         '''
         temp = [ ]
         for event in self.active_events:
@@ -235,8 +238,8 @@ class Events:
 
     
     def events_values(self):
-        '''Returns a list of titles of current inactive events.
-        
+        '''
+        Returns a list of titles of current inactive events.
         :return: List of titles of current inactive events
         :rtype: list.
         '''
@@ -246,7 +249,9 @@ class Events:
         return events_temp
         
     def random_event(self):
-        '''Add a random event to inactive_events.'''
+        '''
+        Add a random event to inactive_events.
+        '''
         num = random.randint(0,len(Events.events_array)-1)
         # copy v. deepcopy =same
         event = copy.deepcopy(Events.events_array[num]) 

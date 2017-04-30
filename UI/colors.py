@@ -1,6 +1,8 @@
 # Originally from:
 # http://cvsweb.xfree86.org/cvsweb/*checkout*/xc/programs/rgb/rgb.txt?rev=1.1
-
+'''
+Just a giant list of colors for reference/ maybe future random gen
+'''
 aliceblue = (240, 248, 255)
 antiquewhite = (250, 235, 215)
 antiquewhite1 = (255, 239, 219)

@@ -2,6 +2,15 @@ import pygame
 from pygame.locals import *
 
 def drawText(surface, text, color, rect, font, aa=False, bkg=None):
+    '''
+    Takes the parameters of surface, which is where the text is going
+    to be displayed,cf.surface for example and the text, which is
+    whatever text we want to be displayed, the color, which is
+    well, the color (0,0,0) input format, and the font is the location
+    of the font you would like to use alternatively. This function
+    then calculates the maximum we can fit in the size of our textbox
+    and draws it to our surface with whichever parameters we give.
+    '''
     rect = Rect(rect)
     y = rect.top
     lineSpacing = 0

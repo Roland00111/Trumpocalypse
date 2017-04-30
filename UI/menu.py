@@ -637,13 +637,15 @@ class EventScreen(Menu):
 
     def click_event_list(self, selected_index,
         selected_value, selected_item):
-        ''' This will show the events text after you click the event
+        '''
+        This will show the events text after you click the event
         '''
         self.selected_event = selected_item
         self.body['text'] =selected_item.story_text
 
     def process_before_unload(self,chosen_position):
-        '''The user pressed "Activate Event".
+        '''
+        The user pressed "Activate Event".
         '''
         if chosen_position == 0:
             # Has the user clicked on a list yet?
@@ -907,7 +909,8 @@ class DayScreen(Menu):
         }
     
     def update_body(self):
-        '''Call this function to update text in the body.
+        '''
+        Call this function to update text in the body.
         '''
         text = ('Term Number: ' + str(cf.gs.game.term_count) +
                 ' \nDay is: ' + str(cf.gs.game.current_day.
@@ -922,7 +925,8 @@ class DayScreen(Menu):
         }
         
     def process_before_unload(self, chosen_position):
-        '''Leave the DayScreen after user presses EnterKey.
+        '''
+        Leave the DayScreen after user presses EnterKey.
         :param int chosen_position:
             The position of the menu selected by user.
         :return:
@@ -958,7 +962,7 @@ class DayScreen(Menu):
 class ElectionDay(Menu): #Use on 48,96 .... +=48
     '''
     This screen brings you to election day ever 4 years to decide if
-    you want to end the game or continue
+    you want to end the game or continue takes the menu as a param
     '''
     def __init__(self):
         cf.gs.game.day_counter += 1
@@ -1215,7 +1219,8 @@ class CharacterHUD:
         self.draw_elements()
         
     def draw_elements(self):
-        ''' This displays everything on the main day screen.
+        '''
+        This displays everything on the main day screen.
         '''
         # Remove old (on update)
         if len(self.elements) > 0:
@@ -1374,21 +1379,24 @@ class CharacterHUD:
         
     def click_transit(self, selected_index, selected_value,
                       selected_item):
-        '''Update cf.gs.game.character.transit_mode
+        '''
+        Update cf.gs.game.character.transit_mode
         '''
         cf.gs.game.character.transit_mode_idx = selected_index
         cf.gs.game.character.transit_mode = (selected_value.
                                                   split(':')[0])
     
     def click_no_change(self, confirm):
-        '''Reset index of housing list.
+        '''
+        Reset index of housing list.
         '''
         self.select_housing.selected_index = (cf.gs.game.
                                         character.selected_house_idx)
         return
         
     def click_alert(self, confirm):
-        '''Handle alert button click.
+        '''
+        Handle alert button click.
         :param boolean confirm:
         True if first button clicked, False if second button clicked.
         '''

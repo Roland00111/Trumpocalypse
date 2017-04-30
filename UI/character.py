@@ -3,7 +3,8 @@ import random
 import config as cf
 import names
 class Character:
-    ''' This class contains a default character and two hard coded
+    '''
+    This class contains a default character and two hard coded
     characters for testing purposes. 
     '''
     def __init__ (self, create_type):
@@ -69,7 +70,8 @@ class Character:
             self.health = 3
             self.strength = 5
             self.gender = 'male'
-            self.age = 69
+            #Oldest verified human is ~122 years old female,116 Male
+            self.age = random.randint(16,116)
             self.charisma = 3
             self.intelligence = 1
             #self.income = 10000
@@ -87,14 +89,17 @@ class Character:
             self.location = (cf.gs.game.locations.
                              random_location())
             self.job = self.location.random_job()
+            
         elif num == 1:
             r=random.randint(0,4994)
             self.name = names.NAMES_LIST[r]
             self.health = 3
             self.strength = 1
-            #why is geneder important as of now we dont have any events that affect you becasue of your gender
+            #why is gender important? as of now we dont have any
+            #events that effect you because of your gender
             self.gender = 'female'
-            self.age = 40
+            #Oldest verified human is ~122.5 years old female,
+            self.age = random.randint(16,122)
             self.charisma = 4
             self.intelligence = 5
             

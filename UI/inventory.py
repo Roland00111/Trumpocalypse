@@ -4,11 +4,13 @@ import config as cf
 import math
 
 class Inventory:
-    ''' This class deals with everything related to the inventory of
+    '''
+    This class deals with everything related to the inventory of
     the character.
     '''
     def __init__(self):
-        ''' Holds starting data and will get modified to hold the
+        '''
+        Holds starting data and will get modified to hold the
         contents of the inventory.
         '''
         self.max_items = 999
@@ -22,14 +24,16 @@ class Inventory:
         }
         self.is_store = False
     def house_degrade(self,ratio):
-        ''' Decraments house uses by aratio for cases where an event
+        '''
+        Decraments house uses by aratio for cases where an event
         might cause you to loose 50% of your house for example.
         '''
         for house in self.sorted_items['housing']:
             house.remaining_uses *= ratio
             
     def item_count(self):
-        ''' Iterates throught self.items and returns a list of all
+        '''
+        Iterates throught self.items and returns a list of all
         items in array with number of uses left.
         '''
         storage = []
@@ -39,7 +43,8 @@ class Inventory:
         return storage
     
     def item_count_buy(self):
-        '''Return a list of items available to buy and their buy price.
+        '''
+        Return a list of items available to buy and their buy price.
         Do not allow buying of cash.
         '''
         storage = []
@@ -52,7 +57,8 @@ class Inventory:
         return storage
     
     def item_count_sell(self):
-        '''Return a lits of items available to sell and their
+        '''
+        Return a lits of items available to sell and their
         sell price.
         Do not allow selling of cash.
         '''
@@ -66,7 +72,8 @@ class Inventory:
         return storage
     
     def list_housing_types(self):
-        '''Iterates through self.items and returns a list of all items
+        '''
+        Iterates through self.items and returns a list of all items
         that are considered housing types.
         '''
         storage = []
@@ -77,7 +84,8 @@ class Inventory:
         return storage
     
     def list_transit_types(self):
-        '''Iterates through self.items and returns a list of all items
+        '''
+        Iterates through self.items and returns a list of all items
         that are considered transit types.
         '''
         storage = []
@@ -92,7 +100,8 @@ class Inventory:
         return len(self.items)
     
     def use_item(self, item, amount):
-        '''Try to use an item in the inventory.
+        '''
+        Try to use an item in the inventory.
         Returns True if the item was used, False otherwise.
         :param item: An Item instance.
         :type item: Item.
@@ -114,7 +123,8 @@ class Inventory:
             return True
         
     def use_transit(self, distance):
-        ''' This is called whenever you travel some whwere like to
+        '''
+        This is called whenever you travel some whwere like to
         work or to the store. The function then decrements the uses
         on the proper form of transportation.
         '''
@@ -134,7 +144,8 @@ class Inventory:
                 c.reset_modes()
         
     def remove_item(self, item):
-        '''Remove an item from this inventory.
+        '''
+        Remove an item from this inventory.
         Item is removed from self.items and self.sorted_items.
         '''
         self.items.remove(item)
@@ -151,7 +162,8 @@ class Inventory:
             self.sorted_items['other'].remove(item)
         
     def multiply_item(self, item_type = None, item_multiplier = None):
-        '''Multiply an item by a multiplier.
+        '''
+        Multiply an item by a multiplier.
         Typically this would be called multiply_item('Food', 0.5).
         Which, if the character has food, reduces Food by 50%.
         
@@ -166,7 +178,8 @@ class Inventory:
                 item.amount *= item_multiplier
                     
     def add_item(self, item_type = None, item_amount = None):
-        '''Add an item to this inventory.
+        '''
+        Add an item to this inventory.
         If item_type is None then add a random item.
         If item_type is not None then add item of this type.
         Does the item already exist in the inventory?
@@ -198,7 +211,8 @@ class Inventory:
             self.update_or_add_item(rand_item)
     
     def sorted_append(self, new_item):
-        '''This function ensures that when an item is added to an
+        '''
+        This function ensures that when an item is added to an
         inventory, the same item is also added to sorted_items.
         sorted_items is a dictionary which organizes the items
         in the inventory by type (transit, housing, cash, food, and
@@ -238,7 +252,8 @@ class Inventory:
             self.sorted_append( new_item )
     
     def contains_item(self, item_type):
-        '''Returns the item in the inventory if it exists.
+        '''
+        Returns the item in the inventory if it exists.
         Otherwise returns False.
         This takes O(n) time as it searches entire list.
         '''
@@ -249,7 +264,8 @@ class Inventory:
         return False
     
     def shabbitize(self, shabbiness):
-        '''Make this inventory shabby.
+        '''
+        Make this inventory shabby.
         Always floor the shabbiness. So that 1 pie never become 0
         pies.
         So Food=110; Food-=ceil(110*.99)=[110-109]=1.
@@ -273,7 +289,7 @@ class Item:
     '''
     For transit:
     Remaining Uses: The number of miles traveled before the item is
-        deleted from character's inventory.
+    deleted from character's inventory.
     '''
     def __init__(self, item_type = None):
         self.item_type = item_type
@@ -289,21 +305,24 @@ class Item:
         self.set_item(item_type)
         
     def use_item(self, item_type):
-        '''To implement.
+        #TODO
+        '''
         This will somehow use the item.
         Deincroment remaining_uses, along with in game effect.
         '''
         pass
     
     def sell_item(self):
-        '''To implement.
+        #TODO
+        '''
         Sells the item based on either its remaining uses or amount
         remaining.
         '''
         pass
     
     def calculate_purchase_cost(self):
-        '''Returns the purchase cost of the item or group of items.
+        '''
+        Returns the purchase cost of the item or group of items.
         The cost is always rounded up.
         This is the same as self.calculate_resale_cost except
         the seller never pays the resale ratio.
@@ -320,7 +339,8 @@ class Item:
                         remaining_uses / self.max_remaining_uses))
             
     def calculate_resale_cost(self):
-        '''Returns the sell cost of the item or group of items.
+        '''
+        Returns the sell cost of the item or group of items.
         The cost is always rounded down. So if an item is only
         worth $0.80 then it is really worth $0.
         :return: The sell cost of this item.
@@ -353,7 +373,8 @@ class Item:
                                 self.max_remaining_uses)))+'%'
         
     def set_item(self, item_type):
-        '''Single use items have remaining_use that declines.
+        '''
+        Single use items have remaining_use that declines.
         Grouped use items have num_in_group that declines.
         :raises TypeError: If item_type is not in ITEMS.n['stats'].
         '''
