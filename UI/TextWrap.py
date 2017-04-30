@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 
 def drawText(surface, text, color, rect, font, aa=False, bkg=None):
-    '''
+    """
     Takes the parameters of surface, which is where the text is going
     to be displayed,cf.surface for example and the text, which is
     whatever text we want to be displayed, the color, which is
@@ -10,12 +10,12 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
     of the font you would like to use alternatively. This function
     then calculates the maximum we can fit in the size of our textbox
     and draws it to our surface with whichever parameters we give.
-    '''
+    """
     rect = Rect(rect)
     y = rect.top
     lineSpacing = 0
     # get the height of the font
-    fontHeight = font.size("Tg")[1]
+    fontHeight = font.size('Tg')[1]
     # Split by newline.
     sp_text = text.split('\n')
     # Loop through text.
@@ -33,7 +33,7 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
             # if we've wrapped the text, then adjust the wrap to the
             # last word
             if i < len(text):
-                i = text.rfind(" ", 0, i) + 1
+                i = text.rfind(' ', 0, i) + 1
             # render the line and blit it to the surface
             if bkg:
                 image = font.render(temp[:i], 1, color, bkg)

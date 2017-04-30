@@ -1,4 +1,8 @@
 # items.py
+""" A dictionary holding all of our items for the game. The key is
+the item name in a string form and the value is a list containing the
+attributes for the item.
+"""
 
 n = {
     'num_items': None, # Dynamically generated amount of item choices.
