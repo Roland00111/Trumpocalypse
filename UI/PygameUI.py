@@ -209,8 +209,7 @@ class Scene(Control):
         self.add_child(alert)
         
     def draw_alert(self):
-        '''Separate draw function for drawing alerts.
-        '''
+        """Separate draw function for drawing alerts."""
         return self._alert.draw()
 
 class Label(Control):
@@ -239,6 +238,9 @@ class Label(Control):
         self.item = item
 
     def size_of(self, text):
+        """ Parameters text form of a string and this function returns
+        just the size.
+        """
         return self.draw().get_size()
 
     def size_to_fit(self):
@@ -316,12 +318,12 @@ class List(Control):
         self.down_at = mouse_pos
     
     def container_up(self, control, mouse_button, mouse_pos):
-        '''
+        """
         If there is a callback function, then pass back the selected
         index and child text.
         :return: In the case of the callback function, returns self.
             selected_index, self.selected_value, self.selected_item.
-        '''
+        """
         if self.down_at is None:
             return
         for i, child in enumerate(self.container.children):
