@@ -1250,7 +1250,7 @@ class CharacterHUD:
                  str(cf.gs.game.character.job.income)},
                 {'item':None, 'value':'Sanity: ' +
                  str(cf.gs.game.character.sanity)}
-            ], (255,120,71)
+            ], (255,215,194)
         )
         x.frame = pygame.Rect(
             4, 4, 150, self.current_menu.scene.frame.h -8)
@@ -1264,7 +1264,7 @@ class CharacterHUD:
 
         # Character items
         x = PygameUI.List(cf.gs.game.character.inventory.
-                          item_count(), (255,120,71))
+                          item_count(), (255,215,194))
         #Left quite a gap at end so it is easy on the eyes when list
         #is full
         x.frame = pygame.Rect(
