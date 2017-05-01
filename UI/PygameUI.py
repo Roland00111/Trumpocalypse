@@ -1,10 +1,10 @@
 import pygame
 from pygame.locals import *
-
-###
-# Class Signal, Control, Scene, Label, List from:
-# https://github.com/fictorial/pygameui (sampler branch)
-###
+""" This file contains the Classes Signal, Control, Scene, Label, List
+TextField, Alert, and Button. These classes all work together to
+display the user interface.
+https://github.com/fictorial/pygameui (sampler branch)
+"""
 class Signal(object):
     def __init__(self):
         self.slots = []
@@ -214,17 +214,20 @@ class Scene(Control):
         return self._alert.draw()
 
 class Label(Control):
-    text_color = (41, 51, 42)
+    """ This class is used for all of the scrolable lists such as the
+    and the character stats.
+    """
     padding = (8, 8)
     selected_bgcolor = (255,120,71) #(200, 224, 200)
     bgcolor = Control.bgcolor
 
     def __init__(self, text=None, label_bgcolor=(255,120,71),
                  item=None,text_color=(0,0,0),font_size=16):
-        '''
-        :param item: An object to reference.
-        :type item: object reference or None.
-        '''
+        """ Takes as parameters text as a string type, label_bgcolor
+        in the form of a list using the RGB color standard, item ???,
+        text_color in the form of a list using the RGB color standard,
+        and font_size in the form of an integer.
+        """
         Control.__init__(self)
         self.selected_bgcolor = label_bgcolor
         self.interactive = False
