@@ -209,6 +209,14 @@ class Events:
                 ' Blue You must prepare for the pandemic and take the proper '
                 'percautions : -6 hours -2 sanity -1 health',
                 2,0,1),
+        Event(  'EarthQuake', {'hours':-4,'sanity':-5,'Cash':-500}, {},
+                'You were eating your lunch watching the news when the ground '
+                'began to shake, you hid in the bathroom and luckily were not'
+                'harmed. You cant say the same for your neighbors; you will '
+                'never forget some of the things you saw this day. You decide'
+                'to help out your community in the reparations: hours:-4, '
+                'Sanity:-5, Cash:-500',
+                2,0,1),
         ]
     
     def __init__(self):
