@@ -205,8 +205,8 @@ class Events:
                 2,0,1),
         Event(  'Project Blue', {'hours':-6,'sanity':-2,'health':-1}, {},
                 'You were eating your lunch watching the news when they '
-                'announced that there is a pandemic happening called ???'
-                'You must prepare for the pandemic and take the proper '
+                'announced that there is a pandemic happening called Project'
+                ' Blue You must prepare for the pandemic and take the proper '
                 'percautions : -6 hours -2 sanity -1 health',
                 2,0,1),
         ]
