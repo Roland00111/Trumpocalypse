@@ -11,7 +11,19 @@ j = {
 			"Got Call as Leaving":9.0,
 			"Done Early":7.0,
 		}
-              },  
+              },
+        'Escort': {
+		'title': 'Escort',
+		'income': 16000,
+		'company': "Linda's Lovers",
+		'area': 'urban',
+		'events': {
+			"Only one customer": 4.0,
+			"Normal day":8.0,
+			"Busy night ;)":9.0,
+			"Kidnapped but made it home":6.0,
+		}
+	},
         'Logger': {
 		'title': 'Logger',
 		'income': 14000,
