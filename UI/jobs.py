@@ -11,7 +11,7 @@ j = {
 			"Got Call as Leaving":9.0,
 			"Done Early":7.0,
 		}
-                
+              },  
         'Logger': {
 		'title': 'Logger',
 		'income': 14000,
@@ -21,7 +21,7 @@ j = {
 			"Out of trees": 4.0,
 			"Normal day":8.0,
 			"Someone got hurt, had to do extra":9.0,
-			"Fast pace today":7.0,
+			"Fast pace t":7.0,
 		}
 	},
         'Politican': {
