@@ -217,6 +217,14 @@ class Events:
                 'to help out your community in the reparations: hours:-4, '
                 'Sanity:-5, Cash:-500',
                 2,0,1),
+        Event(  'You got an STD', {'sanity':-5,'health':-1,'Cash':-5000}, {},
+                'You dont know exactly where it came from, but this morining'
+                'you had some odd pus-filled bumps on your nether region.'
+                'First you had to pay for the doctor, then the tests, and'
+                'then even the medication to try to get rid of it all. The'
+                'doctor said that if you are lucky it could never come back'
+                ', but who knows for sure: hours:-5, Sanity:-5, Cash:-500',
+                2,0,1),
         ]
     
     def __init__(self):
