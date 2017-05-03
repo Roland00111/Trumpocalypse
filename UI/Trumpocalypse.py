@@ -12,7 +12,7 @@ import menu as MENU
 import store as STORE
 from TextWrap import *
 from pygame.locals import *
-
+#jhi
 if not pygame.display.get_init():
     pygame.display.init()
 
