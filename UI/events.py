@@ -70,8 +70,7 @@ class Event:
             elif key == 'housing':
                 cf.gs.game.character.inventory.house_degrade(value)
             elif key == 'health':
-                f.gs.game.character.modifyHealth(value)
-                
+                f.gs.game.character.modifyHealth(value)  
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n*value)
@@ -204,7 +203,7 @@ class Events:
                 'you had to fly home to attend '
                 'his funeral : -4 hours -10 sanity -1000 Cash',
                 2,0,1),
-        Event(  'New Pandemic', {'hours':-6,'sanity':-2,'health':-1}, {},
+        Event(  'Project Blue', {'hours':-6,'sanity':-2,'health':-1}, {},
                 'You were eating your lunch watching the news when they '
                 'announced that there is a pandemic happening called ???'
                 'You must prepare for the pandemic and take the proper '
