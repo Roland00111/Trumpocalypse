@@ -324,10 +324,12 @@ class Events:
         :param event: The event to toggle.
         :type event: Event.
         '''
-        self.active_events.append(event)
         for k,v in enumerate(self.inactive_events):
             if v == event:
                 del self.inactive_events[k]
         # Run the event.
         event.process()
+        # Add to active events if months remain > 0.
+        if event.months_remaining > 0:
+            self.active_events.append(event)
 
