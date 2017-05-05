@@ -12,6 +12,30 @@ j = {
 			"Done Early":7.0,
 		}
               },
+        'Therapist': {
+		'title': 'Therapist',
+		'income': 15000,
+		'company': "Psyche Saver", 
+		'area': 'suburban',
+		'events': {
+			"Only had one very troubled patient": 4.0,
+			"Dealt with a bunch of wack jobs":8.0,
+			"Patient Emergency had to stay late":9.0,
+			"Accidently laughed at patient, felt bad stopped sesh early":6.0,
+		}
+	},
+        'Pro Cuddler': {
+		'title': 'Pro Cuddler',
+		'income': 10000,
+		'company': "Karen's Cuddlers'", 
+		'area': 'suburban',
+		'events': {
+			"Only one Cuddlee today": 4.0,
+			"Full Cuddling Day":8.0,
+			"Cuddle Overload! Today":9.0,
+			"Had to leave Cuddle sesh early":6.0,
+		}
+	},
         'Acting Person': {
 		'title': 'Acting Person',
 		'income': 30000,
