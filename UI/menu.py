@@ -642,7 +642,7 @@ class EventScreen(Menu):
         '''
         self.selected_event = selected_item
         self.body['text'] = (selected_item.story_text+'\n'+
-            'Months Remaining: '+selected_item.month_remaining
+            'Months Remaining: '+str(selected_item.months_remaining)
         )
 
     def process_before_unload(self,chosen_position):

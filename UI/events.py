@@ -34,6 +34,7 @@ class Event:
         self.duration_rand_max = duration_rand_max
         # Will be changed to True at some point.
         self.activated = False
+        #self.is_over = False
         
         
     def process(self):
@@ -80,7 +81,11 @@ class Event:
         self.activated = True
         # If self.months_remaining <= 0 ...
         if self.months_remaining <= 0:
-            self.activated=False
+            self.activated = False
+            #self.is_over = True
+            # Delete this event.
+            #del(self)
+            
 
     def generate_duration(self):
         '''
@@ -237,11 +242,14 @@ class Events:
     def regenerate_active_events(self):
         """Regenerate the active events list based on active events."""
         a = cf.gs.game.events.active_events
-        temp_events = ''
+        temp_events = []
         for event in a:
             if event.activated == True:
                 temp_events.append(event)
-        cf.gs.game.events.active_events = temp_events
+            #elif event.is_over == True:
+                
+        #cf.gs.game.events.
+        self.active_events = temp_events
 
     def show_inactive_events(self):
         '''

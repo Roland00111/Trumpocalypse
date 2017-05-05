@@ -591,9 +591,11 @@ class Game:
             #cf.gs.game.character.check_health()
 
             # Process events.
+            # Then regenerate active events.
             a = cf.gs.game.events.active_events
             for event in a:
                 event.process()
+            cf.gs.game.events.regenerate_active_events()
                           
         def gen_date(self):
             g = cf.gs.game # A shortcut
