@@ -79,7 +79,8 @@ class Event:
         # Make sure it is presently active.
         self.activated = True
         # If self.months_remaining <= 0 ...
-        # Then ...
+        if self.months_remaining <= 0:
+            self.activated=False
 
     def generate_duration(self):
         '''
@@ -232,8 +233,10 @@ class Events:
         self.active_events = []
         #Last event will store, event name, and buffed in a boolean.
         self.last_random_event = ['placeholder',1]
-        pass
     
+    def regenerate_active_events( )
+        
+
     def show_inactive_events(self):
         '''
         Return a list of inactive events.

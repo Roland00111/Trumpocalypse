@@ -589,6 +589,11 @@ class Game:
                 #Continue the events whose durations have not run out.
                 pass
             #cf.gs.game.character.check_health()
+
+            # Process events.
+            a = game_state.game.events.active_events
+            for event in a:
+                a.process()
                           
         def gen_date(self):
             g = cf.gs.game # A shortcut
