@@ -236,12 +236,12 @@ class Events:
     
     def regenerate_active_events(self):
         """Regenerate the active events list based on active events."""
-        a = game_state.game.events.active_events
+        a = cf.gs.game.events.active_events
         temp_events = ''
         for event in a:
             if event.activated == True:
                 temp_events.append(event)
-        game_state.game.events.active_events = temp_events
+        cf.gs.game.events.active_events = temp_events
 
     def show_inactive_events(self):
         '''

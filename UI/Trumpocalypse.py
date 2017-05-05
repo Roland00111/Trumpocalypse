@@ -591,7 +591,7 @@ class Game:
             #cf.gs.game.character.check_health()
 
             # Process events.
-            a = game_state.game.events.active_events
+            a = cf.gs.game.events.active_events
             for event in a:
                 a.process()
                           
