@@ -641,7 +641,9 @@ class EventScreen(Menu):
         This will show the events text after you click the event
         '''
         self.selected_event = selected_item
-        self.body['text'] =selected_item.story_text
+        self.body['text'] = (selected_item.story_text+'\n'+
+            'Months Remaining: '+selected_item.month_remaining
+        )
 
     def process_before_unload(self,chosen_position):
         '''
