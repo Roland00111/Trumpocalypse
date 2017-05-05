@@ -234,8 +234,14 @@ class Events:
         #Last event will store, event name, and buffed in a boolean.
         self.last_random_event = ['placeholder',1]
     
-    def regenerate_active_events( )
-        
+    def regenerate_active_events(self):
+        """Regenerate the active events list based on active events."""
+        a = game_state.game.events.active_events
+        temp_events = ''
+        for event in a:
+            if event.activated == True:
+                temp_events.append(event)
+        game_state.game.events.active_events = temp_events
 
     def show_inactive_events(self):
         '''
