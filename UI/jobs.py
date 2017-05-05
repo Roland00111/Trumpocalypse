@@ -11,7 +11,115 @@ j = {
 			"Got Call as Leaving":9.0,
 			"Done Early":7.0,
 		}
-              },  
+              },
+        'Therapist': {
+		'title': 'Therapist',
+		'income': 15000,
+		'company': "Psyche Saver", 
+		'area': 'suburban',
+		'events': {
+			"Only had one very troubled patient": 4.0,
+			"Dealt with a bunch of wack jobs":8.0,
+			"Patient Emergency had to stay late":9.0,
+			"Accidently laughed at patient, felt bad stopped sesh early":6.0,
+		}
+	},
+        'Pro Cuddler': {
+		'title': 'Pro Cuddler',
+		'income': 10000,
+		'company': "Karen's Cuddlers'", 
+		'area': 'suburban',
+		'events': {
+			"Only one Cuddlee today": 4.0,
+			"Full Cuddling Day":8.0,
+			"Cuddle Overload! Today":9.0,
+			"Had to leave Cuddle sesh early":6.0,
+		}
+	},
+        'Acting Person': {
+		'title': 'Acting Person',
+		'income': 30000,
+		'company': "Bollywood", 
+		'area': 'urban',
+		'events': {
+			"No scene today": 4.0,
+			"Normal Day":8.0,
+			"OT shooting movie":9.0,
+			"Easy Day":6.0,
+		}
+	},
+        'Fire Bender': {
+		'title': 'Fire Bender',
+		'income': 12000,
+		'company': "Ohhhhla-O-O-O Tribe", 
+		'area': 'rural',
+		'events': {
+			"Moist... Very Moist Day": 4.0,
+			"Just Another Bending Day":8.0,
+			"Bending ALLLL them flames":9.0,
+			"Accidently burned down a forest, got sad and stopped for day":6.0,
+		}
+	},
+        'Water Bender': {
+		'title': 'Water Bender',
+		'income': 12000,
+		'company': "Ohhhhla-A-A-A Tribe", 
+		'area': 'rural',
+		'events': {
+			"Low water levels": 4.0,
+			"Just Another Bending Day":8.0,
+			"Bending ALLLL that water":9.0,
+			"Accidently killed fish when bending, got sad and stopped for day":6.0,
+		}
+	},
+        'Plant Breeder': {
+		'title': 'Plant Breeder',
+		'income': 8000,
+		'company': "Flora's Floral Falacio", #Too much?? hahaha
+		'area': 'rural',
+		'events': {
+			"Plant's not feeling it today": 4.0,
+			"Normal Plant Breeding Day":8.0,
+			"Plants got busy today":9.0,
+			"Done early as job is pointless":6.0,
+		}
+	},
+        'Nutritionist': {
+		'title': 'Nutritionist',
+		'income': 10000,
+		'company': "Nelson's Health Nuts",
+		'area': 'suburban',
+		'events': {
+			"Accidently ate GMO!!": 4.0,
+			"Normal Organic Day":8.0,
+			"Vegan meeting after work":9.0,
+			"Done Early due to Pesticides":6.0,
+		}
+	},
+        'Pro Athlete': {
+		'title': 'Pro Athlete',
+		'income': 30000,
+		'company': "WNBA/NBA",
+		'area': 'urban',
+		'events': {
+			"Easy Practice": 4.0,
+			"Game Day":8.0,
+			"OT!":9.0,
+			"Injured in Game":6.0,
+		}
+	},
+        'Escort': {
+		'title': 'Escort',
+		'income': 16000,
+		'company': "Linda's Lovers",
+		'area': 'urban',
+		'events': {
+			"Only one customer": 4.0,
+			"Normal day":8.0,
+			"Busy night ;)":9.0,
+			"Kidnapped but made it home":6.0,
+		}
+	},
         'Logger': {
 		'title': 'Logger',
 		'income': 14000,
