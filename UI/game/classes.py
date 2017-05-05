@@ -195,9 +195,9 @@ class SnakeGame:
             pygame.draw.rect(self.screen, SNAKE_COLOR, (blockWidth * (px-1), blockHeight * (py-1), blockWidth, blockHeight))
 
         # Draw food objects
-        image = pygame.image.load('trump.png')
+        image = pygame.image.load('trump2.jpg')
         for (fx, fy) in self.food:
-        #    pygame.draw.rect(self.screen, FOOD_COLOR, (blockWidth * (fx-1), blockHeight * (fy-1), blockWidth, blockHeight))
+            #pygame.draw.rect(self.screen, FOOD_COLOR, (blockWidth * (fx-1), blockHeight * (fy-1), blockWidth, blockHeight))
         
             self.screen.blit(image,(blockWidth * (fx-1), blockHeight * (fy-1), blockWidth, blockHeight))
         pygame.display.flip()
