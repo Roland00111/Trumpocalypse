@@ -596,6 +596,11 @@ class Game:
             for event in a:
                 event.process()
             cf.gs.game.events.regenerate_active_events()
+
+            # If events are > 5, toggle a random event.
+            i = cf.gs.game.events.inactive_events
+            if i.length > 5:
+                random = random.randint(0, i.length-1)
                           
         def gen_date(self):
             g = cf.gs.game # A shortcut
