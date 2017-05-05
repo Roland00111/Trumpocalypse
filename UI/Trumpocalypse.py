@@ -602,7 +602,7 @@ class Game:
             if len(i) > 5:
                 #r <= a <= b
                 r = random.randint(0, len(i)-1)
-                i.toggle_event(i[r])
+                cf.gs.game.events.toggle_event(i[r])
                           
         def gen_date(self):
             g = cf.gs.game # A shortcut
