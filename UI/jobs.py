@@ -12,6 +12,30 @@ j = {
 			"Done Early":7.0,
 		}
               },
+        'Nutritionist': {
+		'title': 'Nutritionist',
+		'income': 10000,
+		'company': "Nelson's Health Nuts",
+		'area': 'suburban',
+		'events': {
+			"Accidently ate GMO!!": 4.0,
+			"Normal Organic Day":8.0,
+			"Vegan meeting after work":9.0,
+			"Done Early due to Pesticides":6.0,
+		}
+	},
+        'Pro Athlete': {
+		'title': 'Pro Athlete',
+		'income': 30000,
+		'company': "WNBA/NBA",
+		'area': 'urban',
+		'events': {
+			"Easy Practice": 4.0,
+			"Game Day":8.0,
+			"OT!":9.0,
+			"Injured in Game":6.0,
+		}
+	},
         'Escort': {
 		'title': 'Escort',
 		'income': 16000,
