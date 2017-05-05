@@ -593,7 +593,7 @@ class Game:
             # Process events.
             a = cf.gs.game.events.active_events
             for event in a:
-                a.process()
+                event.process()
                           
         def gen_date(self):
             g = cf.gs.game # A shortcut
