@@ -808,6 +808,10 @@ class SnakeGame(Menu):
             'Back to Day',
            
         ]
+        window=cf.surface
+        screen=pygame.display.get_surface()
+        clock=pygame.time.Clock()
+        font=pygame.font.Font('freesansbold.ttf', 20)
         cf.arcade_game =SnakeGame(window,screen,clock,font)
         
         
