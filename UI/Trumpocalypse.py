@@ -132,7 +132,7 @@ class EventsLoop:
         constantly checking for keyboard and mouse button presses.
         '''
         if cf.arcade_game != False:
-            cf.gs.arcade_game.run(pygame.event.get())
+            cf.arcade_game.run(pygame.event.get())
             return
         chosen_position = None # Reset on each loop
         ########################Used for Testing##################

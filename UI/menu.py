@@ -797,7 +797,7 @@ class CreateCharacterAutomatic(Menu):
             'height': 300
         }
 
-class SnakeGame(Menu):
+class SnakeScreen(Menu):
     def __init__(self):
         self.menu_name = '...'
         self.keypressArray = [
@@ -812,7 +812,7 @@ class SnakeGame(Menu):
         screen=pygame.display.get_surface()
         clock=pygame.time.Clock()
         font=pygame.font.Font('freesansbold.ttf', 20)
-        cf.arcade_game =SnakeGame(window,screen,clock,font)
+        cf.arcade_game =game.SnakeGame(window,screen,clock,font)
         
         
 
@@ -820,7 +820,7 @@ class ArcadeScreen(Menu):
     def __init__(self):
         self.menu_name = '...'
         self.keypressArray = [
-            SnakeGame, #Have to call a class on the keypress array
+            SnakeScreen, #Have to call a class on the keypress array
             DayScreen,
         ]
 
