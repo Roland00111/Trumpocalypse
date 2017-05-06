@@ -259,6 +259,12 @@ class EventsLoop:
             # Go to the next menu.
             self.cm = (self.cm.keypressArray
                                  [chosen_position]()) 
+        
+        # Clock tick
+        # TESTING
+        # TODO: This does not affect high CPU usage when doing pygame.init()
+        # for the audio. Tick(20) or Tick(60), no difference.
+        #pygame.time.Clock().tick(20)
 
     def test():
         '''Run tests.'''

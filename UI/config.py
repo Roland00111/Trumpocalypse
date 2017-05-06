@@ -31,6 +31,9 @@ def euclidean(p1, p2):
                      (p2[1] - p1[1]) ** 2)
 
 def start_music(musicName):
+    # TODO: High CPU usage when calling pygame.init().
+    # Comment out this part to test.
     pygame.init()
     pygame.mixer.music.load(musicName)
     pygame.mixer.music.play(-1)
+    #pygame.mixer.quit()
