@@ -1205,7 +1205,7 @@ class OptionsMenu(Menu):
         elif cf.music_on is False:
             m = 'On'
             if first_run is False:
-                pygame.mixer.music.stop()
+                cf.stop_music()
         x = PygameUI.Button('Turn Music '+m,self.click_music)
         x.frame = pygame.Rect(0, 100, 270, 30)
         self.scene.add_child(x)

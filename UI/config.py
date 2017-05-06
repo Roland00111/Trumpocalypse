@@ -1,6 +1,7 @@
 import random
 import math
 import pygame
+import pygame.midi
 
 gs = None # Previously: game_state
 surface = None
@@ -30,10 +31,17 @@ def euclidean(p1, p2):
     return math.sqrt((p2[0] - p1[0]) ** 2 +
                      (p2[1] - p1[1]) ** 2)
 
+def stop_music():
+	pygame.mixer.music.stop()
+	pygame.mixer.quit()
+	
 def start_music(musicName):
-    # TODO: High CPU usage when calling pygame.init().
-    # Comment out this part to test.
-    pygame.init()
+    # High CPU usage when calling pygame.init().
+    # So instead just initialize pygame.mixer module separately.
+    # It is still high CPU but then the user may choose
+    # to turn the music off and CPU goes back to 0.
+    #pygame.init()
+    pygame.mixer.init()
     pygame.mixer.music.load(musicName)
     pygame.mixer.music.play(-1)
-    #pygame.mixer.quit()
+    

@@ -14,6 +14,7 @@ import locations as LOCATIONS
 from TextWrap import *
 from pygame.locals import *
 import game
+import sys
 
 if not pygame.display.get_init():
     pygame.display.init()
@@ -558,7 +559,8 @@ if __name__ == '__main__':
     arguments to move selection or nothing. This function will return actual 
     position of selection.
     *get_postion will return actual position of seletion. '''
-    import sys
+    
+    pygame.init()
     #0,6671875 and 0,(6) of HD resoultion
     cf.surface = pygame.display.set_mode((854,480))
     # Toggle full screen #Apparently only works when running X11
