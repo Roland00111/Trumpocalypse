@@ -376,6 +376,7 @@ class Game:
             cf.gs.game.current_day.day_hours *= hours
         if cf.gs.game.current_day.day_hours < 0:
             cf.gs.game.current_day.day_hours=0
+        print 'mod hours done:',cf.gs.game.current_day.day_hours
         
     class Day:
         day_hours = 16
@@ -385,13 +386,23 @@ class Game:
         inauguration_day = 'January 20th' 
 
         def __init__(self):
-            '''Set day hours to 16. Run end of day modifications.
+            '''Set day hours to 16 and run end of day modifications.
+            
             Run generate date to generate today's "date" and
             accompanying story text.
+            
+            Note: Do not do eod_mods and gen_date in the initializer.
+            This is because, for example, with eod_mods it runs
+            process events which in turn makes references to
+            cf.gs.game.current_day.day_hours. As this is still
+            being initialized this is still referencing the
+            previous day!
+            So instead do this in StoryScreen.
             '''
             self.day_hours = 16
-            self.eod_mods()
-            self.gen_date()
+            # Does not happen here.
+            #self.eod_mods()
+            #self.gen_date()
 
         def eod_mods(self):
             '''This function checks if you have enough food to go to

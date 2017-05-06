@@ -1042,6 +1042,8 @@ class StoryScreen(Menu):
         cf.gs.game.day_counter += 1
         cf.gs.game.month_counter += 1
         cf.gs.game.current_day = cf.gs.game.Day()
+        cf.gs.game.current_day.eod_mods()
+        cf.gs.game.current_day.gen_date()
 
         self.warn_ask_health_pack = (
         'Warning: You are about to die!\n'+
