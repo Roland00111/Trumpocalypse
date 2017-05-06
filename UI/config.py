@@ -61,6 +61,8 @@ def start_music(musicName):
     
     # A second test file.
     #pygame.mixer.music.load('Trumpocalypse-mixed2.ogg')
-    # Does not work:
+    #pygame.mixer.music.play(-1)
+    
+    # Does not work ("Memory error"):
     # pygame.mixer.Sound('Trumpocalypse-mixed2.ogg').play(loops=-1)
     
