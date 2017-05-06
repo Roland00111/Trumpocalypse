@@ -916,7 +916,7 @@ class DayScreen(Menu):
             self.titlesArray = [
                 'Events: ' + str(len(cf.gs.game.events.
                                      inactive_events)),
-                'Next Day',
+                'Next Month',
                 'Arcade',
                 'Store', 
                 'Work', 
