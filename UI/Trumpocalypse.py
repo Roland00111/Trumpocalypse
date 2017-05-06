@@ -12,6 +12,7 @@ import menu as MENU
 import store as STORE
 from TextWrap import *
 from pygame.locals import *
+import game
 
 if not pygame.display.get_init():
     pygame.display.init()
@@ -130,6 +131,9 @@ class EventsLoop:
         ''' This function contains our main while loop that is
         constantly checking for keyboard and mouse button presses.
         '''
+        if cf.arcade_game != False:
+            cf.gs.arcade_game.run(pygame.event.get())
+            return
         chosen_position = None # Reset on each loop
         ########################Used for Testing##################
         if self.test_events != None:
@@ -218,7 +222,7 @@ class EventsLoop:
                 self.cm.draw()
             else:
                 # Draw menu plus body
-                self.cm.init(self.cm.titlesArray, cf.surface, 200) 
+                self.cm.init(self.cm.titlesArray, cf.surface, 175) 
                 self.cm.draw()
                 self.cm.draw_menu_body()
             # Draw scene alert.

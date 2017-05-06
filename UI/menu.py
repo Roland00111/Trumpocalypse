@@ -13,6 +13,7 @@ import events as EVENTS
 import character as CHARACTER
 import sys
 import inventory as INVENTORY
+import game
 
 class Menu:
     '''Original code for the menu class is from:
@@ -807,7 +808,8 @@ class SnakeGame(Menu):
             'Back to Day',
            
         ]
-        execfile('game.py')
+        cf.arcade_game =SnakeGame(window,screen,clock,font)
+        
         
 
 class ArcadeScreen(Menu):
@@ -937,7 +939,7 @@ class DayScreen(Menu):
             'text': text,
             'font_size': 32,
             'top': 20,
-            'height': 300
+            'height': 250
         }
     
     def update_body(self):

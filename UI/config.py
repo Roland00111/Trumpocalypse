@@ -9,6 +9,8 @@ down_in = None
 # Global variable for music is on or off.
 music_on = True
 
+arcade_game = False
+
 def plus_minus():
     '''
     Return a random +1 or -1.
