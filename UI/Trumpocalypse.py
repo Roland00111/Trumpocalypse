@@ -559,8 +559,10 @@ if __name__ == '__main__':
     arguments to move selection or nothing. This function will return actual 
     position of selection.
     *get_postion will return actual position of seletion. '''
-    
-    pygame.init()
+    # Pygame.init just initializes all pygame modules.
+    # This is unnecessary because we initialize only the modules
+    # we need whenever necessary.
+    #pygame.init()
     #0,6671875 and 0,(6) of HD resoultion
     cf.surface = pygame.display.set_mode((854,480))
     # Toggle full screen #Apparently only works when running X11
