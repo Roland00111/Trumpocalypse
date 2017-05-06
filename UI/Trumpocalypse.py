@@ -330,99 +330,6 @@ class GameState:
         Game.month_day = 1
         Game.term_count = 1
         self.game = Game()
-    
-class Jobs:
-    '''Handler for jobs in the game. Each game has one instance
-    of the Jobs class. The Jobs class currently has one function,
-    which is to provide a random Job class instance when appropriate.
-    The jobs list is stored in jobs.py.
-    '''
-    def __init__(self):
-        pass
-    def random_job(self):
-        ''' This generates a random job for the user '''
-        r = random.randint(0,len(JOBS.j.keys())-1)
-        x = JOBS.j.values()[r]
-        return Job(x['title'], x['income'], x['company'], x['area'],
-                   x['events'])
-
-class Job:
-    ''' Deals with anythinng that deals with the characters job'''
-    def __init__(self,title=None,income=None,company=None,area=None,
-                 work_events=None):
-        ''' The parameters are title, income, company, area, and
-        work_events and asigns them to the charecter.
-        '''
-        self.title = title
-        self.income = income
-        self.company = company
-        self.area = area
-        self.work_events = work_events
-        self.coordinates = {}
-        #self.distances_call = 
-        self.distances()
-
-    def work(self):
-        ''' This is called when the character goes to work so it
-        decrements time and increases there cash.
-        '''
-        self.random_dictPos = random.randint(0,
-                                            len(self.work_events)-1)
-        
-        self.hours_worked = (self.work_events.values()
-                              [self.random_dictPos])
-        if self.hours_worked > cf.gs.game.current_day.day_hours:
-            self.hours_worked = cf.gs.game.current_day.day_hours
-        cf.gs.game.mod_hours(-self.hours_worked)
-        print self.hours_worked
-        self.money_made = (cf.gs.game.character.
-                           earn_money( self.hours_worked))
-        print self.money_made
-
-        return (self.work_events.keys()[self.random_dictPos] + ' \n'
-                + ' \nWorked: ' + str(self.hours_worked)
-                + ' \nYou made: '+ str(self.money_made))
-
-    def distances(self):
-        '''Set store location based on location type.
-        Note: Random choice provides random between + and - number:
-        https://docs.python.org/2/library/random.html#random.choice
-        '''
-        if self.area == 'urban':
-            self.coordinates['x'] = (random.uniform(0.0,2.0) *
-                                     cf.plus_minus())
-            self.coordinates['y'] = (random.uniform(0.0,2.0) *
-                                     cf.plus_minus())
-        elif self.area == 'suburban':
-            self.coordinates['x'] = (random.uniform(2.0,8.0) *
-                                     cf.plus_minus())
-            self.coordinates['y'] = (random.uniform(2.0,8.0) *
-                                     cf.plus_minus())
-        else: # Assume rural
-            self.coordinates['x'] = (random.uniform(8.0,20.0) *
-                                     cf.plus_minus())
-            self.coordinates['y'] = (random.uniform(8.0,20.0) *
-                                     cf.plus_minus())
-    
-    def distance_from_house(self):
-        '''Calculate the euclidean distance to the current house.
-        Character's current housing is (string):
-            cf.gs.game.character.selected_house
-        :return: Distance in miles, rounded to the tenth.
-        :rtype: int.
-        '''
-        # Friend's house
-        if cf.gs.game.character.selected_house_idx == 0: 
-            c1 = (cf.gs.game.locations.
-                  friend_location['coordinates'])
-        else:
-            # Housing is always -1
-            idx = cf.gs.game.character.selected_house_idx - 1 
-            x = (cf.gs.game.character.inventory.
-                 sorted_items['housing'][ idx ].coordinates)
-            c1 = [x['x'], x['y']]
-        c2 = self.coordinates
-        return round(cf.euclidean(c1, [c2['x'], c2['y']]), 1)
 
 class Game:
     '''Each game starts in January of 2017, in the first term
@@ -438,7 +345,7 @@ class Game:
     month_day = 1
     term_count = 1
     def __init__(self):
-        self.jobs = Jobs()
+        self.jobs = JOBS.Jobs()
         self.current_day = None
         self.opening_menu = MENU.OpeningMenu()
         #Character('random') creates charecter on start menu becasue
