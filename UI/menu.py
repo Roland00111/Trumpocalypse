@@ -795,6 +795,34 @@ class CreateCharacterAutomatic(Menu):
                      'Sanity: ' +sanity),'font_size': 32,'top': 40,
             'height': 300
         }
+
+class SnakeGame(Menu):
+    def __init__(self):
+        self.menu_name = '...'
+        self.keypressArray = [
+            DayScreen,
+        ]
+
+        self.titlesArray = [
+            'Back to Day',
+           
+        ]
+        execfile('game.py')
+        
+
+class ArcadeScreen(Menu):
+    def __init__(self):
+        self.menu_name = '...'
+        self.keypressArray = [
+            SnakeGame, #Have to call a class on the keypress array
+            DayScreen,
+        ]
+
+        self.titlesArray = [
+            'Play the Snake game use WASD',
+            'Back to Day',
+           
+        ]
         
 class HighScores(Menu):
     def __init__(self):
@@ -874,14 +902,16 @@ class DayScreen(Menu):
         if cf.gs.game.day_counter % 48 != 0:
             self.keypressArray = [
                 EventScreen,
-                StoryScreen, #Reset Game.Day.day_hours back to 16
+                StoryScreen,#Reset Game.Day.day_hours back to 16
+                ArcadeScreen,
                 StoreScreen,
                 WorkScreen #Work -> -8 on the Game.Day.day_hours
             ]
             self.titlesArray = [
                 'Events: ' + str(len(cf.gs.game.events.
                                      inactive_events)),
-                'Next Day', 
+                'Next Day',
+                'Arcade',
                 'Store', 
                 'Work', 
             ]
