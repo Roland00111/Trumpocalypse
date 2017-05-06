@@ -40,8 +40,23 @@ def start_music(musicName):
     # So instead just initialize pygame.mixer module separately.
     # It is still high CPU but then the user may choose
     # to turn the music off and CPU goes back to 0.
-    #pygame.init()
+    # Do not call this:
+    #	pygame.init()
+    # Various settings to test:
+    # pygame.mixer.pre_init(44100, -16, 2, 4096) # 4096 is ++cpu
+    # pygame.mixer.pre_init(22050, -16, 2, 2048) 
+    # pygame.mixer.pre_init(22050, -16, 1, 2048) 
+    # pygame.mixer.pre_init(44100, -16, 1, 2048) 
+    # pygame.mixer.pre_init(88200, -8, 1, 2048) 
+    # pygame.mixer.pre_init(44100, -8, 2, 2048) 
+    # pygame.mixer.pre_init(44100, -8, 2, 1024) 
+    # pygame.mixer.pre_init(44100, -16, 1, 516) 
+    # pygame.mixer.pre_init(22050, -16, 1, 516) 
+    # This produces so-so cpu usage (25-50%).
+    pygame.mixer.pre_init(11025, -8, 2, 256)
     pygame.mixer.init()
     pygame.mixer.music.load(musicName)
+    # A second test file.
+    #pygame.mixer.music.load('Trumpocalypse-mixed2.ogg')
     pygame.mixer.music.play(-1)
     
