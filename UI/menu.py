@@ -925,13 +925,13 @@ class DayScreen(Menu):
             self.keypressArray = [
                 ElectionDay, #Reset Game.Day.day_hours back to 16
                 StoreScreen,
-                StoryScreen #Work -> -8 on the Game.Day.day_hours
+                #WorkScreen #Work -> -8 on the Game.Day.day_hours
                 
             ]
             self.titlesArray = [
                 'Vote', 
                 'Store', 
-                'Work', 
+                #'Work', 
             ]
         #This displays a text box showing how many hours left in your
         #day to spend
