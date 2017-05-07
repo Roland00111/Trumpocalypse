@@ -195,7 +195,11 @@ class EventsLoop:
                 # Toggle full screen
                 # Apparently only works when running X11
                 # Does HWSURFACE|DOUBLEBUF|RESIZABLE help with this?
-                # F11 key is 292
+                # This is per this suggestion:
+                # https://groups.google.com/d/msg/
+                #   pygame-mirror-on-google-groups/47n8sJMCEh0/
+                #   laRN5-QPgFUJ
+                # F11 key is 292.
                 if event.key == 292:
                     pygame.display.toggle_fullscreen()
                 if event.key == K_UP:
