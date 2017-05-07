@@ -159,6 +159,77 @@ class EventsLoop:
             #~ (0,0))
         #~ pygame.display.flip()
         #~ pygame.display.update()
+    
+    def process_key_and_mouse(self, event):
+        """Process mouse events and key events.
+        
+        If the Enter key is pressed then return the chosen
+        menu position. Otherwise, return None.
+        """
+        #-----------------------------------
+        # Key press events and mouse events.
+        #-----------------------------------
+        if event.type == KEYDOWN:
+            print 'unicode key:',event.unicode
+            print 'num key:',event.key
+            # Toggle full screen
+            # Apparently only works when running X11
+            # Does HWSURFACE|DOUBLEBUF|RESIZABLE help with this?
+            # This is per this suggestion:
+            # https://groups.google.com/d/msg/
+            #   pygame-mirror-on-google-groups/47n8sJMCEh0/
+            #   laRN5-QPgFUJ
+            # F11 key is 292.
+            if event.key == 292:
+                pygame.display.toggle_fullscreen()
+            if event.key == K_UP:
+                self.cm.draw(-1)
+            elif event.key == K_DOWN:
+                self.cm.draw(1)
+            elif event.key == K_RETURN:
+                return self.cm.get_position()
+            elif event.key == K_ESCAPE:
+                pass
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                cf.down_in = self.cm.scene.hit(event.pos)
+                if (cf.down_in is not None and
+                    not isinstance(cf.down_in, PygameUI.Scene)):
+                    cf.down_in.mouse_down(event.button,
+                        cf.down_in.from_window_point(event.pos))
+        elif event.type == pygame.MOUSEBUTTONUP:
+            # http://stackoverflow.com/questions/10990137/
+            # pygame-mouse-clicking-detection
+            if event.button == 1:                 
+                # PygameUI
+                up_in = self.cm.scene.hit(event.pos)
+                if cf.down_in == up_in:
+                    cf.down_in.mouse_up(event.button,
+                        cf.down_in.from_window_point(event.pos))
+                cf.down_in = None
+        elif event.type == pygame.MOUSEMOTION:
+            if cf.down_in is not None and cf.down_in.draggable:
+                if cf.down_in.parent is not None:
+                    (cf.down_in.parent.
+                    child_dragged(cf.down_in, event.rel))
+                cf.down_in.dragged(event.rel)
+        elif event.type == pygame.KEYDOWN:
+            self.cm.scene.key_down(
+                event.key, event.unicode)
+            #https://pythonhosted.org/kitchen/unicode-frustrations.html
+            #unicode type stores an abstract sequence of code points
+            #https://pythonhosted.org/kitchen/glossary.html#term-code-points
+            #code points make it so that we have a number pointing to a character without... 
+            #worrying about implementation details of how those numbers are stored for the computer to read
+            # .unicode allows you to encode the characters however you like ie. encode('latin1'))
+            #by using unicode of KEYDOWN if can be used/converted for every encoding, making it universal of sorts
+        elif event.type == pygame.KEYUP:
+            self.cm.scene.key_up(event.key)
+        elif event.type == pygame.VIDEORESIZE:
+            cf.window_size = event.dict['size']
+            #~ cf.surface = pygame.display.set_mode(
+                #~ event.dict['size'],HWSURFACE|DOUBLEBUF|RESIZABLE)
+        return None
         
     def process_pygame_events(self):
         ''' This function contains our main while loop that is
@@ -186,70 +257,10 @@ class EventsLoop:
             # Check alert status
             if self.pui_has_alert(event):
                 continue
-            #-----------------------------------
-            # Key press events and mouse events.
-            #-----------------------------------
-            if event.type == KEYDOWN:
-                print 'unicode key:',event.unicode
-                print 'num key:',event.key
-                # Toggle full screen
-                # Apparently only works when running X11
-                # Does HWSURFACE|DOUBLEBUF|RESIZABLE help with this?
-                # This is per this suggestion:
-                # https://groups.google.com/d/msg/
-                #   pygame-mirror-on-google-groups/47n8sJMCEh0/
-                #   laRN5-QPgFUJ
-                # F11 key is 292.
-                if event.key == 292:
-                    pygame.display.toggle_fullscreen()
-                if event.key == K_UP:
-                    self.cm.draw(-1)
-                elif event.key == K_DOWN:
-                    self.cm.draw(1)
-                elif event.key == K_RETURN:
-                    chosen_position = self.cm.get_position()
-                    break
-                elif event.key == K_ESCAPE:
-                    pass
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    cf.down_in = self.cm.scene.hit(event.pos)
-                    if (cf.down_in is not None and
-                        not isinstance(cf.down_in, PygameUI.Scene)):
-                        cf.down_in.mouse_down(event.button,
-                            cf.down_in.from_window_point(event.pos))
-            elif event.type == pygame.MOUSEBUTTONUP:
-                # http://stackoverflow.com/questions/10990137/
-                # pygame-mouse-clicking-detection
-                if event.button == 1:                 
-                    # PygameUI
-                    up_in = self.cm.scene.hit(event.pos)
-                    if cf.down_in == up_in:
-                        cf.down_in.mouse_up(event.button,
-                            cf.down_in.from_window_point(event.pos))
-                    cf.down_in = None
-            elif event.type == pygame.MOUSEMOTION:
-                if cf.down_in is not None and cf.down_in.draggable:
-                    if cf.down_in.parent is not None:
-                        (cf.down_in.parent.
-                        child_dragged(cf.down_in, event.rel))
-                    cf.down_in.dragged(event.rel)
-            elif event.type == pygame.KEYDOWN:
-                self.cm.scene.key_down(
-                    event.key, event.unicode)
-                #https://pythonhosted.org/kitchen/unicode-frustrations.html
-                #unicode type stores an abstract sequence of code points
-                #https://pythonhosted.org/kitchen/glossary.html#term-code-points
-                #code points make it so that we have a number pointing to a character without... 
-                #worrying about implementation details of how those numbers are stored for the computer to read
-                # .unicode allows you to encode the characters however you like ie. encode('latin1'))
-                #by using unicode of KEYDOWN if can be used/converted for every encoding, making it universal of sorts
-            elif event.type == pygame.KEYUP:
-                self.cm.scene.key_up(event.key)
-            elif event.type == pygame.VIDEORESIZE:
-                cf.window_size = event.dict['size']
-                #~ cf.surface = pygame.display.set_mode(
-                    #~ event.dict['size'],HWSURFACE|DOUBLEBUF|RESIZABLE)
+            # Process key and mouse events
+            chosen_position = self.process_key_and_mouse(event)
+            #if chosen_key is not None:
+            #    break
             #---------------------------
             # Drawing stuff starts here.
             #---------------------------
