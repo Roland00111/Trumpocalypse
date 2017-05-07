@@ -965,13 +965,14 @@ class DayScreen(Menu):
     def process_before_unload(self, chosen_position):
         '''
         Leave the DayScreen after user presses EnterKey.
+        
         :param int chosen_position:
             The position of the menu selected by user.
         :return:
             Return True if it is okay to continue, False if it is not.
         :rtype: boolean.
         '''
-        if chosen_position != 3: # Anything but work
+        if chosen_position != 4: # Anything but work
             return True
         #----------------------
         # Validate work travel.
