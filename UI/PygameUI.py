@@ -330,7 +330,6 @@ class List(Control):
             if child.frame.collidepoint(mouse_pos):
                 if self._selected_index == i:
                     return # No change in index.
-                #self.container.remove_child(child)
                 self.selected_index = i
                 self.selected_value = child.text
                 self.selected_item = child.item
@@ -346,6 +345,8 @@ class List(Control):
     def remove_selected(self, child):
         """Remove a list element onclick."""
         self.container.remove_child(child)
+        # Set select index to none.
+        self._selected_index = None
         
     @property
     def selected_index(self):
@@ -353,11 +354,23 @@ class List(Control):
     
     @selected_index.setter
     def selected_index(self, index):
+        if index == None:
+            # In the case that the child has been removed,
+            # the selected index will be "None".
+            # In this case, do nothing when this None thing is
+            # clicked.
+            return
         child = self.container.children[index] # child=Label object
-        #self.remove_child(child)
         if self._selected_index is not None:
-            prev = self.container.children[self._selected_index]
-            prev.selected = False
+            try:
+                # In the case that the user purchases or sells
+                # an item, it will be removed via remove_child().
+                # In which case, there is no reason to make is
+                # selected = False. 
+                prev = self.container.children[self._selected_index]
+                prev.selected = False
+            except:
+                pass
         child.selected = True
         self._selected_index = index
         self.on_selection(self, index)
