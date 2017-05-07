@@ -135,19 +135,23 @@ class Game:
             your sanity has gone below 0 and if it has then it
             decrements health and sets sanity to 5. 
             '''
+            # Consume food.
+            # If no food, health and sanity go down.
             food = (cf.gs.game.character.inventory.
                     sorted_items['food'])
-
             if (food.amount >= 3):
                 food.amount -= 3
-            
             elif (food.amount <3 ):
                 food.amount = 0
                 cf.gs.game.character.modifyHealth(-1)
                 cf.gs.game.character.sanity -= 1
-
+            # Housing.
+            # Sanity -= 1 if staying with friends.
+            # Use 2 housing each month.
             if (cf.gs.game.character.selected_house == ('Staying with Friends')):
                 cf.gs.game.character.sanity -= 1
+            else:
+                cf.gs.game.character.inventory.use_housing(2)
                 
                 #if sanity dips under zero at the end of the day it hurts
                 #your health

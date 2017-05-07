@@ -122,6 +122,17 @@ class Inventory:
                 self.remove_item(item)
             return True
         
+    def use_housing(self, amount):
+        '''Use a specified amount of housing.'''
+        c = cf.gs.game.character
+        idx = c.selected_house_idx - 1
+        item = self.sorted_items['housing'][idx]
+        item.remaining_uses -= amount
+        if item.remaining_uses <= 0:
+            self.remove_item(item)
+            # Reset housing and transit.
+            c.reset_modes()
+                
     def use_transit(self, distance):
         '''
         This is called whenever you travel some whwere like to
@@ -369,7 +380,7 @@ class Item:
         if self.grouped_item: # Grouped item (num remaining)
             return str(self.amount)
         else:                 # Single item (% remaining)
-            return str(math.ceil(100*(self.remaining_uses /
+            return str(math.ceil(100*(1.0 * self.remaining_uses /
                                 self.max_remaining_uses)))+'%'
         
     def set_item(self, item_type):
