@@ -100,6 +100,13 @@ class EventsLoop:
                 if self.cm.scene._alert.hit(event.pos) == None:
                     return True
         elif self.cm.scene._has_alert is True:
+            # Draw the scene.
+            # This is important if changing between menus
+            # with the Enter key and upon arriving an alert
+            # pops up.
+            # Without drawing the new menu before showing the alert,
+            # the user is left on the previous menu viewing the alert.
+            self.draw_scene()
             # Make sure to draw alert
             cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
             # and update, in the case of
@@ -110,7 +117,33 @@ class EventsLoop:
         # If the code is down here then there is no alert.
         # Allow the event to be processed.
         return False
-        
+    
+    def draw_scene(self):
+        """Draw the scene: PygameUI, titlesArray, and main images."""
+        # Draw PygameUI.
+        cf.surface.blit(self.cm.scene.draw(), (0, 0))
+        # Draw Menu
+        if self.cm.body is False:
+            self.cm.init(self.cm.titlesArray, cf.surface) 
+            self.cm.draw()
+        else:
+            # Draw menu plus body
+            self.cm.init(self.cm.titlesArray, cf.surface, 175) 
+            self.cm.draw()
+            self.cm.draw_menu_body()
+        # Draw scene alert on top of menu and other elements.
+        if self.cm.scene._has_alert is True:
+            cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
+        # Update
+        if hasattr(self.cm,'om') == True:
+            image = pygame.image.load('trump.png')
+            cf.surface.blit(image, [-25, 235])
+            image2 = pygame.image.load('trump2.png')
+            cf.surface.blit(image2, [510, 235])
+            pygame.display.update()
+        else:
+            pygame.display.update()
+            
     def process_pygame_events(self):
         ''' This function contains our main while loop that is
         constantly checking for keyboard and mouse button presses.
@@ -191,29 +224,7 @@ class EventsLoop:
             #---------------------------
             # Drawing stuff starts here.
             #---------------------------
-            # Draw PygameUI.
-            cf.surface.blit(self.cm.scene.draw(), (0, 0))
-            # Draw Menu
-            if self.cm.body is False:
-                self.cm.init(self.cm.titlesArray, cf.surface) 
-                self.cm.draw()
-            else:
-                # Draw menu plus body
-                self.cm.init(self.cm.titlesArray, cf.surface, 175) 
-                self.cm.draw()
-                self.cm.draw_menu_body()
-            # Draw scene alert on top of menu and other elements.
-            if self.cm.scene._has_alert is True:
-                cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
-            # Update
-            if hasattr(self.cm,'om') == True:
-                image = pygame.image.load('trump.png')
-                cf.surface.blit(image, [-25, 235])
-                image2 = pygame.image.load('trump2.png')
-                cf.surface.blit(image2, [510, 235])
-                pygame.display.update()
-            else:
-                pygame.display.update()
+            self.draw_scene()
                 
         #----------------------------
         # Enter key has been pressed.
