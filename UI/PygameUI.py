@@ -330,15 +330,23 @@ class List(Control):
             if child.frame.collidepoint(mouse_pos):
                 if self._selected_index == i:
                     return # No change in index.
+                #self.container.remove_child(child)
                 self.selected_index = i
                 self.selected_value = child.text
                 self.selected_item = child.item
                 if self.callback_function:
-                    self.callback_function(self.selected_index, self.
-                                selected_value, self.selected_item)
+                    self.callback_function(
+                        self.selected_index,
+                        self.selected_value,
+                        self.selected_item,
+                        child)
                 return
         self.selected_index = None
     
+    def remove_selected(self, child):
+        """Remove a list element onclick."""
+        self.container.remove_child(child)
+        
     @property
     def selected_index(self):
         return self._selected_index
@@ -346,6 +354,7 @@ class List(Control):
     @selected_index.setter
     def selected_index(self, index):
         child = self.container.children[index] # child=Label object
+        #self.remove_child(child)
         if self._selected_index is not None:
             prev = self.container.children[self._selected_index]
             prev.selected = False

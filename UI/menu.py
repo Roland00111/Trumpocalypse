@@ -298,7 +298,9 @@ class StoreScreenSelect(Menu):
         
         CharacterHUD(self) # HUD
         
-        self.elements = [] # Lists
+        #~ self.elements = [] # Lists
+        self.buy_list = None
+        self.sell_list = None
         self.draw_store_lists()
         
         self.keypressArray = [
@@ -313,49 +315,57 @@ class StoreScreenSelect(Menu):
             'height': 80
         }
     
+    def draw_list(self, draw_type):
+        if draw_type == 'buy':
+            # Remove old
+            if self.buy_list != None:
+                self.scene.remove_child(self.buy_list)
+            # List of items for sale.
+            x = PygameUI.List(self.store.inventory.item_count_buy())
+            x.frame = pygame.Rect(
+                    (Menu.scene.frame.w // 2)-200, 140, 400,
+                    Menu.scene.frame.h -220)
+            x.frame.w = x.container.frame.w
+            x.border_width = 1
+            x.container.draggable = True
+            x.callback_function = self.click_buy
+            self.scene.add_child(x)
+            #~ self.elements.append(x)
+            self.buy_list = x
+        elif draw_type == 'sell':
+            # Remove old
+            if self.sell_list != None:
+                self.scene.remove_child(self.sell_list)
+            # List of items to sell.
+            x = PygameUI.List(cf.gs.game.character.inventory.
+                              item_count_sell())
+            x.frame = pygame.Rect(
+                    (Menu.scene.frame.w // 2), 140, 400,
+                    Menu.scene.frame.h -220)
+            x.frame.w = x.container.frame.w
+            x.border_width = 1
+            x.container.draggable = True
+            x.callback_function = self.click_sell
+            self.scene.add_child(x)
+            #~ self.elements.append(x)
+            self.sell_list = x
+        
     def draw_store_lists(self):
         ''' This displays the items that are for sale in the store.
         '''
-        # Remove old elements, if they exist (on update lists).
-        if len(self.elements) != 0:
-            for l in self.elements:
-                self.scene.remove_child(l)
-        self.elements = []
-        
         # Title for list.
         x = PygameUI.Label('Click to Buy')
         x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 100, 400,
                               Menu.scene.frame.h -220)
         self.scene.add_child(x)
-        self.elements.append(x)
-        # List of items for sale.
-        x = PygameUI.List(self.store.inventory.item_count_buy())
-        x.frame = pygame.Rect((Menu.scene.frame.w // 2)-200, 140, 400,
-                              Menu.scene.frame.h -220)
-        x.frame.w = x.container.frame.w
-        x.border_width = 1
-        x.container.draggable = True
-        x.callback_function = self.click_buy
-        self.scene.add_child(x)
-        self.elements.append(x)
-        
         # Title for list.
         x = PygameUI.Label('Click to Sell')
         x.frame = pygame.Rect((Menu.scene.frame.w // 2), 100, 400,
                               Menu.scene.frame.h -220)
         self.scene.add_child(x)
-        self.elements.append(x)
-        # List of items to sell.
-        x = PygameUI.List(cf.gs.game.character.inventory.
-                          item_count_sell())
-        x.frame = pygame.Rect((Menu.scene.frame.w // 2), 140, 400,
-                              Menu.scene.frame.h -220)
-        x.frame.w = x.container.frame.w
-        x.border_width = 1
-        x.container.draggable = True
-        x.callback_function = self.click_sell
-        self.scene.add_child(x)
-        self.elements.append(x)
+        # Add lists
+        self.draw_list('buy')
+        self.draw_list('sell')
         
     def process_before_unload(self,chosen_position):
         '''Reset location.active_store_idx before leaving.
@@ -370,7 +380,7 @@ class StoreScreenSelect(Menu):
         return True
         
     def click_buy(self, selected_index, selected_value,
-                  selected_item):
+                  selected_item, child):
         '''Try to buy the clicked item.
             Variables:
                 Character cash: (cf.gs.game.character.inventory.
@@ -381,10 +391,10 @@ class StoreScreenSelect(Menu):
                 now to reset character's selected housing and transit,
                 at least for simplicity (reset_modes).
         '''
-        cf.gs.game.character.reset_modes()
+        c = cf.gs.game.character
+        c.reset_modes()
         cost = selected_item.calculate_purchase_cost()
-        cash = (cf.gs.game.character.inventory.
-                sorted_items['cash'].amount)
+        cash = c.inventory.sorted_items['cash'].amount
         print 'cost',cost
         print 'cash',cash
         if cash < cost:
@@ -392,32 +402,34 @@ class StoreScreenSelect(Menu):
                        self.click_no_change)
             return
         # Enough cash, so...
-        (cf.gs.game.character.inventory.sorted_items['cash'].
-         amount) -= cost
-        (cf.gs.game.character.inventory.
-         update_or_add_item(selected_item))
+        c.inventory.sorted_items['cash'].amount -= cost
+        c.inventory.update_or_add_item(selected_item)
         self.store.inventory.remove_item(selected_item)
         # Redraw lists.
-        self.draw_store_lists()
+        self.draw_list('sell')
         # Redraw HUD
         cf.gs.game.character_hud.draw_elements()
-    
+        # Remove child
+        self.buy_list.remove_selected(child)
+        
     def click_sell(self, selected_index, selected_value,
-                   selected_item):
+                   selected_item, child):
         '''Sell the clicked item.
         It is probably necessary for now to reset character's selected
         housing and transit, at least for simplicity (reset_modes).
         '''
-        cf.gs.game.character.reset_modes()
+        c = cf.gs.game.character
+        c.reset_modes()
         cost = selected_item.calculate_resale_cost()
-        (cf.gs.game.character.inventory.sorted_items['cash'].
-         amount) += cost
-        cf.gs.game.character.inventory.remove_item(selected_item)
+        c.inventory.sorted_items['cash'].amount += cost
+        c.inventory.remove_item(selected_item)
         self.store.inventory.update_or_add_item(selected_item)
         # Redraw lists.
-        self.draw_store_lists()
+        self.draw_list('buy')
         # Redraw HUD
         cf.gs.game.character_hud.draw_elements()
+        # Remove child
+        self.sell_list.remove_selected(child)
         
     def click_no_change(self, confirm):
         '''Do nothing.
@@ -637,7 +649,7 @@ class EventScreen(Menu):
                 self.alert(m, ['OK'])
 
     def click_event_list(self, selected_index,
-        selected_value, selected_item):
+        selected_value, selected_item, child):
         '''
         This will show the events text after you click the event
         '''
@@ -1374,7 +1386,7 @@ class CharacterHUD:
         self.elements.append(x)
         
     def click_housing(self, selected_index, selected_value,
-                      selected_item):
+                      selected_item, child):
         '''Update cf.gs.game.character.selected_house_idx and
         cf.gs.game.character.selected_house.
         Make an alert here saying that it will take X hours to move.
@@ -1407,7 +1419,7 @@ class CharacterHUD:
         ['Yes, change housing.', 'No, stay put.'], self.click_alert)
         
     def test_list(self, selected_index, selected_value,
-                  selected_item):
+                  selected_item, child):
         '''This tests adding a list element to an alert box.
         self.current_menu.alert('Test alert.', ['OK'],
         self.click_ok_button, [{'item':self,'value':'meh'}],
@@ -1421,7 +1433,7 @@ class CharacterHUD:
         print selected_item
         
     def click_transit(self, selected_index, selected_value,
-                      selected_item):
+                      selected_item, child):
         '''
         Update cf.gs.game.character.transit_mode
         '''
