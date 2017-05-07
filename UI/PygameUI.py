@@ -365,8 +365,10 @@ class List(Control):
             try:
                 # In the case that the user purchases or sells
                 # an item, it will be removed via remove_child().
-                # In which case, there is no reason to make is
-                # selected = False. 
+                # In which case, an error is raised if selected index
+                # it outside the range of container.children.
+                # That is, guard against if last item in list
+                # is removed.
                 prev = self.container.children[self._selected_index]
                 prev.selected = False
             except:
