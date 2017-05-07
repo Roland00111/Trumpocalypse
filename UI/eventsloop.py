@@ -84,8 +84,7 @@ class EventsLoop:
         there is no alerts then it returns false. If there is an
         alert than it returns true and shows the alert for the user.
         If there is an alert then stop everything except mouse down,
-        mouse up, and quit. Use continue to jump forward in
-        event_loop.
+        mouse up, and quit.
         '''
         if self.cm.scene._has_alert is True and (
             event.type == pygame.MOUSEBUTTONDOWN or
@@ -104,8 +103,8 @@ class EventsLoop:
             # Make sure to draw alert
             cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
             # and update, in the case of
-            #self.cm.process_before_unload()=False and
-            #chosen_position=True
+            # self.cm.process_before_unload()=False and
+            # chosen_position=True
             pygame.display.update()
             return True
         # If the code is down here then there is no alert.
@@ -142,7 +141,7 @@ class EventsLoop:
             # Key press events and mouse events.
             #-----------------------------------
             if event.type == KEYDOWN:
-                print(str(event.unicode))
+                #print(str(event.unicode))
                 if event.key == K_UP:
                     self.cm.draw(-1)
                 elif event.key == K_DOWN:
@@ -203,7 +202,7 @@ class EventsLoop:
                 self.cm.init(self.cm.titlesArray, cf.surface, 175) 
                 self.cm.draw()
                 self.cm.draw_menu_body()
-            # Draw scene alert.
+            # Draw scene alert on top of menu and other elements.
             if self.cm.scene._has_alert is True:
                 cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
             # Update
