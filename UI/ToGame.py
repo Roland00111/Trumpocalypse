@@ -35,6 +35,10 @@ class Game:
         #score += item.calculate_resale_cost() or some new way?
         size = len(cf.gs.game.events.inactive_events)
         score -= (size*1000)
+        # +500 for each day.
+        score += self.day_counter * 500
+        # +20000 for each term past the first one.
+        score += (self.term_count-1) * 20000
         print 'Tallied the score...'
         print (score)
         return score
