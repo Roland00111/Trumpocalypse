@@ -9,7 +9,7 @@ def main():
     pygame.init()
     pygame.display.set_caption('PyGame Snake')
 
-    window = pygame.display.set_mode((480, 480))
+    window = pygame.display.set_mode((854, 480))
     screen = pygame.display.get_surface()
     clock = pygame.time.Clock()
     font = pygame.font.Font('freesansbold.ttf', 20)

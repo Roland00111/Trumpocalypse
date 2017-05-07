@@ -17,7 +17,7 @@ DIRECTION_RIGHT = 4
 
 
 # World size
-WORLD_SIZE_X = 20
+WORLD_SIZE_X = 35
 WORLD_SIZE_Y = 20
 
 
@@ -176,6 +176,7 @@ class SnakeGame:
 
     # Resets the game
     def reset(self):
+        
         self.playing = True
         self.nextDirection = DIRECTION_UP
         self.fps = STARTING_FPS
@@ -205,8 +206,8 @@ class SnakeGame:
     # Draws the death message to the screen
     def drawDeath(self):
         self.screen.fill((255, 0, 0))
-        self.screen.blit(self.font.render("Game over! Press Space to start a new game", 1, (255, 255, 255)), (20, 150))
-        self.screen.blit(self.font.render("Your score is: %d" % self.score, 1, (255, 255, 255)), (140, 180))
+        self.screen.blit(self.font.render("Game over! Press Space to go back to day", 1, (255, 255, 255)), (200, 150))
+        self.screen.blit(self.font.render("Your score is: %d" % self.score, 1, (255, 255, 255)), (340, 180))
         pygame.display.flip()
 
     # Run the main game loop
