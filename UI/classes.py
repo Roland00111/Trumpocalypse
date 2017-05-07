@@ -2,6 +2,7 @@
 
 import pygame, random
 from pygame.locals import *
+import config as cf
 
 
 # Gams speed
@@ -176,12 +177,9 @@ class SnakeGame:
 
     # Resets the game
     def reset(self):
-        
-        self.playing = True
-        self.nextDirection = DIRECTION_UP
-        self.fps = STARTING_FPS
-        self.score = 0
-        self.snake.reset()
+        cf.arcade_game=False
+        pygame.event.post(cf.gs.first_game_event)
+
 
     # Draws snake and food objects to the screen
     def draw(self):
