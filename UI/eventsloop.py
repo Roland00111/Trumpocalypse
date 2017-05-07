@@ -3,6 +3,7 @@ import pygame
 import menu as MENU
 from pygame.locals import *
 import PygameUI
+import sys # Used for sys.exit()
 
 class EventsLoop:
     """This loop is running continuously to check for events.
