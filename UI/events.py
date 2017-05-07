@@ -48,6 +48,7 @@ class Event:
             such as hp.
         '''
         c = cf.gs.game.character
+        # Bonuses.
         for key, value in self.bonuses.iteritems():
             if key == 'hours':                     # Hours
                 cf.gs.game.mod_hours(value)
@@ -57,22 +58,25 @@ class Event:
             #Throwing in an if to catch the error from income no
             #longer being in character
             elif key == 'income':
-                cf.gs.game.character.job.income += value
+                c.job.income += value
             else:
                 print 'Modifying character attr:',key,'(',value,')'
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
+        # Bonuses by ratio.
+        # Round to one decimal when necessary.
         for key, value in self.bonuses_by_ratio.iteritems():
             if key == 'hours':
                 cf.gs.game.mod_hours(value,True)
             elif key in ITEMS.n['all_choices']:
                 c.inventory.multiply_item(str(key),float(value))
             elif key == 'income':
-                cf.gs.game.character.job.income *= value
+                c.job.income *= value
+                c.job.income = round(c.job.income, 1)
             elif key == 'housing':
-                cf.gs.game.character.inventory.house_degrade(value)
+                c.inventory.house_degrade(value)
             elif key == 'health':
-                f.gs.game.character.modifyHealth(value)  
+                c.modifyHealth(value)  
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n*value)

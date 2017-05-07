@@ -177,6 +177,7 @@ class Inventory:
         Multiply an item by a multiplier.
         Typically this would be called multiply_item('Food', 0.5).
         Which, if the character has food, reduces Food by 50%.
+        Round after mulitplying.
         
         :param str item_type: The type of item.
         :param float item_multiplier: The item amount multiplier.
@@ -184,9 +185,11 @@ class Inventory:
         item = self.contains_item(item_type)
         if item:
             if item.grouped_item is False:  # single item
-                item.remaining_uses *= item_multiplier 
+                item.remaining_uses *= item_multiplier
+                item.remaining_uses = round(item.remaining_uses, 1)
             else:                           # grouped item
                 item.amount *= item_multiplier
+                item.amount = round(item.amount, 1)
                     
     def add_item(self, item_type = None, item_amount = None):
         '''
