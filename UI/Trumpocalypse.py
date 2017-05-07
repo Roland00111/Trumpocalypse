@@ -84,10 +84,7 @@ if __name__ == '__main__':
     # Pygame.init just initializes all pygame modules.
     # This is unnecessary because we initialize only the modules
     # we need whenever necessary.
-    # pygame.init()
-    # Toggle full screen
-    # Apparently only works when running X11
-    # pygame.display.toggle_fullscreen()
-    
-    cf.surface = pygame.display.set_mode((854,480))
+    # DO NOT USE THIS:
+    #   pygame.init()
+    cf.surface = pygame.display.set_mode((854,480), HWSURFACE|DOUBLEBUF|RESIZABLE)
     GameState()

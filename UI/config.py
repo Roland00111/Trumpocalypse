@@ -12,6 +12,8 @@ music_on = True
 
 arcade_game = False
 
+window_size = (854,480)
+
 def plus_minus():
     '''
     Return a random +1 or -1.

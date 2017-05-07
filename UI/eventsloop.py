@@ -120,7 +120,9 @@ class EventsLoop:
     
     def draw_scene(self):
         """Draw the scene: PygameUI, titlesArray, and main images."""
+        #~ temp = pygame.Surface
         # Draw PygameUI.
+        #~ temp.blit(self.cm.scene.draw(), (0, 0))
         cf.surface.blit(self.cm.scene.draw(), (0, 0))
         # Draw Menu
         if self.cm.body is False:
@@ -140,10 +142,24 @@ class EventsLoop:
             cf.surface.blit(image, [-25, 235])
             image2 = pygame.image.load('trump2.png')
             cf.surface.blit(image2, [510, 235])
-            pygame.display.update()
-        else:
-            pygame.display.update()
-            
+        pygame.display.update()
+        # TODO:
+        # Testing of screen stretch on resize.
+        #~ pygame.transform.scale(cf.surface, cf.window_size)
+        #~ s = pygame.display.set_mode(
+                #~ cf.window_size, RESIZABLE)
+        #~ cf.surface.set_mode(
+                #~ cf.window_size, RESIZABLE)
+        #~ s.blit(
+        #~ cf.surface.set_mode(
+                #~ cf.window_size, RESIZABLE)
+        #~ s.blit(
+        #~ cf.surface.blit(
+            #~ pygame.transform.scale(cf.surface, cf.window_size),
+            #~ (0,0))
+        #~ pygame.display.flip()
+        #~ pygame.display.update()
+        
     def process_pygame_events(self):
         ''' This function contains our main while loop that is
         constantly checking for keyboard and mouse button presses.
@@ -174,7 +190,14 @@ class EventsLoop:
             # Key press events and mouse events.
             #-----------------------------------
             if event.type == KEYDOWN:
-                #print(str(event.unicode))
+                print 'unicode key:',event.unicode
+                print 'num key:',event.key
+                # Toggle full screen
+                # Apparently only works when running X11
+                # Does HWSURFACE|DOUBLEBUF|RESIZABLE help with this?
+                # F11 key is 292
+                if event.key == 292:
+                    pygame.display.toggle_fullscreen()
                 if event.key == K_UP:
                     self.cm.draw(-1)
                 elif event.key == K_DOWN:
@@ -184,9 +207,8 @@ class EventsLoop:
                     break
                 elif event.key == K_ESCAPE:
                     pass
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    cf.down_in
                     cf.down_in = self.cm.scene.hit(event.pos)
                     if (cf.down_in is not None and
                         not isinstance(cf.down_in, PygameUI.Scene)):
@@ -220,7 +242,10 @@ class EventsLoop:
                 #by using unicode of KEYDOWN if can be used/converted for every encoding, making it universal of sorts
             elif event.type == pygame.KEYUP:
                 self.cm.scene.key_up(event.key)
-            
+            elif event.type == pygame.VIDEORESIZE:
+                cf.window_size = event.dict['size']
+                #~ cf.surface = pygame.display.set_mode(
+                    #~ event.dict['size'],HWSURFACE|DOUBLEBUF|RESIZABLE)
             #---------------------------
             # Drawing stuff starts here.
             #---------------------------

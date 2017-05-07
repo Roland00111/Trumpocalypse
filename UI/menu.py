@@ -160,9 +160,6 @@ class Menu:
         There is only one alert allowed at a time.
         See class Alert for parameter details.
         '''
-        #~ if self.scene._has_alert:
-            #~ self.scene._has_alert = False
-
         self.scene.show_alert(message, buttons, callback_function,
                               choice_list, choice_list_callback)
 
