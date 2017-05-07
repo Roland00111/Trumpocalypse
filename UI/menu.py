@@ -1052,14 +1052,6 @@ class StoryScreen(Menu):
     place.
     '''
     def __init__(self):
-        cf.gs.game.locations.update_friend_location()
-        cf.gs.game.events.random_event() # Do a random event
-        cf.gs.game.day_counter += 1
-        cf.gs.game.month_counter += 1
-        cf.gs.game.current_day = cf.gs.game.Day()
-        cf.gs.game.current_day.eod_mods()
-        cf.gs.game.current_day.gen_date()
-
         self.warn_ask_health_pack = (
         'Warning: You are about to die!\n'+
         'Use some Health Packs to prevent your death?')
@@ -1067,13 +1059,6 @@ class StoryScreen(Menu):
         'Warning: Why did you choose not to use a health pack!?\n'+
         'Now you died!')
         self.warn_no_health_pack = 'Warning: No more health packs!\nYou died!'
-        
-        if cf.gs.game.character.health < 1:
-                    self.alert(self.warn_ask_health_pack,
-                        [ 'Use some health packs.',
-                        'Do not use any health packs.' ],
-                        self.click_use_first_aid)
-                    
         self.menu_name = '...'
         self.keypressArray = [
             DayScreen 
@@ -1081,6 +1066,15 @@ class StoryScreen(Menu):
         self.titlesArray = [
             'Start Day',
         ]
+        # Run end of month events.
+        cf.gs.game.locations.update_friend_location()
+        cf.gs.game.events.random_event() # Do a random event
+        cf.gs.game.day_counter += 1
+        cf.gs.game.month_counter += 1
+        cf.gs.game.current_day = cf.gs.game.Day()
+        cf.gs.game.current_day.eod_mods()
+        cf.gs.game.current_day.gen_date()
+        # Set body text.
         text = cf.gs.game.current_day.story_text
         self.body = {
             'text': text,
@@ -1088,7 +1082,12 @@ class StoryScreen(Menu):
             'top': 60,
             'height': 250
         }
-        
+        # Check character health.
+        if cf.gs.game.character.health < 1:
+                    self.alert(self.warn_ask_health_pack,
+                        [ 'Use some health packs.',
+                        'Do not use any health packs.' ],
+                        self.click_use_first_aid)
         
     def click_died(self, confirm):
         '''User clicked "OK". So end the game.
@@ -1111,13 +1110,14 @@ class StoryScreen(Menu):
             False if "Do not" is pressed.
         '''
         c = cf.gs.game.character
+        ci = c.inventory
         if confirm is False:
             self.alert(self.warn_ignore_health_pack, ['OK'],
                        self.click_died)
         else:
             n = 0
             while (c.health <= 0 and
-                c.inventory.use_item(INVENTORY.Item('First Aid Kit'), 1) is True
+                ci.use_item(INVENTORY.Item('First Aid Kit'), 1) is True
             ):
                 c.modifyHealth(1)
                 n += 1

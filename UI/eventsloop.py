@@ -152,7 +152,6 @@ class EventsLoop:
                     break
                 elif event.key == K_ESCAPE:
                     pass
-                    
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     cf.down_in
@@ -162,16 +161,9 @@ class EventsLoop:
                         cf.down_in.mouse_down(event.button,
                             cf.down_in.from_window_point(event.pos))
             elif event.type == pygame.MOUSEBUTTONUP:
-                '''
-                http://stackoverflow.com/questions/10990137/
-                pygame-mouse-clicking-detection
-                '''
-                if event.button == 1:                    
-                    pos = pygame.mouse.get_pos()
-                    (pressed1,pressed2,pressed3) = (pygame.mouse.
-                                                    get_pressed())
-                    print ('Mouse click: ', pos,
-                           pygame.mouse.get_pressed())
+                # http://stackoverflow.com/questions/10990137/
+                # pygame-mouse-clicking-detection
+                if event.button == 1:                 
                     # PygameUI
                     up_in = self.cm.scene.hit(event.pos)
                     if cf.down_in == up_in:
@@ -196,6 +188,7 @@ class EventsLoop:
                 #by using unicode of KEYDOWN if can be used/converted for every encoding, making it universal of sorts
             elif event.type == pygame.KEYUP:
                 self.cm.scene.key_up(event.key)
+            
             #---------------------------
             # Drawing stuff starts here.
             #---------------------------
@@ -214,17 +207,14 @@ class EventsLoop:
             if self.cm.scene._has_alert is True:
                 cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
             # Update
-            
             if hasattr(self.cm,'om') == True:
                 image = pygame.image.load('trump.png')
                 cf.surface.blit(image, [-25, 235])
                 image2 = pygame.image.load('trump2.png')
                 cf.surface.blit(image2, [510, 235])
                 pygame.display.update()
-                
             else:
                 pygame.display.update()
-            
                 
         #----------------------------
         # Enter key has been pressed.
