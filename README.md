@@ -17,6 +17,8 @@ March Goals:  Entire main story line implemented and functional. Add additional 
 
 End of Semester Goals: To add images to illustrate the story line and locations/menus.
 
+Read-the-docs automated documentation: http://trumpocalypse.readthedocs.io/en/latest/.
+
 # To play Trumpocalypse
 
 Requirements to play Trumpocalypse: You have to have downloaded python 2.7 and pygame 1.9.1
@@ -39,5 +41,3 @@ UI: The text color is unreadable. Suggest making a lighter colored box for the t
 Fun factor: want the choices that a user makes to make a bigger impact on how the game progresses."
 
 Presentation for code review: 04/14/17
-
-Read the docs automated documentation: http://trumpocalypse.readthedocs.io/en/latest/
