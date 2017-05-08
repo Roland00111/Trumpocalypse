@@ -14,6 +14,7 @@ import character as CHARACTER
 import sys
 import inventory as INVENTORY
 import game
+import classes
 
 class Menu:
     '''Original code for the menu class is from:
@@ -862,6 +863,8 @@ class SnakeScreen(Menu):
         clock=pygame.time.Clock()
         font=pygame.font.Font('freesansbold.ttf', 20)
         cf.arcade_game =game.SnakeGame(window,screen,clock,font)
+        print(cf.snake_score)
+        cf.snake_score=0
         
         
 

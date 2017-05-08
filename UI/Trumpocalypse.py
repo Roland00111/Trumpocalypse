@@ -11,6 +11,7 @@ import game
 import sys
 import ToGame as TOGAME
 
+
 if not pygame.display.get_init():
     pygame.display.init()
 

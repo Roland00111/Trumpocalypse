@@ -120,7 +120,7 @@ class SnakeGame:
         self.fps = STARTING_FPS
         self.ticks = 0
         self.playing = True
-        self.score = 0
+        #self.score = 0
 
         self.nextDirection = DIRECTION_UP
         self.sizeX = WORLD_SIZE_X
@@ -168,7 +168,9 @@ class SnakeGame:
                 self.food.remove(food)
                 self.addFood()
                 self.snake.grow()
-                self.score += len(self.snake.pieces) * 50
+                cf.snake_score += len(self.snake.pieces) * 50
+                print("hello"+str(cf.snake_score))
+
 
         # If snake collides with self or the screen boundaries, then game over
         (hx, hy) = self.snake.getHead()
@@ -205,7 +207,7 @@ class SnakeGame:
     def drawDeath(self):
         self.screen.fill((255, 0, 0))
         self.screen.blit(self.font.render("Game over! Press Space to go back to day", 1, (255, 255, 255)), (200, 150))
-        self.screen.blit(self.font.render("Your score is: %d" % self.score, 1, (255, 255, 255)), (340, 180))
+        self.screen.blit(self.font.render("Your score is: %d" % cf.snake_score, 1, (255, 255, 255)), (340, 180))
         pygame.display.flip()
 
     # Run the main game loop

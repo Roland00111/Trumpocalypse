@@ -14,6 +14,8 @@ arcade_game = False
 
 window_size = (854,480)
 
+snake_score = 0
+
 def plus_minus():
     '''
     Return a random +1 or -1.
