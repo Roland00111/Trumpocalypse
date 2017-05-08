@@ -868,32 +868,6 @@ class SnakeScreen(Menu):
         font=pygame.font.Font('freesansbold.ttf', 20)
         cf.arcade_game =game.SnakeGame(window,screen,clock,font)
         
-        c = cf.gs.game.character
-        sanity = int(cf.snake_score / 200)
-        c.sanity +=sanity
-        food = int(cf.snake_score / 200)
-        c.inventory.add_item('Food',food)
-        pie = 0
-        if cf.snake_score>2000:
-            pie = int(cf.snake_score / 2000)
-            c.inventory.add_item('Pie',pie)
-
-        if pie == True:
-            Text=('Your score was '+str(cf.snake_score)+' so you got sanity: +'+
-              str(sanity)+' food: +'+str(food)+' and pie: +'+str(pie))
-        elif cf.snake_score>1:
-            Text=('Your score was '+str(cf.snake_score)+' so you got sanity: +'+
-                str(sanity)+' and food: +'+str(food))
-        else:
-                Text=('Your score was '+str(cf.snake_score)+' so you got nothing')
-            
-        self.body = {
-            'text': Text,
-            'font_size': 44,
-            'top': 240,
-            'height': 100
-        }
-
         cf.snake_score=0
         
 class ArcadeScreen(Menu):

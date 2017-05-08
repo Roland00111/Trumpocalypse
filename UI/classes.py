@@ -206,8 +206,28 @@ class SnakeGame:
     # Draws the death message to the screen
     def drawDeath(self):
         self.screen.fill((255, 0, 0))
-        self.screen.blit(self.font.render("Game over! Press Space to go back to day", 1, (255, 255, 255)), (200, 150))
-        self.screen.blit(self.font.render("Your score is: %d" % cf.snake_score, 1, (255, 255, 255)), (340, 180))
+
+        c = cf.gs.game.character
+        sanity = int(cf.snake_score / 200)
+        c.sanity +=sanity
+        food = int(cf.snake_score / 200)
+        c.inventory.add_item('Food',food)
+        pie = 0
+        if cf.snake_score>2000:
+            pie = int(cf.snake_score / 2000)
+            c.inventory.add_item('Pie',pie)
+
+        if pie == True:
+            Text=('Your score was '+str(cf.snake_score)+' so you got sanity: +'+
+              str(sanity)+' food: +'+str(food)+' and pie: +'+str(pie))
+        elif cf.snake_score>1:
+            Text=('Your score was '+str(cf.snake_score)+' so you got sanity: +'+
+                str(sanity)+' and food: +'+str(food))
+        else:
+                Text=('Your score was '+str(cf.snake_score)+' so you got nothing')
+                
+        self.screen.blit(self.font.render(Text, 1, (255, 255, 255)), (200, 150))
+        self.screen.blit(self.font.render("Press space to continue", 1, (255, 255, 255)), (300, 180))
         pygame.display.flip()
 
     # Run the main game loop
