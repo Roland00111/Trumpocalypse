@@ -867,11 +867,27 @@ class SnakeScreen(Menu):
         clock=pygame.time.Clock()
         font=pygame.font.Font('freesansbold.ttf', 20)
         cf.arcade_game =game.SnakeGame(window,screen,clock,font)
-        print(cf.snake_score)
+        
+        c = cf.gs.game.character
+        sanity = int(cf.snake_score / 200)
+        c.sanity +=sanity
+        food = int(cf.snake_score / 200)
+        c.inventory.add_item('Food',food)
+        if cf.snake_score>2000:
+            pie = int(cf.snake_score / 2000)
+            c.inventory.add_item('Pie',pie)
+        
+        Text=('Your score was '+str(cf.snake_score)+' so you got sanity: +'+
+              str(sanity)+' food: +'+str(food)+' and pie: +'+str(pie))
+        self.body = {
+            'text': Text,
+            'font_size': 44,
+            'top': 240,
+            'height': 44
+        }
+
         cf.snake_score=0
         
-        
-
 class ArcadeScreen(Menu):
     def __init__(self):
         self.menu_name = '...'
@@ -885,6 +901,28 @@ class ArcadeScreen(Menu):
             'Back to Day',
            
         ]
+
+    def process_before_unload(self, chosen_position):
+        """Validate there are enough hours left to play the game."""
+        if chosen_position == 1:
+            # Go back to day screen
+            return True
+        # Chosen position == 0.
+        # The user wants to play the game.
+        # Is there enough day hours left to play?
+        if cf.gs.game.current_day.day_hours < 1:
+            # Alert: Not enough hours left.
+            # Alert is: Message, Buttons, Callback_Function
+            # Then return False to stay here.
+            self.alert(
+                ('Warning: There are not enough hours left to play!\n'
+                'Try again tomorrow.'), ['OK'])
+            return False
+        elif cf.gs.game.current_day.day_hours >= 1:
+            # Remove one hour from the day.
+            # Then return True to leave here and go to the game.
+            cf.gs.game.mod_hours(-1)
+            return True
         
 class HighScores(Menu):
     def __init__(self):
