@@ -607,22 +607,26 @@ class EventScreen(Menu):
         g = cf.gs.game.events
         if side == 'left':
             self.scene.remove_child(self.left_list)
-            x = PygameUI.List(g.show_inactive_events(), (200, 224, 200))
+            x = PygameUI.List(
+                g.show_inactive_events(), (200, 224, 200),
+                self.click_event_list1
+                )
             x.frame = pygame.Rect(4, 4+30, 150, Menu.scene.frame.h -8-30)
             #~ x.frame.w = x.container.frame.w
             x.border_width = 1
             x.container.draggable = True
-            x.callback_function = self.click_event_list1
             self.scene.add_child(x)
             self.left_list = x
         elif side == 'right':
             self.scene.remove_child(self.right_list)
-            x = PygameUI.List(g.show_active_events(), (200, 224, 200))
+            x = PygameUI.List(
+                g.show_active_events(), (200, 224, 200),
+                self.click_event_list2
+                )
             x.frame = pygame.Rect(Menu.scene.frame.w -154, 4+30, 150, Menu.scene.frame.h -8-30)
             #~ x.frame.w = x.container.frame.w
             x.border_width = 1
             x.container.draggable = True
-            x.callback_function = self.click_event_list2
             self.scene.add_child(x)
             self.right_list = x
             
