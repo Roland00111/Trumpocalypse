@@ -567,7 +567,6 @@ class EventScreen(Menu):
         ]
         self.titlesArray = ['Active Event','Go Back To Day']
         text = 'Select an event to continue...'
-        
         self.body = {
             'text': text,
             'font_size': 32,
@@ -587,24 +586,40 @@ class EventScreen(Menu):
         'Now you died!')
         self.warn_no_health_pack = 'Warning: No more health packs!\nYou died!'
         self.warn_event_active = 'Warning: The event is already activated!'
+        self.left_list = None
+        self.right_list = None
+        self.draw_lists()
         
+    def draw_list(self, side):
+        """Function to draw left and right event lists."""
         g = cf.gs.game.events
-        x = PygameUI.List(g.show_inactive_events(), (200, 224, 200))
-        x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
-        x.frame.w = x.container.frame.w
-        x.border_width = 1
-        x.container.draggable = True
-        x.callback_function = self.click_event_list
-        self.scene.add_child(x)
-
-        x = PygameUI.List(g.show_active_events(), (200, 224, 200))
-        x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
-        x.frame.w = x.container.frame.w
-        x.border_width = 1
-        x.container.draggable = True
-        x.callback_function = self.click_event_list
-        self.scene.add_child(x)
-
+        if side == 'left':
+            self.scene.remove_child(self.left_list)
+            x = PygameUI.List(g.show_inactive_events(), (200, 224, 200))
+            x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
+            x.frame.w = x.container.frame.w
+            x.border_width = 1
+            x.container.draggable = True
+            x.callback_function = self.click_event_list1
+            self.scene.add_child(x)
+            self.left_list = x
+        elif side == 'right':
+            self.scene.remove_child(self.right_list)
+            x = PygameUI.List(g.show_active_events(), (200, 224, 200))
+            x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
+            x.frame.w = x.container.frame.w
+            x.border_width = 1
+            x.container.draggable = True
+            x.callback_function = self.click_event_list2
+            self.scene.add_child(x)
+            self.right_list = x
+            
+    def draw_lists(self):
+        """Function to draw left and right event lists."""
+        self.selected_event = None # Reset the selected event
+        self.draw_list('left')
+        self.draw_list('right')
+        
     def click_died(self, confirm):
         '''User clicked "OK". So end the game.
         In EventsLoop this will immediately jump
@@ -626,12 +641,13 @@ class EventScreen(Menu):
             False if "Do not" is pressed.
         '''
         c = cf.gs.game.character
+        ci = c.inventory
         if confirm is False:
             self.alert(self.warn_ignore_health_pack, ['OK'], self.click_died)
         else:
             n = 0
             while (c.health <= 0 and
-                c.inventory.use_item(INVENTORY.Item('First Aid Kit'), 1) is True
+                ci.use_item(INVENTORY.Item('First Aid Kit'), 1) is True
             ):
                 c.modifyHealth(1)
                 n += 1
@@ -644,12 +660,25 @@ class EventScreen(Menu):
                     m = ("You're still alive thanks to those "
                         +str(n)+" health packs!")
                 self.alert(m, ['OK'])
+                self.draw_lists() # Redraw both event lists.
 
-    def click_event_list(self, selected_index,
+    def click_event_list1(self, selected_index,
         selected_value, selected_item, child):
         '''
         This will show the events text after you click the event
         '''
+        self.draw_list('right') # Redraw right list.
+        self.selected_event = selected_item
+        self.body['text'] = (selected_item.story_text+'\n'+
+            'Months Remaining: '+str(selected_item.months_remaining)
+        )
+
+    def click_event_list2(self, selected_index,
+        selected_value, selected_item, child):
+        '''
+        This will show the events text after you click the event
+        '''
+        self.draw_list('left') # Redraw left list.
         self.selected_event = selected_item
         self.body['text'] = (selected_item.story_text+'\n'+
             'Months Remaining: '+str(selected_item.months_remaining)
