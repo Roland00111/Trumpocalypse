@@ -17,10 +17,18 @@ March Goals:  Entire main story line implemented and functional. Add additional 
 
 End of Semester Goals: To add images to illustrate the story line and locations/menus.
 
+# To play Trumpocalypse
+
 Requirements to play Trumpocalypse: You have to have downloaded python 2.7 and pygame 1.9.1
 
+```
+$ git clone https://github.com/Roland00111/Trumpocalypse
+$ cd ./Trumpocalypse/UI
+$ python Trumpocalypse.py
+```
+Press F11 to play in full-screen mode.
 
-Presentation feedback:
+# Presentation feedback:
 "
 The only real data structures feedback is related to the ability to save and restore game state. There was also some feedback on the user interface and overall design.
 
