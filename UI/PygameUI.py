@@ -216,7 +216,7 @@ class Label(Control):
     """ This class is used for all of the scrolable lists such as the
     and the character stats.
     """
-    padding = (8, 8)
+    padding = (8, 2)
     selected_bgcolor = (255,120,71) #(200, 224, 200)
     bgcolor = Control.bgcolor
 
