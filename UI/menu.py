@@ -589,6 +589,17 @@ class EventScreen(Menu):
         self.left_list = None
         self.right_list = None
         self.draw_lists()
+        self.draw_labels()
+        
+    def draw_labels(self):
+        """Draw labels on the left and right."""
+        x = PygameUI.Label('Inactive Events')
+        x.frame = pygame.Rect(4, 4, 150, 30)
+        self.scene.add_child(x)
+        
+        x = PygameUI.Label('Active Events')
+        x.frame = pygame.Rect(Menu.scene.frame.w-150, 4, 150, 30)
+        self.scene.add_child(x)
         
     def draw_list(self, side):
         """Function to draw left and right event lists."""
@@ -596,8 +607,8 @@ class EventScreen(Menu):
         if side == 'left':
             self.scene.remove_child(self.left_list)
             x = PygameUI.List(g.show_inactive_events(), (200, 224, 200))
-            x.frame = pygame.Rect(4, 4, 150, Menu.scene.frame.h -8)
-            x.frame.w = x.container.frame.w
+            x.frame = pygame.Rect(4, 4+30, 150, Menu.scene.frame.h -8-30)
+            #~ x.frame.w = x.container.frame.w
             x.border_width = 1
             x.container.draggable = True
             x.callback_function = self.click_event_list1
@@ -606,8 +617,8 @@ class EventScreen(Menu):
         elif side == 'right':
             self.scene.remove_child(self.right_list)
             x = PygameUI.List(g.show_active_events(), (200, 224, 200))
-            x.frame = pygame.Rect(Menu.scene.frame.w -154, 4, 150, Menu.scene.frame.h -8)
-            x.frame.w = x.container.frame.w
+            x.frame = pygame.Rect(Menu.scene.frame.w -154, 4+30, 150, Menu.scene.frame.h -8-30)
+            #~ x.frame.w = x.container.frame.w
             x.border_width = 1
             x.container.draggable = True
             x.callback_function = self.click_event_list2
