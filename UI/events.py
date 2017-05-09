@@ -192,7 +192,7 @@ class Events:
                 1,0,0),
         
         Event(  'Find Supply Cache',
-                {'Food':15,'Cash':1000,'sanity':1}, {}, {},
+                {'Food':15,'Cash':1000,'sanity':1,'First Aid Kit':1}, {}, {},
                 'You were playing with your metal detector for fun and'
                 'it began to beep signifying a large metal object about'
                 ' 4 feet under the ground, against your better instincts'
