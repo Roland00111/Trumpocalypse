@@ -36,9 +36,26 @@ class Event:
         self.duration_rand_max = duration_rand_max
         # Will be changed to True at some point.
         self.activated = False
-        #self.is_over = False
-        
-        
+        # Auto-generate the stats for story text.
+        for key, value in self.bonuses.iteritems():
+            k = str(key)
+            v = str(value)
+            if value > 0:
+                # Add a plus sign
+                v = '+'+v
+            # Capitalize the first letter of key using built-in
+            # title().
+            self.story_text += '\n'+k.title()+': '+v
+        for key, value in self.bonuses_by_ratio.iteritems():
+            k = str(key)
+            v = str(value*100)
+            if value > 0:
+                # Add a plus sign
+                v = '+'+v
+            # Capitalize the first letter of key using built-in
+            # title().
+            self.story_text += '\n'+k.title()+': '+v+'%'
+            
     def process(self):
         '''Process event, each time doing months_remaining-=1.
         
@@ -114,8 +131,7 @@ class Events:
                 'to notice the waves drawing back from the coast. '
                 'You began to run for higher ground and shouted that'
                 ' you thought a Tsunami was coming. Many people did '
-                'not believe you, and it was their last action  :-1 '
-                'Health, -5 Sanity' ,
+                'not believe you, and it was their last action.' ,
                 2,0,1), #duration,duration_rand_min,
                         #duration_rand_max all in months
         
@@ -136,8 +152,7 @@ class Events:
                 'developments which increased our industrial power and'
                 'availability of work, but now it is coming back to '
                 'haunt us. The country is in a state of panic, due to'
-                'dangerous levels of CO2 in the atmosphere:  -1 Health,'
-                '-1 Sanity',
+                'dangerous levels of CO2 in the atmosphere.',
                 4,0,4),
         
         Event(  'Nuclear War',
@@ -146,7 +161,7 @@ class Events:
                 'today. Russia did not take it kindly, and has '
                 'decided to retaliate by attacking your home soil. A'
                 ' nuke has been launched and your life will '
-                'drastically change: -2 health -5 sanity -4 hours',
+                'drastically change.',
                 6,0,6),
         
         Event(  'Martial Law',
@@ -154,8 +169,7 @@ class Events:
                 'A state of emergency has been declared, and Marshall'
                 ' Law put into effect. Please remain calm and listen '
                 'to all army officials. You will help the efforts of '
-                'the country for free as it is your duty as a citizen!'
-                ': -4 hours, -2 sanity, -2500 income',
+                'the country for free as it is your duty as a citizen!',
                 4,0,8),
         
         Event(  'Zombie Apocalypse',
@@ -163,14 +177,14 @@ class Events:
                 'Some people think it was voodoo, others think a government finally'
                 'made it work. What I think, is I am going to keep my brains to myself.'
                 'Zombies have made it to the United States and you must survive until'
-                'the government can regain control: -4 hours -2 sanity -5000 income',
+                'the government can regain control.',
                 4,0,8),
         
         Event(  'You Power Sleep', {'hours':2,'sanity':2}, {}, {},
                 'You had the nicest dream last night and although you cannot'
                 'remember the specifics, you know there were puppies involved'
                 '. You have not slept this well since you had no worries in the'
-                'world and were living with your parents : +2 hours +2 sanity',
+                'world and were living with your parents.',
                 1,0,0),
         
         Event(  'Find Supply Cache',
@@ -179,7 +193,7 @@ class Events:
                 'it began to beep signifying a large metal object about'
                 ' 4 feet under the ground, against your better instincts'
                 'you decided to dig it up and found a hiddent supply cache!'
-                'Thanks doomsday prepper! +15 food +$1000 +1 sanity' ,
+                'Thanks doomsday prepper!' ,
                 1,0,0),
         
         Event(  'Puppies!!',{'Cash':-1000, 'sanity':10}, {}, {},
@@ -187,7 +201,7 @@ class Events:
                 '. For some reason, this made you think back of your first pet.'
                 'As you began missing your first dog Spot you decide to give the'
                 'Humane Society a visit. You play with some puppies '
-                'and end up taking one home: +10 sanity -1000 Cash',
+                'and end up taking one home.',
                 1,0,0),
         
         Event(  'Tax Collector',{'Cash':-1000, 'sanity':-1},
@@ -195,7 +209,7 @@ class Events:
                 'As you were cooking dinner, you heard a knock on your door.'
                 'The government had sent a tax collector because you were'
                 'overdue on your taxes. You wrote him a check for your overdue'
-                ' taxes, and the late fees: -1000$ -1 sanity Cash 60%',
+                ' taxes, and the late fees.',
                 1,0,1),
         
         Event(  'Curfew', {'hours':-4,'sanity':-2}, {}, {},
@@ -203,27 +217,27 @@ class Events:
                 'for their own safety 4 hours early every night. Some people'
                 ' believe it was an effort to save electricity, others think '
                 'it is because of dissidents. No one knows the real reason '
-                'behind the curfew... : -4 hours -2 sanity',
+                'behind the curfew...',
                 2,0,1),
         Event(  'Carnival', {'hours':-2,'sanity':10}, {}, {},
                 'Trump decided to send a carnival to your town in order to '
                 'increase his support in the area. You decided to go to the '
                 'carnival to relieve some of the stress from everything thats '
-                'happening : -2 hours +10 sanity',
+                'happening.',
                 2,0,1),
         Event(  'Death in the family',
                 {'hours':-4,'sanity':-10,'Cash':-1000}, {}, {},
                 'Everything was starting to look up when you got a phone call '
                 'from your Aunt Mable telling you your brother just died and '
                 'you had to fly home to attend '
-                'his funeral : -4 hours -10 sanity -1000 Cash',
+                'his funeral.',
                 2,0,1),
         Event(  'Project Blue',
                 {'hours':-6,'sanity':-2,'health':-1, 'income':-500}, {}, {'income':500},
                 'You were eating your lunch watching the news when they '
                 'announced that there is a pandemic happening called Project'
                 ' Blue You must prepare for the pandemic and take the proper '
-                'percautions : -6 hours -2 sanity -1 health',
+                'percautions.',
                 2,0,1),
         Event(  'EarthQuake',
                 {'hours':-4,'sanity':-5,'Cash':-500,'income':-500}, {}, {'income':500},
@@ -231,8 +245,7 @@ class Events:
                 'began to shake, you hid in the bathroom and luckily were not'
                 'harmed. You cant say the same for your neighbors; you will '
                 'never forget some of the things you saw this day. You decide'
-                'to help out your community in the reparations: hours:-4, '
-                'Sanity:-5, Cash:-500',
+                'to help out your community in the reparations:',
                 2,0,1),
         Event(  'You got an STD',
                 {'sanity':-5,'hours':-5,'health':-1,'Cash':-5000}, {}, {},
@@ -241,8 +254,7 @@ class Events:
                 'First you had to pay for the doctor, then the tests, and'
                 'then even the medication to try to get rid of it all. The'
                 'doctor said that if you are lucky it could never come back'
-                ', but who knows for sure: hours:-5, Health:-1, '
-                'Sanity:-5, Cash:-500',
+                ', but who knows for sure.',
                 2,0,1),
         ]
     
