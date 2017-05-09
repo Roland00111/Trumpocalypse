@@ -111,18 +111,21 @@ class Game:
                 cf.gs.game.character.sanity -= 1
             else:
                 cf.gs.game.character.inventory.use_housing(2)
-                
+            
+            # If cash < 0, sanity -= 1.
+            cash = cf.gs.game.character.inventory.sorted_items['cash']
+            if cash.amount < 0:
+                sanity -= 1
+                    
                 #if sanity dips under zero at the end of the day it hurts
                 #your health
             if (cf.gs.game.character.sanity <=0):
                 cf.gs.game.character.sanity = 5
                 cf.gs.game.character.modifyHealth(-1)
-
             else:
                 #Continue the events whose durations have not run out.
                 pass
-            #cf.gs.game.character.check_health()
-
+            
             # Process events.
             # Then regenerate active events.
             a = cf.gs.game.events.active_events
