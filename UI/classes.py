@@ -127,7 +127,9 @@ class SnakeGame:
         self.sizeY = WORLD_SIZE_Y
         self.food = []
         self.snake = Snake(WORLD_SIZE_X / 2, WORLD_SIZE_Y / 2, SNAKE_START_LENGTH)
-
+        self.pie=0
+        self.user_food=0
+        self.sanity=0
         self.addFood()
 
     # Adds a new piece of food to a random block
@@ -176,6 +178,24 @@ class SnakeGame:
         (hx, hy) = self.snake.getHead()
         if self.snake.collidesWithSelf() or hx < 1 or hy < 1 or hx > self.sizeX or hy > self.sizeY:
             self.playing = False
+            self.score_rewards()
+
+    def score_rewards(self):
+        c = cf.gs.game.character
+        if cf.snake_score<4000:
+            self.sanity=1
+            c.sanity +=1
+            self.user_food =1
+            c.inventory.add_item('Food',1)
+        else:
+            self.sanity = int(cf.snake_score / 8000)
+            c.sanity +=self.sanity
+            self.user_food = int(cf.snake_score / 4000)
+            c.inventory.add_item('Food',self.user_food)
+        self.pie = 0
+        if cf.snake_score>10000:
+            self.pie = int(cf.snake_score / 10000)
+            c.inventory.add_item('Pie',self.pie)
 
     # Resets the game
     def reset(self):
@@ -206,23 +226,14 @@ class SnakeGame:
     # Draws the death message to the screen
     def drawDeath(self):
         self.screen.fill((255, 0, 0))
-
-        c = cf.gs.game.character
-        sanity = int(cf.snake_score / 200)
-        c.sanity +=sanity
-        food = int(cf.snake_score / 200)
-        c.inventory.add_item('Food',food)
-        pie = 0
-        if cf.snake_score>2000:
-            pie = int(cf.snake_score / 2000)
-            c.inventory.add_item('Pie',pie)
-
-        if pie == True:
+        
+        r=self
+        if r.pie == True:
             Text=('Your score was '+str(cf.snake_score)+' so you got sanity: +'+
-              str(sanity)+' food: +'+str(food)+' and pie: +'+str(pie))
+              str(r.sanity)+' food: +'+str(r.user_food)+' and pie: +'+str(r.pie))
         elif cf.snake_score>1:
             Text=('Your score was '+str(cf.snake_score)+' so you got sanity: +'+
-                str(sanity)+' and food: +'+str(food))
+                str(r.sanity)+' and food: +'+str(r.user_food))
         else:
                 Text=('Your score was '+str(cf.snake_score)+' so you got nothing')
                 
