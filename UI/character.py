@@ -66,8 +66,7 @@ class Character:
         '''
         num = random.randint(0,1)
         if num == 0:
-            r=random.randint(0,4994)
-            self.name = names.NAMES_LIST[r]
+            self.name = random.choice(names.NAMES_LIST)
             self.health = 3
             self.strength = 5
             self.gender = 'male'
@@ -92,8 +91,7 @@ class Character:
             self.job = self.location.random_job()
             
         elif num == 1:
-            r=random.randint(0,4994)
-            self.name = names.NAMES_LIST[r]
+            self.name = random.choice(names.NAMES_LIST)
             self.health = 3
             self.strength = 1
             #why is gender important? as of now we dont have any
