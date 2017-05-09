@@ -41,7 +41,7 @@ class Game:
         score += (self.term_count-1) * 20000
         # +100 for each $10,000
         cash = cf.gs.game.character.inventory.sorted_items['cash']
-        score += int(cash.amount/10000)
+        score += 100*(int(cash.amount/10000))
         print 'Tallied the score...'
         print (score)
         return score
