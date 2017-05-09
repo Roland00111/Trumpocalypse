@@ -172,8 +172,6 @@ class SnakeGame:
                 self.snake.grow()
                 cf.snake_score += len(self.snake.pieces) * 50
                 
-
-
         # If snake collides with self or the screen boundaries, then game over
         (hx, hy) = self.snake.getHead()
         if self.snake.collidesWithSelf() or hx < 1 or hy < 1 or hx > self.sizeX or hy > self.sizeY:

@@ -108,10 +108,11 @@ class Game:
             # Housing.
             # Sanity -= 1 if staying with friends.
             # Use 2 housing each month.
-            if (cf.gs.game.character.selected_house == ('Staying with Friends')):
-                cf.gs.game.character.sanity -= 1
-            else:
-                cf.gs.game.character.inventory.use_housing(2)
+            if Game.day_counter != 0:
+                if (cf.gs.game.character.selected_house == ('Staying with Friends')):
+                    cf.gs.game.character.sanity -= 1
+                else:
+                    cf.gs.game.character.inventory.use_housing(2)
             
             # If cash < 0, sanity -= 1.
             cash = cf.gs.game.character.inventory.sorted_items['cash']

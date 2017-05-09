@@ -8,6 +8,8 @@ if not pygame.display.get_init():
     pygame.display.init()
 if not pygame.font.get_init():
     pygame.font.init()
+
+#If full screen (f11) does not work change resolution to 800x600
                 
 class GameState:
     '''There is only one GameState instance. This is created when the
