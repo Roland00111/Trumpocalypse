@@ -243,6 +243,7 @@ class SnakeGame:
 
     # Run the main game loop
     def run(self, events):
+        print events
         if not self.input(events): return False
 
         if self.playing: 
