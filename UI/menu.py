@@ -393,8 +393,8 @@ class StoreScreenSelect(Menu):
         c.reset_modes()
         cost = selected_item.calculate_purchase_cost()
         cash = c.inventory.sorted_items['cash'].amount
-        print 'cost',cost
-        print 'cash',cash
+        #print 'cost',cost
+        #print 'cash',cash
         if cash < cost:
             self.alert(self.warning_not_enough_cash, ['OK'],
                        self.click_no_change)
@@ -784,9 +784,9 @@ class CreateCharacterManual(Menu): #Not in effect yet
             #~ { MOUSEBUTTONUP: self.button_on_mouseup }
         #~ )
     
-    def select_on_mouseup(self, event):
-        print ('This is called when selecting a choice from the '+
-               'select field!')
+    #def select_on_mouseup(self, event):
+        #print ('This is called when selecting a choice from the '+
+         #      'select field!')
         
     def select_value(self,left,top,attrib_value):
         '''

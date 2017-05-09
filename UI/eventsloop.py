@@ -170,8 +170,8 @@ class EventsLoop:
         # Key press events and mouse events.
         #-----------------------------------
         if event.type == KEYDOWN:
-            print 'unicode key:',event.unicode
-            print 'num key:',event.key
+            #print 'unicode key:',event.unicode
+            #print 'num key:',event.key
             # Toggle full screen
             # Apparently only works when running X11
             # Does HWSURFACE|DOUBLEBUF|RESIZABLE help with this?

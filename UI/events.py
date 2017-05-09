@@ -82,7 +82,7 @@ class Event:
             elif key == 'income':
                 c.job.income += value
             else:
-                print 'Modifying character attr:',key,'(',value,')'
+                #print 'Modifying character attr:',key,'(',value,')'
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
         # Bonuses by ratio.

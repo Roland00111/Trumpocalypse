@@ -145,8 +145,8 @@ class Inventory:
             idx = c.transit_mode_idx - 1
             # Minus one as walking is not in this list...
             t_item = self.sorted_items['transit'][idx]
-            print 'remaining uses:',t_item.remaining_uses
-            print 'distance:',distance
+            #print 'remaining uses:',t_item.remaining_uses
+            #print 'distance:',distance
             t_item.remaining_uses -= distance
             if t_item.remaining_uses <= 0:
                 self.remove_item(t_item)

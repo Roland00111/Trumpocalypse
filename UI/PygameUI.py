@@ -198,7 +198,7 @@ class Scene(Control):
     def show_alert(self, message, buttons, btn_action, choice_list,
                    choice_list_callback):
         if self._has_alert is True: # Do not do two alerts at once (for now)
-            print 'show_alert:has alert'
+            #print 'show_alert:has alert'
             return
         alert = Alert(message, buttons, btn_action, choice_list,
                       choice_list_callback)

@@ -43,8 +43,8 @@ class Game:
         # +100 for each $10,000
         cash = cf.gs.game.character.inventory.sorted_items['cash']
         score += 100*(int(cash.amount/10000))
-        print 'Tallied the score...'
-        print (score)
+        #print 'Tallied the score...'
+        #print (score)
         return score
 
     def mod_hours(self,hours,operation=False):
@@ -60,7 +60,7 @@ class Game:
             cf.gs.game.current_day.day_hours *= hours
         if cf.gs.game.current_day.day_hours < 0:
             cf.gs.game.current_day.day_hours=0
-        print 'mod hours done:',cf.gs.game.current_day.day_hours
+        #print 'mod hours done:',cf.gs.game.current_day.day_hours
         
     class Day:
         day_hours = 16

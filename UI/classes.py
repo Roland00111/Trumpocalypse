@@ -171,7 +171,7 @@ class SnakeGame:
                 self.addFood()
                 self.snake.grow()
                 cf.snake_score += len(self.snake.pieces) * 50
-                print("hello"+str(cf.snake_score))
+                
 
 
         # If snake collides with self or the screen boundaries, then game over
@@ -243,7 +243,6 @@ class SnakeGame:
 
     # Run the main game loop
     def run(self, events):
-        print events
         if not self.input(events): return False
 
         if self.playing: 
