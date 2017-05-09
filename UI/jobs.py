@@ -333,7 +333,7 @@ class Job:
 	# Add one sanity.
 	# TODO: Make a character sanity mod function.
 	if self.hours_worked > 0:
-	    cg.gs.game.character.sanity +=1
+	    cf.gs.game.character.sanity +=1
 	
         return (self.work_events.keys()[self.random_dictPos] + ' \n'
                 + ' \nWorked: ' + str(self.hours_worked)
