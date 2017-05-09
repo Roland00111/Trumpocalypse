@@ -315,8 +315,10 @@ class Job:
         self.distances()
 
     def work(self):
-        ''' This is called when the character goes to work so it
-        decrements time and increases there cash.
+        ''' This is called when the character goes to work.
+	
+	This decrements time and increases character's cash.
+	It also bumps sanity up +1.
         '''
         self.random_dictPos = random.randint(0,
                                             len(self.work_events)-1)
@@ -326,11 +328,13 @@ class Job:
         if self.hours_worked > cf.gs.game.current_day.day_hours:
             self.hours_worked = cf.gs.game.current_day.day_hours
         cf.gs.game.mod_hours(-self.hours_worked)
-        print self.hours_worked
         self.money_made = (cf.gs.game.character.
                            earn_money( self.hours_worked))
-        print self.money_made
-
+	# Add one sanity.
+	# TODO: Make a character sanity mod function.
+	if self.hours_worked > 0:
+	    cg.gs.game.character.sanity +=1
+	
         return (self.work_events.keys()[self.random_dictPos] + ' \n'
                 + ' \nWorked: ' + str(self.hours_worked)
                 + ' \nYou made: '+ str(self.money_made))
