@@ -1,20 +1,11 @@
 import config as cf
 import pygame
-import random
-import PygameUI
-import math
-import copy
 import eventsloop as EVENTSLOOP
-from TextWrap import *
 from pygame.locals import *
-import game
-import sys
 import ToGame as TOGAME
-
 
 if not pygame.display.get_init():
     pygame.display.init()
-
 if not pygame.font.get_init():
     pygame.font.init()
                 
