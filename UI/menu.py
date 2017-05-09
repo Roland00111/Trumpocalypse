@@ -1035,7 +1035,7 @@ class DayScreen(Menu):
             'text': text,
             'font_size': 32,
             'top': 20,
-            'height': 300
+            'height': 250
         }
         
     def process_before_unload(self, chosen_position):
