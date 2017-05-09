@@ -40,16 +40,20 @@ class Event:
         for key, value in self.bonuses.iteritems():
             k = str(key)
             v = str(value)
-            if value > 0:
+            if value >= 0:
                 # Add a plus sign
                 v = '+'+v
             # Capitalize the first letter of key using built-in
             # title().
             self.story_text += '\n'+k.title()+': '+v
+        # Bonus by ratio is kind of inverted.
+        # Ex: Nuclear war. Housing goes to 80% of current value.
+        # But to the user it ought to be -20%.
+        # So the function is: -1*(1-value)*100.
         for key, value in self.bonuses_by_ratio.iteritems():
             k = str(key)
-            v = str(value*100)
-            if value > 0:
+            v = str(-1*((1-value)*100))
+            if value <= 0:
                 # Add a plus sign
                 v = '+'+v
             # Capitalize the first letter of key using built-in
