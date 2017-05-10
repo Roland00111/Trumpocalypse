@@ -228,7 +228,7 @@ class Events:
                 'increase his support in the area. You decided to go to the '
                 'carnival to relieve some of the stress from everything thats '
                 'happening.',
-                2,0,1),
+                1,0,4),
         Event(  'Death in the family',
                 {'hours':-4,'sanity':-10,'Cash':-1000}, {}, {},
                 'Everything was starting to look up when you got a phone call '
