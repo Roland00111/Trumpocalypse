@@ -1471,6 +1471,15 @@ class CharacterHUD:
             lwarn.append(
             {'item':None,'value':'Health=0!',
             'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+        cash = ci.sorted_items['cash'].amount
+        if cash > 0 and cash < 4000:
+            lwarn.append(
+            {'item':None,'value':'Low cash!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+        elif cash <= 0:
+            lwarn.append(
+            {'item':None,'value':'0 cash: Sanity-=1!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
         if len(lwarn) == 0:
             lwarn.append(
             {'item':None,'value':'Green means go!',

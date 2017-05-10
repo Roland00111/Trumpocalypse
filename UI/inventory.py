@@ -199,10 +199,6 @@ class Inventory:
         Does the item already exist in the inventory?
         If so, then add the item's stats.
         '''
-        #if new_item.grouped_item is False: # single item
-        #        new_item.remaining_uses = item_amount 
-        #    else:                               # grouped item
-        #        new_item.amount = item_amount 
         if item_type != None:
             new_item = Item(item_type)
             if item_amount == 'random':
