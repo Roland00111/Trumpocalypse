@@ -222,7 +222,7 @@ class Label(Control):
 
     def __init__(self, text=None, selected_bgcolor=(255,120,71),
                  item=None,text_color=(0,0,0),font_size=16,
-                 bgcolor=Control.bgcolor, border_color=Control.bgcolor):
+                 bgcolor=Control.bgcolor, border_color=None):
         """ Takes as parameters text as a string type, label_bgcolor
         in the form of a list using the RGB color standard, item ???,
         text_color in the form of a list using the RGB color standard,
@@ -238,8 +238,9 @@ class Label(Control):
         self.text_color = text_color
         self.padding = Label.padding
         self.item = item
-        self.border_width = 2 # TODO: Implement.
-        self.border_color = border_color # TODO: Implement.
+        if border_color != None:
+            self.border_width = 2 # TODO: Implement.
+            self.border_color = border_color # TODO: Implement.
         
     def size_of(self, text):
         """ Parameters text form of a string and this function returns
