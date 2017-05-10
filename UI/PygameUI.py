@@ -238,7 +238,7 @@ class Label(Control):
         self.text_color = text_color
         self.padding = Label.padding
         self.item = item
-        self.border_width = 0 # TODO: Implement.
+        self.border_width = 2 # TODO: Implement.
         self.border_color = border_color # TODO: Implement.
         
     def size_of(self, text):
