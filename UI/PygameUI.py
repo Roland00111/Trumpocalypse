@@ -220,15 +220,17 @@ class Label(Control):
     selected_bgcolor = (255,120,71) #(200, 224, 200)
     bgcolor = Control.bgcolor
 
-    def __init__(self, text=None, label_bgcolor=(255,120,71),
-                 item=None,text_color=(0,0,0),font_size=16):
+    def __init__(self, text=None, selected_bgcolor=(255,120,71),
+                 item=None,text_color=(0,0,0),font_size=16,
+                 bgcolor=Control.bgcolor, border_color=Control.bgcolor):
         """ Takes as parameters text as a string type, label_bgcolor
         in the form of a list using the RGB color standard, item ???,
         text_color in the form of a list using the RGB color standard,
         and font_size in the form of an integer.
         """
         Control.__init__(self)
-        self.selected_bgcolor = label_bgcolor
+        self.selected_bgcolor = selected_bgcolor
+        self.bgcolor = bgcolor
         self.interactive = False
         self.font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf'
                                         , font_size)
@@ -236,7 +238,9 @@ class Label(Control):
         self.text_color = text_color
         self.padding = Label.padding
         self.item = item
-
+        self.border_width = 0 # TODO: Implement.
+        self.border_color = border_color # TODO: Implement.
+        
     def size_of(self, text):
         """ Parameters text form of a string and this function returns
         just the size.
@@ -292,9 +296,16 @@ class List(Control):
                 label['color']=(0,0,0)
             if 'font_size' not in label:
                 label['font_size']=16
-            
-            lbl = Label(label['value'], selected_bgcolor, label['item'],
-                        label['color'],label['font_size'])
+            if 'bgcolor' not in label:
+                label['bgcolor'] = Control.bgcolor
+            if 'selected_bgcolor' not in label:
+                label['selected_bgcolor'] = selected_bgcolor
+            if 'border_color' not in label:
+                label['border_color'] = Control.bgcolor
+            lbl = Label(label['value'], label['selected_bgcolor'],
+                        label['item'],
+                        label['color'], label['font_size'],
+                        label['bgcolor'], label['border_color'])
             lbl.frame.topleft = (0, y)
             size = lbl.size_of(label['value'])
             y += size[1]

@@ -1376,7 +1376,6 @@ class CharacterHUD:
         self.elements.append(x)
         
         # Selected mode of housing.
-        # Title.
         x = PygameUI.Label('Housing:')
         x.frame = pygame.Rect(
             self.current_menu.scene.frame.w -154,
@@ -1402,7 +1401,6 @@ class CharacterHUD:
         self.elements.append(self.select_housing)
         
         # Selected mode of transit.
-        # Title.
         x = PygameUI.Label('Transit Mode:')
         x.frame = pygame.Rect(
             self.current_menu.scene.frame.w -154,
@@ -1426,6 +1424,48 @@ class CharacterHUD:
         x.callback_function = self.click_transit
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
+        
+        # DayScreen Warnings
+        x = PygameUI.Label('Warnings:')
+        x.frame = pygame.Rect(4,
+            self.current_menu.scene.frame.h -100, 150, 20)
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
+        # List of available transit types.
+        x = PygameUI.List(self.list_warnings(), (255,215,194))
+        x.frame = pygame.Rect(4,
+            self.current_menu.scene.frame.h -80, 150, 80)
+        x.frame.w = 150
+        x.border_width = 1
+        x.container.draggable = True
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
+    
+    def list_warnings(self):
+        """Return a list of helpful warnings."""
+        #list_warnings()
+        #[{'item':None,'value':'Walking'}]
+        lwarn = []
+        r = (255,0,0) # Red
+        w = (244,234,244) # White
+        g = (144,238,144) # Green
+        c = cf.gs.game.character
+        ci = c.inventory
+        f = ci.sorted_items['food'].amount
+        if f > 0 and f < 3:
+            lwarn.append(
+            {'item':None,'value':str(f)+' food remaining!','selected_bgcolor':w,'bgcolor':w,'font_size':18})
+        elif f <= 0:
+            lwarn.append(
+            {'item':None,'value':'0 food: HP -1!','selected_bgcolor':w,'bgcolor':w,'font_size':18})
+        h = cf.gs.game.character.selected_house
+        if h == 'Staying with Friends':
+            lwarn.append(
+            {'item':None,'value':'No house: Sanity -1!','selected_bgcolor':w,'bgcolor':w,'font_size':18})
+        if len(lwarn) == 0:
+            lwarn.append(
+            {'item':None,'value':'Green means go!','selected_bgcolor':g,'bgcolor':g,'font_size':18})
+        return lwarn
         
     def click_housing(self, selected_index, selected_value,
                       selected_item, child):
