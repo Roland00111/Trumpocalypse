@@ -117,7 +117,7 @@ class Game:
             # If cash < 0, sanity -= 1.
             cash = cf.gs.game.character.inventory.sorted_items['cash']
             if cash.amount < 0:
-                sanity -= 1
+                cf.gs.game.character.sanity -= 1
                     
                 #if sanity dips under zero at the end of the day it hurts
                 #your health
