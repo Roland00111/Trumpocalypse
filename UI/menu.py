@@ -1443,8 +1443,6 @@ class CharacterHUD:
     
     def list_warnings(self):
         """Return a list of helpful warnings."""
-        #list_warnings()
-        #[{'item':None,'value':'Walking'}]
         lwarn = []
         r = (255,0,0) # Red
         w = (244,234,244) # White
@@ -1452,19 +1450,31 @@ class CharacterHUD:
         c = cf.gs.game.character
         ci = c.inventory
         f = ci.sorted_items['food'].amount
-        if f > 0 and f < 3:
+        if f > 0 and f < 10:
             lwarn.append(
-            {'item':None,'value':str(f)+' food remaining!','selected_bgcolor':w,'bgcolor':w,'font_size':18})
+            {'item':None,'value':'Low food!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
         elif f <= 0:
             lwarn.append(
-            {'item':None,'value':'0 food: HP -1!','selected_bgcolor':w,'bgcolor':w,'font_size':18})
+            {'item':None,'value':'0 food: HP -1!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
         h = cf.gs.game.character.selected_house
         if h == 'Staying with Friends':
             lwarn.append(
-            {'item':None,'value':'No house: Sanity -1!','selected_bgcolor':w,'bgcolor':w,'font_size':18})
+            {'item':None,'value':'No house: Sanity -1!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+        if c.health == 1:
+            lwarn.append(
+            {'item':None,'value':'Low health!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+        elif c.health <= 0:
+            lwarn.append(
+            {'item':None,'value':'Health=0!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
         if len(lwarn) == 0:
             lwarn.append(
-            {'item':None,'value':'Green means go!','selected_bgcolor':g,'bgcolor':g,'font_size':18})
+            {'item':None,'value':'Green means go!',
+            'selected_bgcolor':g,'bgcolor':g,'font_size':20})
         return lwarn
         
     def click_housing(self, selected_index, selected_value,
