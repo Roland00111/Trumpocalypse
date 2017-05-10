@@ -1458,6 +1458,9 @@ class CharacterHUD:
             lwarn.append(
             {'item':None,'value':'0 food: HP -1!',
             'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            lwarn.append(
+            {'item':None,'value':'0 food: Sanity -1!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
         h = cf.gs.game.character.selected_house
         if h == 'Staying with Friends':
             lwarn.append(

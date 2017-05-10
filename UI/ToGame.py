@@ -108,7 +108,7 @@ class Game:
             # Housing.
             # Sanity -= 1 if staying with friends.
             # Use 2 housing each month.
-            if Game.day_counter != 0:
+            if cf.gs.game.day_counter != 1:
                 if (cf.gs.game.character.selected_house == ('Staying with Friends')):
                     cf.gs.game.character.sanity -= 1
                 else:
