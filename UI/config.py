@@ -9,11 +9,8 @@ surface = None
 down_in = None 
 # Global variable for music is on or off.
 music_on = True
-
 arcade_game = False
-
 window_size = (854,480)
-
 snake_score = 0
 
 def plus_minus():

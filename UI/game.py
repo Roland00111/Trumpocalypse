@@ -1,9 +1,6 @@
-# game.py - 3/22/2013
-
 import pygame, sys, os
 from pygame.locals import *
 from classes import *
-
 
 def main():
     pygame.init()

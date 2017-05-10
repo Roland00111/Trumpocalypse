@@ -317,23 +317,7 @@ class Item:
         self.grouped_item = True        # Default is grouped.
         self.coordinates = {}           # For mapped items.
         self.set_item(item_type)
-        
-    def use_item(self, item_type):
-        #TODO
-        '''
-        This will somehow use the item.
-        Deincroment remaining_uses, along with in game effect.
-        '''
-        pass
-    
-    def sell_item(self):
-        #TODO
-        '''
-        Sells the item based on either its remaining uses or amount
-        remaining.
-        '''
-        pass
-    
+
     def calculate_purchase_cost(self):
         '''
         Returns the purchase cost of the item or group of items.
@@ -360,7 +344,6 @@ class Item:
         :return: The sell cost of this item.
         :rtype: str.
         '''
-
         #In the case of grouped items this is:
         #   floor: [ self.resale_cost * (self.amount /
         #    self.original_amount) ]

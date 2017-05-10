@@ -298,7 +298,6 @@ class Events:
             temp.append( {'item':event,'value':event.event_text} )
         return temp
 
-    
     def events_values(self):
         '''
         Returns a list of titles of current inactive events.
@@ -347,7 +346,6 @@ class Events:
         Move an event from self.inactive_event to self.active_event.
         Assumption: Once an event is activated it stays active until
         it runs out. Then it is removed altogether.
-        
         Fire the event for the first time (event.process).
         
         :param event: The event to toggle.

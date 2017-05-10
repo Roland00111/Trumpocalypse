@@ -28,7 +28,6 @@ class Character:
 
     def earn_money ( self, num_hours ):
         '''Earn money.
-        
         Round amount to the nearest tenth.
         
         :param num_hours: The number of hours worked.

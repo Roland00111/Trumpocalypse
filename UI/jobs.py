@@ -14,7 +14,7 @@ j = {
 			"Got Call as Leaving":9.0,
 			"Done Early":7.0,
 		}
-              },
+        },
         'Therapist': {
 		'title': 'Therapist',
 		'income': 15000,
@@ -316,7 +316,6 @@ class Job:
 
     def work(self):
         ''' This is called when the character goes to work.
-	
 	This decrements time and increases character's cash.
 	It also bumps sanity up +1.
         '''

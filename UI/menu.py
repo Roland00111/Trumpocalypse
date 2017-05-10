@@ -214,16 +214,6 @@ class Menu:
             x.frame = pygame.Rect(10, 50, 150, 30)
             Menu.scene.add_child(x)
          
-        def button(self):
-            pass
-         
-        def input_box(self):
-            pass
-        
-        def number(self):
-            # What if number is a list() instead of text field?
-            pass
-    
     def remove_pui_children(self):
         '''Remove scene children one at a time.
         For each iteration of while loop remove one child from the
@@ -531,7 +521,6 @@ class GameOverScreen(Menu):
         highScore = high_score_file.readline()
         high_score_file.close()
         
-
         if finalScore > (int(highScore)):
             #Replace with new highscore
             text = ('Congratulations, new Highscore! \n '
@@ -546,9 +535,6 @@ class GameOverScreen(Menu):
                     +'Your score:'+str(finalScore)+' \n '
                     +'HighScore:'+str(highScore))
             
-    
-        
-        
         self.body = {
             'text': text,
             'font_size': 32,
@@ -915,8 +901,6 @@ class HighScores(Menu):
             Close,
         ]
 
-        
-        
         high_score_file = open('high_score.txt', 'r+')
         high_score = high_score_file.read().replace('\n', '')
         high_score_file.close()
@@ -1196,7 +1180,6 @@ class StoryScreen(Menu):
                         +str(n)+' health packs!')
                 self.alert(m, ['OK'])
             
-
 class CreateCharacter(Menu):
     '''
     This is the menu in which you decide which character creation you
@@ -1215,7 +1198,6 @@ class CreateCharacter(Menu):
             'Auto',
             'Main Menu',
         ]
-        
         
 class OpeningMenu(Menu):
     '''
@@ -1240,12 +1222,8 @@ class OpeningMenu(Menu):
             'Quit'
         ]
         
-    def box(self):
-        print 'Box'
-
 class OptionsMenu(Menu):
     """An options menu that shows lots of options.
-    
     Options such as volume control, music on and off,
     music file selection, and difficulty level.
     """
@@ -1270,7 +1248,6 @@ class OptionsMenu(Menu):
         
     def add_button(self, first_run = False):
         """Add a button that toggles music config setting.
-        
         Do not start or stop the music when first arriving
         at this menu.
         
@@ -1312,6 +1289,7 @@ class Close(Menu):
         pygame.display.quit()
         pygame.quit()
         sys.exit()
+        
 class EndGame(Menu):
     def __init__(self):
         self.titlesArray = [

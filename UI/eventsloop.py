@@ -162,7 +162,6 @@ class EventsLoop:
     
     def process_key_and_mouse(self, event):
         """Process mouse events and key events.
-        
         If the Enter key is pressed then return the chosen
         menu position. Otherwise, return None.
         """
