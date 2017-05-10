@@ -1471,6 +1471,10 @@ class CharacterHUD:
             lwarn.append(
             {'item':None,'value':'Health=0!',
             'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+        if len(cf.gs.game.events.inactive_events) == 5:
+            lwarn.append(
+            {'item':None,'value':'5 events: Activating!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
         cash = ci.sorted_items['cash'].amount
         if cash > 0 and cash < 4000:
             lwarn.append(
