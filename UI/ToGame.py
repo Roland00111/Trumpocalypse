@@ -117,7 +117,7 @@ class Game:
                 #if sanity dips under zero at the end of the day it hurts
                 #your health
             if (cf.gs.game.character.sanity <=0):
-                cf.gs.game.character.modifySanity(5)
+                cf.gs.game.character.modifySanity(5,true)
                 cf.gs.game.character.modifyHealth(-1)
                 # Add notice
                 cf.gs.game.notices.add('Sanity bottomed out!')

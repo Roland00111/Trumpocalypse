@@ -56,14 +56,25 @@ class Character:
         elif number < 0:
             cf.gs.game.notices.add('HP '+str(number)+s)
     
-    def modifySanity(self, number):
-        self.sanity += number
+    def modifySanity(self, number, absolute=False):
+        """Modifies sanity of the character.
+        
+        When absolute is false it is added.
+        When absolute is true it is set to number.
+        """
+        if !absolute:
+            self.sanity += number
+        else:
+            self.sanity = number
         # Add notice.
-        s = ' ('+str(self.sanity)+')'
-        if number >= 0:
-            cf.gs.game.notices.add('Sanity +'+str(number)+s)
-        elif number < 0:
-            cf.gs.game.notices.add('Sanity '+str(number)+s)
+        if !absolute:
+            s = ' ('+str(self.sanity)+')'
+            if number >= 0:
+                cf.gs.game.notices.add('Sanity +'+str(number)+s)
+            elif number < 0:
+                cf.gs.game.notices.add('Sanity '+str(number)+s)
+        elif absolute:
+            cf.gs.game.notices.add('Sanity set to '+str(number))
             
     def reset_modes(self):
         '''Reset transit and housing type to original values.
