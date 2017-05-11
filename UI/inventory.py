@@ -32,7 +32,7 @@ class Inventory:
             house.remaining_uses *= ratio
         if len(self.sorted_items['housing']) > 0:
             # Add notice.
-            cf.gs.game.notices.add('Housing degraded:',str((1-ratio)*100)+'%')
+            cf.gs.game.notices.add('Housing degraded:'+str((1-ratio)*100)+'%')
         
     def show_main_items(self):
         """Returns list of main items for CharacterHUD (top right)."""

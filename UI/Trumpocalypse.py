@@ -18,17 +18,9 @@ if fullscreen:
 else:
     depth = 16
     flags = SWSURFACE | DOUBLEBUF
-#~ modes = pygame.display.list_modes(depth, flags)
-#pygame.init()
-modes = pygame.display.list_modes(0)
+flags = FULLSCREEN | HWSURFACE | DOUBLEBUF
+modes = pygame.display.list_modes(0,flags)
 print modes
-
-#~ modes = pygame.display.list_modes(8)
-#~ print modes
-#~ modes = pygame.display.list_modes(16)
-#~ print modes
-#~ modes = pygame.display.list_modes(24)
-#~ print modes
 
 class GameState:
     '''There is only one GameState instance. This is created when the
@@ -99,5 +91,5 @@ if __name__ == '__main__':
     # we need whenever necessary.
     # DO NOT USE THIS:
     #   pygame.init()
-    cf.surface = pygame.display.set_mode((854,480), SWSURFACE|DOUBLEBUF|RESIZABLE)
+    cf.surface = pygame.display.set_mode((854,480), HWSURFACE|DOUBLEBUF|RESIZABLE|FULLSCREEN)
     GameState()
