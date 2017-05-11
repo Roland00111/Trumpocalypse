@@ -41,7 +41,6 @@ class Character:
         amount = round(self.job.income * (num_hours / 8), 1)
         self.inventory.add_item('Cash', amount)
         # Add notice. (Remember notices are in reverse order.)
-        cf.gs.game.notices.add(' +1 Sanity')
         cf.gs.game.notices.add(' Made $'+str(amount))
         cf.gs.game.notices.add('Worked '+str(num_hours)+' hours')
         return amount
