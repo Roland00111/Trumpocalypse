@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import config as cf
 """ This file contains the Classes Signal, Control, Scene, Label, List
 TextField, Alert, and Button. These classes all work together to
 display the user interface.
@@ -80,8 +81,10 @@ class Control(object):
             child.update(dt)
 
     def draw(self):
-        surf = pygame.surface.Surface(self._frame.size)
+        surf = pygame.surface.Surface(cf.curr_window_size)
+        #~ surf = pygame.surface.Surface(self._frame.size)
         surf.fill(self.bgcolor)
+        surf.fill((255,0,0))
         for child in self.children:
             if child.hidden:
                 continue
@@ -170,7 +173,8 @@ class Control(object):
 class Scene(Control):
     def __init__(self):
         Control.__init__(self)
-        self._frame = pygame.Rect((0, 0), (854,480))
+        self._frame = pygame.Rect((0, 0), cf.curr_window_size)
+        #~ self._frame = pygame.Rect((0, 0), (854,480))
         self._focus = None
         self._has_alert = False
         self._alert = None
@@ -197,13 +201,13 @@ class Scene(Control):
 
     def show_alert(self, message, buttons, btn_action, choice_list,
                    choice_list_callback):
-        if self._has_alert is True: # Do not do two alerts at once (for now)
-            #print 'show_alert:has alert'
+        if self._has_alert is True:
+            # Do not do two alerts at once (for now)
             return
         alert = Alert(message, buttons, btn_action, choice_list,
                       choice_list_callback)
-        alert.frame = pygame.Rect(0, 0, self.frame.w, max(120,
-                                            self.frame.h // 3))
+        alert.frame = pygame.Rect(0, 0, self.frame.w,
+                      max(120,self.frame.h // 3))
         self._has_alert = True   
         self._alert = alert      
         self.add_child(alert)
@@ -553,7 +557,6 @@ class Alert(Control):
             self.frame.h += 110
 
     def dismiss(self):
-        #~ self.scene._has_alert = False # Moved into press function.
         self.scene.remove_child(self)
         
     def press(self, yes_or_no):
