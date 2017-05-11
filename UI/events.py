@@ -81,6 +81,8 @@ class Event:
             #longer being in character
             elif key == 'income':
                 c.job.income += value
+            elif key == 'health':
+                c.modifyHealth(value)
             else:
                 #print 'Modifying character attr:',key,'(',value,')'
                 n = getattr(c,str(key))
@@ -359,4 +361,6 @@ class Events:
         # Add to active events if months remain > 0.
         if event.months_remaining > 0:
             self.active_events.append(event)
+        # Add notice
+        cf.gs.game.notices.add('Event activated: '+str(event.event_text))
 
