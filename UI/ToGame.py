@@ -127,21 +127,15 @@ class Game:
             
             # Process events.
             # Then regenerate active events.
-            a = cf.gs.game.events.active_events
-            for event in a:
+            ae = cf.gs.game.events.active_events
+            for event in ae:
                 event.process()
             cf.gs.game.events.regenerate_active_events()
-            
-            # Inactive events -= 1 month.
-            # TODO: Test this. Is is good? Bad?
-            i = cf.gs.game.events.inactive_events
-            for event in a:
-                event.months_remaining -= 1
                 
             # If events are > 5, toggle a random event.
-            i = cf.gs.game.events.inactive_events
-            if len(i) > 5:
-                event = random.choice(i)
+            ie = cf.gs.game.events.inactive_events
+            if len(ie) > 5:
+                event = random.choice(ie)
                 cf.gs.game.events.toggle_event(event)
                           
         def gen_date(self):

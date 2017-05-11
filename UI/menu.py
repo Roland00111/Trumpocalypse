@@ -1068,6 +1068,9 @@ class ElectionDay(Menu): #Use on 48,96 .... +=48
     def __init__(self):
         cf.gs.game.day_counter += 1
         cf.gs.game.month_counter += 1
+        cf.gs.game.locations.update_friend_location()
+        cf.gs.game.events.process_inactive_events()
+        cf.gs.game.events.random_event()
         cf.gs.game.current_day = cf.gs.game.Day() #Game.Day()
         cf.gs.game.current_day.eod_mods()
         cf.gs.game.current_day.gen_date()
@@ -1117,10 +1120,11 @@ class StoryScreen(Menu):
             'Start Day',
         ]
         # Run end of month events.
-        cf.gs.game.locations.update_friend_location()
-        cf.gs.game.events.random_event() # Do a random event
         cf.gs.game.day_counter += 1
         cf.gs.game.month_counter += 1
+        cf.gs.game.locations.update_friend_location()
+        cf.gs.game.events.process_inactive_events()
+        cf.gs.game.events.random_event() # Do a random event
         cf.gs.game.current_day = cf.gs.game.Day()
         cf.gs.game.current_day.eod_mods()
         cf.gs.game.current_day.gen_date()

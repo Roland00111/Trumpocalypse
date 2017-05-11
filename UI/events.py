@@ -287,7 +287,8 @@ class Events:
         '''
         temp = [ ]
         for event in self.inactive_events:
-            temp.append( {'item':event,'value':event.event_text} )
+            n = event.event_text+'('+str(event.months_remaining)+')'
+            temp.append( {'item':event,'value':n} )
         return temp
 
     def show_active_events(self):
@@ -296,7 +297,8 @@ class Events:
         '''
         temp = [ ]
         for event in self.active_events:
-            temp.append( {'item':event,'value':event.event_text} )
+            n = event.event_text+'('+str(event.months_remaining)+')'
+            temp.append( {'item':event,'value':n} )
         return temp
 
     def events_values(self):
@@ -341,8 +343,24 @@ class Events:
             self.last_random_event[1] = 0
         self.inactive_events.append(event)
         # Add a notice.
-        cf.gs.game.notices.add('New Event: '+event.event_text)
+        cf.gs.game.notices.add('New: '+event.event_text)
         
+    def process_inactive_events(self):
+        """Removes one month from each inactive event.
+
+        If months remain<=0, removes event.
+        """
+        # Inactive events -= 1 month.
+        # TODO: Test this. Is is good? Bad?
+        ie = cf.gs.game.events.inactive_events
+        for key,event in enumerate(ie):
+        #~ for event in ie:
+            event.months_remaining -= 1
+            if event.months_remaining <= 0:
+                # Add notice
+                cf.gs.game.notices.add('Expired:'+event.event_text+'.')
+                del ie[key]
+
     def toggle_event(self, event):
         '''
         Move an event from self.inactive_event to self.active_event.
