@@ -1,7 +1,14 @@
+try:
+    import pygame_sdl2
+    pygame_sdl2.import_as_pygame()
+except ImportError:
+    print 'Import pygame sdl2 error.'
+    pass
+    
 import random
 import math
 import pygame
-import pygame.midi
+#import pygame.midi
 
 gs = None # Previously: game_state
 surface = None

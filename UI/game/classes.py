@@ -1,5 +1,11 @@
 #classes.py - 3/22/2013
-
+try:
+    import pygame_sdl2
+    pygame_sdl2.import_as_pygame()
+except ImportError:
+    print 'Import pygame sdl2 error.'
+    pass
+    
 import pygame, random
 from pygame.locals import *
 

@@ -1,3 +1,10 @@
+try:
+    import pygame_sdl2
+    pygame_sdl2.import_as_pygame()
+except ImportError:
+    print 'Import pygame sdl2 error.'
+    pass
+    
 import config as cf
 import pygame
 import menu as MENU
