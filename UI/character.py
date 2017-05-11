@@ -77,7 +77,7 @@ class Character:
         # House title, default='Staying with Friends'
         self.selected_house = 'Staying with Friends'    
         # Add notice.
-        cf.gs.game.notices.add('Transit mode reset!')
+        cf.gs.game.notices.add('Transit reset!')
         cf.gs.game.notices.add('Housing reset!')
         
     def randomGenerate(self):
