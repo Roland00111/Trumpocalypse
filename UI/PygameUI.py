@@ -81,11 +81,9 @@ class Control(object):
             child.update(dt)
 
     def draw(self):
-        surf = pygame.surface.Surface(cf.curr_window_size)
-        print '-cf.curr_window_size',cf.curr_window_size
-        #~ surf = pygame.surface.Surface(self._frame.size)
+        #~ surf = pygame.surface.Surface(cf.curr_window_size)
+        surf = pygame.surface.Surface(self._frame.size)
         surf.fill(self.bgcolor)
-        #~ surf.fill((255,0,0))
         for child in self.children:
             if child.hidden:
                 continue
