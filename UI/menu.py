@@ -1466,57 +1466,58 @@ class CharacterHUD:
     def list_warnings(self):
         """Return a list of helpful warnings."""
         lwarn = []
-        r = (255,0,0) # Red
+        r = (220,0,0) # Red
         w = (244,234,244) # White
         g = (144,238,144) # Green
+        w = (255,255,255) # White
         c = cf.gs.game.character
         ci = c.inventory
         f = ci.sorted_items['food'].amount
         if f > 0 and f < 10:
             lwarn.append(
             {'item':None,'value':'Low food!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20,'color':w})
         elif f <= 0:
             lwarn.append(
             {'item':None,'value':'0 food: HP -1!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20,'color':w})
             lwarn.append(
             {'item':None,'value':'0 food: Sanity -1!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20,'color':w})
         h = cf.gs.game.character.selected_house
         if h == 'Staying with Friends':
             lwarn.append(
             {'item':None,'value':'No house: Sanity -1!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':r,'bgcolor':r,'font_size':20,'color':w})
         if c.health == 1:
             lwarn.append(
             {'item':None,'value':'Low health!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20,'color':w})
         elif c.health <= 0:
             lwarn.append(
             {'item':None,'value':'0 health!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20,'color':w})
         if len(cf.gs.game.events.inactive_events) == 5:
             lwarn.append(
             {'item':None,'value':'5 events: Activating!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20,'color':w})
         if c.sanity > 0 and c.sanity < 10:
             lwarn.append(
             {'item':None,'value':'Low sanity!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20,'color':w})
         elif c.sanity <= 0:
             lwarn.append(
             {'item':None,'value':'0 sanity!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20,'color':w})
         cash = ci.sorted_items['cash'].amount
         if cash > 0 and cash < 4000:
             lwarn.append(
             {'item':None,'value':'Low cash!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20,'color':w})
         elif cash <= 0:
             lwarn.append(
             {'item':None,'value':'0 cash: Sanity-=1!',
-            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20,'color':w})
         if len(lwarn) == 0:
             lwarn.append(
             {'item':None,'value':'Green means go!',

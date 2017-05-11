@@ -343,7 +343,7 @@ class Events:
             self.last_random_event[1] = 0
         self.inactive_events.append(event)
         # Add a notice.
-        cf.gs.game.notices.add('New: '+event.event_text)
+        cf.gs.game.notices.add('New:'+event.event_text)
         
     def process_inactive_events(self):
         """Removes one month from each inactive event.
@@ -358,7 +358,7 @@ class Events:
             event.months_remaining -= 1
             if event.months_remaining <= 0:
                 # Add notice
-                cf.gs.game.notices.add('Expired:'+event.event_text+'.')
+                cf.gs.game.notices.add('Expired:'+event.event_text)
                 del ie[key]
 
     def toggle_event(self, event):

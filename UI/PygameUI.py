@@ -20,7 +20,7 @@ class Signal(object):
 class Control(object):
     #~ bgcolor = (255,120,71)
     bgcolor = (255,215,194) #(255, 255, 255)
-    border_color = (200, 200, 200)
+    border_color = (160, 160, 160)
 
     def __init__(self):
         self._frame = pygame.Rect(0, 0, 0, 0)
@@ -219,7 +219,7 @@ class Label(Control):
     """ This class is used for all of the scrolable lists such as the
     and the character stats.
     """
-    padding = (8, 2)
+    padding = (4, 2)
     selected_bgcolor = (255,120,71) #(200, 224, 200)
     bgcolor = Control.bgcolor
 

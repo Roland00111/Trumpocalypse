@@ -227,15 +227,16 @@ class Notices:
     def display(self):
         """Return up to twenty current notices for display."""
         lnotice = []
-        w = (244,234,244) # White
-        g = (144,238,144) # Green
+        #~ w = (244,234,244) # White
+        #~ g = (144,238,144) # Green
+        o = (255,215,194) # Orange
         count = 0
         for notice in reversed(self.n):
             # Iterate in reverse so that the newest notices
             # are displayed first.
             lnotice.append(
             {'item':None,'value':notice,
-            'selected_bgcolor':w,'bgcolor':w,'font_size':18})
+            'selected_bgcolor':o,'bgcolor':o,'font_size':18})
             if count >= 20: # 0-19
                 break
             count += 1
