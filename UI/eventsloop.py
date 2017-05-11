@@ -239,8 +239,8 @@ class EventsLoop:
             # Take the average ratio.
             # Max(rx,ry) is another solution to this.
             cf.rcombined = (cf.rx+cf.ry)/2
-            #~ MENU.Menu.scene._frame = (
-                #~ pygame.Rect((0, 0), cf.curr_window_size))
+            MENU.Menu.scene._frame = (
+                pygame.Rect((0, 0), cf.curr_window_size))
         return None
         
     def process_pygame_events(self):
