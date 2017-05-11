@@ -51,18 +51,20 @@ class Character:
     def modifyHealth(self, number):
         self.health += number
         # Add notice.
+        s = ' ('+str(self.health)+')'
         if number >= 0:
-            cf.gs.game.notices.add('HP +'+str(number))
+            cf.gs.game.notices.add('HP +'+str(number)+s)
         elif number < 0:
-            cf.gs.game.notices.add('HP '+str(number))
+            cf.gs.game.notices.add('HP '+str(number)+s)
     
     def modifySanity(self, number):
         self.sanity += number
         # Add notice.
+        s = ' ('+str(self.sanity)+')'
         if number >= 0:
-            cf.gs.game.notices.add('Sanity +'+str(number))
+            cf.gs.game.notices.add('Sanity +'+str(number)+s)
         elif number < 0:
-            cf.gs.game.notices.add('Sanity '+str(number))
+            cf.gs.game.notices.add('Sanity '+str(number)+s)
             
     def reset_modes(self):
         '''Reset transit and housing type to original values.
