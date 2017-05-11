@@ -110,14 +110,15 @@ class Menu:
             if self.PositionSelection == -1:
                 self.PositionSelection = self.Quanity - 1
             self.PositionSelection %= self.Quanity
-        menu = pygame.Surface((self.menu_width, self.menu_height))
-        menu.fill(self.BackgroundColor)
+        dm = (self.menu_width*cf.rx, self.menu_height*cf.ry)
+        menu = pygame.Surface(dm)
+        #~ menu.fill(self.BackgroundColor)
         Selection_rect = self.by[self.PositionSelection].Selection_rect
         pygame.draw.rect(menu,self.SelectionColor,Selection_rect)
 
         for i in xrange(self.Quanity):
-            menu.blit(self.by[i].Field,self.by[i].Field_rect)
-        self.dest_surface.blit(menu,self.Position)
+            menu.blit(self.by[i].Field, self.by[i].Field_rect)
+        self.dest_surface.blit(menu, self.Position)
         return self.PositionSelection
 
     def CreateStructure(self, height_top):
@@ -126,7 +127,8 @@ class Menu:
         '''
         shift = 0
         self.menu_height = 0
-        self.font = pygame.font.Font(self.font_path, self.FontSize)
+        tmp_fontsz = int(self.FontSize*cf.rcombined)
+        self.font = pygame.font.Font(self.font_path, tmp_fontsz)
         for i in xrange(self.Quanity):
             self.by.append(self.Field())
             self.by[i].text = self.lista[i]
@@ -134,7 +136,7 @@ class Menu:
                                                 self.TextColor)
 
             self.by[i].Field_rect = self.by[i].Field.get_rect()
-            shift = int(self.FontSize * 0.2)
+            shift = int(tmp_fontsz * 0.2)
 
             height = self.by[i].Field_rect.height
             self.by[i].Field_rect.left = shift
@@ -153,7 +155,7 @@ class Menu:
         y = self.dest_surface.get_rect().centery-self.menu_height/2
         y = y + height_top # Add top offset
         mx, my = self.Position
-        self.Position = (x+mx, y+my) 
+        self.Position = ((x+mx)*cf.rx, (y+my)*cf.ry)
     
     def alert(self, message, buttons, callback_function=None,
               choice_list=None, choice_list_callback=None):

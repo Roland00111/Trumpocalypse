@@ -238,10 +238,9 @@ class EventsLoop:
             cf.rx = 1.0*event.dict['size'][0] / cf.window_size[0]
             cf.ry = 1.0*event.dict['size'][1] / cf.window_size[1]
             cf.curr_window_size = event.dict['size']
-            #~ print 'event.dict size',event.dict['size']
-            #~ print 'window size',cf.window_size
-            #~ print 'rx',cf.rx
-            #~ print 'ry',cf.ry
+            # Take the average ratio.
+            # Max(rx,ry) is another solution to this.
+            cf.rcombined = (cf.rx+cf.ry)/2
         return None
         
     def process_pygame_events(self):

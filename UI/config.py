@@ -15,6 +15,7 @@ window_size = (854,480)      # Static
 curr_window_size = (854,480) # Dynamic
 rx = 1 # Ratio for screen size
 ry = 1 # Ratio for screen size
+rcombined = 1 # Ratio combined X and Y
 
 def plus_minus():
     '''
