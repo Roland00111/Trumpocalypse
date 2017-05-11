@@ -1434,7 +1434,7 @@ class CharacterHUD:
         # List of notices.
         x = PygameUI.List(cf.gs.game.notices.display(), (255,215,194)) 
         x.frame = pygame.Rect(4,
-            self.current_menu.scene.frame.h -180, 150, 80)
+            self.current_menu.scene.frame.h -180, 150, 180)
         x.frame.w = 150
         x.border_width = 1
         x.container.draggable = True
@@ -1444,13 +1444,13 @@ class CharacterHUD:
         # DayScreen Warnings
         x = PygameUI.Label('Warnings:')
         x.frame = pygame.Rect(4,
-            self.current_menu.scene.frame.h -100, 150, 20)
+            self.current_menu.scene.frame.h -300, 150, 20)
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
         # List of warnings.
         x = PygameUI.List(self.list_warnings(), (255,215,194))
         x.frame = pygame.Rect(4,
-            self.current_menu.scene.frame.h -80, 150, 80)
+            self.current_menu.scene.frame.h -280, 150, 80)
         x.frame.w = 150
         x.border_width = 1
         x.container.draggable = True
