@@ -182,12 +182,12 @@ class SnakeGame:
         c = cf.gs.game.character
         if cf.snake_score<4000:
             self.sanity=1
-            c.sanity +=1
+            c.modifySanity(1)
             self.user_food =1
             c.inventory.add_item('Food',1)
         else:
             self.sanity = int(cf.snake_score / 8000)
-            c.sanity +=self.sanity
+            c.modifySanity(self.sanity)
             self.user_food = int(cf.snake_score / 4000)
             c.inventory.add_item('Food',self.user_food)
         self.pie = 0
