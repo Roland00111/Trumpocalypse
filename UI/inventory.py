@@ -34,6 +34,18 @@ class Inventory:
             # Add notice.
             cf.gs.game.notices.add('Housing degraded:',str((1-ratio)*100)+'%')
         
+    def show_main_items(self):
+        """Returns list of main items for CharacterHUD (top right)."""
+        storage = []
+        for item in self.items:
+            if item.item_type in ITEMS.n['housing_types']:
+                continue
+            if item.item_type in ITEMS.n['transit_types']:
+                continue
+            storage.append({'item':item, 'value': item.item_type +
+                            ': ' + item.show_amount()})
+        return storage
+        
     def item_count(self):
         '''
         Iterates throught self.items and returns a list of all
@@ -47,7 +59,7 @@ class Inventory:
     
     def item_count_buy(self):
         '''
-        Return a list of items available to buy and their buy price.
+        Returns list of items available to buy and their buy price.
         Do not allow buying of cash.
         '''
         storage = []

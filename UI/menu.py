@@ -1360,8 +1360,8 @@ class CharacterHUD:
         self.elements.append(x)
 
         # Character items
-        x = PygameUI.List(cf.gs.game.character.inventory.
-                          item_count(), (255,215,194))
+        ci = cf.gs.game.character.inventory
+        x = PygameUI.List(ci.show_main_items(), (255,215,194))
         #Left quite a gap at end so it is easy on the eyes when list
         #is full
         x.frame = pygame.Rect(
