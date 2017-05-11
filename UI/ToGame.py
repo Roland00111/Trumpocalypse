@@ -29,8 +29,9 @@ class Game:
         #its an error.
         self.character = None 
         self.locations = LOCATIONS.Locations()
-        self.events = EVENTS.Events()#Events() #EVENTS.Events()
-    
+        self.events = EVENTS.Events()
+        self.notices = Notices()
+        
     def tally_score(self):
         score = 10000
         #score += item.calculate_resale_cost() or some new way?
@@ -216,3 +217,36 @@ class Game:
 
         def randomDate(self,start, end, prop):
             return self.strTimeProp(start, end, '%m/%d/%Y', prop)
+
+class Notices:
+    def __init__(self):
+        """Create a list for notices."""
+        self.n = []
+        
+    def add(self, notice=""):
+        """Add a notice to be displayed."""
+        self.n.append(notice)
+        # Call CharacterHUD.__ update notices.
+        
+    def display(self):
+        """Return up to twenty current notices for display."""
+        lnotice = []
+        w = (244,234,244) # White
+        g = (144,238,144) # Green
+        count = 0
+        for notice in reversed(self.n):
+            # Iterate in reverse so that the newest notices
+            # are displayed first.
+            lnotice.append(
+            {'item':None,'value':notice,
+            'selected_bgcolor':w,'bgcolor':w,'font_size':18})
+            if count >= 20: # 0-19
+                break
+            count += 1
+        if len(lnotice) == 0:
+            return [{'item':None,'value':'No notices.'}]
+        else:
+            return lnotice
+
+
+

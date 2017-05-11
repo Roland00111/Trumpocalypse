@@ -30,7 +30,10 @@ class Inventory:
         '''
         for house in self.sorted_items['housing']:
             house.remaining_uses *= ratio
-            
+        if len(self.sorted_items['housing']) > 0:
+            # Add notice.
+            cf.gs.game.notices.add('Housing degraded:',str((1-ratio)*100)+'%')
+        
     def item_count(self):
         '''
         Iterates throught self.items and returns a list of all
@@ -153,6 +156,12 @@ class Inventory:
                 # Reset transit type.
                 # (This also resets housing type.)
                 c.reset_modes()
+        # Add notice.
+        if mode != 'Walking':
+            cf.gs.game.notices.add('Traveled '+str(distance)+' miles')
+        else:
+            cf.gs.game.notices.add('Walked '+str(distance)+' miles')
+        
         
     def remove_item(self, item):
         '''

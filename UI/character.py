@@ -28,7 +28,10 @@ class Character:
 
     def earn_money ( self, num_hours ):
         '''Earn money.
+        
         Round amount to the nearest tenth.
+        
+        Add a notice display message about this.
         
         :param num_hours: The number of hours worked.
         :type num_hours: int or float.
@@ -37,14 +40,22 @@ class Character:
         '''
         amount = round(self.job.income * (num_hours / 8), 1)
         self.inventory.add_item('Cash', amount)
+        # Add notice. (Remember notices are in reverse order.)
+        cf.gs.game.notices.add(' +1 Sanity')
+        cf.gs.game.notices.add(' Made $'+str(amount))
+        cf.gs.game.notices.add('Worked '+str(num_hours)+' hours')
         return amount
 
 #updates health, the if statement should at some point add warning popup 
 #or kill functionality of some sort to all screens. 
     def modifyHealth(self, number):
         self.health += number
-#        if (self.health <= 0):
-
+        # Add notice.
+        if number >= 0:
+            cf.gs.game.notices.add('HP +'+str(number))
+        elif number < 0:
+            cf.gs.game.notices.add('HP '+str(number))
+            
     def reset_modes(self):
         '''Reset transit and housing type to original values.
         '''
@@ -56,6 +67,9 @@ class Character:
         self.selected_house_idx = 0
         # House title, default='Staying with Friends'
         self.selected_house = 'Staying with Friends'    
+        # Add notice.
+        cf.gs.game.notices.add('Transit mode reset!')
+        cf.gs.game.notices.add('Housing reset!')
         
     def randomGenerate(self):
         ''' Eventually this will completly randomize what you get but

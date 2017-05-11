@@ -1425,13 +1425,29 @@ class CharacterHUD:
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
         
+        # DayScreen Notices
+        x = PygameUI.Label('Notices:')
+        x.frame = pygame.Rect(4,
+            self.current_menu.scene.frame.h -200, 150, 20)
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
+        # List of notices.
+        x = PygameUI.List(cf.gs.game.notices.display(), (255,215,194)) 
+        x.frame = pygame.Rect(4,
+            self.current_menu.scene.frame.h -180, 150, 80)
+        x.frame.w = 150
+        x.border_width = 1
+        x.container.draggable = True
+        self.current_menu.scene.add_child(x)
+        self.elements.append(x)
+        
         # DayScreen Warnings
         x = PygameUI.Label('Warnings:')
         x.frame = pygame.Rect(4,
             self.current_menu.scene.frame.h -100, 150, 20)
         self.current_menu.scene.add_child(x)
         self.elements.append(x)
-        # List of available transit types.
+        # List of warnings.
         x = PygameUI.List(self.list_warnings(), (255,215,194))
         x.frame = pygame.Rect(4,
             self.current_menu.scene.frame.h -80, 150, 80)
@@ -1439,8 +1455,8 @@ class CharacterHUD:
         x.border_width = 1
         x.container.draggable = True
         self.current_menu.scene.add_child(x)
-        self.elements.append(x)
-    
+        self.elements.append(x)        
+        
     def list_warnings(self):
         """Return a list of helpful warnings."""
         lwarn = []
@@ -1472,7 +1488,7 @@ class CharacterHUD:
             'selected_bgcolor':w,'bgcolor':w,'font_size':20})
         elif c.health <= 0:
             lwarn.append(
-            {'item':None,'value':'Health=0!',
+            {'item':None,'value':'0 health!',
             'selected_bgcolor':w,'bgcolor':w,'font_size':20})
         if len(cf.gs.game.events.inactive_events) == 5:
             lwarn.append(
