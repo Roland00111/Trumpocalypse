@@ -62,18 +62,18 @@ class Character:
         When absolute is false it is added.
         When absolute is true it is set to number.
         """
-        if !absolute:
+        if absolute is False:
             self.sanity += number
-        else:
+        elif absolute is True:
             self.sanity = number
         # Add notice.
-        if !absolute:
+        if absolute is False:
             s = ' ('+str(self.sanity)+')'
             if number >= 0:
                 cf.gs.game.notices.add('Sanity +'+str(number)+s)
             elif number < 0:
                 cf.gs.game.notices.add('Sanity '+str(number)+s)
-        elif absolute:
+        elif absolute is True:
             cf.gs.game.notices.add('Sanity set to '+str(number))
             
     def reset_modes(self):
