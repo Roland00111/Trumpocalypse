@@ -380,5 +380,5 @@ class Events:
         if event.months_remaining > 0:
             self.active_events.append(event)
         # Add notice
-        cf.gs.game.notices.add('Event activated: '+str(event.event_text))
+        cf.gs.game.notices.add('Activated: '+str(event.event_text))
 
