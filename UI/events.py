@@ -340,8 +340,9 @@ class Events:
         else:
             self.last_random_event[0] = event.event_text
             self.last_random_event[1] = 0
-        
         self.inactive_events.append(event)
+        # Add a notice.
+        cf.gs.game.notices.add('New Event: '+event.event_text)
         
     def toggle_event(self, event):
         '''
