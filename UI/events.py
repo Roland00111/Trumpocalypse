@@ -83,8 +83,9 @@ class Event:
                 c.job.income += value
             elif key == 'health':
                 c.modifyHealth(value)
+            elif key == 'sanity':
+                c.modifySanity(value)
             else:
-                #print 'Modifying character attr:',key,'(',value,')'
                 n = getattr(c,str(key))
                 setattr(c,str(key),n+value)
         # Bonuses by ratio.
@@ -99,8 +100,6 @@ class Event:
                 c.job.income = round(c.job.income, 1)
             elif key == 'housing':
                 c.inventory.house_degrade(value)
-            elif key == 'health':
-                c.modifyHealth(value)  
             else:
                 n = getattr(c,str(key))
                 setattr(c,str(key),n*value)
