@@ -354,7 +354,6 @@ class Events:
         # TODO: Test this. Is is good? Bad?
         ie = cf.gs.game.events.inactive_events
         for key,event in enumerate(ie):
-        #~ for event in ie:
             event.months_remaining -= 1
             if event.months_remaining <= 0:
                 # Add notice
