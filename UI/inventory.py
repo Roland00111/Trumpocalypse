@@ -148,8 +148,8 @@ class Inventory:
             idx = c.transit_mode_idx - 1
             # Minus one as walking is not in this list...
             t_item = self.sorted_items['transit'][idx]
-            #print 'remaining uses:',t_item.remaining_uses
-            #print 'distance:',distance
+            pct_used = str(round(100*distance/t_item.remaining_uses, 1))
+            pct_used += '%'
             t_item.remaining_uses -= distance
             if t_item.remaining_uses <= 0:
                 self.remove_item(t_item)
@@ -158,6 +158,7 @@ class Inventory:
                 c.reset_modes()
         # Add notice.
         if mode != 'Walking':
+            cf.gs.game.notices.add(' '+t_item.item_type+':-'+pct_used)
             cf.gs.game.notices.add('Traveled '+str(distance)+' miles')
         else:
             cf.gs.game.notices.add('Walked '+str(distance)+' miles')
