@@ -1595,22 +1595,21 @@ class CharacterHUD:
         :param boolean confirm:
         True if first button clicked, False if second button clicked.
         '''
+        c = cf.gs.game.character
         if confirm is True: # 'Yes, change...'
-            cf.gs.game.character.selected_house_idx = (self.
-                                        select_housing.selected_index)
+            c.selected_house_idx = self.select_housing.selected_index
             v = self.select_housing.selected_value
             if v == 'Staying with Friends':
-                cf.gs.game.character.selected_house = ('Staying'+
-                                                    ' with Friends')
+                c.selected_house = 'Staying with Friends'
             else:
-                cf.gs.game.character.selected_house = (v.
-                                                        split(':')[0])
+                c.selected_house = v.split(':')[0]
             # Reduce day hours.
             cf.gs.game.mod_hours(-1) 
             self.current_menu.update_body() # update menu
+            # Redraw CharacterHUD to refresh Warnings List.
+            self.draw_elements()
         elif confirm is False: # 'No, stay...'
             # Reset index of housing list.
-            self.select_housing.selected_index = (cf.gs.game.
-                                        character.selected_house_idx)
+            self.select_housing.selected_index = c.selected_house_idx
         else: # Pass
             pass
