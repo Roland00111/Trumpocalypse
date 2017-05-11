@@ -10,8 +10,11 @@ down_in = None
 # Global variable for music is on or off.
 music_on = True
 arcade_game = False
-window_size = (854,480)
 snake_score = 0
+window_size = (854,480)      # Static
+curr_window_size = (854,480) # Dynamic
+rx = 1 # Ratio for screen size
+ry = 1 # Ratio for screen size
 
 def plus_minus():
     '''

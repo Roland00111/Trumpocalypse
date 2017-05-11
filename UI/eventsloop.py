@@ -120,9 +120,7 @@ class EventsLoop:
     
     def draw_scene(self):
         """Draw the scene: PygameUI, titlesArray, and main images."""
-        #~ temp = pygame.Surface
         # Draw PygameUI.
-        #~ temp.blit(self.cm.scene.draw(), (0, 0))
         cf.surface.blit(self.cm.scene.draw(), (0, 0))
         # Draw Menu
         if self.cm.body is False:
@@ -138,10 +136,20 @@ class EventsLoop:
             cf.surface.blit(self.cm.scene.draw_alert(), (0, 0))
         # Update
         if hasattr(self.cm,'om') == True:
-            image = pygame.image.load('trump.png')
-            cf.surface.blit(image, [-25, 235])
+            image1 = pygame.image.load('trump.png')
             image2 = pygame.image.load('trump2.png')
-            cf.surface.blit(image2, [510, 235])
+            # X,Y coords
+            il = [-25*cf.rx, 235*cf.ry]
+            ir = [510*cf.rx, 235*cf.ry]
+            # Image dimensions
+            ix = [int(image1.get_width() *cf.rx),
+                  int(image1.get_height()*cf.ry)]
+            # Scale image
+            image1 = pygame.transform.scale(image1, ix)
+            image2 = pygame.transform.scale(image2, ix)
+            # Blit image
+            cf.surface.blit(image1, il)
+            cf.surface.blit(image2, ir)
         pygame.display.update()
         # TODO:
         # Testing of screen stretch on resize.
@@ -165,6 +173,8 @@ class EventsLoop:
         If the Enter key is pressed then return the chosen
         menu position. Otherwise, return None.
         """
+        print event
+        print event.type
         #-----------------------------------
         # Key press events and mouse events.
         #-----------------------------------
@@ -225,9 +235,13 @@ class EventsLoop:
         elif event.type == pygame.KEYUP:
             self.cm.scene.key_up(event.key)
         elif event.type == pygame.VIDEORESIZE:
-            cf.window_size = event.dict['size']
-            #~ cf.surface = pygame.display.set_mode(
-                #~ event.dict['size'],HWSURFACE|DOUBLEBUF|RESIZABLE)
+            cf.rx = 1.0*event.dict['size'][0] / cf.window_size[0]
+            cf.ry = 1.0*event.dict['size'][1] / cf.window_size[1]
+            cf.curr_window_size = event.dict['size']
+            #~ print 'event.dict size',event.dict['size']
+            #~ print 'window size',cf.window_size
+            #~ print 'rx',cf.rx
+            #~ print 'ry',cf.ry
         return None
         
     def process_pygame_events(self):
