@@ -1496,6 +1496,14 @@ class CharacterHUD:
             lwarn.append(
             {'item':None,'value':'5 events: Activating!',
             'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+        if c.sanity > 0 and c.sanity < 10:
+            lwarn.append(
+            {'item':None,'value':'Low sanity!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
+        elif c.sanity <= 0:
+            lwarn.append(
+            {'item':None,'value':'0 sanity!',
+            'selected_bgcolor':w,'bgcolor':w,'font_size':20})
         cash = ci.sorted_items['cash'].amount
         if cash > 0 and cash < 4000:
             lwarn.append(
@@ -1546,14 +1554,15 @@ class CharacterHUD:
         
     def test_list(self, selected_index, selected_value,
                   selected_item, child):
-        '''This tests adding a list element to an alert box.
+        """This tests adding a list element to an alert box.
+        
         self.current_menu.alert('Test alert.', ['OK'],
         self.click_ok_button, [{'item':self,'value':'meh'}],
         self.test_list)
         Either the OK button or the List is clickable.
         Clicking either one dismisses the alert, calling the relevent
         callback function (click_ok_button or test_list)
-        '''
+        """
         print selected_index
         print selected_value
         print selected_item
