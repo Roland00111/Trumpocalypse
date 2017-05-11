@@ -34,7 +34,7 @@ class Game:
         
     def tally_score(self):
         score = 10000
-        #score += item.calculate_resale_cost() or some new way?
+        # score += item.calculate_resale_cost() or some new way?
         size = len(cf.gs.game.events.inactive_events)
         score -= (size*1000)
         # +500 for each day.
@@ -44,8 +44,6 @@ class Game:
         # +100 for each $10,000
         cash = cf.gs.game.character.inventory.sorted_items['cash']
         score += 100*(int(cash.amount/10000))
-        #print 'Tallied the score...'
-        #print (score)
         return score
 
     def mod_hours(self,hours,operation=False):
@@ -61,7 +59,6 @@ class Game:
             cf.gs.game.current_day.day_hours *= hours
         if cf.gs.game.current_day.day_hours < 0:
             cf.gs.game.current_day.day_hours=0
-        #print 'mod hours done:',cf.gs.game.current_day.day_hours
         
     class Day:
         day_hours = 16
@@ -82,12 +79,9 @@ class Game:
             cf.gs.game.current_day.day_hours. As this is still
             being initialized this is still referencing the
             previous day!
-            So instead do this in StoryScreen.
+            Instead do eod_mods and gen_date in StoryScreen.
             '''
             self.day_hours = 16
-            # Does not happen here.
-            #self.eod_mods()
-            #self.gen_date()
 
         def eod_mods(self):
             '''This function checks if you have enough food to go to
@@ -137,7 +131,13 @@ class Game:
             for event in a:
                 event.process()
             cf.gs.game.events.regenerate_active_events()
-
+            
+            # Inactive events -= 1 month.
+            # TODO: Test this. Is is good? Bad?
+            i = cf.gs.game.events.inactive_events
+            for event in a:
+                event.months_remaining -= 1
+                
             # If events are > 5, toggle a random event.
             i = cf.gs.game.events.inactive_events
             if len(i) > 5:
