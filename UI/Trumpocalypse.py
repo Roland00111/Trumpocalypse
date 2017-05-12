@@ -9,6 +9,8 @@ if not pygame.display.get_init():
 if not pygame.font.get_init():
     pygame.font.init()
 
+pygame.init()
+
 #If full screen (f11) does not work change resolution to 800x600
 
 fullscreen = False  
