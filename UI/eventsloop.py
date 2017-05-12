@@ -79,10 +79,11 @@ class EventsLoop:
         This takes the first event as a param, and does starting
         duties such as making sure the music starts, but not twice.
         '''
-        if cf.gs.first_game_event==False:
-            print("setting first game event")
-            cf.gs.first_game_event=event
-            cf.start_music('spoopy.wav')
+        pass
+        #~ if cf.gs.first_game_event==False:
+            #~ print("setting first game event")
+            #~ cf.gs.first_game_event=event
+            #~ cf.start_music('spoopy.wav')
     
     def pui_has_alert(self, event):
         '''
