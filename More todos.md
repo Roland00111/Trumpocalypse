@@ -1,26 +1,30 @@
-Index and Links
+## More todos
+https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/edit
 - [ ] #35 Inventory Page
-- [ ] #34 Utilize Str/Int/Char
-- [ ] #33 Level-up HP (and Str/Int/Char)
-- [ ] #32 DayScreen Summary Lists
+- [ ] #34 Utilize Strength/Intelligence/Charisma
+- [ ] #33 Level-up HP (and S/I/C)
 - [ ] #31 Karma, Influence, Butterfly Effect (KIB)
-- [ ] #30 Score.
-- [ ] #29 Make selected house and transit "scroll into view" when selected item is "hidden".
-- [ ] #28 Alert user when house % or transit item % goes below zero and is removed.
+- [ ] #29 Make selected house and transit "scroll into view".
+- [ ] #28 Alert user when house or transit item is used up.
 - [ ] #26 Change mouse pointer.
-- [ ] #25 Audio.
 - [ ] #24 Overthrow Trump.
 - [ ] #22.3 Show "map" of player's current city.
 - [ ] #22.2 Show "map" of locations with associated events and player's current "Home".
 - [ ] #22.1 Move locations.
 - [ ] #22 Events only affect certain regions.
+- [ ] #19 Add width to self.body = { … }.
+- [ ] #9 Counteracting the effects of events. (Too difficult for gameplay?)
+- [ ] #7 eod_mods Summary Screen (enhanced StoryScreen)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+########## In Progress ##########
+~~~~~~~~~~~~~~~~~~~~~~~~~
+- [ ] #32 DayScreen Summary Lists
+- [ ] #30 Score.
+- [ ] #25 Audio.
 - [ ] #21.1 Add jobs.
 - [ ] #21 Add lots more items.
 - [ ] #20 Add lots more events.
-- [ ] #19 Add width to self.body = { … }.
 - [ ] #16 Manual character creation.
-- [ ] #9 Counteracting the effects of events. (Too difficult for gameplay?)
-- [ ] #7 eod_mods Summary Screen (enhanced StoryScreen)
 - [ ] #6 eod_mods
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 ########## Done ##########
