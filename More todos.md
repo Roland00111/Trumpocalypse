@@ -52,9 +52,13 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
 ########## Other Ideas ##########
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - [ ] #998 Genre
-- [ ] #999 Different screens flow diagram (state machine? or...?)
+- [ ] #999 Different screens flow or state diagram
 
 ## Features Under Consideration
+* Direct port to...
+  * Android (not great--see SDL2 branch)
+  * Windows EXE (so-so, having issues)
+  * Other: ...; ...; ... ?
 * Idea: Add mini icons on DayScreen for active events.
 * Idea: Maybe only first Work is sanity += 1.
   * Afterward it is sanity -= 1.
@@ -62,21 +66,18 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
   * Good for touchpad users.
 * Add various "characters".
   * https://www.reddit.com/r/gaming/comments/68ij9r/ok_genius_idea_for_a_game/
-  * Trump, Clinton, Bush, …, …, A. Lincoln, G. Washington, …, …, 
+  * Trump, Clinton, Bush, ..., ..., A. Lincoln, G. Washington, ...
   * How to integrate?
   * Boss battles?
   * Buyable "Heroes"?
-* TODO: After walking 25 miles +0.1 HP Upgrade?
 * Event months remaining:
-  * Idea: All inactive events go down one month remaining each month.
-    * Eventually they go away.
-  * Idea: Add (#) beside each event to show how many months they have remaining.
-    * Ex: You got an STD (3). Meaning 3 months remain.
+  * DONE--Idea: All inactive events go down one month remaining each month.
+  * DONE--Idea: Add (#) beside each event to show how many months they have remaining.
 * Make an alert if there are still day hours remaining and the user presses "Next Month".
   * Just in case they do it on accident.
   * Go to next month? Yes, No.
 * On CharacterHUD items list, only show important items.
-  * No need to show transit and housing items as they are in the other lists.
+  * DONE--No need to show transit and housing items.
   * Show: Food, Clothing, Cash, First Aid Kits
   * Create Inventory Page to show everything else, such as gardens, seeds, etc.
 * Idea: HP living reward
@@ -97,7 +98,7 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
 ## Small Things Done
 - [x] Done: Add +1 sanity each time you go to work.
 - [x] Done: Do not allow both lists on EventScreen to be selected at the same time.
-- [x] Fixed: Bug: On EventsScreen: After "Use first aid pack", if still alive, the activated event is still shown on left side. It is activated but lists are "stale". Fix: Redraw PygameUI elements if user is still alive (def click_use_first_aid). See draw_store_lists( ) for similar.
+- [x] Fixed: Bug: On EventsScreen: After "Use first aid pack", inactive events is stale.
 - [x] Done: Character HUD main lists: Change bgcolor of selected to bgcolor of game, so it is "not selectable".
 - [x] Done: Document code for Friday's code review. Every class and many functions.
 
