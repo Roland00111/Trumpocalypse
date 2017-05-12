@@ -1,4 +1,4 @@
-Index and Links
+Index and Links
 - [ ] #35 Inventory Page
 - [ ] #34 Utilize Str/Int/Char
 - [ ] #33 Level-up HP (and Str/Int/Char)
@@ -17,15 +17,15 @@ Index and Links
 - [ ] #21.1 Add jobs.
 - [ ] #21 Add lots more items.
 - [ ] #20 Add lots more events.
-- [ ] #19 Add width to self.body = { … } to dynamically change main text box width.
+- [ ] #19 Add width to self.body = { … }.
 - [ ] #16 Manual character creation.
 - [ ] #9 Counteracting the effects of events. (Too difficult for gameplay?)
-- [ ] #8 Low or zero sanity.
 - [ ] #7 eod_mods Summary Screen (enhanced StoryScreen)
 - [ ] #6 eod_mods
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 ########## Done ##########
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+- [x] #8 Low or zero sanity.--Mostly done
 - [x] #11 Add un-process events.--Done
 - [x] #27 Change to dynamic sizing of the window.--Done (partial: F11 appears working)
 - [x] #10 Add process events in eod_mods(). --Done
