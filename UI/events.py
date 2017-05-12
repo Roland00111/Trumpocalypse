@@ -224,7 +224,7 @@ class Events:
                 'it is because of dissidents. No one knows the real reason '
                 'behind the curfew...',
                 2,0,1),
-        Event(  'Carnival', {'hours':-2,'sanity':10}, {}, {},
+        Event(  'Carnival', {'hours':-2,'sanity':10,'Food':2,'Cash':1000}, {}, {},
                 'Trump decided to send a carnival to your town in order to '
                 'increase his support in the area. You decided to go to the '
                 'carnival to relieve some of the stress from everything thats '
