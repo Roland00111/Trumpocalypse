@@ -1,7 +1,7 @@
 import random
 import math
 import pygame
-import pygame.midi
+#import pygame.midi
 
 gs = None # Previously: game_state
 surface = None
@@ -59,7 +59,7 @@ def start_music(musicName):
     # pygame.mixer.pre_init(22050, -16, 1, 512) 
     
     # Pre_init produces so-so cpu usage (25-50%).
-    pygame.mixer.pre_init(11025, -8, 2, 256)
+    #pygame.mixer.pre_init(11025, -8, 2, 256)
     pygame.mixer.init()
     pygame.mixer.music.load(musicName)
     pygame.mixer.music.play(-1)
