@@ -55,6 +55,7 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
 - [ ] #999 Different screens flow diagram (state machine? or...?)
 
 ## Features Under Consideration
+* Idea: Maybe only first Work is sanity += 1.
 * Idea: Use "W" and "S" for "Up" and "Down" on the main menu and "D" as "Enter".
   * Good for touchpad users.
 * Add various "characters".
