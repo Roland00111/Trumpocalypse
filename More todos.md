@@ -59,6 +59,10 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
   * Android (not great--see SDL2 branch)
   * Windows EXE (having issues with py2exe only working with python3)
   * Other: ...; ...; ... ?
+* Click for more information to notice and warnings.
+  * Click or mouseover.
+  * Create a PygameUI Alert that has "Press any key to dismiss this."
+    * Then user's may: click a notice; read info; press any key to dismiss.
 * Idea: Add mini icons on DayScreen for active events.
 * Idea: Maybe only first Work is sanity += 1.
   * Afterward it is sanity -= 1.
