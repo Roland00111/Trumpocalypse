@@ -203,12 +203,12 @@ class EventsLoop:
             cf.down_in = self.cm.scene.hit(event.pos)
             if (cf.down_in is not None and
                 not isinstance(cf.down_in, PygameUI.Scene)):
-                cf.down_in.mouse_down(event.button,
+                cf.down_in.mouse_down(0,
                     cf.down_in.from_window_point(event.pos))
         elif event.type == pygame.MOUSEBUTTONUP:
             up_in = self.cm.scene.hit(event.pos)
             if cf.down_in == up_in:
-                cf.down_in.mouse_up(event.button,
+                cf.down_in.mouse_up(0,
                     cf.down_in.from_window_point(event.pos))
             cf.down_in = None
         elif event.type == pygame.MOUSEMOTION:

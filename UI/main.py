@@ -98,6 +98,6 @@ if __name__ == '__main__':
     # we need whenever necessary.
     # DO NOT USE THIS:
     #   pygame.init()
-    cf.surface = pygame.display.set_mode((854,480), HWSURFACE|DOUBLEBUF|RESIZABLE)
+    cf.surface = pygame.display.set_mode((854,480))#, SWSURFACE|DOUBLEBUF|RESIZABLE
     #pygame.display.toggle_fullscreen()
     GameState()
