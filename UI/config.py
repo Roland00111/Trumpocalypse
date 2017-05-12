@@ -60,9 +60,10 @@ def start_music(musicName):
     
     # Pre_init produces so-so cpu usage (25-50%).
     #pygame.mixer.pre_init(11025, -8, 2, 256)
-    pygame.mixer.init()
-    pygame.mixer.music.load(musicName)
-    pygame.mixer.music.play(-1)
+    pass
+    #pygame.mixer.init()
+    #pygame.mixer.music.load(musicName)
+    #pygame.mixer.music.play(-1)
     
     # A second test file.
     #pygame.mixer.music.load('Trumpocalypse-mixed2.ogg')

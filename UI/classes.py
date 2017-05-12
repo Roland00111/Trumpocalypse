@@ -198,7 +198,7 @@ class SnakeGame:
     # Resets the game
     def reset(self):
         cf.arcade_game=False
-        pygame.event.post(cf.gs.first_game_event)
+        #~ pygame.event.post(cf.gs.first_game_event)
 
 
     # Draws snake and food objects to the screen

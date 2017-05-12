@@ -99,5 +99,5 @@ if __name__ == '__main__':
     # DO NOT USE THIS:
     #   pygame.init()
     cf.surface = pygame.display.set_mode((854,480), HWSURFACE|DOUBLEBUF|RESIZABLE)
-    pygame.display.toggle_fullscreen()
+    #pygame.display.toggle_fullscreen()
     GameState()

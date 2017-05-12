@@ -72,10 +72,11 @@ class EventsLoop:
         This takes the first event as a param, and does starting
         duties such as making sure the music starts, but not twice.
         '''
-        if cf.gs.first_game_event and cf.gs.first_game_event==False:
-            print("setting first game event")
-            cf.gs.first_game_event=event
-            cf.start_music('spoopy.wav')
+        pass
+        #~ if cf.gs.first_game_event and cf.gs.first_game_event==False:
+            #~ print("setting first game event")
+            #~ cf.gs.first_game_event=event
+            #~ cf.start_music('spoopy.wav')
     
     def pui_has_alert(self, event):
         '''
@@ -198,22 +199,18 @@ class EventsLoop:
             elif event.key == K_ESCAPE:
                 pass
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                cf.down_in = self.cm.scene.hit(event.pos)
-                if (cf.down_in is not None and
-                    not isinstance(cf.down_in, PygameUI.Scene)):
-                    cf.down_in.mouse_down(event.button,
-                        cf.down_in.from_window_point(event.pos))
+            # No mouse number necessary in Android.
+            cf.down_in = self.cm.scene.hit(event.pos)
+            if (cf.down_in is not None and
+                not isinstance(cf.down_in, PygameUI.Scene)):
+                cf.down_in.mouse_down(event.button,
+                    cf.down_in.from_window_point(event.pos))
         elif event.type == pygame.MOUSEBUTTONUP:
-            # http://stackoverflow.com/questions/10990137/
-            # pygame-mouse-clicking-detection
-            if event.button == 1:                 
-                # PygameUI
-                up_in = self.cm.scene.hit(event.pos)
-                if cf.down_in == up_in:
-                    cf.down_in.mouse_up(event.button,
-                        cf.down_in.from_window_point(event.pos))
-                cf.down_in = None
+            up_in = self.cm.scene.hit(event.pos)
+            if cf.down_in == up_in:
+                cf.down_in.mouse_up(event.button,
+                    cf.down_in.from_window_point(event.pos))
+            cf.down_in = None
         elif event.type == pygame.MOUSEMOTION:
             if cf.down_in is not None and cf.down_in.draggable:
                 if cf.down_in.parent is not None:
@@ -233,14 +230,15 @@ class EventsLoop:
         elif event.type == pygame.KEYUP:
             self.cm.scene.key_up(event.key)
         elif event.type == pygame.VIDEORESIZE:
-            cf.rx = 1.0*event.dict['size'][0] / cf.window_size[0]
-            cf.ry = 1.0*event.dict['size'][1] / cf.window_size[1]
-            cf.curr_window_size = event.dict['size']
-            # Take the average ratio.
-            # Max(rx,ry) is another solution to this.
-            cf.rcombined = (cf.rx+cf.ry)/2
-            MENU.Menu.scene._frame = (
-                pygame.Rect((0, 0), cf.curr_window_size))
+            pass
+            #~ cf.rx = 1.0*event.dict['size'][0] / cf.window_size[0]
+            #~ cf.ry = 1.0*event.dict['size'][1] / cf.window_size[1]
+            #~ cf.curr_window_size = event.dict['size']
+            #~ # Take the average ratio.
+            #~ # Max(rx,ry) is another solution to this.
+            #~ cf.rcombined = (cf.rx+cf.ry)/2
+            #~ MENU.Menu.scene._frame = (
+                #~ pygame.Rect((0, 0), cf.curr_window_size))
         return None
         
     def process_pygame_events(self):
