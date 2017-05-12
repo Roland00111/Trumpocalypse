@@ -57,7 +57,7 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
 ## Features Under Consideration
 * Direct port to...
   * Android (not great--see SDL2 branch)
-  * Windows EXE (so-so, having issues)
+  * Windows EXE (having issues with py2exe only working with python3)
   * Other: ...; ...; ... ?
 * Idea: Add mini icons on DayScreen for active events.
 * Idea: Maybe only first Work is sanity += 1.
