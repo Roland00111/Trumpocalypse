@@ -57,6 +57,7 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
 ## Features Under Consideration
 * Idea: Add mini icons on DayScreen for active events.
 * Idea: Maybe only first Work is sanity += 1.
+  * Afterward it is sanity -= 1.
 * Idea: Use "W" and "S" for "Up" and "Down" on the main menu and "D" as "Enter".
   * Good for touchpad users.
 * Add various "characters".
