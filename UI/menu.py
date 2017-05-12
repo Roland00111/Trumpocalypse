@@ -1321,7 +1321,6 @@ class CharacterHUD:
         x.frame = pygame.Rect(
             4, 4, 150, self.current_menu.scene.frame.h -8)
         x.frame.w = x.container.frame.w
-        #~ x.selected_index = 1
         x.border_width = 0
         #Change to True is needs to be draggable 
         x.container.draggable = False 
@@ -1337,7 +1336,6 @@ class CharacterHUD:
             self.current_menu.scene.frame.w -154, 4, 150,
             self.current_menu.scene.frame.h - 230) 
         x.frame.w = x.container.frame.w
-        #~ x.selected_index = 1
         x.border_width = 0
         #Change to True is needs to be draggable 
         x.container.draggable = True 
