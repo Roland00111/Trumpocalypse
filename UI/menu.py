@@ -278,7 +278,7 @@ class Menu:
         '''
         cf.gs.game.character.health = 0
         cf.gs.game.character.is_dead = True
-        pygame.event.post(cf.gs.first_game_event)
+        #~ pygame.event.post(cf.gs.first_game_event)
 
     def click_use_first_aid(self, confirm):
         '''User clicked "Use first aid packs" or
@@ -562,7 +562,7 @@ class StoreScreen(Menu):
         '''
         cf.gs.game.character.health = 0
         cf.gs.game.character.is_dead = True
-        pygame.event.post(cf.gs.first_game_event)
+        #~ pygame.event.post(cf.gs.first_game_event)
         
 class GameOverScreen(Menu):
     '''
