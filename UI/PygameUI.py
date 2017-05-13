@@ -235,17 +235,14 @@ class Label(Control):
         self.selected_bgcolor = selected_bgcolor
         self.bgcolor = bgcolor
         self.interactive = False
-        
-        
-        self.font = pygame.font.SysFont('coders_crux.ttf'
-                                        , font_size)
-        #~ self.text = text
-        #~ self.text_color = text_color
-        #~ self.padding = Label.padding
-        #~ self.item = item
-        #~ if border_color != None:
-            #~ self.border_width = 2 # TODO: Implement.
-            #~ self.border_color = border_color # TODO: Implement.
+        self.font = pygame.font.Font('coders_crux.ttf', font_size)
+        self.text = text
+        self.text_color = text_color
+        self.padding = Label.padding
+        self.item = item
+        if border_color != None:
+            self.border_width = 2 # TODO: Implement.
+            self.border_color = border_color # TODO: Implement.
         
     def size_of(self, text):
         """ Parameters text form of a string and this function returns
@@ -474,7 +471,7 @@ class Alert(Control):
         for text in m:
             l = Label(text)
             large_font = (pygame.font.
-                    SysFont('coders_crux.ttf', 16*2))
+                    Font('coders_crux.ttf', 16*2))
             l.font = large_font
             l.size_to_fit()
             l.bgcolor = self.bgcolor
@@ -587,28 +584,23 @@ class Button(Control):
     disabled_text_color = (128, 128, 128)
 
     def __init__(self, text, callback = False):
-        #~ pass
         Control.__init__(self)
         self.border_width = Button.border_width
         self.border_color = Button.border_color
         
-        #### ~~~~BREAKS HERE~~~~
         self.label = Label(text)
-        #### ~~~~BREAKS HERE~~~~
-        
-        
-        #~ bold_font = (pygame.font.
-                    #~ SysFont('coders_crux.ttf', 20))
-        #~ self.label.font = bold_font
-        #~ self.label.bgcolor = Button.bgcolor
-        #~ self.bgcolor = Button.bgcolor
-        #~ self.active_bgcolor = Button.active_bgcolor
-        #~ self.add_child(self.label)
-        #~ if callback is False:
-            #~ self.on_clicked = Signal()
-        #~ else:
-            #~ self.on_clicked = callback
-        #~ self.is_pressed = False
+        bold_font = (pygame.font.
+                    Font('coders_crux.ttf', 20))
+        self.label.font = bold_font
+        self.label.bgcolor = Button.bgcolor
+        self.bgcolor = Button.bgcolor
+        self.active_bgcolor = Button.active_bgcolor
+        self.add_child(self.label)
+        if callback is False:
+            self.on_clicked = Signal()
+        else:
+            self.on_clicked = callback
+        self.is_pressed = False
 
     def enable(self, yesno):
         self.enabled = yesno

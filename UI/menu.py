@@ -1232,12 +1232,12 @@ class OptionsMenu(Menu):
             if first_run is False:
                 cf.stop_music()
         x = PygameUI.Button('Turn Music '+m,self.click_music)
-        #~ x.frame = pygame.Rect(0, 100, 270, 30)
-        #~ self.scene.add_child(x)
-        #~ w = x.frame.w
-        #~ xoff = cf.surface.get_rect().centerx-w/2
-        #~ x.frame = pygame.Rect(xoff, 100, 270, 30)
-        #~ self.toggle_button_el = x
+        x.frame = pygame.Rect(0, 100, 270, 30)
+        self.scene.add_child(x)
+        w = x.frame.w
+        xoff = cf.surface.get_rect().centerx-w/2
+        x.frame = pygame.Rect(xoff, 100, 270, 30)
+        self.toggle_button_el = x
         
     def click_music(self, button):
         """Handle the click on the music toggle button.
