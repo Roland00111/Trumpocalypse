@@ -235,15 +235,17 @@ class Label(Control):
         self.selected_bgcolor = selected_bgcolor
         self.bgcolor = bgcolor
         self.interactive = False
+        
+        
         self.font = pygame.font.SysFont('coders_crux.ttf'
                                         , font_size)
-        self.text = text
-        self.text_color = text_color
-        self.padding = Label.padding
-        self.item = item
-        if border_color != None:
-            self.border_width = 2 # TODO: Implement.
-            self.border_color = border_color # TODO: Implement.
+        #~ self.text = text
+        #~ self.text_color = text_color
+        #~ self.padding = Label.padding
+        #~ self.item = item
+        #~ if border_color != None:
+            #~ self.border_width = 2 # TODO: Implement.
+            #~ self.border_color = border_color # TODO: Implement.
         
     def size_of(self, text):
         """ Parameters text form of a string and this function returns
@@ -591,7 +593,10 @@ class Button(Control):
         self.border_color = Button.border_color
         
         #### ~~~~BREAKS HERE~~~~
-        #~ self.label = Label(text)
+        self.label = Label(text)
+        #### ~~~~BREAKS HERE~~~~
+        
+        
         #~ bold_font = (pygame.font.
                     #~ SysFont('coders_crux.ttf', 20))
         #~ self.label.font = bold_font
