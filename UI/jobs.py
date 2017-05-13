@@ -286,7 +286,6 @@ class Jobs:
     '''Handler for jobs in the game. Each game has one instance
     of the Jobs class. The Jobs class currently has one function,
     which is to provide a random Job class instance when appropriate.
-    The jobs list is stored in jobs.py.
     '''
     def __init__(self):
         pass
