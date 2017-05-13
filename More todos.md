@@ -65,6 +65,13 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
   * User may choose from another job in current location.
   * Currently, Location().random_job() assigns between 10-20 jobs per location.
   * Modify WorkScreen?
+* Difficulty settings.
+  * For example: Hard, Medium, Easy, Kid's Play
+  * Ideas for difficulty:
+    * Modify months_remaining on inactive_events.
+      * -1 MR / Month = Easy
+      * -0.5 MR / Month = Medium
+      * -0.25 MR / Month = Hard
 * Click for more information to notice and warnings.
   * Click or mouseover.
   * Create a PygameUI Alert that has "Press any key to dismiss this."
