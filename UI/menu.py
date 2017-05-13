@@ -32,7 +32,7 @@ class Menu:
     lista = []
     by = []
     FontSize = 32
-    font_path = 'data/coders_crux/coders_crux.ttf'
+    font_path = 'coders_crux.ttf'
     font = pygame.font.Font
     dest_surface = pygame.Surface #how surface game is on is generated
     QuanityOfLista = 0 #initalizer
@@ -259,7 +259,7 @@ class Menu:
         rect = pygame.Rect((xoff+8,self.body['top']+8,
                 w-8,300-8)) # left,top,width,height
         font = (pygame.font.Font
-            ('data/coders_crux/coders_crux.ttf',
+            ('coders_crux.ttf',
             self.body['font_size']))
         drawText(cf.surface, self.body['text'], (0,0,0), rect,
                  font, aa=False, bkg=None)
@@ -1232,12 +1232,12 @@ class OptionsMenu(Menu):
             if first_run is False:
                 cf.stop_music()
         x = PygameUI.Button('Turn Music '+m,self.click_music)
-        x.frame = pygame.Rect(0, 100, 270, 30)
-        self.scene.add_child(x)
-        w = x.frame.w
-        xoff = cf.surface.get_rect().centerx-w/2
-        x.frame = pygame.Rect(xoff, 100, 270, 30)
-        self.toggle_button_el = x
+        #~ x.frame = pygame.Rect(0, 100, 270, 30)
+        #~ self.scene.add_child(x)
+        #~ w = x.frame.w
+        #~ xoff = cf.surface.get_rect().centerx-w/2
+        #~ x.frame = pygame.Rect(xoff, 100, 270, 30)
+        #~ self.toggle_button_el = x
         
     def click_music(self, button):
         """Handle the click on the music toggle button.

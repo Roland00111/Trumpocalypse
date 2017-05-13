@@ -328,7 +328,7 @@ class EventsLoop:
                                              # left,top,width,height
                 rect = pygame.Rect((x+8,self.cm.body['top']+8,300-8,300-8))
                 font = (pygame.font.Font
-                ('data/coders_crux/coders_crux.ttf',
+                ('coders_crux.ttf',
                  self.cm.body['font_size']))
                 drawText(cf.surface, self.cm.body['text'], (0,0,0), rect,
                          font, aa=False, bkg=None)
