@@ -59,6 +59,8 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
   * Android (not great--see SDL2 branch)
   * Windows EXE (having issues with py2exe only working with python3)
   * Other: ...; ...; ... ?
+* Stores re-stock.
+  * Re-stock stores monthly? Yearly? Once per term?
 * Click for more information to notice and warnings.
   * Click or mouseover.
   * Create a PygameUI Alert that has "Press any key to dismiss this."
