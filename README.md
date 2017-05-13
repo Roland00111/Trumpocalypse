@@ -25,7 +25,7 @@ Requirements to play Trumpocalypse: The game ought to be playable on Linux and W
 
 1. Download the project.
 2. Open the "dist" folder.
-3. Open Trumpocalypse.exe file.
+3. Open the file named Trumpocalypse.
 
 # To build and Trumpocalypse
 
