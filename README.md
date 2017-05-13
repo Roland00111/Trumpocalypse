@@ -21,7 +21,15 @@ Read-the-docs automated documentation: http://trumpocalypse.readthedocs.io/en/la
 
 # To play Trumpocalypse
 
-Requirements to play Trumpocalypse: You have to have downloaded python 2.7 and pygame 1.9.1
+Requirements to play Trumpocalypse: The game ought to be playable on Linux and Windows and possibly Mac.
+
+1. Download the project.
+2. Open the "dist" folder.
+3. Open Trumpocalypse.exe file.
+
+# To build and Trumpocalypse
+
+Requirements to build: You have to have downloaded python 2.7 and pygame 1.9.1
 
 ```
 $ git clone https://github.com/Roland00111/Trumpocalypse
