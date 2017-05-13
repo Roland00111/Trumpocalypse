@@ -587,8 +587,10 @@ class Button(Control):
     def __init__(self, text, callback = False):
         #~ pass
         Control.__init__(self)
-        #~ self.border_width = Button.border_width
-        #~ self.border_color = Button.border_color
+        self.border_width = Button.border_width
+        self.border_color = Button.border_color
+        
+        #### ~~~~BREAKS HERE~~~~
         #~ self.label = Label(text)
         #~ bold_font = (pygame.font.
                     #~ SysFont('coders_crux.ttf', 20))
@@ -603,30 +605,30 @@ class Button(Control):
             #~ self.on_clicked = callback
         #~ self.is_pressed = False
 
-    #~ def enable(self, yesno):
-        #~ self.enabled = yesno
-        #~ if self.enabled:
-            #~ self.label.text_color = Label.text_color
-        #~ else:
-            #~ self.label.text_color = Button.disabled_text_color
+    def enable(self, yesno):
+        self.enabled = yesno
+        if self.enabled:
+            self.label.text_color = Label.text_color
+        else:
+            self.label.text_color = Button.disabled_text_color
 
-    #~ def layout(self):
-        #~ Control.layout(self)
-        #~ self.label.frame.size = self.frame.size
+    def layout(self):
+        Control.layout(self)
+        self.label.frame.size = self.frame.size
 
-    #~ def size_to_fit(self):
-        #~ self.label.size_to_fit()
-        #~ self.frame.size = self.label.frame.size
+    def size_to_fit(self):
+        self.label.size_to_fit()
+        self.frame.size = self.label.frame.size
 
-    #~ def mouse_down(self, btn, pt):
-        #~ Control.mouse_down(self, btn, pt)
-        #~ if self.enabled:
-            #~ self.label.bgcolor = self.active_bgcolor
-            #~ self.is_pressed = True
+    def mouse_down(self, btn, pt):
+        Control.mouse_down(self, btn, pt)
+        if self.enabled:
+            self.label.bgcolor = self.active_bgcolor
+            self.is_pressed = True
 
-    #~ def mouse_up(self, button, pt):
-        #~ Control.mouse_up(self, button, pt)
-        #~ self.label.bgcolor = self.bgcolor
-        #~ self.is_pressed = False
-        #~ if self.on_clicked is not False: 
-            #~ self.on_clicked(self)
+    def mouse_up(self, button, pt):
+        Control.mouse_up(self, button, pt)
+        self.label.bgcolor = self.bgcolor
+        self.is_pressed = False
+        if self.on_clicked is not False: 
+            self.on_clicked(self)
