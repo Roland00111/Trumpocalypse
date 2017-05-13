@@ -29,6 +29,7 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 ########## Done ##########
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+- [x] #36 Snake Game.--Done
 - [x] #8 Low or zero sanity.--Mostly done
 - [x] #11 Add un-process events.--Done
 - [x] #27 Change to dynamic sizing of the window.--Done (partial: F11 appears working)
@@ -104,7 +105,7 @@ https://docs.google.com/document/d/1DcmAoJAivDuh1i43Zne5URcIWtVoKRtGylFAAE7EgIc/
   * Age: ____
   * Gender: ____
 * Mini-games.
-  * Snake Game.
+  * ____
 * After event activated on EventScreen, it goes back to DayScreen.
   * Optional: Have it stay on EventScreen.
 * Text to show when there are no events?
