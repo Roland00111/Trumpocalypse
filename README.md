@@ -25,9 +25,11 @@ Read-the-docs automated documentation: http://trumpocalypse.readthedocs.io/en/la
 2. Open the ```dist``` folder.
 3. Open the executable file ```Trumpocalypse```.
 
-Note: This ought to run without any other installed software.
-Note: This is built with pyinstaller.
-Note: Only the folder ```dist``` and its contents are required to play.
+Notes:
+* This ought to run without any other installed software.
+* This is built using pyinstaller.
+* Only the folder ```dist``` and its contents are required to play.
+* This ought to run on Linux (tested), Windows (not working), and Mac (not working).
 
 # To play Trumpocalypse using python
 
