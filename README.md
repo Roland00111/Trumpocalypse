@@ -19,7 +19,7 @@ End of Semester Goals: To add images to illustrate the story line and locations/
 
 Read-the-docs automated documentation: http://trumpocalypse.readthedocs.io/en/latest/.
 
-# To play Trumpocalypse
+## To play Trumpocalypse
 
 1. Download the project.
 2. Open the ```dist``` folder.
@@ -31,7 +31,7 @@ Notes:
 * Only the folder ```dist``` and its contents are required to play.
 * This ought to run on Linux (tested), Windows (not working), and Mac (not tested).
 
-# To play Trumpocalypse using python
+## To play Trumpocalypse using python
 
 Requirements: python 2.7 and pygame 1.9.1.
 
@@ -41,16 +41,16 @@ $ cd ./Trumpocalypse/UI
 $ python Trumpocalypse.py
 ```
 
-# Gameplay notes
+## Gameplay notes
 
 Press F11 to play in full-screen mode.
 
-# To build executables
+## To build executables
 1. Change all instances of SysFont('...' to SysFont('arial' and reduce size on these by 50%.
 2. Run ```pyinstaller --onedir Trumpocaylpse.py```.
-3. Copy into the folder ```./dist/Trumpocalyse/``` the images, the folder ```./data/```, all sound files, and ```high_score.txt```. 
+3. Copy into the folder ```./dist/Trumpocalyse/``` the images and audio, the folder ```./data/```, and ```high_score.txt```. 
 
-# Presentation feedback:
+## Presentation feedback:
 "
 The only real data structures feedback is related to the ability to save and restore game state. There was also some feedback on the user interface and overall design.
 
