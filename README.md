@@ -29,7 +29,7 @@ Notes:
 * This ought to run without any other installed software.
 * This is built using pyinstaller.
 * Only the folder ```dist``` and its contents are required to play.
-* This ought to run on Linux (tested), Windows (not working), and Mac (not working).
+* This ought to run on Linux (tested), Windows (not working), and Mac (not tested).
 
 # To play Trumpocalypse using python
 
