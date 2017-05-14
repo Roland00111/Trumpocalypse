@@ -235,8 +235,7 @@ class Label(Control):
         self.selected_bgcolor = selected_bgcolor
         self.bgcolor = bgcolor
         self.interactive = False
-        self.font = pygame.font.SysFont('data/coders_crux/coders_crux.ttf'
-                                        , font_size)
+        self.font = pygame.font.SysFont('arial', int(font_size/2))
         self.text = text
         self.text_color = text_color
         self.padding = Label.padding
@@ -471,8 +470,7 @@ class Alert(Control):
         self.messages = []
         for text in m:
             l = Label(text)
-            large_font = (pygame.font.
-                    SysFont('data/coders_crux/coders_crux.ttf', 16*2))
+            large_font = (pygame.font.SysFont('arial', 16))
             l.font = large_font
             l.size_to_fit()
             l.bgcolor = self.bgcolor
@@ -589,8 +587,7 @@ class Button(Control):
         self.border_width = Button.border_width
         self.border_color = Button.border_color
         self.label = Label(text)
-        bold_font = (pygame.font.
-                    SysFont('data/coders_crux/coders_crux.ttf', 20))
+        bold_font = (pygame.font.SysFont('arial', 20/2))
         self.label.font = bold_font
         self.label.bgcolor = Button.bgcolor
         self.bgcolor = Button.bgcolor
