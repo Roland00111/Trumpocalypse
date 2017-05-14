@@ -41,7 +41,7 @@ $ cd ./Trumpocalypse/UI
 $ python Trumpocalypse.py
 ```
 
-## Gameplay notes
+# Gameplay notes
 
 Press F11 to play in full-screen mode.
 
