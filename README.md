@@ -43,6 +43,11 @@ $ python Trumpocalypse.py
 
 Press F11 to play in full-screen mode.
 
+# To build executables
+1. Change all instances of SysFont('...' to SysFont('arial' and reduce size on these by 50%.
+2. Run ```pyinstaller --onedir Trumpocaylpse.py```.
+3. Copy into the folder ```./dist/Trumpocalyse/``` the images, the folder ```./data/```, all sound files, and ```high_score.txt```. 
+
 # Presentation feedback:
 "
 The only real data structures feedback is related to the ability to save and restore game state. There was also some feedback on the user interface and overall design.
