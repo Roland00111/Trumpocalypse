@@ -29,7 +29,7 @@ Note: This ought to run without any other installed software.
 
 # To play Trumpocalypse using python
 
-Requirements: python 2.7 and pygame 1.9.1
+Requirements: python 2.7 and pygame 1.9.1.
 
 ```
 $ git clone https://github.com/Roland00111/Trumpocalypse
