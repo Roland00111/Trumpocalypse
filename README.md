@@ -22,10 +22,12 @@ Read-the-docs automated documentation: http://trumpocalypse.readthedocs.io/en/la
 # To play Trumpocalypse
 
 1. Download the project.
-2. Open the "dist" folder.
+2. Open the ```dist``` folder.
 3. Open the executable file ```Trumpocalypse```.
 
 Note: This ought to run without any other installed software.
+Note: This is built with pyinstaller.
+Note: Only the folder ```dist``` and its contents are required to play.
 
 # To play Trumpocalypse using python
 
