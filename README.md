@@ -35,6 +35,9 @@ Notes:
 
 1. Download and run the file /dist-win/Trumpocalypse.exe.
 
+Notes:
+* This is built using https://hub.docker.com/r/cdrx/pyinstaller-windows/. To be specific, the command: ```~/Trumpocalypse$ docker run -v "$(pwd):/src/" cdrx/pyinstaller-windows:python2 "pyinstaller --onefile Trumpocalypse.py"```.
+
 ## To play Trumpocalypse using python and pygame
 
 Requirements: python 2.7 and pygame 1.9.1.
