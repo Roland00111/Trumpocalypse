@@ -19,19 +19,23 @@ End of Semester Goals: To add images to illustrate the story line and locations/
 
 Read-the-docs automated documentation: http://trumpocalypse.readthedocs.io/en/latest/.
 
-## To play Trumpocalypse
+## To play Trumpocalypse on Linux and Mac
 
 1. Download the project.
 2. Open the ```dist``` folder.
 3. Open the executable file ```Trumpocalypse```.
 
 Notes:
-* This ought to run without any other installed software.
+* This runs without any other installed software.
 * This is built using pyinstaller.
 * Only the folder ```dist``` and its contents are required to play.
-* This ought to run on Linux (tested), Windows (not working), and Mac (not tested).
+* This runs on Linux (tested) and Mac (not tested).
 
-## To play Trumpocalypse using python
+## To play Trumpocalypse on Windows
+
+1. Download and run the file /dist-win/Trumpocalypse.exe.
+
+## To play Trumpocalypse using python and pygame
 
 Requirements: python 2.7 and pygame 1.9.1.
 
