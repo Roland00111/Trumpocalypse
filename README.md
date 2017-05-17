@@ -31,7 +31,7 @@ Notes:
 * Only the folder ```dist``` and its contents are required to play.
 * This runs on Linux (tested) and Mac (not tested).
 
-## To play Trumpocalypse on Windows
+## To play Trumpocalypse on Windows (not working)
 
 1. Download and run the file /dist-win/Trumpocalypse.exe.
 
