@@ -19,6 +19,8 @@ End of Semester Goals: To add images to illustrate the story line and locations/
 
 Read-the-docs automated documentation: http://trumpocalypse.readthedocs.io/en/latest/.
 
+Lines of python code: 260965 (`git ls-files | grep ".py" | xargs cat | wc -l`).
+
 ## To play Trumpocalypse on Linux and Mac
 
 1. Download the project.
