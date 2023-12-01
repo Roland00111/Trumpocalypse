@@ -48,7 +48,7 @@ Requirements: python 2.7 and pygame 1.9.2.
 $ git clone https://github.com/Roland00111/Trumpocalypse
 ```
 
-Install python2 (RHEL) and pygame:
+Install python2 and pygame (RHEL):
 ```
 $ sudo dnf install virtualenv python2
 $ virtualenv --python=python2 venv
