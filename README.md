@@ -42,17 +42,18 @@ Notes:
 
 ## To play Trumpocalypse using python and pygame
 
-Requirements: python 2.7 and pygame 1.9.1.
+Requirements: python 2.7 and pygame 1.9.2.
 
 ```
 $ git clone https://github.com/Roland00111/Trumpocalypse
 ```
 
-Install python2 (RHEL):
+Install python2 (RHEL) and pygame:
 ```
 $ sudo dnf install virtualenv python2
 $ virtualenv --python=python2 venv
 $ . venv/bin/activate
+$ pip install pygame==1.9.2
 ```
 
 Start Trumpocalypse:
@@ -66,6 +67,7 @@ $ python Trumpocalypse.py
 Press F11 to play in full-screen mode.
 
 ## To build executables
+
 1. Change all instances of SysFont('...' to SysFont('arial' and reduce size on these by 50%.
 2. Run ```pyinstaller --onedir Trumpocaylpse.py```.
 3. Copy into the folder ```./dist/Trumpocalyse/``` the images and audio, the folder ```./data/```, and ```high_score.txt```. 
